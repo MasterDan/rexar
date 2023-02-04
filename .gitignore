@@ -1,0 +1,5 @@
+**/.vscode/
+**/*.log
+**/node_modules/
+**/.parcel-cache/
+**/dist/

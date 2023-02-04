@@ -1,0 +1,30 @@
+{
+  "name": "@rexar/core",
+  "version": "1.0.0",
+  "description": "",
+  "source": "src/index.ts",
+  "main": "dist/main.js",
+  "types": "dist/types.d.ts",
+  "scripts": {
+    "watch": "parcel watch",
+    "build": "parcel build",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/packager-ts": "2.8.3",
+    "@parcel/transformer-typescript-types": "2.8.3",
+    "@types/jest": "^29.4.0",
+    "jest": "^29.4.1",
+    "parcel": "^2.8.3",
+    "typescript": ">=3.0.0"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "tsyringe": "^4.7.0"
+  }
+}
