@@ -27,6 +27,15 @@
 			],
 			"label": "npm: start - packages/example",
 			"detail": "parcel"
+		},
+		{
+			"type": "npm",
+			"script": "test",
+			"path": "packages/core",
+			"group": "test",
+			"problemMatcher": [],
+			"label": "npm: test - packages/core",
+			"detail": "jest"
 		}
 	],
 	"inputs": [
