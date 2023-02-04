@@ -1,4 +1,3 @@
-export function say(word: string) {
-  // eslint-disable-next-line no-alert
-  alert(`say:${word}`);
+export function say(_word: string) {
+  throw new Error('Not Implemented!');
 }
