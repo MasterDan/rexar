@@ -16,5 +16,5 @@ export function ref$<T>(init?: MaybeObservable<T>, fallack?: T) {
   }
   return init
     ? new TrackableWritableRef<T>(init)
-    : new TrackableWritableRef<T | undefined>(undefined);
+    : new TrackableWritableRef<T | undefined>(init);
 }
