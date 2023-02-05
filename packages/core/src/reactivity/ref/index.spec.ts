@@ -2,6 +2,8 @@ import { lastValueFrom, timer } from 'rxjs';
 import { ref$ } from '.';
 import { registerComputedBuilder } from '../computed/computed-builder';
 
+const wait = () => lastValueFrom(timer(17));
+
 describe('refs', () => {
   beforeAll(() => {
     registerComputedBuilder();
@@ -16,7 +18,7 @@ describe('refs', () => {
     const fullName = ref$(() => `${name.val} ${surname.val}`);
     expect(fullName.val).toBe('John Doe');
     name.val = 'Jane';
-    await lastValueFrom(timer(17));
+    await wait();
     expect(fullName.val).toBe('Jane Doe');
   });
   test('conditional computed', async () => {
@@ -33,13 +35,13 @@ describe('refs', () => {
     });
     expect(checker.val).toBe('first');
     conditionOne.val = false;
-    await lastValueFrom(timer(17));
+    await wait();
     expect(checker.val).toBe('second');
     conditionTwo.val = false;
-    await lastValueFrom(timer(17));
+    await wait();
     expect(checker.val).toBe('none');
     conditionOne.val = true;
-    await lastValueFrom(timer(17));
+    await wait();
     expect(checker.val).toBe('first');
   });
 });
