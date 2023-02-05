@@ -8,6 +8,8 @@ export type TData = Record<string, MaybeObservable<any> | undefined>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ExactlyObservable<T> = T extends Observable<any> ? T : Observable<T>;
 
+type PropValue<T> = T extends Observable<infer R> ? R : T;
+
 type TPropsAccessors<TObj> = {
   [Key in keyof TObj]: ExactlyObservable<TObj[Key]>;
 };
@@ -66,5 +68,23 @@ export class Component<TProps extends TData = TData> {
     };
 
     this.setup(context);
+  }
+
+  bind<T extends keyof TProps>(
+    key: T,
+    value: MaybeObservable<PropValue<TProps[T]>>,
+  ) {
+    if (this.props == null) {
+      this.props = {} as TProps;
+    }
+    if (isObservable(this.props[key])) {
+      if (isObservable(value)) {
+        value.subscribe((v) => {
+          (this.props as TProps)[key].next(v);
+        });
+      } else {
+        this.props[key].next(value);
+      }
+    }
   }
 }
