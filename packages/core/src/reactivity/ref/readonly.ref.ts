@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { TrackableRef } from './trackable.ref';
 
-export class ComputedRef<T> extends TrackableRef<T> {
+export class ReadonlyRef<T> extends TrackableRef<T> {
   constructor(source$: Observable<T>, fallack: T) {
     super(fallack);
     super.next(fallack);

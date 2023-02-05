@@ -1,6 +1,6 @@
 import { combineLatest, debounceTime, switchMap } from 'rxjs';
 import { container } from 'tsyringe';
-import { ref$ } from '../ref';
+import { readonly, ref$ } from '../ref';
 import { Ref } from '../ref/ref';
 import { BindingContext } from './binding-context';
 
@@ -30,5 +30,5 @@ export function computed<T>(fn: () => T) {
       result.val = compute();
     });
 
-  return result;
+  return readonly(result);
 }
