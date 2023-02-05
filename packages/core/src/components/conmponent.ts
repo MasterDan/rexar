@@ -3,7 +3,7 @@ import { readonly, ref$ } from '@/reactivity/ref';
 import { isObservable, Observable } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type TData = Record<string, MaybeObservable<any> | undefined>;
+export type TData = Record<string, MaybeObservable<any> | undefined>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ExactlyObservable<T> = T extends Observable<any> ? T : Observable<T>;
@@ -17,6 +17,13 @@ interface ISetupContext<TProps> {
 }
 
 type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
+
+export interface IComponentDefinitionArgs<TProps extends TData = TData> {
+  id?: string;
+  name?: string;
+  props?: TProps;
+  setup?: SetupFn<TProps>;
+}
 
 export class Component<TProps extends TData = TData> {
   id?: string;
@@ -32,12 +39,7 @@ export class Component<TProps extends TData = TData> {
     setup,
     name,
     id,
-  }: {
-    id?: string;
-    name?: string;
-    props?: TProps;
-    setup?: SetupFn<TProps>;
-  } = {}) {
+  }: IComponentDefinitionArgs<TProps> = {}) {
     this.id = id;
     this.name = name;
     this.props = props;
