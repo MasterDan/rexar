@@ -1,8 +1,8 @@
-import { TrackableWritableRef } from '@/reactivity/ref/trackable.writable.ref';
+import { WritableRef } from '@/reactivity/ref/writable.ref';
 import { defineComponent } from '..';
 
 export const textComponent = defineComponent<{
-  value: TrackableWritableRef<string>;
+  value: WritableRef<string>;
 }>({
   name: 'text',
 });

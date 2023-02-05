@@ -1,6 +1,6 @@
 import { TrackableRef } from './trackable.ref';
 
-export class TrackableWritableRef<T> extends TrackableRef<T> {
+export class WritableRef<T> extends TrackableRef<T> {
   set val(v: T) {
     super.next(v);
   }
