@@ -1,8 +1,7 @@
 import { isObservable, Observable } from 'rxjs';
+import type { MaybeObservable } from '@/@types/MaybeObservable';
 import { ComputedRef } from './computed.ref';
 import { TrackableWritableRef } from './trackable.writable.ref';
-
-export type MaybeObservable<T> = T | Observable<T>;
 
 export function ref$<T>(init: Observable<T>, fallack: T): ComputedRef<T>;
 export function ref$<T>(init: Observable<T>): ComputedRef<T | undefined>;
