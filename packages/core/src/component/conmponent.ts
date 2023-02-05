@@ -1,17 +1,9 @@
-import { Observable } from 'rxjs';
-import { ref$ } from '@/reactivity/ref/index';
+type TData = Record<string, unknown | undefined>;
 
-export interface IComponentPropsDefinition {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: Observable<any>;
-}
-
-export class Component<TProps> {
+export class Component<TProps extends TData> {
   id?: string;
 
   name?: string;
 
-  constructor(protected props: TProps) {}
+  constructor(protected props?: TProps) {}
 }
-
-const test = new Component({ foo: ref$('bar') });
