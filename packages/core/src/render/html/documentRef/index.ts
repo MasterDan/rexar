@@ -1,6 +1,6 @@
 import { ref$ } from '@/reactivity/ref';
 import { isBrowser } from '@/tools/env';
-import { filter } from 'rxjs';
+import { filter, firstValueFrom } from 'rxjs';
 import { singleton } from 'tsyringe';
 
 async function getDocument(): Promise<Document> {
@@ -16,7 +16,9 @@ export class DocumentRef {
   private document$ = ref$<Document>();
 
   get instance() {
-    return this.document$.pipe(filter((d): d is Document => d != null));
+    return firstValueFrom(
+      this.document$.pipe(filter((d): d is Document => d != null)),
+    );
   }
 
   constructor() {

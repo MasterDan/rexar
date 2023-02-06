@@ -30,6 +30,7 @@ export interface IComponentDefinitionArgs<TProps extends TData = TData> {
 export class Component<TProps extends TData = TData> {
   id?: string;
 
+  // may be don't need
   name?: string;
 
   private props?: TProps;
@@ -70,7 +71,7 @@ export class Component<TProps extends TData = TData> {
     this.setup(context);
   }
 
-  bind<T extends keyof TProps>(
+  bindProp<T extends keyof TProps>(
     key: T,
     value: MaybeObservable<PropValue<TProps[T]>>,
   ) {
@@ -86,5 +87,9 @@ export class Component<TProps extends TData = TData> {
         this.props[key].next(value);
       }
     }
+  }
+
+  getProp<T extends keyof TProps>(key: T) {
+    return this.props ? this.props[key] : null;
   }
 }
