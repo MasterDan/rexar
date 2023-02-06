@@ -5,9 +5,10 @@ import {
 import { Component } from '@/components/conmponent';
 import { container } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
+import { IHtmlRenderer } from '../@types/IRenderer';
 import { DocumentRef } from '../documentRef';
 
-export class ElementRendererHtml {
+export class ElementRendererHtml implements IHtmlRenderer {
   constructor(private component: Component<IElementComponentProps>) {
     if (component.name !== htmlElementDefinitionName) {
       throw new Error('Not Html element!');
