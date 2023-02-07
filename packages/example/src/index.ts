@@ -1,3 +1,5 @@
-import {  } from '@rexar/core';
+import { createApp, text, ref$ } from '@rexar/core';
 
-say('hi');
+createApp(text({ value: ref$('I am rendered'), hasNextSibling: false })).mount(
+  '#app',
+);
