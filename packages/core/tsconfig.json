@@ -12,6 +12,5 @@
     "./*.ts",
     "./src/**/*.ts",
     "./tests/**/*.ts",
-    "src/render/html/component-renderts",
   ]
 }
