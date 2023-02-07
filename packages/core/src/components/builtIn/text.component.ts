@@ -9,3 +9,9 @@ export interface ITextComponentProps {
 export const textComponent = defineComponent<ITextComponentProps>({
   name: 'text',
 });
+
+export function text(props: ITextComponentProps) {
+  const component = textComponent.create();
+  component.bindProps(props);
+  return component;
+}

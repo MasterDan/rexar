@@ -33,6 +33,7 @@ export class Component<TProps extends TData = TData> {
   // may be don't need
   name?: string;
 
+  /** @todo make this reactive */
   private props?: TProps;
 
   private setup?: SetupFn<TProps>;
@@ -87,6 +88,10 @@ export class Component<TProps extends TData = TData> {
         this.props[key].next(value);
       }
     }
+  }
+
+  bindProps(props: TProps) {
+    this.props = props;
   }
 
   getProp<T extends keyof TProps>(key: T) {
