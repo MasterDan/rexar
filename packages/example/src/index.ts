@@ -1,3 +1,3 @@
-import { say } from '@rexar/core';
+import {  } from '@rexar/core';
 
 say('hi');

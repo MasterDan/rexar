@@ -1,3 +1,2 @@
-export function say(_word: string) {
-  throw new Error('Not Implemented!');
-}
+export { createApp } from '@/app';
+export { text } from '@/components/builtIn/text.component';
