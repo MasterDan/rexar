@@ -1,8 +1,10 @@
 import { Component } from '@/components/conmponent';
+import { singleton } from 'tsyringe';
 import { BindingTargetRole } from './@types/binding-target';
 import { DocumentRef } from './documentRef';
 import { render as renderRoot } from './render';
 
+@singleton()
 export class HtmlRenderer {
   constructor(private documnetRef: DocumentRef) {}
 
