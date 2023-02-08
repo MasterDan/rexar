@@ -16,5 +16,6 @@ export class HtmlRenderer {
       target: fragment,
       role: BindingTargetRole.Parent,
     });
+    target.append(fragment);
   }
 }
