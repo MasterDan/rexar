@@ -5,8 +5,6 @@ import { DocumentRef } from '@core/render/html/documentRef';
 import { container } from 'tsyringe';
 
 export function createApp(root: Component) {
-  console.log('creating app...');
-
   registerComputedBuilder();
   const renderer = container.resolve(HtmlRenderer);
   const mount = (selector: string) => {
