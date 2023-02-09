@@ -1,5 +1,5 @@
-import { MaybeObservable } from '@/@types/MaybeObservable';
-import { readonly, ref$ } from '@/reactivity/ref';
+import { MaybeObservable } from '@core/@types/MaybeObservable';
+import { readonly, ref$ } from '@core/reactivity/ref';
 import { isObservable, Observable } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

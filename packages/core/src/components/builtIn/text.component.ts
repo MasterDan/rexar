@@ -1,4 +1,4 @@
-import { WritableRef } from '@/reactivity/ref/writable.ref';
+import { WritableRef } from '@core/reactivity/ref/writable.ref';
 import { defineComponent } from '..';
 
 export interface ITextComponentProps {

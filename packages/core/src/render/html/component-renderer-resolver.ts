@@ -1,5 +1,5 @@
-import { htmlElementDefinitionName } from '@/components/builtIn/html-element.component';
-import { Component } from '@/components/conmponent';
+import { htmlElementDefinitionName } from '@core/components/builtIn/html-element.component';
+import { Component } from '@core/components/conmponent';
 import { IHtmlRenderer } from './@types/IRenderer';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

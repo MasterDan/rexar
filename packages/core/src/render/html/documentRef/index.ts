@@ -1,5 +1,5 @@
-import { ref$ } from '@/reactivity/ref';
-import { isBrowser } from '@/tools/env';
+import { ref$ } from '@core/reactivity/ref';
+import { isBrowser } from '@core/tools/env';
 import { filter, firstValueFrom } from 'rxjs';
 import { singleton } from 'tsyringe';
 

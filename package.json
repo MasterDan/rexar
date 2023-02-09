@@ -5,10 +5,17 @@
   "main": "index.js",
   "author": "MasterDan <MihaylovDS@gmail.com>",
   "license": "MIT",
+  "alias": {
+    "@core/*": "packages/core/src/$1"
+  },
   "workspaces": [
     "packages/*"
   ],
+  "dependencies": {
+    "@rexar/core": "link:./packages/core"
+  },
   "devDependencies": {
+    "@types/jsdom": "^21.1.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "eslint": "^8.33.0",
@@ -16,7 +23,9 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
+    "jsdom": "^21.1.0",
     "prettier": "^2.8.3",
+    "reflect-metadata": "^0.1.13",
     "typescript": "^4.9.5"
   }
 }

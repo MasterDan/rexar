@@ -1,5 +1,5 @@
 import { isObservable, Observable } from 'rxjs';
-import type { MaybeObservable } from '@/@types/MaybeObservable';
+import type { MaybeObservable } from '@core/@types/MaybeObservable';
 import { container } from 'tsyringe';
 import { ReadonlyRef } from './readonly.ref';
 import { WritableRef } from './writable.ref';

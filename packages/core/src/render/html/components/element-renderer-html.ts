@@ -1,8 +1,8 @@
 import {
   htmlElementDefinitionName,
   IElementComponentProps,
-} from '@/components/builtIn/html-element.component';
-import { Component } from '@/components/conmponent';
+} from '@core/components/builtIn/html-element.component';
+import { Component } from '@core/components/conmponent';
 import { container } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IRenderer';

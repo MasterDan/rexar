@@ -1,5 +1,5 @@
-import { ITextComponentProps } from '@/components/builtIn/text.component';
-import { Component } from '@/components/conmponent';
+import { ITextComponentProps } from '@core/components/builtIn/text.component';
+import { Component } from '@core/components/conmponent';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IRenderer';
 

@@ -1,4 +1,4 @@
-import { Component } from '@/components/conmponent';
+import { Component } from '@core/components/conmponent';
 import { singleton } from 'tsyringe';
 import { BindingTargetRole } from './@types/binding-target';
 import { DocumentRef } from './documentRef';

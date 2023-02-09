@@ -1,7 +1,7 @@
-import { Component } from '@/components/conmponent';
-import { registerComputedBuilder } from '@/reactivity/computed/computed-builder';
-import { HtmlRenderer } from '@/render/html';
-import { DocumentRef } from '@/render/html/documentRef';
+import { Component } from '@core/components/conmponent';
+import { registerComputedBuilder } from '@core/reactivity/computed/computed-builder';
+import { HtmlRenderer } from '@core/render/html';
+import { DocumentRef } from '@core/render/html/documentRef';
 import { container } from 'tsyringe';
 
 export function createApp(root: Component) {

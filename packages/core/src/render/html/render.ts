@@ -1,4 +1,4 @@
-import { Component } from '@/components/conmponent';
+import { Component } from '@core/components/conmponent';
 import { IBinding } from './@types/binding-target';
 import { resolveRenderer } from './component-renderer-resolver';
 

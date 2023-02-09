@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@parcel/transformer-typescript-tsc": "^2.8.3",
-    "@rexar/core": "link:packages/core",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
