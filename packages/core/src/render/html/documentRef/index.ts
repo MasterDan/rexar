@@ -8,7 +8,7 @@ async function getDocument(): Promise<Document> {
     return window.document;
   }
   const { JSDOM } = await import('jsdom');
-  return new JSDOM().window.document;
+  return new JSDOM('<div id="app" ></div>').window.document;
 }
 
 @singleton()

@@ -6,7 +6,7 @@ export default async (): Promise<Config.InitialOptions> => ({
     '\\.[jt]s$': 'ts-jest',
   },
   moduleNameMapper: {
-    '@/(.*)': '<rootDir>/src/$1',
+    '@core/(.*)': '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 });
