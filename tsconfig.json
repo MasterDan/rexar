@@ -12,13 +12,18 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
-        "baseUrl": ".",
         "lib": [
             "esnext",
             "dom",
             "dom.iterable",
             "scripthost"
         ],
+        "baseUrl": ".",
+        "paths": {
+            "@core/*": [
+                "packages/core/src/*"
+            ]
+        }
     },
     "exclude": [
         "**/node_modules/**",

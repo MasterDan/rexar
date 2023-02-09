@@ -5,6 +5,9 @@
   "source": "src/index.ts",
   "main": "dist/main.js",
   "types": "dist/types.d.ts",
+  "alias": {
+    "@core/*": "../../packages/core/src/$1"
+  },
   "scripts": {
     "watch": "parcel watch",
     "build": "parcel build",
@@ -15,16 +18,22 @@
   "license": "ISC",
   "devDependencies": {
     "@parcel/packager-ts": "2.8.3",
-    "@parcel/transformer-typescript-types": "2.8.3",
+    "@parcel/transformer-typescript-tsc": "^2.8.3",
+    "@parcel/transformer-typescript-types": "^2.8.3",
     "@types/jest": "^29.4.0",
+    "@types/jsdom": "^20.0.1",
     "jest": "^29.4.1",
     "parcel": "^2.8.3",
     "typescript": ">=3.0.0"
   },
   "dependencies": {
+    "@parcel/transformer-typescript-types": "^2.8.3",
+    "jsdom": "^21.1.0",
     "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.0",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
+    "tslib": "^2.5.0",
     "tsyringe": "^4.7.0"
   }
 }

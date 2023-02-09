@@ -1,13 +1,13 @@
 module.exports = {
   extends: [
-    'airbnb-base',
-    'airbnb-typescript/base',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
+    'airbnb-base',
+    'airbnb-typescript/base',
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['import', '@typescript-eslint'],
   root: true,
   parserOptions: {
     project: [
@@ -37,5 +37,15 @@ module.exports = {
     '@typescript-eslint/no-shadow': 'error',
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'error',
+  },
+  settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+    'import/resolver': {
+      typescript: {
+        project: 'packages/*/tsconfig.json',
+      },
+    },
   },
 };

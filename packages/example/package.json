@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "@rexar/example",
   "version": "0.0.0",
   "description": "rexar lib demo",
   "source": "./public/index.html",
@@ -9,10 +9,27 @@
     "build": "parcel build"
   },
   "dependencies": {
-    "@rexar/core": "*"
+    "@parcel/transformer-typescript-tsc": "^2.8.3",
+    "@rexar/core": "*",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.8.3",
-    "parcel": "^2.8.3"
+    "assert": "^2.0.0",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^5.5.0",
+    "crypto-browserify": "^3.12.0",
+    "events": "^3.1.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "parcel": "^2.8.3",
+    "path-browserify": "^1.0.0",
+    "process": "^0.11.10",
+    "punycode": "^1.4.1",
+    "querystring-es3": "^0.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.1.0",
+    "url": "^0.11.0",
+    "util": "^0.12.3"
   }
 }
