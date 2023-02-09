@@ -4,7 +4,7 @@ import { Component } from '../conmponent';
 
 export interface ITextComponentProps {
   value: WritableRef<string>;
-  hasNextSibling: boolean;
+  hasNextSibling?: boolean;
 }
 
 export const textComponent = defineComponent<ITextComponentProps>({

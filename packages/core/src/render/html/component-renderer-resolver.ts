@@ -1,9 +1,7 @@
 import { htmlElementDefinitionName } from '@core/components/builtIn/html-element.component';
 import { Component } from '@core/components/conmponent';
+import { AnyComponent } from './@types/any-component';
 import { IHtmlRenderer } from './@types/IRenderer';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyComponent = Component<any>;
 
 export type RendererFactory = (component: AnyComponent) => IHtmlRenderer;
 
