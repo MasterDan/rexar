@@ -1323,16 +1323,9 @@
     tiny-glob "^0.2.9"
     tslib "^2.4.0"
 
-"@rexar/core@file:packages/core":
-  version "1.0.0"
-  dependencies:
-    jsdom "^21.1.0"
-    reflect-metadata "^0.1.13"
-    rxjs "^7.8.0"
-    ts-jest "^29.0.5"
-    ts-node "^10.9.1"
-    tslib "^2.5.0"
-    tsyringe "^4.7.0"
+"@rexar/core@link:packages/example/packages/core":
+  version "0.0.0"
+  uid ""
 
 "@sinclair/typebox@^0.25.16":
   version "0.25.21"
