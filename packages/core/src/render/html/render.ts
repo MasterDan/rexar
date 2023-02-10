@@ -1,9 +1,30 @@
 import { Component } from '@core/components/conmponent';
+import { from, map, Observable, switchMap } from 'rxjs';
+import { HtmlRendererBase } from '../base/html-renderer-base';
+import { AnyComponent } from './@types/any-component';
 import { IBinding } from './@types/binding-target';
 import { resolveRenderer } from './component-renderer-resolver';
 
-export async function render(component: Component, target: IBinding) {
-  const renderFactory = await resolveRenderer(component);
-  const renderer = renderFactory(component);
-  renderer.renderInto(target);
+export class ComponentRendererHtml extends HtmlRendererBase {
+  constructor(private component: AnyComponent) {
+    super();
+  }
+
+  renderInto(target: IBinding): Observable<IBinding | undefined> {
+    return from(resolveRenderer(this.component)).pipe(
+      map((rf) => rf(this.component)),
+      switchMap((c) => {
+        c.target$.val = target;
+        c.render();
+        return c.nextTarget$;
+      }),
+    );
+  }
+}
+
+export function render(component: Component, target: IBinding) {
+  const renderer = new ComponentRendererHtml(component);
+  renderer.target$.val = target;
+  renderer.render();
+  return renderer;
 }

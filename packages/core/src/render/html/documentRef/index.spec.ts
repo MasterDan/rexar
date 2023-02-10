@@ -4,7 +4,7 @@ import { DocumentRef } from '.';
 describe('document resolver', () => {
   test('resolve document', async () => {
     const dRef = container.resolve(DocumentRef);
-    const doc = await dRef.instance;
+    const doc = await dRef.instance$;
     expect(doc.body.innerHTML).toBe('<div id="app"></div>');
     const el = doc.querySelector('#app');
     expect(el).not.toBeNull();

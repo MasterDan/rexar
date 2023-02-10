@@ -1,9 +1,9 @@
 import { htmlElementDefinitionName } from '@core/components/builtIn/html-element.component';
 import { Component } from '@core/components/conmponent';
+import { HtmlRendererBase } from '../base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';
-import { IHtmlRenderer } from './@types/IRenderer';
 
-export type RendererFactory = (component: AnyComponent) => IHtmlRenderer;
+export type RendererFactory = (component: AnyComponent) => HtmlRendererBase;
 
 export async function resolveRenderer({
   name,

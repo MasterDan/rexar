@@ -8,7 +8,7 @@ export function createApp(root: AnyComponent) {
   registerComputedBuilder();
   const renderer = container.resolve(HtmlRenderer);
   const mount = async (selector: string) => {
-    const doc = await container.resolve(DocumentRef).instance;
+    const doc = await container.resolve(DocumentRef).instance$;
     const el = doc.querySelector(selector);
     if (el) {
       await renderer.render(root, el as HTMLElement);
