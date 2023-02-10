@@ -2,7 +2,7 @@ import { combineLatest, debounceTime, switchMap } from 'rxjs';
 import { container, injectable, instanceCachingFactory } from 'tsyringe';
 import { readonly, ref$ } from '../ref';
 import { Ref } from '../ref/ref';
-import type { BindingContext } from './binding-context';
+import { BindingContext } from './binding-context';
 import { computedBuiderToken } from './computed-builer.token';
 
 @injectable()
