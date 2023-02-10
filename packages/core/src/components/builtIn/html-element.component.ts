@@ -14,4 +14,5 @@ export const htmlElementComponent = defineComponent<IElementComponentProps>({
 export function el(props: IElementComponentProps) {
   const component = htmlElementComponent.create();
   component.bindProps(props);
+  return component;
 }
