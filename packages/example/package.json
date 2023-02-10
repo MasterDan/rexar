@@ -9,6 +9,7 @@
     "build": "parcel build"
   },
   "dependencies": {
+    "@parcel/packager-ts": "^2.8.3",
     "@parcel/transformer-typescript-tsc": "^2.8.3",
     "@rexar/core": "*",
     "reflect-metadata": "^0.1.13"
