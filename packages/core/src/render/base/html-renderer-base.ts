@@ -14,9 +14,9 @@ export abstract class HtmlRendererBase {
     if (this.target$.val == null) {
       return;
     }
-    const nestTarget = await lastValueFrom(
+    const nextTarget = await lastValueFrom(
       this.renderInto(this.target$.val).pipe(take(1)),
     );
-    this.nextTarget$.val = nestTarget ?? this.target$.val;
+    this.nextTarget$.val = nextTarget ?? this.target$.val;
   }
 }
