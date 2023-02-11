@@ -1,4 +1,3 @@
-import { Component } from '@core/components/conmponent';
 import { from, map, Observable, switchMap } from 'rxjs';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';
@@ -22,9 +21,9 @@ export class ComponentRendererHtml extends HtmlRendererBase {
   }
 }
 
-export function render(component: Component, target: IBinding) {
+export async function render(component: AnyComponent, target: IBinding) {
   const renderer = new ComponentRendererHtml(component);
   renderer.target$.val = target;
-  renderer.render();
+  await renderer.render();
   return renderer;
 }
