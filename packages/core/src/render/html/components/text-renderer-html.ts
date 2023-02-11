@@ -18,15 +18,15 @@ export class TextRendererHtml extends HtmlRendererBase {
   }
 
   renderInto(binding: IBinding) {
-    const text = this.component.getProp('value');
-    if (text == null) {
+    const text$ = this.component.getProp('value');
+    if (text$ == null) {
       return of(undefined);
     }
     container
       .resolve(DocumentRef)
       .instance$.pipe(
         switchMap((doc) =>
-          text.pipe(
+          text$.pipe(
             map((str) => ({
               str,
               doc,
