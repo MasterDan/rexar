@@ -16,12 +16,15 @@ describe('render some html', () => {
     if (!app) {
       return;
     }
-    const textC = text({ value: ref$('Hello, World!') });
+    const textRef = ref$('Hello, World!');
+    const textC = text({ value: textRef });
     await render(textC, {
       role: BindingTargetRole.Parent,
       parentEl: app,
       target: app,
     });
     expect(app.outerHTML).toBe('<div id="app">Hello, World!</div>');
+    textRef.val = 'I can change!';
+    expect(app.outerHTML).toBe('<div id="app">I can change!</div>');
   });
 });
