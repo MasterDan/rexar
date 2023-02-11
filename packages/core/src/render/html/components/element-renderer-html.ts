@@ -51,6 +51,8 @@ export class ElementRendererHtml extends HtmlRendererBase {
         default:
           break;
       }
+      console.log(el.outerHTML);
+
       return {
         parentEl: binding.parentEl,
         role: BindingTargetRole.PreviousSibling,
