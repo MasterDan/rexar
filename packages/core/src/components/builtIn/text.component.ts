@@ -6,8 +6,10 @@ export interface ITextComponentProps {
   value: WritableRef<string>;
 }
 
+export const textComponentName = 'text';
+
 export const textComponent = defineComponent<ITextComponentProps>({
-  name: 'text',
+  name: textComponentName,
 });
 
 export function text(
