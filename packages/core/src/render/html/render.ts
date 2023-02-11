@@ -2,6 +2,7 @@ import { from, map, Observable, switchMap } from 'rxjs';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';
 import { IBinding } from './@types/binding-target';
+// eslint-disable-next-line import/no-cycle
 import { resolveRenderer } from './component-renderer-resolver';
 
 export class ComponentRendererHtml extends HtmlRendererBase {
