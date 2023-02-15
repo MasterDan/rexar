@@ -8,7 +8,8 @@ import { from } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs/internal/Subject';
 import { IBinding } from '../@types/binding-target';
-import { ComponentRendererHtml, render } from '../render';
+import { render } from '../render';
+import { ComponentRendererHtml } from '../component-renderer-html';
 
 export class ListRendererHtml extends HtmlRendererBase {
   constructor(private component: Component<IListComponentProps>) {

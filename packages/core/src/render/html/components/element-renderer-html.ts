@@ -9,7 +9,6 @@ import { from, switchMap } from 'rxjs';
 import { container } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { DocumentRef } from '../documentRef';
-// eslint-disable-next-line import/no-cycle
 import { render } from '../render';
 
 export class ElementRendererHtml extends HtmlRendererBase {
