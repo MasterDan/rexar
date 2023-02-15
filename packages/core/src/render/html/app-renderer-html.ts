@@ -3,10 +3,9 @@ import { singleton } from 'tsyringe';
 import { AnyComponent } from './@types/any-component';
 import { BindingTargetRole } from './@types/binding-target';
 import { DocumentRef } from './documentRef';
-import { render as renderRoot } from './render';
 
 @singleton()
-export class HtmlRenderer {
+export class AppRendererHtml {
   constructor(private documnetRef: DocumentRef) {}
 
   async render(componentRoot: AnyComponent, target: Element) {

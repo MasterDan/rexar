@@ -1,9 +1,4 @@
-import {
-  IListComponentProps,
-  listComponentName,
-} from '@core/components/builtIn/list.component';
-import { Component } from '@core/components/conmponent';
-import { HtmlRendererBase } from '@core/render/base/html-renderer-base';
+import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from } from 'rxjs';
 import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { Subject } from 'rxjs/internal/Subject';
@@ -12,13 +7,6 @@ import { render } from '../render';
 import { ComponentRendererHtml } from '../component-renderer-html';
 
 export class ListRendererHtml extends HtmlRendererBase {
-  constructor(private component: Component<IListComponentProps>) {
-    super();
-    if (component.name !== listComponentName) {
-      throw new Error('Must provide list component');
-    }
-  }
-
   unbind$ = new Subject<void>();
 
   renderInto(target: IBinding) {

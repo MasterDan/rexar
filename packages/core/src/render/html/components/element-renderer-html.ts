@@ -1,24 +1,12 @@
-import {
-  htmlElementDefinitionName,
-  IElementComponentProps,
-} from '@core/components/builtIn/html-element.component';
 import { listComponent } from '@core/components/builtIn/list.component';
-import { Component } from '@core/components/conmponent';
-import { HtmlRendererBase } from '@core/render/base/html-renderer-base';
+import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from, switchMap } from 'rxjs';
-import { container } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { DocumentRef } from '../documentRef';
-import { render } from '../render';
 
+@injectable()
 export class ElementRendererHtml extends HtmlRendererBase {
-  constructor(private component: Component<IElementComponentProps>) {
-    super();
-    if (component.name !== htmlElementDefinitionName) {
-      throw new Error('Not Html element!');
-    }
-  }
-
   renderInto(binding: IBinding) {
     const name = this.component.getProp('name');
     if (name == null) {

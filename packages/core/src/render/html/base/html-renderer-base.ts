@@ -1,10 +1,24 @@
 import { ref$ } from '@core/reactivity/ref';
 import { Observable, take } from 'rxjs';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
-import { IBinding } from '../html/@types/binding-target';
+import { AnyComponent } from '../@types/any-component';
+import { IBinding } from '../@types/binding-target';
 
 export abstract class HtmlRendererBase {
   public target$ = ref$<IBinding>();
+
+  private $component: AnyComponent | undefined;
+
+  protected get component() {
+    if (this.$component == null) {
+      throw new Error('Component must be set before render');
+    }
+    return this.$component;
+  }
+
+  public setComponent(c: AnyComponent) {
+    this.$component = c;
+  }
 
   public nextTarget$ = ref$<IBinding>();
 
