@@ -1,7 +1,7 @@
 import { lastValueFrom, timer } from 'rxjs';
 import { ref$ } from '.';
 
-const wait = () => lastValueFrom(timer(100));
+const wait = () => lastValueFrom(timer(20));
 
 describe('refs', () => {
   test('simple value', () => {

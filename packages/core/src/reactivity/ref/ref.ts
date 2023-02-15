@@ -6,10 +6,10 @@ export class Ref<T> extends TrackableRef<T> {
   }
 
   get val(): T {
-    return super.value;
+    return super.val;
   }
 
   patch(fn: (val: T) => T) {
-    super.next(fn(this.value));
+    super.next(fn(this.val));
   }
 }
