@@ -23,7 +23,7 @@ const buildRefModule = () => {
   return refbulder;
 };
 
-let builder: IRefBuilder | undefined;
+const builder: IRefBuilder = buildRefModule();
 
 export function ref$<T>(init: () => T): ReadonlyRef<T>;
 export function ref$<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
@@ -31,8 +31,5 @@ export function ref$<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
 export function ref$<T>(): Ref<T | undefined>;
 export function ref$<T>(init: T): Ref<T>;
 export function ref$<T>(init?: T): Ref<T | undefined> {
-  if (!builder) {
-    builder = buildRefModule();
-  }
   return builder.buildRef(init);
 }
