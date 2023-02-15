@@ -1,13 +1,9 @@
 import { lastValueFrom, timer } from 'rxjs';
 import { ref$ } from '.';
-import { registerComputedBuilder } from '../computed/computed-builder';
 
-const wait = () => lastValueFrom(timer(17));
+const wait = () => lastValueFrom(timer(100));
 
 describe('refs', () => {
-  beforeAll(() => {
-    registerComputedBuilder();
-  });
   test('simple value', () => {
     const foo$ = ref$('Foo');
     expect(foo$.val).toBe('Foo');
