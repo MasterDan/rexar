@@ -30,17 +30,34 @@ export class ComponentRendererResolver {
         return this.factories[name] as RendererFactory;
       }
       case textComponentName: {
-        const { TextRendererHtml } = await import(
-          './components/text-renderer-html'
-        );
-        return (component: AnyComponent) => new TextRendererHtml(component);
+        if (this.factories[name] == null) {
+          const { TextRendererHtml } = await import(
+            './components/text-renderer-html'
+          );
+          container.register(name, TextRendererHtml);
+
+          this.factories[name] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(name);
+            renderer.setComponent(component);
+            return renderer;
+          };
+        }
+        return this.factories[name] as RendererFactory;
       }
       case listComponentName: {
-        // eslint-disable-next-line import/no-cycle
-        const { ListRendererHtml } = await import(
-          './components/list-renderer-html'
-        );
-        return (component: AnyComponent) => new ListRendererHtml(component);
+        if (this.factories[name] == null) {
+          const { ListRendererHtml } = await import(
+            './components/list-renderer-html'
+          );
+          container.register(name, ListRendererHtml);
+
+          this.factories[name] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(name);
+            renderer.setComponent(component);
+            return renderer;
+          };
+        }
+        return this.factories[name] as RendererFactory;
       }
       default:
         throw new Error('Not Implemented!');
