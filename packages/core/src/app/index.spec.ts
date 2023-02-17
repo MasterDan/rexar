@@ -17,24 +17,20 @@ describe('app-tests', () => {
   test('Simple html-element', async () => {
     const elRoot = el({
       name: 'div',
-      children: [
-        el({
-          name: 'span',
-          children: [text({ value: ref$('hello') })],
-        }),
-        el({
-          name: 'span',
-          children: [text({ value: ref$('world') })],
-        }),
-      ],
+      // children: [
+      //   el({
+      //     name: 'span',
+      //     children: [text({ value: ref$('hello') })],
+      //   }),
+      //   el({
+      //     name: 'span',
+      //     children: [text({ value: ref$('world') })],
+      //   }),
+      // ],
     });
     const elApp = await createApp(elRoot).mount('#app');
     expect(elApp).not.toBeNull();
     await lastValueFrom(timer(1000));
-    console.log(elApp?.outerHTML ?? 'oh-no');
-
-    // expect(elApp?.outerHTML ?? 'oh-no').toBe(
-    //   '<div id="app">Hello, World!</div>',
-    // );
+    expect(elApp?.outerHTML ?? 'oh-no').toBe('<div id="app"><div></div></div>');
   });
 });
