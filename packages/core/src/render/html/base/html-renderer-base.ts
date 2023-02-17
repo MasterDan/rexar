@@ -3,8 +3,9 @@ import { Observable, take } from 'rxjs';
 import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
+import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
-export abstract class HtmlRendererBase {
+export abstract class HtmlRendererBase implements IHtmlRenderer {
   public target$ = ref$<IBinding>();
 
   private $component: AnyComponent | undefined;

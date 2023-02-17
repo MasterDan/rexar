@@ -3,6 +3,7 @@ import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from, switchMap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
+import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { DocumentRef } from '../documentRef';
 
 @injectable()
@@ -22,11 +23,14 @@ export class ElementRendererHtml extends HtmlRendererBase {
       if (children.length > 0) {
         const list = listComponent.create();
         list.bindProp('content', children);
-        await render(list, {
+        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
+        renderer.setComponent(list);
+        renderer.target$.val = {
           parentEl: el,
           role: BindingTargetRole.Parent,
           target: el,
-        });
+        };
+        await renderer.render();
       }
       switch (binding.role) {
         case BindingTargetRole.Parent:
@@ -38,7 +42,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
         default:
           break;
       }
-      console.log(el.outerHTML);
+      // console.log(el.outerHTML);
 
       return {
         parentEl: binding.parentEl,

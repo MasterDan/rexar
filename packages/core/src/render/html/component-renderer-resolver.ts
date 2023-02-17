@@ -5,11 +5,11 @@ import type { Component } from '@core/components/conmponent';
 import { container, singleton } from 'tsyringe';
 import { HtmlRendererBase } from './base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';
-
-export type RendererFactory = (component: AnyComponent) => HtmlRendererBase;
+import { IComponentRendererResolver } from './@types/IComponentRendererResolver';
+import { RendererFactory } from './@types/RendererFactory';
 
 @singleton()
-export class ComponentRendererResolver {
+export class ComponentRendererResolver implements IComponentRendererResolver {
   private factories: Record<string, RendererFactory | undefined> = {};
 
   async resolveRenderer({ name }: Component): Promise<RendererFactory> {

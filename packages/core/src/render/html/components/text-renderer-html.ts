@@ -10,15 +10,10 @@ import { DocumentRef } from '../documentRef';
 export class TextRendererHtml extends HtmlRendererBase {
   private node: Text | undefined;
 
-  constructor(private $component: Component<ITextComponentProps>) {
-    super();
-    if ($component.name !== 'text') {
-      throw new Error('Must provide text component');
-    }
-  }
-
   renderInto(binding: IBinding) {
-    const text$ = this.$component.getProp('value');
+    const text$ = (this.component as Component<ITextComponentProps>).getProp(
+      'value',
+    );
     if (text$ == null) {
       return of(undefined);
     }

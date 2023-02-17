@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { container, delay, Lifecycle } from 'tsyringe';
 import { ComputedBuilder } from '../computed/computed-builder';
 import { IRefBuilder } from './@types/IRefBuilder';
+import { RefBase } from './base.ref';
 import { ReadonlyRef } from './readonly.ref';
 import { Ref } from './ref';
 import { RefBuilder } from './ref-builder';
@@ -32,4 +33,8 @@ export function ref$<T>(): Ref<T | undefined>;
 export function ref$<T>(init: T): Ref<T>;
 export function ref$<T>(init?: T): Ref<T | undefined> {
   return builder.buildRef(init);
+}
+
+export function readonly<T>(ref: RefBase<T>): ReadonlyRef<T | null> {
+  return builder.makeReadonly(ref);
 }
