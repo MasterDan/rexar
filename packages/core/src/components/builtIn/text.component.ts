@@ -1,6 +1,6 @@
 import { Ref } from '@core/reactivity/ref/ref';
 import { defineComponent } from '..';
-import { Component } from '../conmponent';
+import { Component } from '../component';
 
 export interface ITextComponentProps {
   value: Ref<string>;

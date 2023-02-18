@@ -1,5 +1,5 @@
 import { ITextComponentProps } from '@core/components/builtIn/text.component';
-import { Component } from '@core/components/conmponent';
+import { Component } from '@core/components/component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { map, of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';

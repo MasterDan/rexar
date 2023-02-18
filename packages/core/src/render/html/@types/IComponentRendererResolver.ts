@@ -1,4 +1,4 @@
-import type { Component } from '@core/components/conmponent';
+import type { Component } from '@core/components/component';
 import { RendererFactory } from './RendererFactory';
 
 export interface IComponentRendererResolver {

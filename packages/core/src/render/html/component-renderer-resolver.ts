@@ -1,7 +1,7 @@
 import { htmlElementDefinitionName } from '@core/components/builtIn/html-element.component';
 import { listComponentName } from '@core/components/builtIn/list.component';
 import { textComponentName } from '@core/components/builtIn/text.component';
-import type { Component } from '@core/components/conmponent';
+import type { Component } from '@core/components/component';
 import { container, singleton } from 'tsyringe';
 import { HtmlRendererBase } from './base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';

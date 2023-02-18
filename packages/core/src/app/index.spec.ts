@@ -14,7 +14,7 @@ describe('app-tests', () => {
       '<div id="app">Hello, World!</div>',
     );
   });
-  test('Simple html-element', async () => {
+  test('simple-html-element', async () => {
     const elRoot = el({
       name: 'div',
       // children: [
@@ -32,5 +32,17 @@ describe('app-tests', () => {
     expect(elApp).not.toBeNull();
     await lastValueFrom(timer(1000));
     expect(elApp?.outerHTML ?? 'oh-no').toBe('<div id="app"><div></div></div>');
+  });
+  test('html-element-with-text', async () => {
+    const elRoot = el({
+      name: 'div',
+      children: [text({ value: ref$('Hello, World!') })],
+    });
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    await lastValueFrom(timer(1000));
+    expect(elApp?.outerHTML ?? 'oh-no').toBe(
+      '<div id="app"><div>Hello, World!</div></div>',
+    );
   });
 });

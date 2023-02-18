@@ -1,4 +1,4 @@
-import { Component, IComponentDefinitionArgs, TData } from './conmponent';
+import { Component, IComponentDefinitionArgs, TData } from './component';
 
 export type ComponentDefinition<TProps extends TData = TData> = {
   create: () => Component<TProps>;
@@ -6,7 +6,7 @@ export type ComponentDefinition<TProps extends TData = TData> = {
 };
 
 export function defineComponent<TProps extends TData = TData>(
-  args: IComponentDefinitionArgs<TProps>,
+  args: IComponentDefinitionArgs<TProps> = {},
 ): ComponentDefinition<TProps> {
   const create = () => new Component<TProps>(args);
   return { create, name: args.name };

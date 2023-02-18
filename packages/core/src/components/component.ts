@@ -87,6 +87,12 @@ export class Component<TProps extends TData = TData> {
       } else {
         this.props[key].next(value);
       }
+    } else if (isObservable(value)) {
+      value.subscribe((v) => {
+        (this.props as TProps)[key] = v;
+      });
+    } else {
+      this.props[key] = value;
     }
   }
 
