@@ -1,27 +1,37 @@
-import { MaybeObservable } from '@core/@types/MaybeObservable';
 import {
   TData,
   IComponentDefinitionArgs,
   Component,
 } from '@core/components/component';
 import { ref$, readonly } from '@core/reactivity/ref';
-import {
-  ISetupContext,
-  TPropsAccessors,
-  PropValue,
-} from 'packages/core/dist/types';
 import { Observable, isObservable } from 'rxjs';
+
+type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ExactlyObservable<T> = T extends Observable<any> ? T : Observable<T>;
+
+type TPropsAccessors<TObj> = {
+  [Key in keyof TObj]: ExactlyObservable<TObj[Key]>;
+};
+
+interface ISetupContext<TProps> {
+  props: TPropsAccessors<TProps>;
+}
+
+export interface ICustomComponentDefinitionArgs<TProps extends TData = TData>
+  extends IComponentDefinitionArgs<TProps> {
+  setup?: SetupFn<TProps>;
+}
 
 export class CustomComponent<
   TProps extends TData = TData,
 > extends Component<TProps> {
-  constructor(args: IComponentDefinitionArgs<TProps> = {}) {
+  private setup?: SetupFn<TProps>;
+
+  constructor(args: ICustomComponentDefinitionArgs<TProps> = {}) {
     super();
-    const { props, setup, name, id } = args;
-    this.id = id;
-    this.name = name;
-    this.props = props;
-    this.setup = setup;
+    this.setup = args.setup;
 
     if (this.setup == null) {
       return;
@@ -44,37 +54,5 @@ export class CustomComponent<
     };
 
     this.setup(context);
-  }
-
-  bindProp<T extends keyof TProps>(
-    key: T,
-    value: MaybeObservable<PropValue<TProps[T]>>,
-  ) {
-    if (this.props == null) {
-      this.props = {} as TProps;
-    }
-    if (isObservable(this.props[key])) {
-      if (isObservable(value)) {
-        value.subscribe((v) => {
-          (this.props as TProps)[key].next(v);
-        });
-      } else {
-        this.props[key].next(value);
-      }
-    } else if (isObservable(value)) {
-      value.subscribe((v) => {
-        (this.props as TProps)[key] = v;
-      });
-    } else {
-      this.props[key] = value;
-    }
-  }
-
-  bindProps(props: TProps) {
-    this.props = props;
-  }
-
-  getProp<T extends keyof TProps>(key: T) {
-    return this.props ? this.props[key] : null;
   }
 }
