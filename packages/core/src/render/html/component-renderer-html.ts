@@ -17,10 +17,13 @@ export class ComponentRendererHtml extends HtmlRendererBase {
     return from(this.resolver.resolveRenderer(this.component)).pipe(
       map((rf) => rf(this.component)),
       switchMap((c) => {
-        c.setComponent(this.component);
-        c.target$.val = target;
-        c.render();
-        return c.nextTarget$;
+        const renderComponent = async () => {
+          c.setComponent(this.component);
+          c.target$.val = target;
+          await c.render();
+          return c.nextTarget$;
+        };
+        return from(renderComponent()).pipe(map((ref) => ref.val));
       }),
     );
   }

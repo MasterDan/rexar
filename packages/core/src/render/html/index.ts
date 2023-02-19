@@ -12,9 +12,7 @@ const setup = () => {
     { lifecycle: Lifecycle.Singleton },
   );
 
-  container.register('IHtmlRenderer', {
-    useToken: delay(() => ComponentRendererHtml),
-  });
+  container.register('IHtmlRenderer', ComponentRendererHtml);
 
   return () => container.resolve(AppRendererHtml);
 };
