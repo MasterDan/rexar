@@ -1,18 +1,22 @@
 import { combineLatest, debounceTime, switchMap } from 'rxjs';
-import { container, injectable, instanceCachingFactory } from 'tsyringe';
-import { readonly, ref$ } from '../ref';
-import { Ref } from '../ref/ref';
+import { inject, injectable } from 'tsyringe';
+import type { IRefBuilder } from '../ref/@types/IRefBuilder';
+import type { RefBase } from '../ref/base.ref';
+import type { ReadonlyRef } from '../ref/readonly.ref';
 import { BindingContext } from './binding-context';
-import { computedBuiderToken } from './computed-builer.token';
+import { IComputedBuiler } from './@types/IComputedBuiler';
 
 @injectable()
-export class ComputedBuilder {
-  constructor(private context: BindingContext) {}
+export class ComputedBuilder implements IComputedBuiler {
+  constructor(
+    private context: BindingContext,
+    @inject('IRefBuilder') private refBuilder: IRefBuilder,
+  ) {}
 
-  build<T>(fn: () => T) {
-    const result = ref$<T | null>(null);
+  build<T>(fn: () => T): ReadonlyRef<T | null> {
+    const result = this.refBuilder.buildRef<T | null>(null);
     const contextKey = Symbol('computed');
-    const innerRefs$ = ref$<Ref[]>([]);
+    const innerRefs$ = this.refBuilder.buildRef<RefBase[]>([]);
 
     const compute = () => {
       this.context.init(contextKey, (ref) => {
@@ -34,14 +38,6 @@ export class ComputedBuilder {
         result.val = compute();
       });
 
-    return readonly(result);
+    return this.refBuilder.makeReadonly(result);
   }
-}
-
-export function registerComputedBuilder() {
-  container.register<ComputedBuilder>(computedBuiderToken, {
-    useFactory: instanceCachingFactory<ComputedBuilder>((c) =>
-      c.resolve(ComputedBuilder),
-    ),
-  });
 }

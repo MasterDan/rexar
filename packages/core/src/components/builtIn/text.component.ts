@@ -1,13 +1,15 @@
-import { WritableRef } from '@core/reactivity/ref/writable.ref';
+import { Ref } from '@core/reactivity/ref/ref';
 import { defineComponent } from '..';
-import { Component } from '../conmponent';
+import { Component } from '../component';
 
 export interface ITextComponentProps {
-  value: WritableRef<string>;
+  value: Ref<string>;
 }
 
+export const textComponentName = 'text';
+
 export const textComponent = defineComponent<ITextComponentProps>({
-  name: 'text',
+  name: textComponentName,
 });
 
 export function text(

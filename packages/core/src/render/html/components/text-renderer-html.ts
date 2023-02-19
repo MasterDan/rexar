@@ -1,18 +1,42 @@
 import { ITextComponentProps } from '@core/components/builtIn/text.component';
-import { Component } from '@core/components/conmponent';
+import { Component } from '@core/components/component';
+import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
+import { map, of } from 'rxjs';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { container } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
-import { IHtmlRenderer } from '../@types/IRenderer';
+import { DocumentRef } from '../documentRef';
 
-export class TextRendererHtml implements IHtmlRenderer {
-  constructor(private component: Component<ITextComponentProps>) {
-    if (component.name !== 'text') {
-      throw new Error('Must provide text component');
+export class TextRendererHtml extends HtmlRendererBase {
+  private node: Text | undefined;
+
+  renderInto(binding: IBinding) {
+    const text$ = (this.component as Component<ITextComponentProps>).getProp(
+      'value',
+    );
+    if (text$ == null) {
+      return of(undefined);
     }
-  }
-
-  renderInto(binding: IBinding): Promise<IBinding | undefined> {
-    const text = this.component.getProp('value');
-    binding.target.append(text?.value ?? '');
-    return Promise.resolve(undefined);
+    container
+      .resolve(DocumentRef)
+      .instance$.pipe(
+        switchMap((doc) =>
+          text$.pipe(
+            map((str) => ({
+              str,
+              doc,
+            })),
+          ),
+        ),
+      )
+      .subscribe(({ doc, str }) => {
+        if (this.node == null) {
+          this.node = doc.createTextNode(str);
+          binding.target.append(this.node);
+        } else {
+          this.node.textContent = str;
+        }
+      });
+    return of(undefined);
   }
 }

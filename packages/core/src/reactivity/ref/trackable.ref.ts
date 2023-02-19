@@ -1,8 +1,8 @@
 import { container } from 'tsyringe';
 import { BindingContext } from '../computed/binding-context';
-import { Ref } from './ref';
+import { RefBase } from './base.ref';
 
-export class TrackableRef<T> extends Ref<T> {
+export class TrackableRef<T> extends RefBase<T> {
   track() {
     const context = container.resolve(BindingContext);
     if (context.isValid) {

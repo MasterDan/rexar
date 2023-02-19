@@ -1,21 +1,20 @@
-import { singleton } from 'tsyringe';
-import { AnyComponent } from './@types/any-component';
-import { BindingTargetRole } from './@types/binding-target';
-import { DocumentRef } from './documentRef';
-import { render as renderRoot } from './render';
+import { container, delay, Lifecycle } from 'tsyringe';
+import { AppRendererHtml } from './app-renderer-html';
+import { ComponentRendererHtml } from './component-renderer-html';
+import { ComponentRendererResolver } from './component-renderer-resolver';
 
-@singleton()
-export class HtmlRenderer {
-  constructor(private documnetRef: DocumentRef) {}
+const setup = () => {
+  container.register(
+    'IComponentRendererResolver',
+    {
+      useToken: delay(() => ComponentRendererResolver),
+    },
+    { lifecycle: Lifecycle.Singleton },
+  );
 
-  async render(componentRoot: AnyComponent, target: Element) {
-    const document = await this.documnetRef.instance;
-    const fragment = document.createDocumentFragment();
-    await renderRoot(componentRoot, {
-      parentEl: target,
-      target: fragment,
-      role: BindingTargetRole.Parent,
-    });
-    target.append(fragment);
-  }
-}
+  container.register('IHtmlRenderer', ComponentRendererHtml);
+
+  return () => container.resolve(AppRendererHtml);
+};
+
+export const getAppRenderer = setup();

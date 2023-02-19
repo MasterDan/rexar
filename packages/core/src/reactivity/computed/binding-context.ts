@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { Ref } from '../ref/ref';
+import { RefBase } from '../ref/base.ref';
 
 @singleton()
 export class BindingContext {
@@ -7,9 +7,9 @@ export class BindingContext {
 
   private tracked: Record<symbol, symbol[]> = {};
 
-  private tracker: ((ref: Ref) => void) | undefined;
+  private tracker: ((ref: RefBase) => void) | undefined;
 
-  init(key: symbol, fn: (ref: Ref) => void) {
+  init(key: symbol, fn: (ref: RefBase) => void) {
     this.key = key;
     this.tracker = fn;
     if (this.tracked[key] == null) {
@@ -17,14 +17,14 @@ export class BindingContext {
     }
   }
 
-  private isTracked(ref: Ref): boolean {
+  private isTracked(ref: RefBase): boolean {
     if (this.key == null) {
       return false;
     }
     return this.tracked[this.key].find((key) => key === ref.key) != null;
   }
 
-  track(arg: Ref) {
+  track(arg: RefBase) {
     if (this.tracker == null || this.key == null) {
       throw new Error('Binding context is not defined');
     }

@@ -1,31 +1,40 @@
-import { isObservable, Observable } from 'rxjs';
-import type { MaybeObservable } from '@core/@types/MaybeObservable';
-import { container } from 'tsyringe';
+import { Observable } from 'rxjs';
+import { container, delay, Lifecycle } from 'tsyringe';
+import { ComputedBuilder } from '../computed/computed-builder';
+import { IRefBuilder } from './@types/IRefBuilder';
+import { RefBase } from './base.ref';
 import { ReadonlyRef } from './readonly.ref';
-import { WritableRef } from './writable.ref';
 import { Ref } from './ref';
-import type { ComputedBuilder } from '../computed/computed-builder';
-import { computedBuiderToken } from '../computed/computed-builer.token';
+import { RefBuilder } from './ref-builder';
+
+const buildRefModule = () => {
+  const refContainer = container.createChildContainer();
+  refContainer.register(
+    'IRefBuilder',
+    { useToken: delay(() => RefBuilder) },
+    { lifecycle: Lifecycle.Singleton },
+  );
+  refContainer.register(
+    'IComputedBuilder',
+    { useToken: delay(() => ComputedBuilder) },
+    { lifecycle: Lifecycle.Singleton },
+  );
+
+  const refbulder = refContainer.resolve<IRefBuilder>('IRefBuilder');
+  return refbulder;
+};
+
+const builder: IRefBuilder = buildRefModule();
 
 export function ref$<T>(init: () => T): ReadonlyRef<T>;
 export function ref$<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
 export function ref$<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
-export function ref$<T>(): WritableRef<T | undefined>;
-export function ref$<T>(init: T): WritableRef<T>;
-export function ref$<T>(init?: MaybeObservable<T> | (() => T), fallack?: T) {
-  if (typeof init === 'function') {
-    const builder = container.resolve<ComputedBuilder>(computedBuiderToken);
-    return builder.build(init as () => T);
-  }
-
-  if (isObservable(init)) {
-    return fallack
-      ? new ReadonlyRef<T>(init, fallack)
-      : new ReadonlyRef<T | undefined>(init, fallack);
-  }
-  return init ? new WritableRef<T>(init) : new WritableRef<T | undefined>(init);
+export function ref$<T>(): Ref<T | undefined>;
+export function ref$<T>(init: T): Ref<T>;
+export function ref$<T>(init?: T): Ref<T | undefined> {
+  return builder.buildRef(init);
 }
 
-export function readonly<T>(ref: Ref<T>) {
-  return ref$(ref);
+export function readonly<T>(ref: RefBase<T>): ReadonlyRef<T | null> {
+  return builder.makeReadonly(ref);
 }

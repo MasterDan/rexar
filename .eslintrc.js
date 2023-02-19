@@ -37,6 +37,7 @@ module.exports = {
     '@typescript-eslint/no-shadow': 'error',
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'error',
+    'no-param-reassign': ['error', { props: false }],
   },
   settings: {
     'import/parsers': {

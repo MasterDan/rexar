@@ -1,22 +1,30 @@
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
+import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 import { container } from 'tsyringe';
-import { HtmlRenderer } from '.';
+import { BindingTargetRole } from './@types/binding-target';
 import { DocumentRef } from './documentRef';
+import { render } from './render';
 
 describe('render some html', () => {
   test('simple text', async () => {
     const dRef = container.resolve(DocumentRef);
-    const doc = await dRef.instance;
+    const doc = await lastValueFrom(dRef.instance$);
     expect(doc.body.innerHTML).toBe('<div id="app"></div>');
     const app = doc.querySelector('#app');
     expect(app).not.toBeNull();
     if (!app) {
       return;
     }
-    const htmlRenderer = container.resolve(HtmlRenderer);
-    const textC = text({ value: ref$('Hello, World!') });
-    await htmlRenderer.render(textC, app);
+    const textRef = ref$('Hello, World!');
+    const textC = text({ value: textRef });
+    await render(textC, {
+      role: BindingTargetRole.Parent,
+      parentEl: app,
+      target: app,
+    });
     expect(app.outerHTML).toBe('<div id="app">Hello, World!</div>');
+    textRef.val = 'I can change!';
+    expect(app.outerHTML).toBe('<div id="app">I can change!</div>');
   });
 });
