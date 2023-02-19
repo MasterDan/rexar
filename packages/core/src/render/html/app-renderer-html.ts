@@ -2,7 +2,7 @@ import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
 import { inject, injectable } from 'tsyringe';
 import { AnyComponent } from './@types/any-component';
 import { BindingTargetRole } from './@types/binding-target';
-import { IHtmlRenderer } from './@types/IHtmlRenderer';
+import type { IHtmlRenderer } from './@types/IHtmlRenderer';
 import { DocumentRef } from './documentRef';
 
 @injectable()

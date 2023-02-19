@@ -2,7 +2,7 @@ import { from, map, Observable, switchMap } from 'rxjs';
 import { inject, injectable } from 'tsyringe';
 import { HtmlRendererBase } from './base/html-renderer-base';
 import { IBinding } from './@types/binding-target';
-import { IComponentRendererResolver } from './@types/IComponentRendererResolver';
+import type { IComponentRendererResolver } from './@types/IComponentRendererResolver';
 
 @injectable()
 export class ComponentRendererHtml extends HtmlRendererBase {

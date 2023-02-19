@@ -5,7 +5,7 @@ import { ReadonlyRef } from './readonly.ref';
 import { RefBase } from './base.ref';
 import { Ref } from './ref';
 import { IRefBuilder } from './@types/IRefBuilder';
-import { IComputedBuiler } from '../computed/@types/IComputedBuiler';
+import type { IComputedBuiler } from '../computed/@types/IComputedBuiler';
 
 @injectable()
 export class RefBuilder implements IRefBuilder {
