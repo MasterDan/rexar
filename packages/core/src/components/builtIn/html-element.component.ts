@@ -3,7 +3,7 @@ import { defineComponent } from '..';
 
 export interface IElementComponentProps {
   name: string;
-  attrs?: Record<string, string>;
+  attrs?: Record<string, string | null>;
   children?: AnyComponent[];
 }
 

@@ -3,6 +3,7 @@
   "include": [
     "./*.ts",
     "./src/**/*.ts",
+    "./src/**/*.html",
     "./tests/**/*.ts",
     "../../jest.config.ts",
   ]
