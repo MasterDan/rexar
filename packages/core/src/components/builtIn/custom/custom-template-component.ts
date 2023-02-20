@@ -4,6 +4,7 @@ import {
   Component,
 } from '@core/components/component';
 import { ref$, readonly } from '@core/reactivity/ref';
+import { AnyComponent } from 'packages/core/dist/types';
 import { Observable, isObservable } from 'rxjs';
 
 type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
@@ -22,6 +23,7 @@ interface ISetupContext<TProps> {
 export interface ICustomComponentDefinitionArgs<TProps extends TData = TData>
   extends IComponentDefinitionArgs<TProps> {
   setup?: SetupFn<TProps>;
+  template: string | AnyComponent[];
 }
 
 export class CustomComponent<
@@ -29,7 +31,7 @@ export class CustomComponent<
 > extends Component<TProps> {
   private setup?: SetupFn<TProps>;
 
-  constructor(args: ICustomComponentDefinitionArgs<TProps> = {}) {
+  constructor(args: ICustomComponentDefinitionArgs<TProps>) {
     super();
     this.setup = args.setup;
 
