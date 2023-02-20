@@ -31,10 +31,12 @@ export class CustomComponent<
 > extends Component<TProps> {
   private setup?: SetupFn<TProps>;
 
+  template: string | AnyComponent[];
+
   constructor(args: ICustomComponentDefinitionArgs<TProps>) {
     super();
     this.setup = args.setup;
-
+    this.template = args.template;
     if (this.setup == null) {
       return;
     }
