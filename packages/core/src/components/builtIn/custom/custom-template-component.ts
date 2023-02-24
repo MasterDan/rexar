@@ -31,6 +31,8 @@ export class CustomComponent<
 > extends Component<TProps> {
   private setup?: SetupFn<TProps>;
 
+  override name = 'template';
+
   template: string | AnyComponent[];
 
   constructor(args: ICustomComponentDefinitionArgs<TProps>) {

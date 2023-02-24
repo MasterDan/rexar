@@ -16,7 +16,9 @@ function shouldWeCreateCustomComponent<TProps extends TData>(
 }
 
 export function defineComponent<TProps extends TData = TData>(
-  args: IComponentDefinitionArgs<TProps> = {},
+  args:
+    | IComponentDefinitionArgs<TProps>
+    | ICustomComponentDefinitionArgs<TProps> = {},
 ): ComponentDefinition<TProps> {
   const create = shouldWeCreateCustomComponent(args)
     ? () => new CustomComponent<TProps>(args)
