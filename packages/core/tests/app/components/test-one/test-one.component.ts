@@ -1,6 +1,5 @@
 import { defineComponent } from '@core/components';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+// @ts-expect-error importing html
 import template from './test-one.component.html';
 
 export const testOne = defineComponent({
