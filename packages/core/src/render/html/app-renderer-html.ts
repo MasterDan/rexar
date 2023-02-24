@@ -1,4 +1,4 @@
-import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
+import { lastValueFrom } from 'rxjs';
 import { inject, injectable } from 'tsyringe';
 import { AnyComponent } from './@types/any-component';
 import { BindingTargetRole } from './@types/binding-target';

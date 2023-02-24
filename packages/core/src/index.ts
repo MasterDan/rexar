@@ -1,5 +1,5 @@
 import 'reflect-metadata';
 
 export { createApp } from '@core/app';
-export { text } from '@core/components/builtIn/text.component';
+export { defineComponent } from './components';
 export { ref$ } from '@core/reactivity/ref';

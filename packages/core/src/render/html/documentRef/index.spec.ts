@@ -1,4 +1,4 @@
-import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
+import { lastValueFrom } from 'rxjs';
 import { container } from 'tsyringe';
 import { DocumentRef } from '.';
 

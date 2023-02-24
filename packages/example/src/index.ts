@@ -1,4 +1,5 @@
 import 'reflect-metadata';
-import { createApp, text, ref$ } from '@rexar/core';
+import { createApp } from '@rexar/core';
+import { lorem } from './components/lorem/lorem.component';
 
-createApp(text({ value: ref$('I am rendered') })).mount('#app');
+createApp(lorem.create()).mount('#app');

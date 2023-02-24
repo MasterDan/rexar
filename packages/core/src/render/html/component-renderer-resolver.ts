@@ -59,6 +59,21 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
         }
         return this.factories[name] as RendererFactory;
       }
+      case 'template': {
+        if (this.factories[name] == null) {
+          const { CustomRendererHtml } = await import(
+            './components/cusom-renderer-html'
+          );
+          container.register(name, CustomRendererHtml);
+
+          this.factories[name] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(name);
+            renderer.setComponent(component);
+            return renderer;
+          };
+        }
+        return this.factories[name] as RendererFactory;
+      }
       default:
         throw new Error('Not Implemented!');
     }
