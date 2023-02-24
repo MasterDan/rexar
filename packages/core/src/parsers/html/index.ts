@@ -1,7 +1,7 @@
 import { el } from '@core/components/builtIn/html-element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
-import { AnyComponent } from 'packages/core/dist/types';
+import { AnyComponent } from '@core/render/html/@types/any-component';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
 

@@ -1,8 +1,7 @@
 import { ITextComponentProps } from '@core/components/builtIn/text.component';
 import { Component } from '@core/components/component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { map, of } from 'rxjs';
-import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { map, of, switchMap } from 'rxjs';
 import { container } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { DocumentRef } from '../documentRef';

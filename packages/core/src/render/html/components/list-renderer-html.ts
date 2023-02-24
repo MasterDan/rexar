@@ -1,7 +1,5 @@
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { from } from 'rxjs';
-import { takeUntil } from 'rxjs/internal/operators/takeUntil';
-import { Subject } from 'rxjs/internal/Subject';
+import { from, takeUntil, Subject } from 'rxjs';
 import { container } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';

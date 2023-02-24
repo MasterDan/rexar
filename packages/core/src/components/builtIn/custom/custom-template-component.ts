@@ -4,7 +4,7 @@ import {
   Component,
 } from '@core/components/component';
 import { ref$, readonly } from '@core/reactivity/ref';
-import { AnyComponent } from 'packages/core/dist/types';
+import { AnyComponent } from '@core/render/html/@types/any-component';
 import { Observable, isObservable } from 'rxjs';
 
 type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
