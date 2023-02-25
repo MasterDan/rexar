@@ -36,7 +36,7 @@ export class CustomComponent<
   template: string | AnyComponent[];
 
   constructor(args: ICustomComponentDefinitionArgs<TProps>) {
-    super();
+    super(args);
     this.setup = args.setup;
     this.template = args.template;
     if (this.setup == null) {
