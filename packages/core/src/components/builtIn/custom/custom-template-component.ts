@@ -16,7 +16,7 @@ type TPropsAccessors<TObj> = {
   [Key in keyof TObj]: ExactlyObservable<TObj[Key]>;
 };
 
-interface ISetupContext<TProps> {
+export interface ISetupContext<TProps> {
   props: TPropsAccessors<TProps>;
 }
 

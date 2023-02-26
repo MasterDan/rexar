@@ -21,9 +21,6 @@ export class CustomRendererHtml extends HtmlRendererBase {
       } else {
         template = component.template;
       }
-      if (template.length === 0) {
-        return of(undefined);
-      }
       if (template.length === 1) {
         const [componentTemplate] = template;
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
