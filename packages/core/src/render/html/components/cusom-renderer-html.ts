@@ -13,7 +13,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
       throw new Error('Component should be custom');
     }
     const component = this.component as CustomComponent;
-    const r = async (): Promise<Observable<IBinding | undefined>> => {
+    const renderAsync = async (): Promise<Observable<IBinding | undefined>> => {
       let template!: AnyComponent[];
       if (typeof component.template === 'string') {
         const { parseHtml } = await import('@core/parsers/html');
@@ -40,6 +40,6 @@ export class CustomRendererHtml extends HtmlRendererBase {
       }
       return of(undefined);
     };
-    return from(r()).pipe(switchMap((x) => x));
+    return from(renderAsync()).pipe(switchMap((x) => x));
   }
 }
