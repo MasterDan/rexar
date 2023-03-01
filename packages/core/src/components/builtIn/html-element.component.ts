@@ -13,8 +13,9 @@ export const htmlElementComponent = defineComponent<IElementComponentProps>({
   name: htmlElementDefinitionName,
 });
 
-export function el(props: IElementComponentProps) {
+export function el(props: IElementComponentProps, id?: string) {
   const component = htmlElementComponent.create();
+  component.id = id;
   component.bindProps(props);
   return component;
 }

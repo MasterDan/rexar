@@ -17,11 +17,16 @@ function parseNodes(nodes: NodeListOf<ChildNode>): (AnyComponent | null)[] {
       const ittributesNotEmpty = node.attributes.length > 0;
       const attributes: Record<string, string | null> | undefined =
         ittributesNotEmpty ? {} : undefined;
+      let id: string | undefined;
       if (ittributesNotEmpty) {
         // eslint-disable-next-line no-restricted-syntax
         for (const attr of node.attributes) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          attributes![attr.name] = attr.nodeValue;
+          if (attr.name[0] === '#') {
+            id = attr.name;
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            attributes![attr.name] = attr.nodeValue;
+          }
         }
       }
       const children =
@@ -30,11 +35,14 @@ function parseNodes(nodes: NodeListOf<ChildNode>): (AnyComponent | null)[] {
               (x): x is AnyComponent => x != null,
             )
           : undefined;
-      return el({
-        name: node.nodeName,
-        attrs: attributes,
-        children,
-      }) as AnyComponent;
+      return el(
+        {
+          name: node.nodeName,
+          attrs: attributes,
+          children,
+        },
+        id,
+      ) as AnyComponent;
     }
     return null;
   });
