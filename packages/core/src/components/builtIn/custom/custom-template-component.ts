@@ -33,14 +33,15 @@ export class CustomComponent<
 > extends Component<TProps> {
   private setupFn?: SetupFn<TProps>;
 
-  override name = 'template';
-
   template: string | AnyComponent[];
 
   constructor(args: ICustomComponentDefinitionArgs<TProps>) {
     super(args);
     this.setupFn = args.setup;
     this.template = args.template;
+    if (this.name == null) {
+      throw new Error('Custom components must have unique string names!');
+    }
   }
 
   setup(): HooksLab<ISetupContext<TProps>, void, CustomComponentHooks> | null {

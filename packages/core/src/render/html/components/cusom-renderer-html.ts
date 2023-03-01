@@ -6,8 +6,13 @@ import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { HtmlRendererBase } from '../base/html-renderer-base';
+import { RefStore } from '../ref-store/ref-store';
 
 export class CustomRendererHtml extends HtmlRendererBase {
+  constructor(private refStore: RefStore) {
+    super();
+  }
+
   renderInto(target: IBinding): Observable<IBinding | undefined> {
     if (!(this.component instanceof CustomComponent)) {
       throw new Error('Component should be custom');
@@ -15,6 +20,8 @@ export class CustomRendererHtml extends HtmlRendererBase {
     const component = this.component as CustomComponent;
     const renderAsync = async (): Promise<Observable<IBinding | undefined>> => {
       let template!: AnyComponent[];
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      this.refStore.beginScope(component.name!);
       if (typeof component.template === 'string') {
         const { parseHtml } = await import('@core/parsers/html');
         template = await parseHtml(component.template);
@@ -27,6 +34,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
         renderer.setComponent(componentTemplate);
         renderer.target$.val = target;
         await renderer.render();
+        this.refStore.endScope();
         return renderer.nextTarget$;
       }
       if (template.length > 1) {
@@ -36,6 +44,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
         renderer.setComponent(componentTemplate);
         renderer.target$.val = target;
         await renderer.render();
+        this.refStore.endScope();
         return renderer.nextTarget$;
       }
       return of(undefined);
