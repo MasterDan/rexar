@@ -1,3 +1,4 @@
+import { ElementReference } from '@core/render/html/ref-store/element.reference';
 import { HooksLab } from '@core/tools/hooks';
 import { Observable } from 'rxjs';
 import { ISetupContext } from './custom-template-component';
@@ -7,6 +8,7 @@ type GenericProps = Record<string, Observable<any>>;
 
 export type CustomComponentHooks = {
   mounted: () => void;
+  element: (elementRef: ElementReference) => void;
 };
 
 const lab = new HooksLab<

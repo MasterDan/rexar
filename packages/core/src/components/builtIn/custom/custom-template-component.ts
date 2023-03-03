@@ -44,7 +44,7 @@ export class CustomComponent<
     }
   }
 
-  setup(): HooksLab<ISetupContext<TProps>, void, CustomComponentHooks> | null {
+  setup() {
     if (this.setupFn == null) {
       return null;
     }
@@ -70,7 +70,11 @@ export class CustomComponent<
       CustomComponentHooks
     >();
 
-    hooksLab.callFunction(this.setupFn, context);
-    return hooksLab;
+    const executeSetup = () => {
+      if (this.setupFn) {
+        hooksLab.callFunction(this.setupFn, context);
+      }
+    };
+    return { hooksLab, executeSetup };
   }
 }

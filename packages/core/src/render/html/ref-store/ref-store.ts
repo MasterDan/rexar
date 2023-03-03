@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
 import { ElementReference } from './element.reference';
 
-export type Reference = ElementReference;
+export type NodeHook = ElementReference;
 
-type RefStorage = Record<string, Reference | undefined>;
+type RefStorage = Record<string, NodeHook[] | undefined>;
 
 @singleton()
 export class RefStore {
@@ -29,7 +29,7 @@ export class RefStore {
     this.stack.pop();
   }
 
-  setReferece(name: string, reference: Reference) {
+  setReferece(name: string, reference: NodeHook) {
     const scopeKey = this.currentScopeKey;
     if (scopeKey == null) {
       return;
@@ -38,6 +38,11 @@ export class RefStore {
     if (scope == null) {
       return;
     }
-    scope[name] = reference;
+    if (scope[name] == null) {
+      scope[name] = [reference];
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      scope[name]!.push(reference);
+    }
   }
 }
