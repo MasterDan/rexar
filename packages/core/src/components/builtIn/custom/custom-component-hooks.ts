@@ -11,6 +11,9 @@ export type CustomComponentHooks = {
   element: (elementRef: ElementReference) => void;
 };
 
+export type CustomComponentHook =
+  CustomComponentHooks[keyof CustomComponentHooks];
+
 const lab = new HooksLab<
   ISetupContext<GenericProps>,
   void,

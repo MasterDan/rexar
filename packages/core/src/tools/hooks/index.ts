@@ -25,7 +25,7 @@ export class HooksLab<
 > {
   private hooks: HooksStore<THooks> = {};
 
-  private onHookAdd$ = new Subject<ICurrentHookTrack<THooks>>();
+  onHookAdd$ = new Subject<ICurrentHookTrack<THooks>>();
 
   constructor() {
     this.onHookAdd$.subscribe(({ name, fn }) => {
