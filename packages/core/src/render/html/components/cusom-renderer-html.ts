@@ -4,7 +4,7 @@ import { listComponent } from '@core/components/builtIn/list.component';
 import { TData } from '@core/components/component';
 import { HooksLab } from '@core/tools/hooks';
 import { ISetupContext } from 'packages/core/dist/types';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { filter, from, Observable, of, switchMap } from 'rxjs';
 import { container } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
@@ -33,6 +33,8 @@ export class CustomRendererHtml extends HtmlRendererBase {
       if (prepObj) {
         const { executeSetup, hooksLab } = prepObj;
         this.hooksLab = hooksLab;
+        // todo
+        this.hooksLab.onHookAdd$.pipe(filter(({ name }) => name === 'element'));
         executeSetup();
       }
     }

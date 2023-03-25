@@ -1,3 +1,5 @@
+import { ref$ } from '@core/reactivity/ref';
+
 export class ElementReference {
-  el: HTMLElement | undefined;
+  el = ref$<HTMLElement>();
 }

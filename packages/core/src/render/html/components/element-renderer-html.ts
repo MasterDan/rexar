@@ -5,9 +5,14 @@ import { container, injectable } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { DocumentRef } from '../documentRef';
+import { RefStore } from '../ref-store/ref-store';
 
 @injectable()
 export class ElementRendererHtml extends HtmlRendererBase {
+  constructor(private refStore: RefStore) {
+    super();
+  }
+
   renderInto(binding: IBinding) {
     const name = this.component.getProp('name');
     if (name == null) {
