@@ -1,21 +1,26 @@
 import { Subject } from 'rxjs';
-import { AnyFunc, Func } from './@types/func';
+import { Func } from './@types/func';
+import { FunctionalHook, HookInput, HookOutput } from './functional-hook';
+import { HookBase } from './hook-base';
 
-type HooksDefinition = Record<string, AnyFunc>;
+/** Collection of Hooks */
+type HooksDefinition = Record<string, HookBase>;
 
+/** Shoud be passed into onHookAdd$ */
 export interface IHookTrack {
   name: string;
-  fn: AnyFunc;
+  hook: HookBase;
 }
 
 interface ICurrentHookTrack<THDef extends HooksDefinition = HooksDefinition> {
   name: keyof THDef;
-  fn: AnyFunc;
+  hook: HookBase;
 }
 
 type HooksStore<THDef extends HooksDefinition = HooksDefinition> = {
   [TKey in keyof THDef]?: THDef[TKey][];
 };
+/** Global event for passing hooks */
 const onHookAdd$ = new Subject<IHookTrack>();
 
 export class HooksLab<
@@ -28,8 +33,8 @@ export class HooksLab<
   onHookAdd$ = new Subject<ICurrentHookTrack<THooks>>();
 
   constructor() {
-    this.onHookAdd$.subscribe(({ name, fn }) => {
-      const func = fn as THooks[keyof THooks];
+    this.onHookAdd$.subscribe(({ name, hook }) => {
+      const func = hook as THooks[keyof THooks];
       const namedHooks = this.hooks[name];
       if (namedHooks) {
         namedHooks.push(func);
@@ -40,10 +45,10 @@ export class HooksLab<
   }
 
   callFunction(fn: Func<Targs, TResult>, arg: Targs): TResult {
-    const subscription = onHookAdd$.subscribe(({ name, fn: fnSub }) => {
+    const subscription = onHookAdd$.subscribe(({ name, hook: fnSub }) => {
       const nameKey = name as keyof THooks;
       this.onHookAdd$.next({
-        fn: fnSub,
+        hook: fnSub,
         name: nameKey,
       });
     });
@@ -57,15 +62,17 @@ export class HooksLab<
     return (hook: THooks[TKey]) => {
       onHookAdd$.next({
         name: name as string,
-        fn: hook,
+        hook,
       });
     };
   }
 
-  callHooks<TKey extends keyof THooks>(
+  callHooks<TKey extends keyof THooks, THook extends FunctionalHook>(
     name: TKey,
-    arg: Parameters<THooks[TKey]>[0],
+    arg: HookInput<THook>,
   ) {
-    return this.hooks[name]?.map((hook): ReturnType<THooks[TKey]> => hook(arg));
+    return this.hooks[name]
+      ?.filter((h) => h instanceof FunctionalHook)
+      ?.map((hook): HookOutput<THook> => (hook as unknown as THook).fn(arg));
   }
 }
