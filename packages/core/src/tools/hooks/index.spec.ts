@@ -8,11 +8,12 @@ describe('hooks', () => {
       string,
       { foo: FunctionalHook<void, string> }
     >();
-    const onFoo = lab.defineHook('foo');
+    const fooHook = lab.defineHook('foo');
+    const onFoo = (fn: () => string) => fooHook(new FunctionalHook(fn));
 
     const r = lab.callFunction(() => {
-      onFoo(new FunctionalHook(() => 'hello'));
-      onFoo(new FunctionalHook(() => 'world'));
+      onFoo(() => 'hello');
+      onFoo(() => 'world');
       return 'bar';
     });
     expect(r).toBe('bar');

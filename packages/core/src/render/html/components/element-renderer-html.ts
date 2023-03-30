@@ -6,6 +6,7 @@ import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { DocumentRef } from '../documentRef';
 import { RefStore } from '../ref-store/ref-store';
+import { ElementReference } from '../ref-store/element.reference';
 
 @injectable()
 export class ElementRendererHtml extends HtmlRendererBase {
@@ -48,6 +49,11 @@ export class ElementRendererHtml extends HtmlRendererBase {
           break;
       }
       // console.log(el.outerHTML);
+      if (this.component.id) {
+        const ref = new ElementReference();
+        ref.el.val = el;
+        this.refStore.setReferece(this.component.id, ref);
+      }
 
       return {
         parentEl: binding.parentEl,

@@ -1,5 +1,7 @@
 import { ElementReference } from '@core/render/html/ref-store/element.reference';
 import { HooksLab } from '@core/tools/hooks';
+import { DataHook } from '@core/tools/hooks/data-hook';
+import { FunctionalHook } from '@core/tools/hooks/functional-hook';
 import { Observable } from 'rxjs';
 import { ISetupContext } from './custom-template-component';
 
@@ -7,8 +9,8 @@ import { ISetupContext } from './custom-template-component';
 type GenericProps = Record<string, Observable<any>>;
 
 export type CustomComponentHooks = {
-  mounted: () => void;
-  element: (elementRef: ElementReference) => void;
+  mounted: FunctionalHook<void, void>;
+  element: DataHook<ElementReference>;
 };
 
 export type CustomComponentHook =
