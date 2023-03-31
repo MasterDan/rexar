@@ -1,11 +1,11 @@
+import { Ctor } from '@core/@types/Ctor';
+import { HookBase } from '@core/tools/hooks/hook-base';
 import { singleton } from 'tsyringe';
-import { ElementReference } from './element.reference';
 
-export type NodeHook = ElementReference;
-
-type RefStorage = Record<string, NodeHook[] | undefined>;
+type RefStorage = Record<string, HookBase[] | undefined>;
 
 @singleton()
+/** Global storage for Components or HTML elements */
 export class RefStore {
   private storages: Record<symbol, RefStorage | undefined> = {};
 
@@ -29,20 +29,38 @@ export class RefStore {
     this.stack.pop();
   }
 
-  setReferece(name: string, reference: NodeHook) {
+  private getCurrentScopedStorage() {
     const scopeKey = this.currentScopeKey;
     if (scopeKey == null) {
-      return;
+      throw new Error('Scope is not defined');
     }
     const scope = this.storages[scopeKey];
     if (scope == null) {
-      return;
+      throw new Error('Storage for scope hasnt been instantiated');
     }
+    return scope;
+  }
+
+  setReferece(name: string, reference: HookBase) {
+    const scope = this.getCurrentScopedStorage();
+
     if (scope[name] == null) {
       scope[name] = [reference];
     } else {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       scope[name]!.push(reference);
     }
+  }
+
+  getReference<T extends HookBase>(name: string, hookClass: Ctor<T>) {
+    const scope = this.getCurrentScopedStorage();
+    const hooksCollection = scope[name];
+    if (hooksCollection == null) {
+      return null;
+    }
+    const result = hooksCollection.find(
+      (h) => h.constructor.name === hookClass.name,
+    );
+    return result ?? null;
   }
 }
