@@ -1,20 +1,23 @@
-import { Ctor } from '@core/@types/Ctor';
-import { HookBase } from '@core/tools/hooks/hook-base';
 import { singleton } from 'tsyringe';
+import { ElementReference } from './element.reference';
 
-type RefStorage = Record<string, HookBase[] | undefined>;
+export interface IElementHooks {
+  reference: ElementReference;
+}
+
+type RefStorage = Record<string, IElementHooks | undefined>;
 
 @singleton()
 /** Global storage for Components or HTML elements */
 export class RefStore {
   private storages: Record<symbol, RefStorage | undefined> = {};
 
-  private stack: symbol[] = [];
+  private scopeStak: symbol[] = [];
 
   get currentScopeKey() {
-    return this.stack.length <= 0
+    return this.scopeStak.length <= 0
       ? undefined
-      : this.stack[this.stack.length - 1];
+      : this.scopeStak[this.scopeStak.length - 1];
   }
 
   beginScope(scopeName: string) {
@@ -22,14 +25,14 @@ export class RefStore {
     if (this.storages[scopeKey] == null) {
       this.storages[scopeKey] = {};
     }
-    this.stack.push(scopeKey);
+    this.scopeStak.push(scopeKey);
   }
 
   endScope() {
-    this.stack.pop();
+    this.scopeStak.pop();
   }
 
-  private getCurrentScopedStorage() {
+  public getCurrentScopeStorage(id: string): IElementHooks | undefined {
     const scopeKey = this.currentScopeKey;
     if (scopeKey == null) {
       throw new Error('Scope is not defined');
@@ -38,29 +41,6 @@ export class RefStore {
     if (scope == null) {
       throw new Error('Storage for scope hasnt been instantiated');
     }
-    return scope;
-  }
-
-  setReferece(name: string, reference: HookBase) {
-    const scope = this.getCurrentScopedStorage();
-
-    if (scope[name] == null) {
-      scope[name] = [reference];
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      scope[name]!.push(reference);
-    }
-  }
-
-  getReference<T extends HookBase>(name: string, hookClass: Ctor<T>) {
-    const scope = this.getCurrentScopedStorage();
-    const hooksCollection = scope[name];
-    if (hooksCollection == null) {
-      return null;
-    }
-    const result = hooksCollection.find(
-      (h) => h.constructor.name === hookClass.name,
-    );
-    return result ?? null;
+    return scope[id];
   }
 }
