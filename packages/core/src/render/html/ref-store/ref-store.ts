@@ -32,7 +32,7 @@ export class RefStore {
     this.scopeStak.pop();
   }
 
-  public getCurrentScopeStorage(id: string): IElementHooks | undefined {
+  public getCurrentScopeComponentHooks(id: string): IElementHooks {
     const scopeKey = this.currentScopeKey;
     if (scopeKey == null) {
       throw new Error('Scope is not defined');
@@ -41,6 +41,12 @@ export class RefStore {
     if (scope == null) {
       throw new Error('Storage for scope hasnt been instantiated');
     }
-    return scope[id];
+    if (scope[id] == null) {
+      scope[id] = {
+        reference: new ElementReference(),
+      };
+    }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return scope[id]!;
   }
 }
