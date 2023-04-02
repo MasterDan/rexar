@@ -40,4 +40,5 @@ export const useElement = (id: string) => {
       ref: elRef,
     }),
   );
+  return elRef;
 };
