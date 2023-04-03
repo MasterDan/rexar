@@ -76,7 +76,7 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
         return this.factories[name] as RendererFactory;
       }
       default:
-        throw new Error('Not Implemented!');
+        throw new Error(`Unexpected component type: "${name}"`);
     }
   }
 }
