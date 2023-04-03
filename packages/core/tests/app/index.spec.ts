@@ -1,5 +1,6 @@
 import { createApp } from '@core/app';
 import { testOne } from './components/test-one/test-one.component';
+import { testTwo } from './components/test-two/test-two.component';
 
 describe('custom components', () => {
   test('test-one', async () => {
@@ -11,5 +12,9 @@ describe('custom components', () => {
         '</div>\n' +
         '    </div></div>',
     );
+  });
+  test('test-two', async () => {
+    const elApp = await createApp(testTwo.create()).mount('#app');
+    console.log(elApp?.outerHTML);
   });
 });

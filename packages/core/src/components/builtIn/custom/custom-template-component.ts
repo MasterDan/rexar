@@ -28,6 +28,8 @@ export interface ICustomComponentDefinitionArgs<TProps extends TData = TData>
   template: string | AnyComponent[];
 }
 
+export const customTemplateComponentName = 'custom-template-component';
+
 export class CustomComponent<
   TProps extends TData = TData,
 > extends Component<TProps> {
@@ -39,9 +41,7 @@ export class CustomComponent<
     super(args);
     this.setupFn = args.setup;
     this.template = args.template;
-    if (this.name == null) {
-      throw new Error('Custom components must have unique string names!');
-    }
+    this.name = customTemplateComponentName;
   }
 
   setup() {

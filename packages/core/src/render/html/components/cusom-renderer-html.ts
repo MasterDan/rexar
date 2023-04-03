@@ -8,7 +8,7 @@ import { TData } from '@core/components/component';
 import { HooksLab } from '@core/tools/hooks';
 import { DataHook } from '@core/tools/hooks/data-hook';
 import { ISetupContext } from 'packages/core/dist/types';
-import { filter, from, Observable, of, switchMap } from 'rxjs';
+import { filter, from, Observable, of, switchMap, tap } from 'rxjs';
 import { container } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
@@ -70,7 +70,6 @@ export class CustomRendererHtml extends HtmlRendererBase {
         renderer.setComponent(componentTemplate);
         renderer.target$.val = target;
         await renderer.render();
-        this.refStore.endScope();
         return renderer.nextTarget$;
       }
       if (template.length > 1) {
@@ -80,11 +79,15 @@ export class CustomRendererHtml extends HtmlRendererBase {
         renderer.setComponent(componentTemplate);
         renderer.target$.val = target;
         await renderer.render();
-        this.refStore.endScope();
         return renderer.nextTarget$;
       }
       return of(undefined);
     };
-    return from(renderAsync()).pipe(switchMap((x) => x));
+    return from(renderAsync()).pipe(
+      switchMap((x) => x),
+      tap(() => {
+        this.refStore.endScope();
+      }),
+    );
   }
 }
