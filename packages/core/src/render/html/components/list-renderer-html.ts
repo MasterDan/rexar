@@ -1,9 +1,10 @@
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from, takeUntil, Subject } from 'rxjs';
-import { container } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
+@injectable()
 export class ListRendererHtml extends HtmlRendererBase {
   unbind$ = new Subject<void>();
 

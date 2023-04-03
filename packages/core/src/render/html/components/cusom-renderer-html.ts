@@ -9,13 +9,14 @@ import { HooksLab } from '@core/tools/hooks';
 import { DataHook } from '@core/tools/hooks/data-hook';
 import { ISetupContext } from 'packages/core/dist/types';
 import { filter, from, Observable, of, switchMap, tap } from 'rxjs';
-import { container } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { RefStore } from '../ref-store/ref-store';
 
+@injectable()
 export class CustomRendererHtml extends HtmlRendererBase {
   private hooksLab: HooksLab<
     ISetupContext<TData>,
