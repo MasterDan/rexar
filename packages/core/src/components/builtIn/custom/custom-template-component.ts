@@ -5,7 +5,9 @@ import {
 } from '@core/components/component';
 import { ref$, readonly } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
+import { HooksLab } from '@core/tools/hooks';
 import { Observable, isObservable } from 'rxjs';
+import type { CustomComponentHooks } from './custom-component-hooks';
 
 type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
 
@@ -16,7 +18,7 @@ type TPropsAccessors<TObj> = {
   [Key in keyof TObj]: ExactlyObservable<TObj[Key]>;
 };
 
-interface ISetupContext<TProps> {
+export interface ISetupContext<TProps> {
   props: TPropsAccessors<TProps>;
 }
 
@@ -26,21 +28,25 @@ export interface ICustomComponentDefinitionArgs<TProps extends TData = TData>
   template: string | AnyComponent[];
 }
 
+export const customTemplateComponentName = 'custom-template-component';
+
 export class CustomComponent<
   TProps extends TData = TData,
 > extends Component<TProps> {
-  private setup?: SetupFn<TProps>;
-
-  override name = 'template';
+  private setupFn?: SetupFn<TProps>;
 
   template: string | AnyComponent[];
 
   constructor(args: ICustomComponentDefinitionArgs<TProps>) {
-    super();
-    this.setup = args.setup;
+    super(args);
+    this.setupFn = args.setup;
     this.template = args.template;
-    if (this.setup == null) {
-      return;
+    this.name = customTemplateComponentName;
+  }
+
+  setup() {
+    if (this.setupFn == null) {
+      return null;
     }
 
     const propsForSetup: Record<string, Observable<unknown>> = {};
@@ -58,7 +64,17 @@ export class CustomComponent<
     const context: ISetupContext<TProps> = {
       props: propsForSetup as TPropsAccessors<TProps>,
     };
+    const hooksLab = new HooksLab<
+      ISetupContext<TProps>,
+      void,
+      CustomComponentHooks
+    >();
 
-    this.setup(context);
+    const executeSetup = () => {
+      if (this.setupFn) {
+        hooksLab.callFunction(this.setupFn, context);
+      }
+    };
+    return { hooksLab, executeSetup };
   }
 }

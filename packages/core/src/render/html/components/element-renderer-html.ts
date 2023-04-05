@@ -5,9 +5,15 @@ import { container, injectable } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { DocumentRef } from '../documentRef';
+import { RefStore } from '../ref-store/ref-store';
+import { ElementReference } from '../ref-store/element.reference';
 
 @injectable()
 export class ElementRendererHtml extends HtmlRendererBase {
+  constructor(private refStore: RefStore) {
+    super();
+  }
+
   renderInto(binding: IBinding) {
     const name = this.component.getProp('name');
     if (name == null) {
@@ -43,6 +49,15 @@ export class ElementRendererHtml extends HtmlRendererBase {
           break;
       }
       // console.log(el.outerHTML);
+      if (this.component.id) {
+        const ref = new ElementReference();
+        ref.el.val = el;
+        const elemHooks = this.refStore.getCurrentScopeComponentHooks(
+          this.component.id,
+        );
+        elemHooks.reference.el.val = el;
+        elemHooks.reference.component.val = this.component;
+      }
 
       return {
         parentEl: binding.parentEl,

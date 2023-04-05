@@ -3,6 +3,7 @@ import { listComponentName } from '@core/components/builtIn/list.component';
 import { textComponentName } from '@core/components/builtIn/text.component';
 import type { Component } from '@core/components/component';
 import { container, singleton } from 'tsyringe';
+import { customTemplateComponentName } from '@core/components/builtIn/custom/custom-template-component';
 import { HtmlRendererBase } from './base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';
 import { IComponentRendererResolver } from './@types/IComponentRendererResolver';
@@ -59,7 +60,7 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
         }
         return this.factories[name] as RendererFactory;
       }
-      case 'template': {
+      case customTemplateComponentName: {
         if (this.factories[name] == null) {
           const { CustomRendererHtml } = await import(
             './components/cusom-renderer-html'
@@ -75,7 +76,7 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
         return this.factories[name] as RendererFactory;
       }
       default:
-        throw new Error('Not Implemented!');
+        throw new Error(`Unexpected component type: "${name}"`);
     }
   }
 }

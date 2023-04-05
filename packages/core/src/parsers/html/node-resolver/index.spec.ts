@@ -1,7 +1,6 @@
 import { resolveNodes } from '.';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const testHtml = require('./test.html');
+// @ts-expect-error module exisits
+import testHtml from './test.html';
 
 describe('html initial parser', () => {
   test('test-page', async () => {
