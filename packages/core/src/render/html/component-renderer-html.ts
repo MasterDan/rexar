@@ -16,12 +16,12 @@ export class ComponentRendererHtml extends HtmlRendererBase {
   renderInto(target: IBinding): Observable<IBinding | undefined> {
     return from(this.resolver.resolveRenderer(this.component)).pipe(
       map((rf) => rf(this.component)),
-      switchMap((c) => {
+      switchMap((renderer) => {
         const renderComponent = async () => {
-          c.setComponent(this.component);
-          c.target$.val = target;
-          await c.render();
-          return c.nextTarget$;
+          renderer.setComponent(this.component);
+          renderer.target$.val = target;
+          await renderer.render();
+          return renderer.nextTarget$;
         };
         return from(renderComponent()).pipe(map((ref) => ref.val));
       }),
