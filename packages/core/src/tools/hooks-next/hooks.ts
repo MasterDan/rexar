@@ -1,4 +1,4 @@
-import { filter, Subject, takeUntil } from 'rxjs';
+import { filter, Observable, Subject, takeUntil } from 'rxjs';
 
 export interface IHookPass<T = void> {
   scope: symbol;
@@ -7,7 +7,9 @@ export interface IHookPass<T = void> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const hookTracker$ = new Subject<IHookPass<any>>();
+export type HookPassAny = IHookPass<any>;
+
+const hookTracker$ = new Subject<HookPassAny>();
 
 let scopeStack: symbol[] = [];
 
@@ -39,12 +41,13 @@ export const hookScope = {
   getCurrent,
 };
 
-const hookNames: string[] = [];
+const hookNames: Record<string, boolean> = {};
 
 export function defineHook<T = void>(name: string) {
-  if (hookNames.some((x) => x === name)) {
+  if (hookNames[name]) {
     throw new Error(`Hook wth name "${name}" already exists`);
   }
+  hookNames[name] = true;
   return (hook: (value: T) => void) => {
     const trigger$ = new Subject<T>();
     hookTracker$.next({
@@ -54,4 +57,35 @@ export function defineHook<T = void>(name: string) {
     });
     trigger$.subscribe(hook);
   };
+}
+
+export function catchHooks(
+  tracker$: Observable<HookPassAny>,
+  ...names: string[]
+) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const store: Record<string, Subject<any>[] | undefined> = {};
+  tracker$
+    .pipe(
+      filter(({ name }) =>
+        names.length === 0 ? true : names.some((n) => n === name),
+      ),
+    )
+    .subscribe(({ name, trigger$ }) => {
+      const triggers = store[name];
+      if (triggers) {
+        triggers.push(trigger$);
+      } else {
+        store[name] = [trigger$];
+      }
+    });
+  const trigger = <T>(name: string, value: T | undefined = undefined) => {
+    const triggers = store[name];
+    if (triggers) {
+      triggers.forEach((t) => {
+        t.next(value);
+      });
+    }
+  };
+  return { hooks: store, trigger };
 }
