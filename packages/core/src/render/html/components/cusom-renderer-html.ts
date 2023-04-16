@@ -5,8 +5,7 @@ import {
 import { CustomComponent } from '@core/components/builtIn/custom/custom-template-component';
 import { listComponent } from '@core/components/builtIn/list.component';
 import { TData } from '@core/components/component';
-import { HooksLab } from '@core/tools/hooks';
-import { DataHook } from '@core/tools/hooks/data-hook';
+
 import { ISetupContext } from 'packages/core/dist/types';
 import { filter, from, Observable, of, switchMap, tap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
