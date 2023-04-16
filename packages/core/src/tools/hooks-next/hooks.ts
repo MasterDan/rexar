@@ -1,13 +1,15 @@
 import { filter, Subject, takeUntil } from 'rxjs';
 
-export interface IHookPass<T> {
+export interface IHookPass<T = void> {
   scope: symbol;
-  body: T;
+  name: string;
+  trigger$: Subject<T>;
 }
 
-const hookTracker = new Subject<IHookPass<unknown>>();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const hookTracker$ = new Subject<IHookPass<any>>();
 
-const scopeStack: symbol[] = [];
+let scopeStack: symbol[] = [];
 
 function beginScope() {
   const scopeId = Symbol('scope');
@@ -16,9 +18,9 @@ function beginScope() {
   const end = () => {
     destroyScope$.next();
     destroyScope$.complete();
-    scopeStack.pop();
+    scopeStack = scopeStack.filter((x) => x !== scopeId);
   };
-  const track$ = hookTracker.pipe(
+  const track$ = hookTracker$.pipe(
     takeUntil(destroyScope$),
     filter(({ scope }) => scope === scopeId),
   );
@@ -37,14 +39,19 @@ export const hookScope = {
   getCurrent,
 };
 
-export function defineHook<THook>(
-  arg: (track: (hook: THook) => void) => THook,
-): THook {
-  const track = (hook: THook) => {
-    hookTracker.next({
-      body: hook,
+const hookNames: string[] = [];
+
+export function defineHook<T = void>(name: string) {
+  if (hookNames.some((x) => x === name)) {
+    throw new Error(`Hook wth name "${name}" already exists`);
+  }
+  return (hook: (value: T) => void) => {
+    const trigger$ = new Subject<T>();
+    hookTracker$.next({
+      name,
+      trigger$,
       scope: getCurrent(),
     });
+    trigger$.subscribe(hook);
   };
-  return arg(track);
 }
