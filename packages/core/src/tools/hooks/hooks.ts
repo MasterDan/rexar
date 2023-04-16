@@ -1,8 +1,10 @@
+import { AnyRecord } from '@core/@types/AnyRecord';
 import { filter, Observable, Subject, takeUntil } from 'rxjs';
 
 export interface IHookPass<T = void> {
   scope: symbol;
   name: string;
+  params: AnyRecord<string>;
   trigger$: Subject<T>;
 }
 
@@ -48,12 +50,13 @@ export function defineHook<T = void>(name: string) {
     throw new Error(`Hook wth name "${name}" already exists`);
   }
   hookNames[name] = true;
-  return (hook: (value: T) => void) => {
+  return (hook: (value: T) => void, params: AnyRecord<string> = {}) => {
     const trigger$ = new Subject<T>();
     hookTracker$.next({
       name,
       trigger$,
       scope: getCurrent(),
+      params,
     });
     trigger$.subscribe(hook);
   };

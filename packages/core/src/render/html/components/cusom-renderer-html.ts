@@ -1,12 +1,6 @@
-import {
-  CustomComponentHooks,
-  IElementRefHook,
-} from '@core/components/builtIn/custom/custom-component-hooks';
 import { CustomComponent } from '@core/components/builtIn/custom/custom-template-component';
 import { listComponent } from '@core/components/builtIn/list.component';
-import { TData } from '@core/components/component';
 
-import { ISetupContext } from 'packages/core/dist/types';
 import { filter, from, Observable, of, switchMap, tap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
@@ -17,12 +11,6 @@ import { RefStore } from '../ref-store/ref-store';
 
 @injectable()
 export class CustomRendererHtml extends HtmlRendererBase {
-  private hooksLab: HooksLab<
-    ISetupContext<TData>,
-    void,
-    CustomComponentHooks
-  > | null = null;
-
   constructor(private refStore: RefStore) {
     super();
   }
