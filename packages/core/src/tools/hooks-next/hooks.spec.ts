@@ -18,4 +18,31 @@ describe('hooks-next', () => {
     expect(check).toBe('checked');
     end();
   });
+  test('multiple scopes', () => {
+    const hookIt = defineHook<string>('hookIt');
+    let checkOne: string | undefined;
+    let checkTwo: string | undefined;
+    const scopeOne = hookScope.beginScope();
+    const { trigger: triggerFirstScope } = catchHooks(scopeOne.track$);
+    const fnOne = () => {
+      hookIt((val) => {
+        checkOne = `one:${val}`;
+      });
+      const fnInner = () => {
+        hookIt((val) => {
+          checkTwo = `two:${val}`;
+        });
+      };
+      const scopeTwo = hookScope.beginScope();
+      const { trigger: triggerSecondScope } = catchHooks(scopeTwo.track$);
+      fnInner();
+      triggerSecondScope<string>('hookIt', 'world');
+      scopeTwo.end();
+    };
+    fnOne();
+    scopeOne.end();
+    triggerFirstScope<string>('hookIt', 'hello');
+    expect(checkOne).toBe('one:hello');
+    expect(checkTwo).toBe('two:world');
+  });
 });
