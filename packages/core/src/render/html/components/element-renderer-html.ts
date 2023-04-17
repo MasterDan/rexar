@@ -52,9 +52,9 @@ export class ElementRendererHtml extends HtmlRendererBase {
       if (this.component.id) {
         const ref = new ElementReference();
         ref.el.val = el;
-        const elemHooks = this.refStore.getReferences(this.component.id);
-        elemHooks.reference.el.val = el;
-        elemHooks.reference.component.val = this.component;
+        const { reference } = this.refStore.getReferences(this.component.id);
+        reference.el.val = el;
+        reference.component.val = this.component;
       }
 
       return {
