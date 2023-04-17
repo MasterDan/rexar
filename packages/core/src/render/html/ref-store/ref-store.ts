@@ -32,7 +32,7 @@ export class RefStore {
     this.scopeStak.pop();
   }
 
-  public getCurrentScopeReferences(id: string): INodeRefs {
+  public getReferences(id: string): INodeRefs {
     const scopeKey = this.currentScopeKey;
     if (scopeKey == null) {
       throw new Error('Scope is not defined');

@@ -33,7 +33,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
             typeof params.id === 'string',
         ),
         switchMap(({ params: { id }, trigger$ }) => {
-          const { reference } = this.refStore.getCurrentScopeReferences(id);
+          const { reference } = this.refStore.getReferences(id);
           return reference.el.pipe(
             filter((x): x is HTMLElement => x != null),
             map((el) => ({ el, trigger$ })),
