@@ -36,13 +36,10 @@ describe('refs', () => {
     });
     expect(checker.val).toBe('first');
     conditionOne.val = false;
-    // await wait();
     expect(checker.val).toBe('second');
     conditionTwo.val = false;
-    // await wait();
     expect(checker.val).toBe('none');
     conditionOne.val = true;
-    // await wait();
     expect(checker.val).toBe('first');
   });
 });
