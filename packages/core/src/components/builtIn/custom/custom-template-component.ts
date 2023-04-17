@@ -66,16 +66,11 @@ export class CustomComponent<
     if (this.setupFn == null) {
       return;
     }
-    const setupContext = ref$<ISetupContext<TProps> | undefined>(() =>
-      this.propsAccessors$.val
-        ? {
-            props: this.propsAccessors$.val,
-          }
-        : undefined,
-    );
-    if (setupContext.val == null) {
+    if (this.propsAccessors$.val == null) {
       return;
     }
-    this.setupFn(setupContext.val);
+    this.setupFn({
+      props: this.propsAccessors$.val,
+    });
   }
 }
