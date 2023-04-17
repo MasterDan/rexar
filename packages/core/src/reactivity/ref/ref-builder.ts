@@ -5,7 +5,10 @@ import { ReadonlyRef } from './readonly.ref';
 import { RefBase } from './base.ref';
 import { Ref } from './ref';
 import { IRefBuilder } from './@types/IRefBuilder';
-import type { IComputedBuiler } from '../computed/@types/IComputedBuiler';
+import type {
+  IComputedBuilderOptions,
+  IComputedBuiler,
+} from '../computed/@types/IComputedBuiler';
 
 @injectable()
 export class RefBuilder implements IRefBuilder {
@@ -14,15 +17,22 @@ export class RefBuilder implements IRefBuilder {
     private computedBuilder: IComputedBuiler,
   ) {}
 
-  buildRef<T>(init: () => T): ReadonlyRef<T>;
+  buildRef<T>(init: () => T, options?: IComputedBuilderOptions): ReadonlyRef<T>;
   buildRef<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
   buildRef<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
   buildRef<T>(): Ref<T | undefined>;
   buildRef<T>(init: T): Ref<T>;
-  buildRef<T>(init?: MaybeObservable<T> | (() => T), fallack?: T) {
+  buildRef<T>(
+    init?: MaybeObservable<T> | (() => T),
+    optionsOrfallack?: T | IComputedBuilderOptions,
+  ) {
     if (typeof init === 'function') {
-      return this.computedBuilder.build(init as () => T);
+      return this.computedBuilder.build(
+        init as () => T,
+        optionsOrfallack as IComputedBuilderOptions,
+      );
     }
+    const fallack = optionsOrfallack as T | undefined;
 
     if (isObservable(init)) {
       return fallack
@@ -33,6 +43,6 @@ export class RefBuilder implements IRefBuilder {
   }
 
   makeReadonly<T>(ref: RefBase<T>) {
-    return this.buildRef(ref, null);
+    return this.buildRef(ref, ref.val);
   }
 }
