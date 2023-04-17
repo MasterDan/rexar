@@ -4,24 +4,24 @@ import {
   Component,
 } from '@core/components/component';
 import { ref$, readonly } from '@core/reactivity/ref';
+import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { HooksLab } from '@core/tools/hooks';
-import { Observable, isObservable } from 'rxjs';
-import type { CustomComponentHooks } from './custom-component-hooks';
-
-type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
+import { Observable, isObservable, filter, map } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ExactlyObservable<T> = T extends Observable<any> ? T : Observable<T>;
+type ToReadonlyRef<T> = T extends Observable<infer V>
+  ? ReadonlyRef<V>
+  : ReadonlyRef<T>;
 
 type TPropsAccessors<TObj> = {
-  [Key in keyof TObj]: ExactlyObservable<TObj[Key]>;
+  [Key in keyof TObj]: ToReadonlyRef<TObj[Key]>;
 };
 
 export interface ISetupContext<TProps> {
   props: TPropsAccessors<TProps>;
 }
 
+type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
 export interface ICustomComponentDefinitionArgs<TProps extends TData = TData>
   extends IComponentDefinitionArgs<TProps> {
   setup?: SetupFn<TProps>;
@@ -37,6 +37,24 @@ export class CustomComponent<
 
   template: string | AnyComponent[];
 
+  propsAccessors$ = ref$(
+    this.props$.pipe(
+      filter((val): val is TProps => val != null),
+      map((ps) => {
+        const resultProps: Record<string, Observable<unknown>> = {};
+        Object.keys(ps).forEach((pk) => {
+          const item = ps[pk];
+          if (isObservable(item)) {
+            resultProps[pk] = ref$(item);
+          } else {
+            resultProps[pk] = readonly(ref$(item));
+          }
+        });
+        return resultProps as TPropsAccessors<TProps>;
+      }),
+    ),
+  );
+
   constructor(args: ICustomComponentDefinitionArgs<TProps>) {
     super(args);
     this.setupFn = args.setup;
@@ -46,35 +64,13 @@ export class CustomComponent<
 
   setup() {
     if (this.setupFn == null) {
-      return null;
+      return;
     }
-
-    const propsForSetup: Record<string, Observable<unknown>> = {};
-    if (this.props) {
-      Object.keys(this.props).forEach((pk) => {
-        const item = (this.props as TProps)[pk];
-        if (isObservable(item)) {
-          propsForSetup[pk] = ref$(item);
-        } else {
-          propsForSetup[pk] = readonly(ref$(item));
-        }
-      });
+    if (this.propsAccessors$.val == null) {
+      return;
     }
-
-    const context: ISetupContext<TProps> = {
-      props: propsForSetup as TPropsAccessors<TProps>,
-    };
-    const hooksLab = new HooksLab<
-      ISetupContext<TProps>,
-      void,
-      CustomComponentHooks
-    >();
-
-    const executeSetup = () => {
-      if (this.setupFn) {
-        hooksLab.callFunction(this.setupFn, context);
-      }
-    };
-    return { hooksLab, executeSetup };
+    this.setupFn({
+      props: this.propsAccessors$.val,
+    });
   }
 }

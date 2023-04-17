@@ -1,4 +1,5 @@
 import { MaybeObservable } from '@core/@types/MaybeObservable';
+import { ref$ } from '@core/reactivity/ref';
 import { isObservable, Observable } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,47 +16,45 @@ export interface IComponentDefinitionArgs<TProps extends TData = TData> {
 export class Component<TProps extends TData = TData> {
   id?: string;
 
-  // may be don't need
   name?: string;
 
-  /** @todo make this reactive */
-  protected props?: TProps;
+  protected props$ = ref$<TProps>();
 
   constructor({ props, name, id }: IComponentDefinitionArgs<TProps> = {}) {
     this.id = id;
     this.name = name;
-    this.props = props;
+    this.props$.val = props;
   }
 
   bindProp<T extends keyof TProps>(
     key: T,
     value: MaybeObservable<PropValue<TProps[T]>>,
   ) {
-    if (this.props == null) {
-      this.props = {} as TProps;
+    if (this.props$.val == null) {
+      this.props$.val = {} as TProps;
     }
-    if (isObservable(this.props[key])) {
+    if (isObservable(this.props$.val[key])) {
       if (isObservable(value)) {
         value.subscribe((v) => {
-          (this.props as TProps)[key].next(v);
+          (this.props$.val as TProps)[key].next(v);
         });
       } else {
-        this.props[key].next(value);
+        this.props$.val[key].next(value);
       }
     } else if (isObservable(value)) {
       value.subscribe((v) => {
-        (this.props as TProps)[key] = v;
+        (this.props$.val as TProps)[key] = v;
       });
     } else {
-      this.props[key] = value;
+      this.props$.val[key] = value;
     }
   }
 
   bindProps(props: TProps) {
-    this.props = props;
+    this.props$.val = props;
   }
 
   getProp<T extends keyof TProps>(key: T) {
-    return this.props ? this.props[key] : null;
+    return this.props$.val ? this.props$.val[key] : null;
   }
 }

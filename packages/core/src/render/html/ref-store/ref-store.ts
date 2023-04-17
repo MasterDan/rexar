@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
 import { ElementReference } from './element.reference';
 
-export interface IElementHooks {
+export interface INodeRefs {
   reference: ElementReference;
 }
 
-type RefStorage = Record<string, IElementHooks | undefined>;
+type RefStorage = Record<string, INodeRefs | undefined>;
 
 @singleton()
 /** Global storage for Components or HTML elements */
@@ -32,7 +32,7 @@ export class RefStore {
     this.scopeStak.pop();
   }
 
-  public getCurrentScopeComponentHooks(id: string): IElementHooks {
+  public getCurrentScopeReferences(id: string): INodeRefs {
     const scopeKey = this.currentScopeKey;
     if (scopeKey == null) {
       throw new Error('Scope is not defined');
