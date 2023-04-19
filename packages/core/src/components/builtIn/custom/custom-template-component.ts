@@ -6,7 +6,7 @@ import {
 import { ref$, readonly } from '@core/reactivity/ref';
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { Observable, isObservable, filter, map } from 'rxjs';
+import { Observable, isObservable, map } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ToReadonlyRef<T> = T extends Observable<infer V>
@@ -39,7 +39,6 @@ export class CustomComponent<
 
   propsAccessors$ = ref$(
     this.props$.pipe(
-      filter((val): val is TProps => val != null),
       map((ps) => {
         const resultProps: Record<string, Observable<unknown>> = {};
         Object.keys(ps).forEach((pk) => {

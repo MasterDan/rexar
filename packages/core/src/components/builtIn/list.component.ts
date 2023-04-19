@@ -8,5 +8,6 @@ export interface IListComponentProps {
 export const listComponentName = 'list';
 
 export const listComponent = defineComponent<IListComponentProps>({
+  props: { content: [] },
   name: listComponentName,
 });
