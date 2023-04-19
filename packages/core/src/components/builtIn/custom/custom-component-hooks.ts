@@ -1,7 +1,7 @@
 import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { combineLatest, filter, fromEvent, map, switchMap } from 'rxjs';
+import { combineLatest, filter, fromEvent, map, merge, switchMap } from 'rxjs';
 
 export const onMounted = defineHook('mounted');
 
@@ -35,7 +35,14 @@ export const bindValue = (id: string, value$: Ref<string | undefined>) => {
   );
 
   const valueChanged$ = validElement$.pipe(
-    switchMap((el) => fromEvent(el, 'change')),
+    switchMap((el) =>
+      merge(
+        fromEvent(el, 'change'),
+        fromEvent(el, 'keydown'),
+        fromEvent(el, 'paste'),
+        fromEvent(el, 'input'),
+      ),
+    ),
     map((e) => e.target),
     filter((t): t is HTMLInputElement => t != null),
     map((t) => t.value),

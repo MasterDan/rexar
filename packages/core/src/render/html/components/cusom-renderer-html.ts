@@ -2,7 +2,16 @@ import { CustomComponent } from '@core/components/builtIn/custom/custom-template
 import { listComponent } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
 
-import { filter, from, map, Observable, of, switchMap, tap } from 'rxjs';
+import {
+  filter,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
@@ -32,7 +41,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
             params.id != null &&
             typeof params.id === 'string',
         ),
-        switchMap(({ params: { id }, trigger$ }) => {
+        mergeMap(({ params: { id }, trigger$ }) => {
           const { reference } = this.refStore.getReferences(id);
           return reference.el.pipe(
             filter((x): x is HTMLElement => x != null),
