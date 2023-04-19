@@ -22,7 +22,14 @@ describe('component class', () => {
     expect(inst.getProp('obj')).toEqual({ n: 101, s: 'i-m-obj' });
   });
   test('bind props', () => {
-    const inst = defineComponent<ITestProps>().create();
+    const inst = defineComponent<ITestProps>({
+      props: {
+        lst: [],
+        n: 0,
+        obj: { n: 0, s: '' },
+        s: '',
+      },
+    }).create();
     inst.bindProp('n', 20);
     expect(inst.getProp('n')).toBe(20);
   });

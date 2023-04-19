@@ -1,14 +1,17 @@
-import {
-  CustomComponentHooks,
-  IElementRefHook,
-} from '@core/components/builtIn/custom/custom-component-hooks';
 import { CustomComponent } from '@core/components/builtIn/custom/custom-template-component';
 import { listComponent } from '@core/components/builtIn/list.component';
-import { TData } from '@core/components/component';
-import { HooksLab } from '@core/tools/hooks';
-import { DataHook } from '@core/tools/hooks/data-hook';
-import { ISetupContext } from 'packages/core/dist/types';
-import { filter, from, Observable, of, switchMap, tap } from 'rxjs';
+import { hookScope } from '@core/tools/hooks/hooks';
+
+import {
+  filter,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
@@ -18,12 +21,6 @@ import { RefStore } from '../ref-store/ref-store';
 
 @injectable()
 export class CustomRendererHtml extends HtmlRendererBase {
-  private hooksLab: HooksLab<
-    ISetupContext<TData>,
-    void,
-    CustomComponentHooks
-  > | null = null;
-
   constructor(private refStore: RefStore) {
     super();
   }
@@ -35,28 +32,29 @@ export class CustomRendererHtml extends HtmlRendererBase {
     const component = this.component as CustomComponent;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.refStore.beginScope(this.component.name!);
-    if (this.hooksLab == null) {
-      const prepObj = component.setup();
-      if (prepObj) {
-        const { executeSetup, hooksLab } = prepObj;
-        this.hooksLab = hooksLab;
-        // todo
-        this.hooksLab.onHookAdd$
-          .pipe(filter(({ name }) => name === 'reference'))
-          .subscribe((h) => {
-            const {
-              value: { id, ref },
-            } = h.hook as DataHook<IElementRefHook>;
-            const storage = this.refStore.getCurrentScopeComponentHooks(id);
-            storage.reference.el
-              .pipe(filter((x): x is HTMLElement => x != null))
-              .subscribe((el) => {
-                ref.val = el;
-              });
-          });
-        executeSetup();
-      }
-    }
+    const { track$, end } = hookScope.beginScope();
+    track$
+      .pipe(
+        filter(
+          ({ name, params }) =>
+            name === 'reference' &&
+            params.id != null &&
+            typeof params.id === 'string',
+        ),
+        mergeMap(({ params: { id }, trigger$ }) => {
+          const { reference } = this.refStore.getReferences(id);
+          return reference.el.pipe(
+            filter((x): x is HTMLElement => x != null),
+            map((el) => ({ el, trigger$ })),
+          );
+        }),
+      )
+      .subscribe(({ el, trigger$ }) => {
+        trigger$.next(el);
+      });
+    component.setup();
+    end();
+
     const renderAsync = async (): Promise<Observable<IBinding | undefined>> => {
       let template!: AnyComponent[];
       if (typeof component.template === 'string') {

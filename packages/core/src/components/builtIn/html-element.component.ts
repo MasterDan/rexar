@@ -10,6 +10,7 @@ export interface IElementComponentProps {
 export const htmlElementDefinitionName = 'html-element';
 
 export const htmlElementComponent = defineComponent<IElementComponentProps>({
+  props: { name: 'div' },
   name: htmlElementDefinitionName,
 });
 

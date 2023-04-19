@@ -1,44 +1,66 @@
 import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
-import { HooksLab } from '@core/tools/hooks';
-import { DataHook } from '@core/tools/hooks/data-hook';
-import { FunctionalHook } from '@core/tools/hooks/functional-hook';
-import { Observable } from 'rxjs';
-import { ISetupContext } from './custom-template-component';
+import { defineHook } from '@core/tools/hooks/hooks';
+import { combineLatest, filter, fromEvent, map, merge, switchMap } from 'rxjs';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type GenericProps = Record<string, Observable<any>>;
+export const onMounted = defineHook('mounted');
 
-export interface IElementRefHook {
-  id: string;
-  ref: Ref<HTMLElement | undefined>;
-}
-
-export type CustomComponentHooks = {
-  mounted: FunctionalHook<void, void>;
-  reference: DataHook<IElementRefHook>;
-};
-
-export type CustomComponentHook =
-  CustomComponentHooks[keyof CustomComponentHooks];
-
-const lab = new HooksLab<
-  ISetupContext<GenericProps>,
-  void,
-  CustomComponentHooks
->();
-
-export const onMounted = lab.defineHook('mounted');
-
-const referenceHook = lab.defineHook('reference');
+const referenceHook = defineHook<HTMLElement>('reference');
 
 export const useElement = (id: string) => {
   const elRef = ref$<HTMLElement>();
   referenceHook(
-    new DataHook<IElementRefHook>({
+    (el) => {
+      elRef.val = el;
+    },
+    {
       id,
-      ref: elRef,
-    }),
+    },
   );
   return elRef;
+};
+
+export const bindValue = (id: string, value$: Ref<string | undefined>) => {
+  const elRef = ref$<HTMLInputElement>();
+  referenceHook(
+    (el) => {
+      elRef.val = el as HTMLInputElement;
+    },
+    {
+      id,
+    },
+  );
+  const validElement$ = elRef.pipe(
+    filter((v): v is HTMLInputElement => v != null),
+  );
+
+  const valueChanged$ = validElement$.pipe(
+    switchMap((el) =>
+      merge(
+        fromEvent(el, 'change'),
+        fromEvent(el, 'keydown'),
+        fromEvent(el, 'paste'),
+        fromEvent(el, 'input'),
+      ),
+    ),
+    map((e) => e.target),
+    filter((t): t is HTMLInputElement => t != null),
+    map((t) => t.value),
+    filter((v) => v !== value$.val),
+  );
+
+  valueChanged$.subscribe((val) => {
+    value$.val = val;
+  });
+
+  combineLatest([validElement$, value$])
+    .pipe(
+      filter((arr): arr is [HTMLInputElement, string] => {
+        const [el, val] = arr;
+        return val != null && el.value !== val;
+      }),
+    )
+    .subscribe(([el, v]) => {
+      el.value = v;
+    });
 };

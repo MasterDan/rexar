@@ -1,3 +1,4 @@
+import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
 import { defineComponent } from '..';
 import { Component } from '../component';
@@ -9,6 +10,9 @@ export interface ITextComponentProps {
 export const textComponentName = 'text';
 
 export const textComponent = defineComponent<ITextComponentProps>({
+  props: {
+    value: ref$(''),
+  },
   name: textComponentName,
 });
 

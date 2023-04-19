@@ -1,4 +1,4 @@
-import { combineLatest, debounceTime, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, switchMap, tap } from 'rxjs';
 import { inject, injectable } from 'tsyringe';
 import type { IRefBuilder } from '../ref/@types/IRefBuilder';
 import type { RefBase } from '../ref/base.ref';
@@ -13,7 +13,7 @@ export class ComputedBuilder implements IComputedBuiler {
     @inject('IRefBuilder') private refBuilder: IRefBuilder,
   ) {}
 
-  build<T>(fn: () => T): ReadonlyRef<T | null> {
+  build<T>(fn: () => T, { debounce } = { debounce: 0 }): ReadonlyRef<T | null> {
     const result = this.refBuilder.buildRef<T | null>(null);
     const contextKey = Symbol('computed');
     const innerRefs$ = this.refBuilder.buildRef<RefBase[]>([]);
@@ -32,7 +32,7 @@ export class ComputedBuilder implements IComputedBuiler {
     innerRefs$
       .pipe(
         switchMap((refs) => combineLatest(refs)),
-        debounceTime(16),
+        debounce > 0 ? debounceTime(debounce) : tap(),
       )
       .subscribe(() => {
         result.val = compute();
