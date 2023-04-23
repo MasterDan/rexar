@@ -1,3 +1,5 @@
+import { IListComponentProps } from '@core/components/builtIn/list.component';
+import { Component } from '@core/components/component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from } from 'rxjs';
 import { container, injectable } from 'tsyringe';
@@ -7,7 +9,9 @@ import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 @injectable()
 export class ListRendererHtml extends HtmlRendererBase {
   renderInto(target: IBinding) {
-    const content = this.component.getProp('content') ?? [];
+    const content =
+      (this.component as Component<IListComponentProps>).getProp('content') ??
+      [];
     const renderContent = async () => {
       let renderer: IHtmlRenderer | null = null;
       // eslint-disable-next-line no-restricted-syntax
