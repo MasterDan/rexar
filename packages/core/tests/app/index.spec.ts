@@ -1,5 +1,6 @@
 import { createApp } from '@core/app';
 import { testOne } from './components/test-one/test-one.component';
+import { testThree } from './components/test-three/test-three.component';
 import { testTwo } from './components/test-two/test-two.component';
 
 describe('custom components', () => {
@@ -26,5 +27,9 @@ describe('custom components', () => {
         '</div>' +
         '</div>',
     );
+  });
+  test('test-three', async () => {
+    const appThree = await createApp(testThree.create()).mount('#app');
+    console.log(appThree?.outerHTML);
   });
 });

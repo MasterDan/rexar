@@ -11,7 +11,7 @@ function parseNodes(nodes: NodeListOf<ChildNode>): (AnyComponent | null)[] {
   return nodesArray.map((node): AnyComponent | null => {
     if (isTextNode(node)) {
       return isValidString(node.nodeValue)
-        ? (text({ value: ref$(node.nodeValue) }) as AnyComponent)
+        ? (text({ value: ref$(node.nodeValue.trim()) }) as AnyComponent)
         : null;
     }
     if (isHtmlElement(node)) {
