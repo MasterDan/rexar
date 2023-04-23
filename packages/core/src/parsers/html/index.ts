@@ -2,6 +2,7 @@ import { el } from '@core/components/builtIn/html-element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
+import { isValidString } from '@core/tools/string';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
 
@@ -9,7 +10,7 @@ function parseNodes(nodes: NodeListOf<ChildNode>): (AnyComponent | null)[] {
   const nodesArray = Array.from(nodes);
   return nodesArray.map((node): AnyComponent | null => {
     if (isTextNode(node)) {
-      return node.nodeValue
+      return isValidString(node.nodeValue)
         ? (text({ value: ref$(node.nodeValue) }) as AnyComponent)
         : null;
     }
