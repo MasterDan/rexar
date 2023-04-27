@@ -19,6 +19,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
     if (name == null) {
       throw new Error('Element must have name');
     }
+    console.log('rendering', name, 'into', binding);
     const attrs = this.component.getProp('attrs') ?? {};
     const children = this.component.getProp('children') ?? [];
     const renderEleMent = async (doc: Document) => {

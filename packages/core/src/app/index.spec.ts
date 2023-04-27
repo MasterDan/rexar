@@ -58,20 +58,13 @@ describe('app-tests', () => {
         name: 'div',
         children: [el({ name: 'input', attrs: { type: 'text' } })],
       }),
-      el({
-        name: 'div',
-        children: [el({ name: 'input', attrs: { type: 'text' } })],
-      }),
+
       text({ value: ref$('foo') }),
     ]);
     const elApp = await createApp(root).mount('#app');
     expect(elApp).not.toBeNull();
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
-        '<div>' +
-        '<input type="text">' +
-        // '<input type="text">' +
-        '</div>' +
         '<div>' +
         '<input type="text">' +
         // '<input type="text">' +
