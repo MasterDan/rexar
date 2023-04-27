@@ -1,4 +1,4 @@
-import { listComponent } from '@core/components/builtIn/list.component';
+import { list } from '@core/components/builtIn/list.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from, switchMap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
@@ -19,7 +19,6 @@ export class ElementRendererHtml extends HtmlRendererBase {
     if (name == null) {
       throw new Error('Element must have name');
     }
-    console.log('rendering', name, 'into', binding);
     const attrs = this.component.getProp('attrs') ?? {};
     const children = this.component.getProp('children') ?? [];
     const renderEleMent = async (doc: Document) => {
@@ -28,10 +27,10 @@ export class ElementRendererHtml extends HtmlRendererBase {
         el.setAttribute(k, attrs[k]);
       });
       if (children.length > 0) {
-        const list = listComponent.create();
-        list.bindProp('content', children);
+        const listComp = list(children);
+        listComp.bindProp('content', children);
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        renderer.setComponent(list);
+        renderer.setComponent(listComp);
         renderer.target$.val = {
           parentEl: el,
           role: BindingTargetRole.Parent,
@@ -39,7 +38,6 @@ export class ElementRendererHtml extends HtmlRendererBase {
         };
         await renderer.render();
       }
-      console.log('el:before', binding.parentEl.outerHTML);
       switch (binding.role) {
         case BindingTargetRole.Parent:
           binding.target.prepend(el);
@@ -50,7 +48,6 @@ export class ElementRendererHtml extends HtmlRendererBase {
         default:
           break;
       }
-      console.log('el:after', binding.parentEl.outerHTML);
       // console.log(el.outerHTML);
       if (this.component.id) {
         const ref = new ElementReference();

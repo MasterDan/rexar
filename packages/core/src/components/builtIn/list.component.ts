@@ -1,5 +1,7 @@
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineComponent } from '..';
+import { Component } from '../component';
+import { ITextComponentProps, textComponentName } from './text.component';
 
 export interface IListComponentProps {
   content: AnyComponent[];
@@ -14,6 +16,18 @@ export const listComponent = defineComponent<IListComponentProps>({
 
 export const list = (components: AnyComponent[]) => {
   const lc = listComponent.create();
-  lc.bindProp('content', components);
+
+  lc.bindProp(
+    'content',
+    components.map((c, i, a) => {
+      if (c.name === textComponentName && i < a.length - 1) {
+        (c as Component<ITextComponentProps>).bindProp(
+          'trailingTemplate',
+          true,
+        );
+      }
+      return c;
+    }),
+  );
   return lc;
 };

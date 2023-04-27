@@ -15,9 +15,7 @@ export class TextRendererHtml extends HtmlRendererBase {
     const text$ = component.getProp('value');
     const inserTrailingTemlate = component.getProp('trailingTemplate') ?? false;
 
-    console.log('writing', text$.val, 'into', binding);
-
-    return container.resolve(DocumentRef).instance$.pipe(
+    const valueChanged$ = container.resolve(DocumentRef).instance$.pipe(
       switchMap((doc) =>
         text$.pipe(
           map((str) => ({
@@ -26,49 +24,53 @@ export class TextRendererHtml extends HtmlRendererBase {
           })),
         ),
       ),
+    );
+    valueChanged$.subscribe(({ str }) => {
+      if (this.node) {
+        this.node.textContent = str;
+      }
+    });
+    return valueChanged$.pipe(
       map(({ doc, str }) => {
-        if (this.node == null) {
-          this.node = doc.createTextNode(str);
-          console.log('text:before', binding.parentEl.outerHTML);
-          const trailingTemplate = inserTrailingTemlate
-            ? doc.createElement('template')
-            : undefined;
-          switch (binding.role) {
-            case BindingTargetRole.Parent:
-              if (inserTrailingTemlate) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                binding.target.prepend(trailingTemplate!);
-              }
-              binding.target.prepend(this.node);
-              break;
-            case BindingTargetRole.PreviousSibling:
-              if (inserTrailingTemlate) {
-                binding.parentEl.insertBefore(
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  trailingTemplate!,
-                  binding.target.nextSibling,
-                );
-              }
+        if (this.node != null) {
+          return undefined;
+        }
+        this.node = doc.createTextNode(str);
+        const trailingTemplate = inserTrailingTemlate
+          ? doc.createElement('template')
+          : undefined;
+        switch (binding.role) {
+          case BindingTargetRole.Parent:
+            if (inserTrailingTemlate) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              binding.target.prepend(trailingTemplate!);
+            }
+            binding.target.prepend(this.node);
+            break;
+          case BindingTargetRole.PreviousSibling:
+            if (inserTrailingTemlate) {
               binding.parentEl.insertBefore(
-                this.node,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                trailingTemplate!,
                 binding.target.nextSibling,
               );
-              break;
-            default:
-              break;
-          }
-          const nextBinding: IBinding = {
-            parentEl: binding.parentEl,
-            role: BindingTargetRole.PreviousSibling,
-            target: inserTrailingTemlate
-              ? (trailingTemplate as HTMLElement)
-              : binding.parentEl,
-          };
-          console.log('tet:after', binding.parentEl.outerHTML);
-          return nextBinding;
+            }
+            binding.parentEl.insertBefore(
+              this.node,
+              binding.target.nextSibling,
+            );
+            break;
+          default:
+            break;
         }
-        this.node.textContent = str;
-        return undefined;
+        const nextBinding: IBinding = {
+          parentEl: binding.parentEl,
+          role: BindingTargetRole.PreviousSibling,
+          target: inserTrailingTemlate
+            ? (trailingTemplate as HTMLElement)
+            : binding.parentEl,
+        };
+        return nextBinding;
       }),
     );
   }

@@ -32,7 +32,6 @@ export class ListRendererHtml extends HtmlRendererBase {
           // eslint-disable-next-line no-await-in-loop
           await newRenderer.render();
         }
-        console.log('listItem:after', target.parentEl.outerHTML);
       }
 
       return renderer?.nextTarget$.value ?? undefined;

@@ -71,4 +71,33 @@ describe('app-tests', () => {
         '</div>',
     );
   });
+  test('multiple-text-nodes', async () => {
+    const bar = ref$('bar');
+    const root = list([
+      text({ value: ref$('foo') }),
+      text({ value: bar }),
+      text({ value: ref$('baz') }),
+    ]);
+    const elApp = await createApp(root).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        'foo' +
+        '<template></template>' +
+        'bar' +
+        '<template></template>' +
+        'baz' +
+        '</div>',
+    );
+    bar.val = 'barChanged';
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        'foo' +
+        '<template></template>' +
+        'barChanged' +
+        '<template></template>' +
+        'baz' +
+        '</div>',
+    );
+  });
 });

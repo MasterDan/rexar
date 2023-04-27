@@ -30,6 +30,23 @@ describe('custom components', () => {
   });
   test('test-three', async () => {
     const appThree = await createApp(testThree.create()).mount('#app');
-    console.log(appThree?.outerHTML);
+    expect(appThree?.outerHTML).toBe(
+      '<div id="app"><div>' +
+        '<div>' +
+        '<div>Lorem, ipsum dolor.</div>' +
+        '<div>Sed, laboriosam numquam.</div>' +
+        '<div>Qui, nobis repellat?</div>' +
+        '<div>Nihil, eum eveniet.</div>' +
+        '<div>Quidem, optio consectetur?</div>' +
+        '</div>' +
+        'one' +
+        '<template></template>' +
+        '<div>' +
+        '<input type="text">' +
+        '<input type="text">' +
+        '</div>' +
+        'two' +
+        '</div></div>',
+    );
   });
 });
