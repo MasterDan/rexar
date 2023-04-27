@@ -56,6 +56,6 @@ export class Component<TProps extends TData = TData> {
   }
 
   getProp<T extends keyof TProps>(key: T) {
-    return this.props$.val ? this.props$.val[key] : null;
+    return this.props$.val[key];
   }
 }
