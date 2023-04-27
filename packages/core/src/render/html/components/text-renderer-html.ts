@@ -34,6 +34,7 @@ export class TextRendererHtml extends HtmlRendererBase {
       .subscribe(({ doc, str }) => {
         if (this.node == null) {
           this.node = doc.createTextNode(str);
+          console.log('text:before', binding.parentEl.outerHTML);
           switch (binding.role) {
             case BindingTargetRole.Parent:
               binding.target.prepend(this.node);
@@ -47,6 +48,7 @@ export class TextRendererHtml extends HtmlRendererBase {
             default:
               break;
           }
+          console.log('tet:after', binding.parentEl.outerHTML);
         } else {
           this.node.textContent = str;
         }

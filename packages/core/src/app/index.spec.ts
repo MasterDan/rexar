@@ -58,7 +58,6 @@ describe('app-tests', () => {
         name: 'div',
         children: [el({ name: 'input', attrs: { type: 'text' } })],
       }),
-
       text({ value: ref$('foo') }),
     ]);
     const elApp = await createApp(root).mount('#app');
@@ -67,7 +66,6 @@ describe('app-tests', () => {
       '<div id="app">' +
         '<div>' +
         '<input type="text">' +
-        // '<input type="text">' +
         '</div>' +
         'foo' +
         '</div>',

@@ -39,6 +39,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
         };
         await renderer.render();
       }
+      console.log('el:before', binding.parentEl.outerHTML);
       switch (binding.role) {
         case BindingTargetRole.Parent:
           binding.target.prepend(el);
@@ -49,6 +50,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
         default:
           break;
       }
+      console.log('el:after', binding.parentEl.outerHTML);
       // console.log(el.outerHTML);
       if (this.component.id) {
         const ref = new ElementReference();

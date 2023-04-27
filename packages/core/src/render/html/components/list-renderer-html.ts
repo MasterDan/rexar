@@ -14,6 +14,7 @@ export class ListRendererHtml extends HtmlRendererBase {
       [];
     const renderContent = async () => {
       let renderer: IHtmlRenderer | null = null;
+
       // eslint-disable-next-line no-restricted-syntax
       for (const component of content) {
         if (renderer == null) {
@@ -31,7 +32,9 @@ export class ListRendererHtml extends HtmlRendererBase {
           // eslint-disable-next-line no-await-in-loop
           await newRenderer.render();
         }
+        console.log('listItem:after', target.parentEl.outerHTML);
       }
+
       return renderer?.nextTarget$.value ?? undefined;
     };
     return from(renderContent());
