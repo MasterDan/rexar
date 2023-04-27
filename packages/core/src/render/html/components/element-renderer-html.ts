@@ -1,4 +1,4 @@
-import { listComponent } from '@core/components/builtIn/list.component';
+import { list } from '@core/components/builtIn/list.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from, switchMap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
@@ -27,10 +27,10 @@ export class ElementRendererHtml extends HtmlRendererBase {
         el.setAttribute(k, attrs[k]);
       });
       if (children.length > 0) {
-        const list = listComponent.create();
-        list.bindProp('content', children);
+        const listComp = list(children);
+        listComp.bindProp('content', children);
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        renderer.setComponent(list);
+        renderer.setComponent(listComp);
         renderer.target$.val = {
           parentEl: el,
           role: BindingTargetRole.Parent,

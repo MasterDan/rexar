@@ -1,4 +1,5 @@
 import { el } from '@core/components/builtIn/html-element.component';
+import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { createApp } from '.';
@@ -49,6 +50,54 @@ describe('app-tests', () => {
     expect(elApp).not.toBeNull();
     expect(elApp?.outerHTML ?? 'oh-no').toBe(
       '<div id="app"><div><span>hello</span><span>world</span></div></div>',
+    );
+  });
+  test('div-with-inputs', async () => {
+    const root = list([
+      el({
+        name: 'div',
+        children: [el({ name: 'input', attrs: { type: 'text' } })],
+      }),
+      text({ value: ref$('foo') }),
+    ]);
+    const elApp = await createApp(root).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div>' +
+        '<input type="text">' +
+        '</div>' +
+        'foo' +
+        '</div>',
+    );
+  });
+  test('multiple-text-nodes', async () => {
+    const bar = ref$('bar');
+    const root = list([
+      text({ value: ref$('foo') }),
+      text({ value: bar }),
+      text({ value: ref$('baz') }),
+    ]);
+    const elApp = await createApp(root).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        'foo' +
+        '<template></template>' +
+        'bar' +
+        '<template></template>' +
+        'baz' +
+        '</div>',
+    );
+    bar.val = 'barChanged';
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        'foo' +
+        '<template></template>' +
+        'barChanged' +
+        '<template></template>' +
+        'baz' +
+        '</div>',
     );
   });
 });

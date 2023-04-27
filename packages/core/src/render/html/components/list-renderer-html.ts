@@ -1,18 +1,20 @@
+import { IListComponentProps } from '@core/components/builtIn/list.component';
+import { Component } from '@core/components/component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { from, takeUntil, Subject } from 'rxjs';
+import { from } from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
 @injectable()
 export class ListRendererHtml extends HtmlRendererBase {
-  unbind$ = new Subject<void>();
-
   renderInto(target: IBinding) {
-    const content = this.component.getProp('content') ?? [];
+    const content =
+      (this.component as Component<IListComponentProps>).getProp('content') ??
+      [];
     const renderContent = async () => {
-      this.unbind$.next();
       let renderer: IHtmlRenderer | null = null;
+
       // eslint-disable-next-line no-restricted-syntax
       for (const component of content) {
         if (renderer == null) {
@@ -25,14 +27,13 @@ export class ListRendererHtml extends HtmlRendererBase {
           const newRenderer: IHtmlRenderer =
             container.resolve<IHtmlRenderer>('IHtmlRenderer');
           newRenderer.setComponent(component);
-          renderer.nextTarget$.pipe(takeUntil(this.unbind$)).subscribe((nt) => {
-            newRenderer.target$.val = nt ?? target;
-          });
+          newRenderer.target$.val = renderer.nextTarget$.val ?? target;
           renderer = newRenderer;
           // eslint-disable-next-line no-await-in-loop
           await newRenderer.render();
         }
       }
+
       return renderer?.nextTarget$.value ?? undefined;
     };
     return from(renderContent());

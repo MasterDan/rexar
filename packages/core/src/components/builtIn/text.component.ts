@@ -5,6 +5,7 @@ import { Component } from '../component';
 
 export interface ITextComponentProps {
   value: Ref<string>;
+  trailingTemplate?: boolean;
 }
 
 export const textComponentName = 'text';

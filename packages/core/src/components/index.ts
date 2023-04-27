@@ -9,6 +9,9 @@ export type ComponentDefinition<TProps extends TData = TData> = {
   name?: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyComponentDefinition = ComponentDefinition<any>;
+
 function shouldWeCreateCustomComponent<TProps extends TData>(
   args: IComponentDefinitionArgs<TProps>,
 ): args is ICustomComponentDefinitionArgs<TProps> {
