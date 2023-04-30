@@ -15,9 +15,9 @@ export const listComponent = defineComponent<IListComponentProps>({
 });
 
 export const list = (components: AnyComponent[]) => {
-  const lc = listComponent.create();
+  const listComp = listComponent.create();
 
-  lc.bindProp(
+  listComp.bindProp(
     'content',
     components.map((c, i, a) => {
       if (c.name === textComponentName && i < a.length - 1) {
@@ -29,5 +29,5 @@ export const list = (components: AnyComponent[]) => {
       return c;
     }),
   );
-  return lc;
+  return listComp;
 };
