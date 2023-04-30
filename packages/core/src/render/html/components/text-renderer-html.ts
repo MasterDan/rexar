@@ -10,6 +10,23 @@ import { DocumentRef } from '../documentRef';
 export class TextRendererHtml extends HtmlRendererBase {
   private node: Text | undefined;
 
+  private trailingTemplate: HTMLTemplateElement | undefined;
+
+  unmount(): Promise<void> {
+    if (this.node == null) {
+      throw new Error('Nothing To Unmount');
+    }
+    if (this.target$.val == null) {
+      throw new Error('Target not exists');
+    }
+    this.node.parentNode?.removeChild(this.node);
+    if (this.trailingTemplate) {
+      this.trailingTemplate.remove();
+    }
+    this.nextTarget$.val = this.target$.val;
+    return Promise.resolve();
+  }
+
   renderInto(binding: IBinding) {
     const component = this.component as Component<ITextComponentProps>;
     const text$ = component.getProp('value');
@@ -36,14 +53,14 @@ export class TextRendererHtml extends HtmlRendererBase {
           return undefined;
         }
         this.node = doc.createTextNode(str);
-        const trailingTemplate = inserTrailingTemlate
+        this.trailingTemplate = inserTrailingTemlate
           ? doc.createElement('template')
           : undefined;
         switch (binding.role) {
           case BindingTargetRole.Parent:
             if (inserTrailingTemlate) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              binding.target.prepend(trailingTemplate!);
+              binding.target.prepend(this.trailingTemplate!);
             }
             binding.target.prepend(this.node);
             break;
@@ -51,7 +68,7 @@ export class TextRendererHtml extends HtmlRendererBase {
             if (inserTrailingTemlate) {
               binding.parentEl.insertBefore(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                trailingTemplate!,
+                this.trailingTemplate!,
                 binding.target.nextSibling,
               );
             }
@@ -67,7 +84,7 @@ export class TextRendererHtml extends HtmlRendererBase {
           parentEl: binding.parentEl,
           role: BindingTargetRole.PreviousSibling,
           target: inserTrailingTemlate
-            ? (trailingTemplate as HTMLElement)
+            ? (this.trailingTemplate as HTMLElement)
             : binding.parentEl,
         };
         return nextBinding;

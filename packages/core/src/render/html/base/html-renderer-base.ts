@@ -24,6 +24,8 @@ export abstract class HtmlRendererBase implements IHtmlRenderer {
 
   abstract renderInto(target: IBinding): Observable<IBinding | undefined>;
 
+  abstract unmount(): Promise<void>;
+
   public async render() {
     if (this.target$.val == null) {
       return;
