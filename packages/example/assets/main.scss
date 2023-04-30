@@ -1,3 +1,20 @@
+@import '_colors.scss';
+
+@each $theme-name in map-keys($themes) {
+  .theme-#{$theme-name} {
+    @include theme($theme-name);
+  }
+}
+
+:root {
+  @media (prefers-color-scheme: dark) {
+    @include theme('dark');
+  }
+  @media (prefers-color-scheme: light) {
+    @include theme('light');
+  }
+}
+
 h1 {
-  color: green;
+  color: var(--app-color-accent);
 }
