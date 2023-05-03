@@ -71,11 +71,11 @@ export class ListRendererHtml extends HtmlRendererBase {
         ),
       )
       .subscribe(({ next, currNext }) => {
+        next.val = currNext;
         console.log(
           'setting target',
-          this.listRenderers$.val?.map((i) => i.target$.val),
+          this.listRenderers$.val?.map((i) => i.target$.val ?? null),
         );
-        next.val = currNext;
       });
   }
 
@@ -107,12 +107,11 @@ export class ListRendererHtml extends HtmlRendererBase {
       // eslint-disable-next-line no-restricted-syntax
       for (const renderer of renderers) {
         if (renderer.target$.val == null) {
+          renderer.target$.val = target;
           console.log(
             'target is null -> setting parent',
-            this.listRenderers$.val?.map((i) => i.target$.val),
+            this.listRenderers$.val?.map((i) => i.target$.val ?? null),
           );
-
-          renderer.target$.val = target;
         }
         // eslint-disable-next-line no-await-in-loop
         await renderer.render();
