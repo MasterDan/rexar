@@ -84,6 +84,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
         reference.el.val = el;
         reference.component.val = this.elComponent;
       }
+      console.log(binding.parentEl.outerHTML);
 
       return {
         parentEl: binding.parentEl,
