@@ -1,5 +1,6 @@
 import { ref$ } from '@core/reactivity/ref';
 import { Observable, take, lastValueFrom } from 'rxjs';
+import { filter } from 'rxjs/internal/operators/filter';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
@@ -7,17 +8,21 @@ import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 export abstract class HtmlRendererBase implements IHtmlRenderer {
   public target$ = ref$<IBinding>();
 
-  private $component: AnyComponent | undefined;
+  private $component = ref$<AnyComponent>();
 
   protected get component() {
-    if (this.$component == null) {
+    if (this.$component.val == null) {
       throw new Error('Component must be set before render');
     }
-    return this.$component;
+    return this.$component.val;
+  }
+
+  protected get component$() {
+    return this.$component.pipe(filter((c): c is AnyComponent => c != null));
   }
 
   public setComponent(c: AnyComponent) {
-    this.$component = c;
+    this.$component.val = c;
   }
 
   public nextTarget$ = ref$<IBinding>();

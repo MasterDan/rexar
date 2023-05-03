@@ -21,8 +21,17 @@ import { RefStore } from '../ref-store/ref-store';
 
 @injectable()
 export class CustomRendererHtml extends HtmlRendererBase {
+  private renderer: IHtmlRenderer | undefined;
+
   constructor(private refStore: RefStore) {
     super();
+  }
+
+  async unmount(): Promise<void> {
+    if (this.renderer == null) {
+      throw new Error('Cannot unmout component that has not been rendered');
+    }
+    await this.renderer.unmount();
   }
 
   renderInto(target: IBinding): Observable<IBinding | undefined> {
@@ -66,6 +75,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
       if (template.length === 1) {
         const [componentTemplate] = template;
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
+        this.renderer = renderer;
         renderer.setComponent(componentTemplate);
         renderer.target$.val = target;
         await renderer.render();
@@ -75,6 +85,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
         const componentTemplate = listComponent.create();
         componentTemplate.bindProp('content', template);
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
+        this.renderer = renderer;
         renderer.setComponent(componentTemplate);
         renderer.target$.val = target;
         await renderer.render();

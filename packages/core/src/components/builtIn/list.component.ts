@@ -1,16 +1,18 @@
+import { ref$ } from '@core/reactivity/ref';
+import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineComponent } from '..';
 import { Component } from '../component';
 import { ITextComponentProps, textComponentName } from './text.component';
 
 export interface IListComponentProps {
-  content: AnyComponent[];
+  content: Ref<AnyComponent[]>;
 }
 
 export const listComponentName = 'list';
 
 export const listComponent = defineComponent<IListComponentProps>({
-  props: { content: [] },
+  props: { content: ref$<AnyComponent[]>([]) },
   name: listComponentName,
 });
 
