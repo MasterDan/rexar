@@ -58,6 +58,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
         const listComp = list(children);
         listComp.bindProp('content', children);
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
+        console.log('setting list of children');
         renderer.setComponent(listComp);
         renderer.target$.val = {
           parentEl: el,

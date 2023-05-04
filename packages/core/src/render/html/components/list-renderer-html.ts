@@ -16,26 +16,30 @@ import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
+let index = 1;
+
 @injectable()
 export class ListRendererHtml extends HtmlRendererBase {
   private listContent$ = ref$<AnyComponent[]>();
 
   private listRenderers$ = ref$<IHtmlRenderer[]>();
 
+  // eslint-disable-next-line no-plusplus
+  private index = index++;
+
+  private unsub$ = new Subject<void>();
+
   constructor() {
     super();
+    this.unsub$.subscribe(() => {
+      console.log(`unsub triggered in renderer ${this.index}`);
+    });
     this.component$
       .pipe(
-        tap(() => {
-          console.log('component received');
-        }),
         filter(
           (c): c is Component<IListComponentProps> =>
             c.name === listComponentName,
         ),
-        tap(() => {
-          console.log('valid component received');
-        }),
         mergeMap((c) => c.getProp('content')),
         map((content) =>
           content.map((c, i, a) => {
@@ -50,6 +54,10 @@ export class ListRendererHtml extends HtmlRendererBase {
         ),
       )
       .subscribe((content) => {
+        console.log(
+          `new content (len: ${content.length}) In list ${this.index}`,
+        );
+
         this.listContent$.val = content;
       });
     this.listContent$
@@ -61,16 +69,20 @@ export class ListRendererHtml extends HtmlRendererBase {
           return renderer;
         });
       });
-    const unsub$ = new Subject<void>();
     this.listRenderers$
       .pipe(
         filter((x): x is IHtmlRenderer[] => x != null),
-        tap(() => unsub$.next()),
+        tap((x) => {
+          console.log(
+            `renderers  (len: ${x.length}) updated In list ${this.index}`,
+          );
+        }),
+        tap(() => this.unsub$.next()),
         mergeMap((x) => from(x)),
         pairwise(),
         mergeMap(([curr, next]) =>
           curr.nextTarget$.pipe(
-            takeUntil(unsub$),
+            takeUntil(this.unsub$),
             filter((t): t is IBinding => t != null),
             map((t) => ({ currNext: t, next: next.target$ })),
           ),

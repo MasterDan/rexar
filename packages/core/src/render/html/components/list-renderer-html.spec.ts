@@ -45,6 +45,5 @@ describe('list-renderer-html', () => {
         '<span class="baz"></span>' +
         '</div>',
     );
-    console.log(listRenderer.nextTarget$.val);
   });
 });

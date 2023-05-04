@@ -87,6 +87,47 @@ describe('app-tests', () => {
         '</div>',
     );
   });
+  test('simple-html-element-with-children', async () => {
+    const elRoot = el({
+      name: 'div',
+      children: [
+        el({
+          name: 'div',
+          attrs: { class: 'foo' },
+          children: [
+            el({
+              name: 'span',
+              attrs: { class: 'foo-bar' },
+            }),
+            el({
+              name: 'span',
+              attrs: { class: 'foo-baz' },
+            }),
+          ],
+        }),
+        el({
+          name: 'span',
+          attrs: { class: 'bar' },
+        }),
+        el({
+          name: 'span',
+          attrs: { class: 'baz' },
+        }),
+      ],
+    });
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML ?? 'oh-no').toBe(
+      '<div id="app"><div>' +
+        '<div class="foo">' +
+        '<span class="foo-bar"></span>' +
+        '<span class="foo-baz"></span>' +
+        '</div>' +
+        '<span class="bar"></span>' +
+        '<span class="baz"></span>' +
+        '</div></div>',
+    );
+  });
   test('html-element-with-children', async () => {
     const elRoot = el({
       name: 'div',
