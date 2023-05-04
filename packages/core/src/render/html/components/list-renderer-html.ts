@@ -26,10 +26,16 @@ export class ListRendererHtml extends HtmlRendererBase {
     super();
     this.component$
       .pipe(
+        tap(() => {
+          console.log('component received');
+        }),
         filter(
           (c): c is Component<IListComponentProps> =>
             c.name === listComponentName,
         ),
+        tap(() => {
+          console.log('valid component received');
+        }),
         mergeMap((c) => c.getProp('content')),
         map((content) =>
           content.map((c, i, a) => {

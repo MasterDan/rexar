@@ -32,6 +32,61 @@ describe('app-tests', () => {
       '<div id="app"><div>Hello, World!</div></div>',
     );
   });
+
+  test('list-test', async () => {
+    const elRoot = list([
+      el({ name: 'div', attrs: { class: 'foo' } }),
+      el({ name: 'span', attrs: { class: 'bar' } }),
+      el({ name: 'div', attrs: { class: 'baz' } }),
+    ]);
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div class="foo"></div>' +
+        '<span class="bar"></span>' +
+        '<div class="baz"></div>' +
+        '</div>',
+    );
+  });
+  test('inner-list-test', async () => {
+    const elRoot = list([
+      el({
+        name: 'div',
+        attrs: { class: 'foo' },
+        children: [
+          el({ name: 'span', attrs: { class: 'foo-foo' } }),
+          el({ name: 'span', attrs: { class: 'foo-bar' } }),
+        ],
+      }),
+      el({ name: 'span', attrs: { class: 'bar' } }),
+      el({ name: 'span', attrs: { class: 'bar2' } }),
+      el({
+        name: 'div',
+        attrs: { class: 'baz' },
+        children: [
+          el({ name: 'span', attrs: { class: 'baz-foo' } }),
+          el({ name: 'span', attrs: { class: 'baz-bar' } }),
+        ],
+      }),
+    ]);
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div class="foo">' +
+        '<span class="foo-foo"></span>' +
+        '<span class="foo-bar"></span>' +
+        '</div>' +
+        '<span class="bar"></span>' +
+        '<span class="bar2"></span>' +
+        '<div class="baz">' +
+        '<span class="baz-foo"></span>' +
+        '<span class="baz-bar"></span>' +
+        '</div>' +
+        '</div>',
+    );
+  });
   test('html-element-with-children', async () => {
     const elRoot = el({
       name: 'div',
