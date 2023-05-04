@@ -145,7 +145,12 @@ describe('app-tests', () => {
     const elApp = await createApp(elRoot).mount('#app');
     expect(elApp).not.toBeNull();
     expect(elApp?.outerHTML ?? 'oh-no').toBe(
-      '<div id="app"><div><span>hello</span><span>world</span></div></div>',
+      '<div id="app">' +
+        '<div>' +
+        '<span>hello</span>' +
+        '<span>world</span>' +
+        '</div>' +
+        '</div>',
     );
   });
   test('div-with-inputs', async () => {
