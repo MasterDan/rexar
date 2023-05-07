@@ -9,8 +9,16 @@ import {
 import { Component } from '@core/components/component';
 import { ref$ } from '@core/reactivity/ref';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { from, map, mergeMap, pairwise, Subject, takeUntil, tap } from 'rxjs';
-import { filter } from 'rxjs/internal/operators/filter';
+import {
+  filter,
+  from,
+  map,
+  mergeMap,
+  pairwise,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';

@@ -1,6 +1,5 @@
 import { ref$ } from '@core/reactivity/ref';
-import { Observable, take, lastValueFrom } from 'rxjs';
-import { filter } from 'rxjs/internal/operators/filter';
+import { Observable, take, lastValueFrom, filter } from 'rxjs';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
