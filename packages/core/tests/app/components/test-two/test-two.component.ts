@@ -6,7 +6,7 @@ import template from './test-two.component.html';
 
 export const testTwo = defineComponent({
   template,
-  props: {},
+  props: () => ({}),
   setup() {
     useElement('#middle')
       .pipe(filter((x): x is HTMLElement => x != null))

@@ -11,7 +11,7 @@ type PropValue<T> = T extends Observable<infer R> ? R : T;
 export interface IComponentDefinitionArgs<TProps extends TData = TData> {
   id?: string;
   name?: string;
-  props: TProps;
+  props: () => TProps;
 }
 
 export class Component<TProps extends TData = TData> {
@@ -24,7 +24,7 @@ export class Component<TProps extends TData = TData> {
   constructor({ props, name, id }: IComponentDefinitionArgs<TProps>) {
     this.id = id;
     this.name = name;
-    this.props$ = ref$<TProps>(props);
+    this.props$ = ref$<TProps>(props());
   }
 
   bindProp<T extends keyof TProps>(

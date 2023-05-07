@@ -10,7 +10,7 @@ export interface IListComponentProps {
 export const listComponentName = 'list';
 
 export const listComponent = defineComponent<IListComponentProps>({
-  props: { content: ref$<AnyComponent[]>([]) },
+  props: () => ({ content: ref$<AnyComponent[]>([]) }),
   name: listComponentName,
 });
 

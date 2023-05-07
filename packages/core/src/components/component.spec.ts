@@ -10,12 +10,12 @@ interface ITestProps {
 describe('component class', () => {
   test('read props', () => {
     const { create } = defineComponent<ITestProps>({
-      props: {
+      props: () => ({
         n: 100,
         s: 'hello',
         obj: { n: 101, s: 'i-m-obj' },
         lst: [{ n: 103, s: 'lst-1' }],
-      },
+      }),
     });
     const inst = create();
     expect(inst.getProp('n')).toBe(100);
@@ -23,12 +23,12 @@ describe('component class', () => {
   });
   test('bind props', () => {
     const inst = defineComponent<ITestProps>({
-      props: {
+      props: () => ({
         lst: [],
         n: 0,
         obj: { n: 0, s: '' },
         s: '',
-      },
+      }),
     }).create();
     inst.bindProp('n', 20);
     expect(inst.getProp('n')).toBe(20);

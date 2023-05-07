@@ -13,11 +13,11 @@ export interface IIfElseComponentProps {
 
 export const IfElseComponent = defineComponent<IIfElseComponentProps>({
   name: ifElseComponentName,
-  props: {
+  props: () => ({
     if$: ref$(false),
     ifFalse$: ref$(),
     ifTrue$: ref$(),
-  },
+  }),
 });
 
 export const ifElse = (

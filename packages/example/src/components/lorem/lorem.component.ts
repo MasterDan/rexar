@@ -3,7 +3,7 @@ import { bindValue, defineComponent, innerTextFor, ref$ } from '@rexar/core';
 import template from 'bundle-text:./lorem.component.html';
 
 export const lorem = defineComponent({
-  props: {},
+  props: () => ({}),
   template,
   setup() {
     const val = ref$<string | undefined>('hello');

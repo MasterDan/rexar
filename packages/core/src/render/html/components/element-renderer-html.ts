@@ -58,7 +58,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
         const listComp = list(children);
         listComp.bindProp('content', children);
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        console.log('setting list of children');
+        // console.log('setting list of children');
         renderer.setComponent(listComp);
         renderer.target$.val = {
           parentEl: el,
@@ -85,7 +85,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
         reference.el.val = el;
         reference.component.val = this.elComponent;
       }
-      console.log(binding.parentEl.outerHTML);
+      // console.log(binding.parentEl.outerHTML);
 
       return {
         parentEl: binding.parentEl,

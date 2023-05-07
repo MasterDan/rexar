@@ -11,9 +11,9 @@ export interface ITextComponentProps {
 export const textComponentName = 'text';
 
 export const textComponent = defineComponent<ITextComponentProps>({
-  props: {
+  props: () => ({
     value: ref$(''),
-  },
+  }),
   name: textComponentName,
 });
 
