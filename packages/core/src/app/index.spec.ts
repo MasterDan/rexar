@@ -87,6 +87,33 @@ describe('app-tests', () => {
         '</div>',
     );
   });
+  test('list of lists', async () => {
+    const elRoot = list([
+      list([
+        el({ name: 'span', attrs: { class: 'foo-foo' } }),
+        el({ name: 'span', attrs: { class: 'foo-bar' } }),
+      ]),
+      list([
+        el({ name: 'div', attrs: { class: 'foo' } }),
+        el({ name: 'span', attrs: { class: 'bar' } }),
+        el({ name: 'div', attrs: { class: 'baz' } }),
+      ]),
+      text({ value: ref$('hello') }),
+    ]);
+
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<span class="foo-foo"></span>' +
+        '<span class="foo-bar"></span>' +
+        '<div class="foo"></div>' +
+        '<span class="bar"></span>' +
+        '<div class="baz"></div>' +
+        'hello' +
+        '</div>',
+    );
+  });
   test('simple-html-element-with-children', async () => {
     const elRoot = el({
       name: 'div',
