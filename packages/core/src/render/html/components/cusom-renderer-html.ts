@@ -1,4 +1,4 @@
-import { CustomComponent } from '@core/components/builtIn/custom/custom-template-component';
+import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
 import { listComponent } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
 
@@ -35,10 +35,10 @@ export class CustomRendererHtml extends HtmlRendererBase {
   }
 
   renderInto(target: IBinding): Observable<IBinding | undefined> {
-    if (!(this.component instanceof CustomComponent)) {
+    if (!(this.component instanceof CustomTemplateComponent)) {
       throw new Error('Component should be custom');
     }
-    const component = this.component as CustomComponent;
+    const component = this.component as CustomTemplateComponent;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.refStore.beginScope(this.component.name!);
     const { track$, end } = hookScope.beginScope();

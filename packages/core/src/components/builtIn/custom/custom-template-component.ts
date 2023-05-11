@@ -22,15 +22,16 @@ export interface ISetupContext<TProps> {
 }
 
 type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
-export interface ICustomComponentDefinitionArgs<TProps extends TData = TData>
-  extends IComponentDefinitionArgs<TProps> {
+export interface ICustomTemplateComponentDefinitionArgs<
+  TProps extends TData = TData,
+> extends IComponentDefinitionArgs<TProps> {
   setup?: SetupFn<TProps>;
   template: string | AnyComponent[];
 }
 
 export const customTemplateComponentName = 'custom-template-component';
 
-export class CustomComponent<
+export class CustomTemplateComponent<
   TProps extends TData = TData,
 > extends Component<TProps> {
   private setupFn?: SetupFn<TProps>;
@@ -54,7 +55,7 @@ export class CustomComponent<
     ),
   );
 
-  constructor(args: ICustomComponentDefinitionArgs<TProps>) {
+  constructor(args: ICustomTemplateComponentDefinitionArgs<TProps>) {
     super(args);
     this.setupFn = args.setup;
     this.template = args.template;

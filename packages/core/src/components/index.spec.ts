@@ -33,4 +33,9 @@ describe('component class', () => {
     inst.bindProp('n', 20);
     expect(inst.getProp('n')).toBe(20);
   });
+  test('bind props second', () => {
+    const inst = defineComponent({}).create();
+    inst.bindProp('n', 20);
+    expect(inst.getProp('n')).toBe(20);
+  });
 });
