@@ -7,7 +7,7 @@ import { ComponentType } from './component-type';
 
 export type ComponentDefinition<TProps extends TData = TData> = {
   create: () => Component<TProps>;
-  name?: string;
+  type: ComponentType;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,13 +41,15 @@ function defineComponentWithoutProps(
     | Omit<ICustomTemplateComponentDefinitionArgs<TData>, 'props'>,
 ): ComponentDefinition<TData> {
   const creationArgs = { ...args, props: () => ({}) };
-  const create = shouldWeCreateCustomComponent(creationArgs)
-    ? () => new CustomTemplateComponent<TData>(creationArgs)
-    : () => new Component<TData>(creationArgs);
-  const type = shouldWeCreateCustomComponent(creationArgs)
-    ? ComponentType.CustomTemplate
-    : creationArgs.type;
-  return { create, name: type };
+  return shouldWeCreateCustomComponent(creationArgs)
+    ? {
+        create: () => new CustomTemplateComponent<TData>(creationArgs),
+        type: ComponentType.CustomTemplate,
+      }
+    : {
+        create: () => new Component<TData>(creationArgs),
+        type: creationArgs.type,
+      };
 }
 
 function defineComponentWithProps<TProps extends TData = TData>(
@@ -55,13 +57,15 @@ function defineComponentWithProps<TProps extends TData = TData>(
     | IComponentDefinitionArgs<TProps>
     | ICustomTemplateComponentDefinitionArgs<TProps>,
 ): ComponentDefinition<TProps> {
-  const create = shouldWeCreateCustomComponent(args)
-    ? () => new CustomTemplateComponent<TProps>(args)
-    : () => new Component<TProps>(args);
-  const type = shouldWeCreateCustomComponent(args)
-    ? ComponentType.CustomTemplate
-    : args.type;
-  return { create, name: type };
+  return shouldWeCreateCustomComponent(args)
+    ? {
+        create: () => new CustomTemplateComponent<TProps>(args),
+        type: ComponentType.CustomTemplate,
+      }
+    : {
+        create: () => new Component<TProps>(args),
+        type: args.type,
+      };
 }
 
 export function defineComponent(
