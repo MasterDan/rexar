@@ -3,6 +3,7 @@ import {
   ICustomTemplateComponentDefinitionArgs,
 } from './builtIn/custom/custom-template-component';
 import { Component, IComponentDefinitionArgs, TData } from './component';
+import { ComponentType } from './component-type';
 
 export type ComponentDefinition<TProps extends TData = TData> = {
   create: () => Component<TProps>;
@@ -13,7 +14,9 @@ export type ComponentDefinition<TProps extends TData = TData> = {
 export type AnyComponentDefinition = ComponentDefinition<any>;
 
 function shouldWeCreateCustomComponent<TProps extends TData>(
-  args: IComponentDefinitionArgs<TProps>,
+  args:
+    | IComponentDefinitionArgs<TProps>
+    | ICustomTemplateComponentDefinitionArgs<TProps>,
 ): args is ICustomTemplateComponentDefinitionArgs<TProps> {
   return (
     (args as ICustomTemplateComponentDefinitionArgs<TProps>).template != null
@@ -41,7 +44,10 @@ function defineComponentWithoutProps(
   const create = shouldWeCreateCustomComponent(creationArgs)
     ? () => new CustomTemplateComponent<TData>(creationArgs)
     : () => new Component<TData>(creationArgs);
-  return { create, name: args.name };
+  const type = shouldWeCreateCustomComponent(creationArgs)
+    ? ComponentType.CustomTemplate
+    : creationArgs.type;
+  return { create, name: type };
 }
 
 function defineComponentWithProps<TProps extends TData = TData>(
@@ -52,7 +58,10 @@ function defineComponentWithProps<TProps extends TData = TData>(
   const create = shouldWeCreateCustomComponent(args)
     ? () => new CustomTemplateComponent<TProps>(args)
     : () => new Component<TProps>(args);
-  return { create, name: args.name };
+  const type = shouldWeCreateCustomComponent(args)
+    ? ComponentType.CustomTemplate
+    : args.type;
+  return { create, name: type };
 }
 
 export function defineComponent(

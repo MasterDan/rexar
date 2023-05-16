@@ -2,11 +2,9 @@ import { list } from '@core/components/builtIn/list.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from, switchMap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
-import {
-  htmlElementDefinitionName,
-  IElementComponentProps,
-} from '@core/components/builtIn/html-element.component';
+import { IElementComponentProps } from '@core/components/builtIn/html-element.component';
 import { Component } from '@core/components/component';
+import { ComponentType } from '@core/components/component-type';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { DocumentRef } from '../documentRef';
@@ -26,7 +24,7 @@ export class ElementRendererHtml extends HtmlRendererBase {
     if (name == null) {
       throw new Error('Element must have name');
     }
-    if (this.component.name !== htmlElementDefinitionName) {
+    if (this.component.type !== ComponentType.HTMLElement) {
       throw new Error('Component must render single element');
     }
     return this.component;

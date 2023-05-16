@@ -2,19 +2,18 @@ import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
 import { defineComponent } from '..';
 import { Component } from '../component';
+import { ComponentType } from '../component-type';
 
 export interface ITextComponentProps {
   value: Ref<string>;
   trailingTemplate?: boolean;
 }
 
-export const textComponentName = 'text';
-
 export const textComponent = defineComponent<ITextComponentProps>({
   props: () => ({
     value: ref$(''),
   }),
-  name: textComponentName,
+  type: ComponentType.Text,
 });
 
 export function text(

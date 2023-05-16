@@ -1,4 +1,5 @@
 import { defineComponent } from '.';
+import { ComponentType } from './component-type';
 
 interface ITestProps {
   n: number;
@@ -10,6 +11,7 @@ interface ITestProps {
 describe('component class', () => {
   test('read props', () => {
     const { create } = defineComponent<ITestProps>({
+      type: ComponentType.None,
       props: () => ({
         n: 100,
         s: 'hello',
@@ -23,6 +25,7 @@ describe('component class', () => {
   });
   test('bind props', () => {
     const inst = defineComponent<ITestProps>({
+      type: ComponentType.None,
       props: () => ({
         lst: [],
         n: 0,
@@ -34,7 +37,7 @@ describe('component class', () => {
     expect(inst.getProp('n')).toBe(20);
   });
   test('bind props second', () => {
-    const inst = defineComponent({}).create();
+    const inst = defineComponent({ type: ComponentType.None }).create();
     inst.bindProp('n', 20);
     expect(inst.getProp('n')).toBe(20);
   });

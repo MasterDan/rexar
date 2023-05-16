@@ -1,12 +1,7 @@
-import {
-  IListComponentProps,
-  listComponentName,
-} from '@core/components/builtIn/list.component';
-import {
-  ITextComponentProps,
-  textComponentName,
-} from '@core/components/builtIn/text.component';
+import { IListComponentProps } from '@core/components/builtIn/list.component';
+import { ITextComponentProps } from '@core/components/builtIn/text.component';
 import { Component } from '@core/components/component';
+import { ComponentType } from '@core/components/component-type';
 import { ref$ } from '@core/reactivity/ref';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import {
@@ -46,12 +41,12 @@ export class ListRendererHtml extends HtmlRendererBase {
       .pipe(
         filter(
           (c): c is Component<IListComponentProps> =>
-            c.name === listComponentName,
+            c.type === ComponentType.List,
         ),
         mergeMap((c) => c.getProp('content')),
         map((content) =>
           content.map((c, i, a) => {
-            if (c.name === textComponentName && i < a.length - 1) {
+            if (c.type === ComponentType.Text && i < a.length - 1) {
               (c as Component<ITextComponentProps>).bindProp(
                 'trailingTemplate',
                 true,
@@ -106,7 +101,7 @@ export class ListRendererHtml extends HtmlRendererBase {
   }
 
   get listComponent(): Component<IListComponentProps> {
-    if (this.component.name !== listComponentName) {
+    if (this.component.type !== ComponentType.List) {
       throw new Error('Component must render list of components');
     }
     return this.component;

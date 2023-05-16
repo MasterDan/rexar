@@ -2,6 +2,7 @@ import { ref$ } from '@core/reactivity/ref';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineComponent } from '..';
+import { ComponentType } from '../component-type';
 
 export const ifElseComponentName = 'if-else-component';
 
@@ -11,21 +12,22 @@ export interface IIfElseComponentProps {
   ifFalse$: MayBeReadonlyRef<AnyComponent | undefined>;
 }
 
-export const IfElseComponent = defineComponent<IIfElseComponentProps>({
-  name: ifElseComponentName,
-  props: () => ({
-    if$: ref$(false),
-    ifFalse$: ref$(),
-    ifTrue$: ref$(),
-  }),
-});
+export const conditionalComponentDefinition =
+  defineComponent<IIfElseComponentProps>({
+    type: ComponentType.Conditional,
+    props: () => ({
+      if$: ref$(false),
+      ifFalse$: ref$(),
+      ifTrue$: ref$(),
+    }),
+  });
 
-export const ifElse = (
+export const conditional = (
   if$: MayBeReadonlyRef<boolean>,
   ifTrue$?: MayBeReadonlyRef<AnyComponent>,
   ifFalse$?: MayBeReadonlyRef<AnyComponent>,
 ) => {
-  const component = IfElseComponent.create();
+  const component = conditionalComponentDefinition.create();
   component.bindProp('if$', if$);
   component.bindProp('ifTrue$', ifTrue$);
   component.bindProp('ifFalse$', ifFalse$);
