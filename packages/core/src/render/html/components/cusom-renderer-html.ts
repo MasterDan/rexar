@@ -1,5 +1,5 @@
 import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
-import { listComponent } from '@core/components/builtIn/list.component';
+import { list } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
 
 import {
@@ -82,8 +82,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
         return renderer.nextTarget$;
       }
       if (template.length > 1) {
-        const componentTemplate = listComponent.create();
-        componentTemplate.bindProp('content', template);
+        const componentTemplate = list(template);
         const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
         this.renderer = renderer;
         renderer.setComponent(componentTemplate);

@@ -9,7 +9,7 @@ export interface ITextComponentProps {
   trailingTemplate?: boolean;
 }
 
-export const textComponent = defineComponent<ITextComponentProps>({
+const textComponentDefinition = defineComponent<ITextComponentProps>({
   props: () => ({
     value: ref$(''),
   }),
@@ -19,7 +19,7 @@ export const textComponent = defineComponent<ITextComponentProps>({
 export function text(
   props: ITextComponentProps,
 ): Component<ITextComponentProps> {
-  const component = textComponent.create();
+  const component = textComponentDefinition.create();
   component.bindProps(props);
   return component;
 }

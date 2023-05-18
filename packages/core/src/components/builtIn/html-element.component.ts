@@ -8,13 +8,13 @@ export interface IElementComponentProps {
   children?: AnyComponent[];
 }
 
-export const htmlElementComponent = defineComponent<IElementComponentProps>({
+const htmlElementComponentDefinition = defineComponent<IElementComponentProps>({
   props: () => ({ name: 'div' }),
   type: ComponentType.HTMLElement,
 });
 
 export function el(props: IElementComponentProps, id?: string) {
-  const component = htmlElementComponent.create();
+  const component = htmlElementComponentDefinition.create();
   component.id = id;
   component.bindProps(props);
   return component;

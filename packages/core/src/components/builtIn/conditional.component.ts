@@ -12,7 +12,7 @@ export interface IConditionalComponentProps {
   ifFalse$: MayBeReadonlyRef<AnyComponent | undefined>;
 }
 
-export const conditionalComponentDefinition =
+const conditionalComponentDefinition =
   defineComponent<IConditionalComponentProps>({
     type: ComponentType.Conditional,
     props: () => ({
