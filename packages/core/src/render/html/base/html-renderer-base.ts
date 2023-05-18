@@ -1,13 +1,16 @@
+import { Component, TData } from '@core/components/component';
 import { ref$ } from '@core/reactivity/ref';
 import { Observable, take, lastValueFrom, filter } from 'rxjs';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
-export abstract class HtmlRendererBase implements IHtmlRenderer {
+export abstract class HtmlRendererBase<TProps extends TData = TData>
+  implements IHtmlRenderer
+{
   public target$ = ref$<IBinding>();
 
-  private $component = ref$<AnyComponent>();
+  private $component = ref$<Component<TProps>>();
 
   protected get component() {
     if (this.$component.val == null) {
@@ -17,7 +20,9 @@ export abstract class HtmlRendererBase implements IHtmlRenderer {
   }
 
   protected get component$() {
-    return this.$component.pipe(filter((c): c is AnyComponent => c != null));
+    return this.$component.pipe(
+      filter((c): c is Component<TProps> => c != null),
+    );
   }
 
   public setComponent(c: AnyComponent) {

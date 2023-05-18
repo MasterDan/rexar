@@ -22,7 +22,7 @@ import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 let index = 1;
 
 @injectable()
-export class ListRendererHtml extends HtmlRendererBase {
+export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
   private listContent$ = ref$<AnyComponent[]>();
 
   private listRenderers$ = ref$<IHtmlRenderer[]>();
@@ -39,10 +39,7 @@ export class ListRendererHtml extends HtmlRendererBase {
     // });
     this.component$
       .pipe(
-        filter(
-          (c): c is Component<IListComponentProps> =>
-            c.type === ComponentType.List,
-        ),
+        filter((c) => c.type === ComponentType.List),
         mergeMap((c) => c.getProp('content')),
         map((content) =>
           content.map((c, i, a) => {

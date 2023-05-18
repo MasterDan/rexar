@@ -6,14 +6,14 @@ import { ComponentType } from '../component-type';
 
 export const ifElseComponentName = 'if-else-component';
 
-export interface IIfElseComponentProps {
+export interface IConditionalComponentProps {
   if$: MayBeReadonlyRef<boolean>;
   ifTrue$: MayBeReadonlyRef<AnyComponent | undefined>;
   ifFalse$: MayBeReadonlyRef<AnyComponent | undefined>;
 }
 
 export const conditionalComponentDefinition =
-  defineComponent<IIfElseComponentProps>({
+  defineComponent<IConditionalComponentProps>({
     type: ComponentType.Conditional,
     props: () => ({
       if$: ref$(false),

@@ -1,5 +1,4 @@
 import { ITextComponentProps } from '@core/components/builtIn/text.component';
-import { Component } from '@core/components/component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { map, switchMap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
@@ -7,7 +6,7 @@ import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { DocumentRef } from '../documentRef';
 
 @injectable()
-export class TextRendererHtml extends HtmlRendererBase {
+export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
   private node: Text | undefined;
 
   private trailingTemplate: HTMLTemplateElement | undefined;
@@ -28,9 +27,9 @@ export class TextRendererHtml extends HtmlRendererBase {
   }
 
   renderInto(binding: IBinding) {
-    const component = this.component as Component<ITextComponentProps>;
-    const text$ = component.getProp('value');
-    const inserTrailingTemlate = component.getProp('trailingTemplate') ?? false;
+    const text$ = this.component.getProp('value');
+    const inserTrailingTemlate =
+      this.component.getProp('trailingTemplate') ?? false;
 
     const valueChanged$ = container.resolve(DocumentRef).instance$.pipe(
       switchMap((doc) =>
