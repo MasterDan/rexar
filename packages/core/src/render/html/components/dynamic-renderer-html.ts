@@ -44,7 +44,6 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
     };
 
     const firstMount$ = from(renderAsync()).pipe(
-      take(1),
       switchMap((i) => (i == null ? of(i) : i)),
       take(1),
     );
