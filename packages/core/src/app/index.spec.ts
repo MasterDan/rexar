@@ -1,7 +1,9 @@
+import { dynamic } from '@core/components/builtIn/dynamic.component';
 import { el } from '@core/components/builtIn/html-element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
+import { AnyComponent } from '@core/render/html/@types/any-component';
 import { createApp } from '.';
 
 describe('app-tests', () => {
@@ -226,6 +228,29 @@ describe('app-tests', () => {
         '<template></template>' +
         'baz' +
         '</div>',
+    );
+  });
+  test('dynamic component', async () => {
+    const component$ = ref$<AnyComponent>();
+    const first = el({
+      name: 'span',
+      attrs: { class: 'foo' },
+    });
+    const second = el({
+      name: 'div',
+      attrs: { class: 'bar' },
+    });
+    const root = dynamic(component$);
+    const elApp = await createApp(root).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe('<div id="app"></div>');
+    component$.val = first;
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><span class="foo"></span></div>',
+    );
+    component$.val = second;
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="bar"></div></div>',
     );
   });
 });
