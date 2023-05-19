@@ -14,10 +14,11 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { container, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { resolveRenderer } from '../tools';
 
 let index = 1;
 
@@ -63,11 +64,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     this.listContent$
       .pipe(filter((x): x is AnyComponent[] => x != null))
       .subscribe((content) => {
-        this.listRenderers$.val = content.map((i) => {
-          const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-          renderer.setComponent(i);
-          return renderer;
-        });
+        this.listRenderers$.val = content.map((i) => resolveRenderer(i));
       });
     this.listRenderers$
       .pipe(

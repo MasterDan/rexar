@@ -6,13 +6,13 @@ import { IElementComponentProps } from '@core/components/builtIn/html-element.co
 import { Component } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
-import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { DocumentRef } from '../documentRef';
 import { RefStore } from '../ref-store/ref-store';
 import { ElementReference } from '../ref-store/element.reference';
+import { resolveRenderer } from '../tools';
 
 @injectable()
-export class ElementRendererHtml extends HtmlRendererBase {
+export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps> {
   el: HTMLElement | undefined;
 
   constructor(private refStore: RefStore) {
@@ -55,14 +55,11 @@ export class ElementRendererHtml extends HtmlRendererBase {
       if (children.length > 0) {
         const listComp = list(children);
         listComp.bindProp('content', children);
-        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        // console.log('setting list of children');
-        renderer.setComponent(listComp);
-        renderer.target$.val = {
+        const renderer = resolveRenderer(listComp, {
           parentEl: el,
           role: BindingTargetRole.Parent,
           target: el,
-        };
+        });
         await renderer.render();
       }
       switch (binding.role) {

@@ -12,12 +12,13 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { container, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { RefStore } from '../ref-store/ref-store';
+import { resolveRenderer } from '../tools';
 
 @injectable()
 export class CustomRendererHtml extends HtmlRendererBase {
@@ -74,19 +75,15 @@ export class CustomRendererHtml extends HtmlRendererBase {
       }
       if (template.length === 1) {
         const [componentTemplate] = template;
-        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
+        const renderer = resolveRenderer(componentTemplate, target);
         this.renderer = renderer;
-        renderer.setComponent(componentTemplate);
-        renderer.target$.val = target;
         await renderer.render();
         return renderer.nextTarget$;
       }
       if (template.length > 1) {
         const componentTemplate = list(template);
-        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
+        const renderer = resolveRenderer(componentTemplate, target);
         this.renderer = renderer;
-        renderer.setComponent(componentTemplate);
-        renderer.target$.val = target;
         await renderer.render();
         return renderer.nextTarget$;
       }

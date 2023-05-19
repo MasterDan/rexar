@@ -87,6 +87,21 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
         }
         return this.factories[type] as RendererFactory;
       }
+      case ComponentType.Dynamic: {
+        if (this.factories[type] == null) {
+          const { DynamicRendererHtml } = await import(
+            './components/dynamic-renderer-html'
+          );
+          container.register(type, DynamicRendererHtml);
+
+          this.factories[type] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(type);
+            renderer.setComponent(component);
+            return renderer;
+          };
+        }
+        return this.factories[type] as RendererFactory;
+      }
       default:
         throw new Error(`Unexpected component type: "${type}"`);
     }

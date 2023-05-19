@@ -36,7 +36,7 @@ export class ComponentRendererHtml extends HtmlRendererBase {
           await renderer.render();
           return renderer.nextTarget$;
         };
-        return from(renderComponent()).pipe(map((ref) => ref.val));
+        return from(renderComponent()).pipe(switchMap((ref) => ref));
       }),
     );
   }

@@ -3,10 +3,10 @@ import { ref$ } from '@core/reactivity/ref';
 import { from, map, Observable, of, switchMap, take } from 'rxjs';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { skipUntil } from 'rxjs/internal/operators/skipUntil';
-import { container, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
-import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { HtmlRendererBase } from '../base/html-renderer-base';
+import { resolveRenderer } from '../tools';
 
 @injectable()
 export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalComponentProps> {
@@ -21,10 +21,7 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
         if (c == null || c.val == null || t == null) {
           return undefined;
         }
-        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        renderer.setComponent(c.val);
-        renderer.target$.val = t;
-        return renderer;
+        return resolveRenderer(c.val, t);
       }),
     ),
   );
@@ -38,10 +35,7 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
         if (c == null || c.val == null || t == null) {
           return undefined;
         }
-        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        renderer.setComponent(c.val);
-        renderer.target$.val = t;
-        return renderer;
+        return resolveRenderer(c.val, t);
       }),
     ),
   );
