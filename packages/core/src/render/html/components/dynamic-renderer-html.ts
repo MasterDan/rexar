@@ -9,8 +9,10 @@ import {
   of,
   pairwise,
   skipUntil,
+  startWith,
   switchMap,
   take,
+  tap,
 } from 'rxjs';
 import { injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
@@ -30,6 +32,9 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
         return component != null && target != null;
       }),
       map(([component, target]) => resolveRenderer(component, target)),
+      tap((r) => {
+        console.log('renderer changed', r);
+      }),
     ),
   );
 
@@ -43,13 +48,19 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
     };
 
     const firstMount$ = from(renderAsync()).pipe(
+      take(1),
       switchMap((i) => (i == null ? of(i) : i)),
       take(1),
+      tap((v) => {
+        console.log('mounted', v);
+      }),
     );
 
     this.renderer$
-      .pipe(skipUntil(firstMount$), pairwise())
+      .pipe(skipUntil(firstMount$), startWith(undefined), pairwise())
       .subscribe(async ([previous, current]) => {
+        console.log('tick', { previous, current });
+
         if (previous) {
           await previous.unmount();
         }

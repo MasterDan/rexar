@@ -4,6 +4,7 @@ import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
+import { lastValueFrom, timer } from 'rxjs';
 import { createApp } from '.';
 
 describe('app-tests', () => {
@@ -244,11 +245,14 @@ describe('app-tests', () => {
     const elApp = await createApp(root).mount('#app');
     expect(elApp).not.toBeNull();
     expect(elApp?.outerHTML).toBe('<div id="app"></div>');
+    const wait = () => lastValueFrom(timer(100));
     component$.val = first;
+    await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><span class="foo"></span></div>',
     );
     component$.val = second;
+    await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><div class="bar"></div></div>',
     );
