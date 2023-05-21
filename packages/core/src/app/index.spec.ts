@@ -266,6 +266,11 @@ describe('app-tests', () => {
       name: 'div',
       attrs: { class: 'bar' },
     });
+    const third = list([
+      el({ name: 'span', attrs: { class: 'l-foo' } }),
+      text({ value: ref$('text') }),
+      el({ name: 'span', attrs: { class: 'l-bar' } }),
+    ]);
     const wait = () => lastValueFrom(timer(100));
     const component$ = ref$<AnyComponent | undefined>(first);
     const root = dynamic(component$);
@@ -279,6 +284,16 @@ describe('app-tests', () => {
     await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><div class="bar"></div></div>',
+    );
+    component$.val = third;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<span class="l-foo"></span>' +
+        'text' +
+        '<!--end of text-->' +
+        '<span class="l-bar"></span>' +
+        '</div>',
     );
     component$.val = undefined;
     await wait();
