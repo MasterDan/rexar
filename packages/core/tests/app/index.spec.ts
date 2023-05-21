@@ -40,7 +40,7 @@ describe('custom components', () => {
         '<div>Quidem, optio consectetur?</div>' +
         '</div>' +
         'one' +
-        '<template></template>' +
+        '<!--end of text-->' +
         '<div>' +
         '<input type="text">' +
         '<input type="text">' +

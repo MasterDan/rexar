@@ -214,9 +214,9 @@ describe('app-tests', () => {
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
         'foo' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'bar' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'baz' +
         '</div>',
     );
@@ -224,9 +224,9 @@ describe('app-tests', () => {
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
         'foo' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'barChanged' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'baz' +
         '</div>',
     );

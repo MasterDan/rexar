@@ -9,7 +9,7 @@ import { DocumentRef } from '../documentRef';
 export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
   private node: Text | undefined;
 
-  private trailingTemplate: HTMLTemplateElement | undefined;
+  private trailingComment: Element | undefined;
 
   unmount(): Promise<void> {
     if (this.node == null) {
@@ -19,8 +19,8 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
       throw new Error('Target not exists');
     }
     this.node.parentNode?.removeChild(this.node);
-    if (this.trailingTemplate) {
-      this.trailingTemplate.remove();
+    if (this.trailingComment) {
+      this.trailingComment.remove();
     }
     this.nextTarget$.val = this.target$.val;
     return Promise.resolve();
@@ -28,8 +28,8 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
 
   renderInto(binding: IBinding) {
     const text$ = this.component.getProp('value');
-    const inserTrailingTemlate =
-      this.component.getProp('trailingTemplate') ?? false;
+    const inserTrailingComment =
+      this.component.getProp('trailingComment') ?? false;
 
     const valueChanged$ = container.resolve(DocumentRef).instance$.pipe(
       switchMap((doc) =>
@@ -52,22 +52,22 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
           return undefined;
         }
         this.node = doc.createTextNode(str);
-        this.trailingTemplate = inserTrailingTemlate
-          ? doc.createElement('template')
+        this.trailingComment = inserTrailingComment
+          ? (doc.createComment('end of text') as unknown as Element)
           : undefined;
         switch (binding.role) {
           case BindingTargetRole.Parent:
-            if (inserTrailingTemlate) {
+            if (inserTrailingComment) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              binding.target.prepend(this.trailingTemplate!);
+              binding.target.prepend(this.trailingComment!);
             }
             binding.target.prepend(this.node);
             break;
           case BindingTargetRole.PreviousSibling:
-            if (inserTrailingTemlate) {
+            if (inserTrailingComment) {
               binding.parentEl.insertBefore(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                this.trailingTemplate!,
+                this.trailingComment!,
                 binding.target.nextSibling,
               );
             }
@@ -82,8 +82,8 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
         const nextBinding: IBinding = {
           parentEl: binding.parentEl,
           role: BindingTargetRole.PreviousSibling,
-          target: inserTrailingTemlate
-            ? (this.trailingTemplate as HTMLElement)
+          target: inserTrailingComment
+            ? (this.trailingComment as HTMLElement)
             : binding.parentEl,
         };
         return nextBinding;

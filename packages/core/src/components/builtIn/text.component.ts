@@ -6,7 +6,7 @@ import { ComponentType } from '../component-type';
 
 export interface ITextComponentProps {
   value: Ref<string>;
-  trailingTemplate?: boolean;
+  trailingComment?: boolean;
 }
 
 const textComponentDefinition = defineComponent<ITextComponentProps>({

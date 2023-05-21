@@ -46,7 +46,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
           content.map((c, i, a) => {
             if (c.type === ComponentType.Text && i < a.length - 1) {
               (c as Component<ITextComponentProps>).bindProp(
-                'trailingTemplate',
+                'trailingComment',
                 true,
               );
             }
