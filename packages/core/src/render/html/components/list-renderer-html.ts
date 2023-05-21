@@ -35,9 +35,6 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   constructor() {
     super();
-    // this.unsub$.subscribe(() => {
-    //   console.log(`unsub triggered in renderer ${this.index}`);
-    // });
     this.component$
       .pipe(
         filter((c) => c.type === ComponentType.List),
@@ -55,10 +52,6 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         ),
       )
       .subscribe((content) => {
-        // console.log(
-        //   `new content (len: ${content.length}) In list ${this.index}`,
-        // );
-
         this.listContent$.val = content;
       });
     this.listContent$
@@ -69,11 +62,6 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     this.listRenderers$
       .pipe(
         filter((x): x is IHtmlRenderer[] => x != null),
-        // tap((x) => {
-        //   console.log(
-        //     `renderers  (len: ${x.length}) updated In list ${this.index}`,
-        //   );
-        // }),
         tap(() => this.unsub$.next()),
         mergeMap((x) => from(x)),
         pairwise(),
@@ -87,10 +75,6 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       )
       .subscribe(({ next, currNext }) => {
         next.val = currNext;
-        // console.log(
-        //   'setting target',
-        //   this.listRenderers$.val?.map((i) => i.target$.val ?? null),
-        // );
       });
   }
 
@@ -123,14 +107,9 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       for (const renderer of renderers) {
         if (renderer.target$.val == null) {
           renderer.target$.val = target;
-          // console.log(
-          //   'target is null -> setting parent',
-          //   this.listRenderers$.val?.map((i) => i.target$.val ?? null),
-          // );
         }
         // eslint-disable-next-line no-await-in-loop
         await renderer.render();
-        // console.log('componet rendered');
 
         lastTarget = renderer.nextTarget$.val;
       }
