@@ -231,7 +231,7 @@ describe('app-tests', () => {
         '</div>',
     );
   });
-  test('dynamic component', async () => {
+  test('dynamic component: start from undefined', async () => {
     const component$ = ref$<AnyComponent>();
     const first = el({
       name: 'span',
@@ -256,5 +256,32 @@ describe('app-tests', () => {
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><div class="bar"></div></div>',
     );
+  });
+  test('dynamic component: start from component', async () => {
+    const first = el({
+      name: 'span',
+      attrs: { class: 'foo' },
+    });
+    const second = el({
+      name: 'div',
+      attrs: { class: 'bar' },
+    });
+    const wait = () => lastValueFrom(timer(100));
+    const component$ = ref$<AnyComponent | undefined>(first);
+    const root = dynamic(component$);
+    const elApp = await createApp(root).mount('#app');
+
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><span class="foo"></span></div>',
+    );
+    component$.val = second;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="bar"></div></div>',
+    );
+    component$.val = undefined;
+    await wait();
+    expect(elApp?.outerHTML).toBe('<div id="app"></div>');
   });
 });
