@@ -1,5 +1,5 @@
 import { defineComponent } from '@core/components';
-import { bindValue } from '@core/components/builtIn/custom/hooks/custom-component-hooks';
+import { bindValue } from '@core/components/builtIn/custom/hooks/bind-value.hook';
 import { ref$ } from '@core/reactivity/ref';
 // @ts-expect-error template exists
 import template from './test-three.component.html';

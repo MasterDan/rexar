@@ -1,32 +1,6 @@
-import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
-import { defineHook } from '@core/tools/hooks/hooks';
-import {
-  combineLatest,
-  filter,
-  fromEvent,
-  map,
-  merge,
-  Observable,
-  switchMap,
-} from 'rxjs';
-
-export const onMounted = defineHook('mounted');
-
-const referenceHook = defineHook<HTMLElement>('reference');
-
-export const useElement = (id: string) => {
-  const elRef = ref$<HTMLElement>();
-  referenceHook(
-    (el) => {
-      elRef.val = el;
-    },
-    {
-      id,
-    },
-  );
-  return elRef;
-};
+import { filter, switchMap, merge, fromEvent, map, combineLatest } from 'rxjs';
+import { useElement } from './use-element.hook';
 
 export const bindValue = (id: string, value$: Ref<string | undefined>) => {
   const elRef = useElement(id);
@@ -62,24 +36,5 @@ export const bindValue = (id: string, value$: Ref<string | undefined>) => {
     )
     .subscribe(([el, v]) => {
       el.value = v;
-    });
-};
-
-export const innerTextFor = (
-  id: string,
-  value$: Observable<string | undefined | null>,
-) => {
-  useElement(id)
-    .pipe(
-      filter((el): el is HTMLElement => el != null),
-      switchMap((el) =>
-        value$.pipe(
-          filter((v): v is string => v != null),
-          map((v) => ({ el, v })),
-        ),
-      ),
-    )
-    .subscribe(({ el, v }) => {
-      el.innerText = v;
     });
 };
