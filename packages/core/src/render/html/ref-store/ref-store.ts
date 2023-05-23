@@ -12,12 +12,12 @@ type RefStorage = Record<string, INodeRefs | undefined>;
 export class RefStore {
   private storages: Record<symbol, RefStorage | undefined> = {};
 
-  private scopeStak: symbol[] = [];
+  private scopeStack: symbol[] = [];
 
   get currentScopeKey() {
-    return this.scopeStak.length <= 0
+    return this.scopeStack.length <= 0
       ? undefined
-      : this.scopeStak[this.scopeStak.length - 1];
+      : this.scopeStack[this.scopeStack.length - 1];
   }
 
   beginScope(scopeName: string) {
@@ -25,11 +25,11 @@ export class RefStore {
     if (this.storages[scopeKey] == null) {
       this.storages[scopeKey] = {};
     }
-    this.scopeStak.push(scopeKey);
+    this.scopeStack.push(scopeKey);
   }
 
   endScope() {
-    this.scopeStak.pop();
+    this.scopeStack.pop();
   }
 
   public getReferences(id: string): INodeRefs {
