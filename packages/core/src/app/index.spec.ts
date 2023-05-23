@@ -1,3 +1,4 @@
+import { conditional } from '@core/components/builtIn/conditional.component';
 import { dynamic } from '@core/components/builtIn/dynamic.component';
 import { el } from '@core/components/builtIn/html-element.component';
 import { list } from '@core/components/builtIn/list.component';
@@ -298,5 +299,23 @@ describe('app-tests', () => {
     component$.val = undefined;
     await wait();
     expect(elApp?.outerHTML).toBe('<div id="app"></div>');
+  });
+  test('conditional component', async () => {
+    const condition = ref$(true);
+    const ifTrue = el({ name: 'div', attrs: { class: 'foo' } });
+    const iFalse = el({ name: 'div', attrs: { class: 'bar' } });
+    const root = conditional(condition, ref$(ifTrue), ref$(iFalse));
+    const elApp = await createApp(root).mount('#app');
+    const wait = () => lastValueFrom(timer(100));
+
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="foo"></div></div>',
+    );
+    condition.val = false;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="bar"></div></div>',
+    );
   });
 });
