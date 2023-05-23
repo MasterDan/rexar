@@ -6,5 +6,5 @@ export {
   useElement,
   bindValue,
   innerTextFor,
-} from './components/builtIn/custom/custom-component-hooks';
+} from './components/builtIn/custom/hooks/custom-component-hooks';
 export { ref$ } from '@core/reactivity/ref';
