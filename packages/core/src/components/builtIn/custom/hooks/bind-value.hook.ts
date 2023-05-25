@@ -1,3 +1,4 @@
+import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
 import { filter, switchMap, merge, fromEvent, map, combineLatest } from 'rxjs';
 import { useElement } from './use-element.hook';
@@ -40,4 +41,22 @@ export const bindStringValue = (
     .subscribe(([el, v]) => {
       el.value = v;
     });
+};
+
+export const bindNumericValue = (
+  id: string,
+  value$: Ref<number | undefined>,
+) => {
+  const stringified$ = ref$<string>();
+  const reverseNumber$ = ref$(() => {
+    const num = Number(stringified$.value);
+    return Number.isNaN(num) ? undefined : num;
+  });
+  value$.pipe(filter((v) => v !== reverseNumber$.val)).subscribe((v) => {
+    stringified$.val = String(v);
+  });
+  reverseNumber$.pipe(filter((rn) => rn !== value$.val)).subscribe((rn) => {
+    value$.val = rn;
+  });
+  bindStringValue(id, stringified$);
 };
