@@ -40,8 +40,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
       throw new Error('Component should be custom');
     }
     const component = this.component as CustomTemplateComponent;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.refStore.beginScope(this.component.type!);
+    this.refStore.beginScope(this.component.type);
     const { track$, end } = hookScope.beginScope();
     track$
       .pipe(

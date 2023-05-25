@@ -18,7 +18,9 @@ export interface IComponentDefinitionArgs<TProps extends TData = TData> {
 export class Component<TProps extends TData = TData> {
   id?: string;
 
-  type?: ComponentType;
+  type: ComponentType;
+
+  preventTransformation = false;
 
   protected props$: Ref<TProps>;
 

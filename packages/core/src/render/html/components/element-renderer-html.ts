@@ -1,6 +1,6 @@
 import { list } from '@core/components/builtIn/list.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { from, switchMap } from 'rxjs';
+import { from, of, switchMap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { IElementComponentProps } from '@core/components/builtIn/html-element.component';
 import { Component } from '@core/components/component';
@@ -10,10 +10,13 @@ import { DocumentRef } from '../documentRef';
 import { RefStore } from '../ref-store/ref-store';
 import { ElementReference } from '../ref-store/element.reference';
 import { resolveRenderer } from '../tools';
+import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
 @injectable()
 export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps> {
   el: HTMLElement | undefined;
+
+  transformedElementRenderer: IHtmlRenderer | undefined;
 
   constructor(private refStore: RefStore) {
     super();
@@ -31,6 +34,9 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   }
 
   unmount(): Promise<void> {
+    if (this.transformedElementRenderer) {
+      return this.transformedElementRenderer.unmount();
+    }
     if (this.el == null) {
       throw new Error('NothingToUnmount');
     }
@@ -43,6 +49,32 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   }
 
   renderInto(binding: IBinding) {
+    if (this.elComponent.id && !this.elComponent.preventTransformation) {
+      const { transformer } = this.refStore.getReferences(this.elComponent.id);
+      if (!transformer.isEmpty) {
+        if (!transformer.isTrasformationDone) {
+          transformer.apply(this.elComponent);
+        }
+        this.transformedElementRenderer = resolveRenderer(
+          transformer.transformationResult,
+        );
+        this.target$.subscribe((t) => {
+          if (this.transformedElementRenderer) {
+            this.transformedElementRenderer.target$.val = t;
+          }
+        });
+        const renderTransformedAsync = async () => {
+          if (!this.transformedElementRenderer) {
+            return undefined;
+          }
+          await this.transformedElementRenderer.render();
+          return this.transformedElementRenderer.nextTarget$;
+        };
+        return from(renderTransformedAsync()).pipe(
+          switchMap((x) => x ?? of(undefined)),
+        );
+      }
+    }
     const name = this.elComponent.getProp('name');
     const attrs = this.elComponent.getProp('attrs') ?? {};
     const children = this.elComponent.getProp('children') ?? [];

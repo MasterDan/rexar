@@ -1,8 +1,10 @@
 import { singleton } from 'tsyringe';
 import { ElementReference } from './element.reference';
+import { ElementTransformer } from './element.transformer';
 
 export interface INodeRefs {
   reference: ElementReference;
+  transformer: ElementTransformer;
 }
 
 type RefStorage = Record<string, INodeRefs | undefined>;
@@ -44,6 +46,7 @@ export class RefStore {
     if (scope[id] == null) {
       scope[id] = {
         reference: new ElementReference(),
+        transformer: new ElementTransformer(),
       };
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
