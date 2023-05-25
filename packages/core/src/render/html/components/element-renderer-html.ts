@@ -14,9 +14,9 @@ import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
 @injectable()
 export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps> {
-  el: HTMLElement | undefined;
+  private el: HTMLElement | undefined;
 
-  transformedElementRenderer: IHtmlRenderer | undefined;
+  private transformedElementRenderer: IHtmlRenderer | undefined;
 
   constructor(private refStore: RefStore) {
     super();
