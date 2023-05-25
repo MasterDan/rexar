@@ -2,7 +2,10 @@ import { Ref } from '@core/reactivity/ref/ref';
 import { filter, switchMap, merge, fromEvent, map, combineLatest } from 'rxjs';
 import { useElement } from './use-element.hook';
 
-export const bindValue = (id: string, value$: Ref<string | undefined>) => {
+export const bindStringValue = (
+  id: string,
+  value$: Ref<string | undefined>,
+) => {
   const elRef = useElement(id);
   const validElement$ = elRef.pipe(
     filter((v): v is HTMLInputElement => v != null),
