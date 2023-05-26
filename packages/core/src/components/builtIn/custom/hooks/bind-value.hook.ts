@@ -65,3 +65,33 @@ export const bindNumericValue = (
   });
   bindStringValue(id, stringified$);
 };
+
+export const bindBooleanValue = (id: string, value$: Ref<boolean>) => {
+  const elRef = useElement(id);
+  const validElement$ = elRef.pipe(
+    filter((v): v is HTMLInputElement => v != null),
+  );
+
+  const valueChanged$ = validElement$.pipe(
+    switchMap((el) => merge(fromEvent(el, 'change'))),
+    map((e) => e.target),
+    filter((t): t is HTMLInputElement => t != null),
+    map((t) => t.checked),
+    filter((v) => v !== value$.val),
+  );
+
+  valueChanged$.subscribe((val) => {
+    value$.val = val;
+  });
+
+  combineLatest([validElement$, value$])
+    .pipe(
+      filter((arr): arr is [HTMLInputElement, boolean] => {
+        const [el, val] = arr;
+        return val != null && el.checked !== val;
+      }),
+    )
+    .subscribe(([el, v]) => {
+      el.checked = v;
+    });
+};
