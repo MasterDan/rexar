@@ -12,16 +12,16 @@ import template from 'bundle-text:./lorem.component.html';
 export const lorem = defineComponent({
   template,
   setup() {
-    const textOne$ = ref$<string>('hello');
-    const textTwo$ = ref$<string>('World');
+    const textOne$ = ref$('hello');
+    const textTwo$ = ref$('World');
     bindStringValue('#one', textOne$);
     bindStringValue('#two', textTwo$);
     innerTextFor(
       '#text',
       ref$(() => `${textOne$.val} ${textTwo$.val}`),
     );
-    const num$ = ref$<number>(2);
-    const num2$ = ref$<number>(2);
+    const num$ = ref$(2);
+    const num2$ = ref$(2);
     bindNumericValue('#number', num$);
     bindNumericValue('#number-two', num2$);
     innerTextFor(
