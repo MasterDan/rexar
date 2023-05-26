@@ -5,7 +5,7 @@ import { useElement } from './use-element.hook';
 
 export const bindStringValue = (
   id: string,
-  value$: Ref<string | undefined>,
+  value$: Ref<string | undefined> | Ref<string>,
 ) => {
   const elRef = useElement(id);
   const validElement$ = elRef.pipe(
@@ -45,7 +45,7 @@ export const bindStringValue = (
 
 export const bindNumericValue = (
   id: string,
-  value$: Ref<number | undefined>,
+  value$: Ref<number | undefined> | Ref<number>,
 ) => {
   const stringified$ = ref$<string | undefined>(String(value$.val));
 
@@ -55,9 +55,11 @@ export const bindNumericValue = (
     return Number.isNaN(num) ? undefined : num;
   });
 
-  value$.pipe(filter((v) => v !== reverseNumber$.val)).subscribe((v) => {
-    stringified$.val = String(v);
-  });
+  (value$ as Ref<number | undefined>)
+    .pipe(filter((v) => v !== reverseNumber$.val))
+    .subscribe((v) => {
+      stringified$.val = String(v);
+    });
   reverseNumber$.pipe(filter((rn) => rn !== value$.val)).subscribe((rn) => {
     value$.val = rn;
   });

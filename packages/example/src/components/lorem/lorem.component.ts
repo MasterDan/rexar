@@ -11,26 +11,21 @@ import template from 'bundle-text:./lorem.component.html';
 export const lorem = defineComponent({
   template,
   setup() {
-    const textOne$ = ref$<string | undefined>('hello');
-    const textTwo$ = ref$<string | undefined>('World');
+    const textOne$ = ref$<string>('hello');
+    const textTwo$ = ref$<string>('World');
     bindStringValue('#one', textOne$);
     bindStringValue('#two', textTwo$);
     innerTextFor(
       '#text',
       ref$(() => `${textOne$.val} ${textTwo$.val}`),
     );
-    const num$ = ref$<number | undefined>(5);
-    const num2$ = ref$<number | undefined>(5);
+    const num$ = ref$<number>(5);
+    const num2$ = ref$<number>(5);
     bindNumericValue('#number', num$);
     bindNumericValue('#number-two', num2$);
     innerTextFor(
       '#sum-text',
-      ref$(
-        () =>
-          `${num$.val ?? 0} + ${num2$.val ?? 0} = ${
-            (num$.val ?? 0) + (num2$.val ?? 0)
-          }`,
-      ),
+      ref$(() => `${num$.val} + ${num2$.val} = ${num$.val + num2$.val}`),
     );
   },
 });
