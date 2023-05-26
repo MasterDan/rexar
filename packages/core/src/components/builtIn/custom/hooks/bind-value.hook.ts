@@ -47,11 +47,14 @@ export const bindNumericValue = (
   id: string,
   value$: Ref<number | undefined>,
 ) => {
-  const stringified$ = ref$<string>();
+  const stringified$ = ref$<string | undefined>(String(value$.val));
+
   const reverseNumber$ = ref$(() => {
-    const num = Number(stringified$.value);
+    const num = Number(stringified$.val);
+
     return Number.isNaN(num) ? undefined : num;
   });
+
   value$.pipe(filter((v) => v !== reverseNumber$.val)).subscribe((v) => {
     stringified$.val = String(v);
   });
