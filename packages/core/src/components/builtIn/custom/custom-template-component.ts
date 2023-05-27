@@ -3,6 +3,7 @@ import {
   IComponentDefinitionArgs,
   Component,
 } from '@core/components/component';
+import { ComponentType } from '@core/components/component-type';
 import { ref$, readonly } from '@core/reactivity/ref';
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
@@ -22,15 +23,14 @@ export interface ISetupContext<TProps> {
 }
 
 type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
-export interface ICustomComponentDefinitionArgs<TProps extends TData = TData>
-  extends IComponentDefinitionArgs<TProps> {
+export interface ICustomTemplateComponentDefinitionArgs<
+  TProps extends TData = TData,
+> extends Omit<IComponentDefinitionArgs<TProps>, 'type'> {
   setup?: SetupFn<TProps>;
   template: string | AnyComponent[];
 }
 
-export const customTemplateComponentName = 'custom-template-component';
-
-export class CustomComponent<
+export class CustomTemplateComponent<
   TProps extends TData = TData,
 > extends Component<TProps> {
   private setupFn?: SetupFn<TProps>;
@@ -54,11 +54,10 @@ export class CustomComponent<
     ),
   );
 
-  constructor(args: ICustomComponentDefinitionArgs<TProps>) {
-    super(args);
+  constructor(args: ICustomTemplateComponentDefinitionArgs<TProps>) {
+    super({ ...args, type: ComponentType.CustomTemplate });
     this.setupFn = args.setup;
     this.template = args.template;
-    this.name = customTemplateComponentName;
   }
 
   setup() {

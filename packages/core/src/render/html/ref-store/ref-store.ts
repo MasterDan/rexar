@@ -1,8 +1,10 @@
 import { singleton } from 'tsyringe';
 import { ElementReference } from './element.reference';
+import { ElementTransformer } from './element.transformer';
 
 export interface INodeRefs {
   reference: ElementReference;
+  transformer: ElementTransformer;
 }
 
 type RefStorage = Record<string, INodeRefs | undefined>;
@@ -12,24 +14,24 @@ type RefStorage = Record<string, INodeRefs | undefined>;
 export class RefStore {
   private storages: Record<symbol, RefStorage | undefined> = {};
 
-  private scopeStak: symbol[] = [];
+  private scopeStack: symbol[] = [];
 
   get currentScopeKey() {
-    return this.scopeStak.length <= 0
+    return this.scopeStack.length <= 0
       ? undefined
-      : this.scopeStak[this.scopeStak.length - 1];
+      : this.scopeStack[this.scopeStack.length - 1];
   }
 
   beginScope(scopeName: string) {
-    const scopeKey = Symbol.for(scopeName);
+    const scopeKey = Symbol(scopeName);
     if (this.storages[scopeKey] == null) {
       this.storages[scopeKey] = {};
     }
-    this.scopeStak.push(scopeKey);
+    this.scopeStack.push(scopeKey);
   }
 
   endScope() {
-    this.scopeStak.pop();
+    this.scopeStack.pop();
   }
 
   public getReferences(id: string): INodeRefs {
@@ -44,6 +46,7 @@ export class RefStore {
     if (scope[id] == null) {
       scope[id] = {
         reference: new ElementReference(),
+        transformer: new ElementTransformer(),
       };
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

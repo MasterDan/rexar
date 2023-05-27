@@ -1,40 +1,120 @@
 import { IListComponentProps } from '@core/components/builtIn/list.component';
+import { ITextComponentProps } from '@core/components/builtIn/text.component';
 import { Component } from '@core/components/component';
+import { ComponentType } from '@core/components/component-type';
+import { ref$ } from '@core/reactivity/ref';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { from } from 'rxjs';
-import { container, injectable } from 'tsyringe';
+import {
+  filter,
+  from,
+  map,
+  mergeMap,
+  pairwise,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
+import { injectable } from 'tsyringe';
+import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { resolveRenderer } from '../tools';
+
+let index = 1;
 
 @injectable()
-export class ListRendererHtml extends HtmlRendererBase {
-  renderInto(target: IBinding) {
-    const content =
-      (this.component as Component<IListComponentProps>).getProp('content') ??
-      [];
-    const renderContent = async () => {
-      let renderer: IHtmlRenderer | null = null;
+export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
+  private listContent$ = ref$<AnyComponent[]>();
 
+  private listRenderers$ = ref$<IHtmlRenderer[]>();
+
+  // eslint-disable-next-line no-plusplus
+  private index = index++;
+
+  private unsub$ = new Subject<void>();
+
+  constructor() {
+    super();
+    this.component$
+      .pipe(
+        filter((c) => c.type === ComponentType.List),
+        mergeMap((c) => c.getProp('content')),
+        map((content) =>
+          content.map((c, i, a) => {
+            if (c.type === ComponentType.Text && i < a.length - 1) {
+              (c as Component<ITextComponentProps>).bindProp(
+                'trailingComment',
+                true,
+              );
+            }
+            return c;
+          }),
+        ),
+      )
+      .subscribe((content) => {
+        this.listContent$.val = content;
+      });
+    this.listContent$
+      .pipe(filter((x): x is AnyComponent[] => x != null))
+      .subscribe((content) => {
+        this.listRenderers$.val = content.map((i) => resolveRenderer(i));
+      });
+    this.listRenderers$
+      .pipe(
+        filter((x): x is IHtmlRenderer[] => x != null),
+        tap(() => this.unsub$.next()),
+        mergeMap((x) => from(x)),
+        pairwise(),
+        mergeMap(([curr, next]) =>
+          curr.nextTarget$.pipe(
+            takeUntil(this.unsub$),
+            filter((t): t is IBinding => t != null),
+            map((t) => ({ currNext: t, next: next.target$ })),
+          ),
+        ),
+      )
+      .subscribe(({ next, currNext }) => {
+        next.val = currNext;
+      });
+  }
+
+  get listComponent(): Component<IListComponentProps> {
+    if (this.component.type !== ComponentType.List) {
+      throw new Error('Component must render list of components');
+    }
+    return this.component;
+  }
+
+  async unmount(): Promise<void> {
+    if (this.listRenderers$.val == null) {
+      throw new Error('Cannot remove non exisiting list');
+    }
+    // eslint-disable-next-line no-restricted-syntax
+    for (const renderer of this.listRenderers$.val) {
+      // eslint-disable-next-line no-await-in-loop
+      await renderer.unmount();
+    }
+  }
+
+  renderInto(target: IBinding) {
+    const renderContent = async () => {
+      const renderers = this.listRenderers$.val;
+      if (renderers == null) {
+        throw new Error('List renderers were not created');
+      }
+      let lastTarget: IBinding | undefined;
       // eslint-disable-next-line no-restricted-syntax
-      for (const component of content) {
-        if (renderer == null) {
-          renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
+      for (const renderer of renderers) {
+        if (renderer.target$.val == null) {
           renderer.target$.val = target;
-          renderer.setComponent(component);
-          // eslint-disable-next-line no-await-in-loop
-          await renderer.render();
-        } else {
-          const newRenderer: IHtmlRenderer =
-            container.resolve<IHtmlRenderer>('IHtmlRenderer');
-          newRenderer.setComponent(component);
-          newRenderer.target$.val = renderer.nextTarget$.val ?? target;
-          renderer = newRenderer;
-          // eslint-disable-next-line no-await-in-loop
-          await newRenderer.render();
         }
+        // eslint-disable-next-line no-await-in-loop
+        await renderer.render();
+
+        lastTarget = renderer.nextTarget$.val;
       }
 
-      return renderer?.nextTarget$.value ?? undefined;
+      return lastTarget;
     };
     return from(renderContent());
   }

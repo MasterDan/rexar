@@ -1,7 +1,11 @@
+import { conditional } from '@core/components/builtIn/conditional.component';
+import { dynamic } from '@core/components/builtIn/dynamic.component';
 import { el } from '@core/components/builtIn/html-element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
+import { AnyComponent } from '@core/render/html/@types/any-component';
+import { lastValueFrom, timer } from 'rxjs';
 import { createApp } from '.';
 
 describe('app-tests', () => {
@@ -32,6 +36,129 @@ describe('app-tests', () => {
       '<div id="app"><div>Hello, World!</div></div>',
     );
   });
+
+  test('list-test', async () => {
+    const elRoot = list([
+      el({ name: 'div', attrs: { class: 'foo' } }),
+      el({ name: 'span', attrs: { class: 'bar' } }),
+      el({ name: 'div', attrs: { class: 'baz' } }),
+    ]);
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div class="foo"></div>' +
+        '<span class="bar"></span>' +
+        '<div class="baz"></div>' +
+        '</div>',
+    );
+  });
+  test('inner-list-test', async () => {
+    const elRoot = list([
+      el({
+        name: 'div',
+        attrs: { class: 'foo' },
+        children: [
+          el({ name: 'span', attrs: { class: 'foo-foo' } }),
+          el({ name: 'span', attrs: { class: 'foo-bar' } }),
+        ],
+      }),
+      el({ name: 'span', attrs: { class: 'bar' } }),
+      el({ name: 'span', attrs: { class: 'bar2' } }),
+      el({
+        name: 'div',
+        attrs: { class: 'baz' },
+        children: [
+          el({ name: 'span', attrs: { class: 'baz-foo' } }),
+          el({ name: 'span', attrs: { class: 'baz-bar' } }),
+        ],
+      }),
+    ]);
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div class="foo">' +
+        '<span class="foo-foo"></span>' +
+        '<span class="foo-bar"></span>' +
+        '</div>' +
+        '<span class="bar"></span>' +
+        '<span class="bar2"></span>' +
+        '<div class="baz">' +
+        '<span class="baz-foo"></span>' +
+        '<span class="baz-bar"></span>' +
+        '</div>' +
+        '</div>',
+    );
+  });
+  test('list of lists', async () => {
+    const elRoot = list([
+      list([
+        el({ name: 'span', attrs: { class: 'foo-foo' } }),
+        el({ name: 'span', attrs: { class: 'foo-bar' } }),
+      ]),
+      list([
+        el({ name: 'div', attrs: { class: 'foo' } }),
+        el({ name: 'span', attrs: { class: 'bar' } }),
+        el({ name: 'div', attrs: { class: 'baz' } }),
+      ]),
+      text({ value: ref$('hello') }),
+    ]);
+
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<span class="foo-foo"></span>' +
+        '<span class="foo-bar"></span>' +
+        '<div class="foo"></div>' +
+        '<span class="bar"></span>' +
+        '<div class="baz"></div>' +
+        'hello' +
+        '</div>',
+    );
+  });
+  test('simple-html-element-with-children', async () => {
+    const elRoot = el({
+      name: 'div',
+      children: [
+        el({
+          name: 'div',
+          attrs: { class: 'foo' },
+          children: [
+            el({
+              name: 'span',
+              attrs: { class: 'foo-bar' },
+            }),
+            el({
+              name: 'span',
+              attrs: { class: 'foo-baz' },
+            }),
+          ],
+        }),
+        el({
+          name: 'span',
+          attrs: { class: 'bar' },
+        }),
+        el({
+          name: 'span',
+          attrs: { class: 'baz' },
+        }),
+      ],
+    });
+    const elApp = await createApp(elRoot).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML ?? 'oh-no').toBe(
+      '<div id="app"><div>' +
+        '<div class="foo">' +
+        '<span class="foo-bar"></span>' +
+        '<span class="foo-baz"></span>' +
+        '</div>' +
+        '<span class="bar"></span>' +
+        '<span class="baz"></span>' +
+        '</div></div>',
+    );
+  });
   test('html-element-with-children', async () => {
     const elRoot = el({
       name: 'div',
@@ -49,7 +176,12 @@ describe('app-tests', () => {
     const elApp = await createApp(elRoot).mount('#app');
     expect(elApp).not.toBeNull();
     expect(elApp?.outerHTML ?? 'oh-no').toBe(
-      '<div id="app"><div><span>hello</span><span>world</span></div></div>',
+      '<div id="app">' +
+        '<div>' +
+        '<span>hello</span>' +
+        '<span>world</span>' +
+        '</div>' +
+        '</div>',
     );
   });
   test('div-with-inputs', async () => {
@@ -83,9 +215,9 @@ describe('app-tests', () => {
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
         'foo' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'bar' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'baz' +
         '</div>',
     );
@@ -93,11 +225,97 @@ describe('app-tests', () => {
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
         'foo' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'barChanged' +
-        '<template></template>' +
+        '<!--end of text-->' +
         'baz' +
         '</div>',
+    );
+  });
+  test('dynamic component: start from undefined', async () => {
+    const component$ = ref$<AnyComponent>();
+    const first = el({
+      name: 'span',
+      attrs: { class: 'foo' },
+    });
+    const second = el({
+      name: 'div',
+      attrs: { class: 'bar' },
+    });
+    const root = dynamic(component$);
+    const elApp = await createApp(root).mount('#app');
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe('<div id="app"></div>');
+    const wait = () => lastValueFrom(timer(100));
+    component$.val = first;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><span class="foo"></span></div>',
+    );
+    component$.val = second;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="bar"></div></div>',
+    );
+  });
+  test('dynamic component: start from component', async () => {
+    const first = el({
+      name: 'span',
+      attrs: { class: 'foo' },
+    });
+    const second = el({
+      name: 'div',
+      attrs: { class: 'bar' },
+    });
+    const third = list([
+      el({ name: 'span', attrs: { class: 'l-foo' } }),
+      text({ value: ref$('text') }),
+      el({ name: 'span', attrs: { class: 'l-bar' } }),
+    ]);
+    const wait = () => lastValueFrom(timer(100));
+    const component$ = ref$<AnyComponent | undefined>(first);
+    const root = dynamic(component$);
+    const elApp = await createApp(root).mount('#app');
+
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><span class="foo"></span></div>',
+    );
+    component$.val = second;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="bar"></div></div>',
+    );
+    component$.val = third;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app">' +
+        '<span class="l-foo"></span>' +
+        'text' +
+        '<!--end of text-->' +
+        '<span class="l-bar"></span>' +
+        '</div>',
+    );
+    component$.val = undefined;
+    await wait();
+    expect(elApp?.outerHTML).toBe('<div id="app"></div>');
+  });
+  test('conditional component', async () => {
+    const condition = ref$(true);
+    const ifTrue = el({ name: 'div', attrs: { class: 'foo' } });
+    const iFalse = el({ name: 'div', attrs: { class: 'bar' } });
+    const root = conditional(condition, ref$(ifTrue), ref$(iFalse));
+    const elApp = await createApp(root).mount('#app');
+    const wait = () => lastValueFrom(timer(100));
+
+    expect(elApp).not.toBeNull();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="foo"></div></div>',
+    );
+    condition.val = false;
+    await wait();
+    expect(elApp?.outerHTML).toBe(
+      '<div id="app"><div class="bar"></div></div>',
     );
   });
 });

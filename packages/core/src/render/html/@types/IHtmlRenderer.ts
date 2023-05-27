@@ -7,4 +7,5 @@ export interface IHtmlRenderer {
   nextTarget$: Ref<IBinding | undefined>;
   setComponent(c: AnyComponent): void;
   render(): Promise<void>;
+  unmount(): Promise<void>;
 }

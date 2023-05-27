@@ -1,9 +1,6 @@
-import { htmlElementDefinitionName } from '@core/components/builtIn/html-element.component';
-import { listComponentName } from '@core/components/builtIn/list.component';
-import { textComponentName } from '@core/components/builtIn/text.component';
 import type { Component } from '@core/components/component';
 import { container, singleton } from 'tsyringe';
-import { customTemplateComponentName } from '@core/components/builtIn/custom/custom-template-component';
+import { ComponentType } from '@core/components/component-type';
 import { HtmlRendererBase } from './base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';
 import { IComponentRendererResolver } from './@types/IComponentRendererResolver';
@@ -11,72 +8,102 @@ import { RendererFactory } from './@types/RendererFactory';
 
 @singleton()
 export class ComponentRendererResolver implements IComponentRendererResolver {
-  private factories: Record<string, RendererFactory | undefined> = {};
+  private factories: Partial<Record<ComponentType, RendererFactory>> = {};
 
-  async resolveRenderer({ name }: Component): Promise<RendererFactory> {
-    switch (name) {
-      case htmlElementDefinitionName: {
-        if (this.factories[name] == null) {
+  async resolveRenderer({ type }: Component): Promise<RendererFactory> {
+    switch (type) {
+      case ComponentType.HTMLElement: {
+        if (this.factories[type] == null) {
           const { ElementRendererHtml } = await import(
             './components/element-renderer-html'
           );
-          container.register(name, ElementRendererHtml);
+          container.register(type, ElementRendererHtml);
 
-          this.factories[name] = (component: AnyComponent) => {
-            const renderer = container.resolve<HtmlRendererBase>(name);
+          this.factories[type] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(type);
             renderer.setComponent(component);
             return renderer;
           };
         }
-        return this.factories[name] as RendererFactory;
+        return this.factories[type] as RendererFactory;
       }
-      case textComponentName: {
-        if (this.factories[name] == null) {
+      case ComponentType.Text: {
+        if (this.factories[type] == null) {
           const { TextRendererHtml } = await import(
             './components/text-renderer-html'
           );
-          container.register(name, TextRendererHtml);
+          container.register(type, TextRendererHtml);
 
-          this.factories[name] = (component: AnyComponent) => {
-            const renderer = container.resolve<HtmlRendererBase>(name);
+          this.factories[type] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(type);
             renderer.setComponent(component);
             return renderer;
           };
         }
-        return this.factories[name] as RendererFactory;
+        return this.factories[type] as RendererFactory;
       }
-      case listComponentName: {
-        if (this.factories[name] == null) {
+      case ComponentType.List: {
+        if (this.factories[type] == null) {
           const { ListRendererHtml } = await import(
             './components/list-renderer-html'
           );
-          container.register(name, ListRendererHtml);
+          container.register(type, ListRendererHtml);
 
-          this.factories[name] = (component: AnyComponent) => {
-            const renderer = container.resolve<HtmlRendererBase>(name);
+          this.factories[type] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(type);
             renderer.setComponent(component);
             return renderer;
           };
         }
-        return this.factories[name] as RendererFactory;
+        return this.factories[type] as RendererFactory;
       }
-      case customTemplateComponentName: {
-        if (this.factories[name] == null) {
+      case ComponentType.CustomTemplate: {
+        if (this.factories[type] == null) {
           const { CustomRendererHtml } = await import(
             './components/cusom-renderer-html'
           );
-          container.register(name, CustomRendererHtml);
+          container.register(type, CustomRendererHtml);
 
-          this.factories[name] = (component: AnyComponent) => {
-            const renderer = container.resolve<HtmlRendererBase>(name);
+          this.factories[type] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(type);
             renderer.setComponent(component);
             return renderer;
           };
         }
-        return this.factories[name] as RendererFactory;
+        return this.factories[type] as RendererFactory;
+      }
+      case ComponentType.Conditional: {
+        if (this.factories[type] == null) {
+          const { ConditionalRendererHtml } = await import(
+            './components/conditional-renderer-html'
+          );
+          container.register(type, ConditionalRendererHtml);
+
+          this.factories[type] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(type);
+            renderer.setComponent(component);
+            return renderer;
+          };
+        }
+        return this.factories[type] as RendererFactory;
+      }
+      case ComponentType.Dynamic: {
+        if (this.factories[type] == null) {
+          const { DynamicRendererHtml } = await import(
+            './components/dynamic-renderer-html'
+          );
+          container.register(type, DynamicRendererHtml);
+
+          this.factories[type] = (component: AnyComponent) => {
+            const renderer = container.resolve<HtmlRendererBase>(type);
+            renderer.setComponent(component);
+            return renderer;
+          };
+        }
+        return this.factories[type] as RendererFactory;
       }
       default:
-        throw new Error(`Unexpected component type: "${name}"`);
+        throw new Error(`Unexpected component type: "${type}"`);
     }
   }
 }

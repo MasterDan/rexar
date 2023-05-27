@@ -5,7 +5,7 @@ import { testTwo } from './components/test-two/test-two.component';
 
 describe('custom components', () => {
   test('test-one', async () => {
-    const elApp = await createApp(testOne.create()).mount('#app');
+    const elApp = await createApp(testOne).mount('#app');
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
         '<div>' +
@@ -17,7 +17,7 @@ describe('custom components', () => {
     );
   });
   test('test-two', async () => {
-    const elApp = await createApp(testTwo.create()).mount('#app');
+    const elApp = await createApp(testTwo).mount('#app');
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
         '<div>' +
@@ -29,7 +29,7 @@ describe('custom components', () => {
     );
   });
   test('test-three', async () => {
-    const appThree = await createApp(testThree.create()).mount('#app');
+    const appThree = await createApp(testThree).mount('#app');
     expect(appThree?.outerHTML).toBe(
       '<div id="app"><div>' +
         '<div>' +
@@ -40,7 +40,7 @@ describe('custom components', () => {
         '<div>Quidem, optio consectetur?</div>' +
         '</div>' +
         'one' +
-        '<template></template>' +
+        '<!--end of text-->' +
         '<div>' +
         '<input type="text">' +
         '<input type="text">' +

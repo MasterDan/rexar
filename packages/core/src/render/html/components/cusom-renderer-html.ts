@@ -1,5 +1,14 @@
-import { CustomComponent } from '@core/components/builtIn/custom/custom-template-component';
-import { listComponent } from '@core/components/builtIn/list.component';
+import { conditional } from '@core/components/builtIn/conditional.component';
+import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
+import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
+import {
+  IConditionalHookArgs,
+  IConditionalHookParams,
+} from '@core/components/builtIn/custom/hooks/if-else.hook';
+import { IMountComponentHookParams } from '@core/components/builtIn/custom/hooks/mount-component.hook';
+import { list } from '@core/components/builtIn/list.component';
+import { ComponentType } from '@core/components/component-type';
+import { ref$ } from '@core/reactivity/ref';
 import { hookScope } from '@core/tools/hooks/hooks';
 
 import {
@@ -9,35 +18,45 @@ import {
   mergeMap,
   Observable,
   of,
+  Subject,
   switchMap,
   tap,
 } from 'rxjs';
-import { container, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { RefStore } from '../ref-store/ref-store';
+import { resolveRenderer } from '../tools';
 
 @injectable()
 export class CustomRendererHtml extends HtmlRendererBase {
+  private renderer: IHtmlRenderer | undefined;
+
   constructor(private refStore: RefStore) {
     super();
   }
 
+  async unmount(): Promise<void> {
+    if (this.renderer == null) {
+      throw new Error('Cannot unmout component that has not been rendered');
+    }
+    await this.renderer.unmount();
+  }
+
   renderInto(target: IBinding): Observable<IBinding | undefined> {
-    if (!(this.component instanceof CustomComponent)) {
+    if (!(this.component instanceof CustomTemplateComponent)) {
       throw new Error('Component should be custom');
     }
-    const component = this.component as CustomComponent;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.refStore.beginScope(this.component.name!);
+    const component = this.component as CustomTemplateComponent;
+    this.refStore.beginScope(this.component.type);
     const { track$, end } = hookScope.beginScope();
     track$
       .pipe(
         filter(
           ({ name, params }) =>
-            name === 'reference' &&
+            name === BuiltInHooks.ElementReference &&
             params.id != null &&
             typeof params.id === 'string',
         ),
@@ -52,6 +71,74 @@ export class CustomRendererHtml extends HtmlRendererBase {
       .subscribe(({ el, trigger$ }) => {
         trigger$.next(el);
       });
+    track$
+      .pipe(
+        filter(({ name }) => name === BuiltInHooks.MountComponent),
+        map(
+          ({ params, trigger$ }) =>
+            ({ params, trigger$ } as {
+              params: IMountComponentHookParams;
+              trigger$: Subject<AnyComponent>;
+            }),
+        ),
+      )
+      .subscribe(({ params, trigger$ }) => {
+        const { transformer } = this.refStore.getReferences(params.id);
+        transformer.append((c) => {
+          if (c.type !== ComponentType.HTMLElement) {
+            return c;
+          }
+          const newComponent = params.componentOrDefinition.create();
+          trigger$.next(newComponent);
+          if (c.getProp('name') !== 'SLOT') {
+            c.bindProp('children', [newComponent]);
+            return c;
+          }
+          return newComponent;
+        });
+      });
+    track$
+      .pipe(
+        filter(({ name }) => name === BuiltInHooks.Conditional),
+        map(
+          ({ params, trigger$ }) =>
+            ({ params, trigger$ } as {
+              params: IConditionalHookParams;
+              trigger$: Subject<IConditionalHookArgs>;
+            }),
+        ),
+      )
+      .subscribe(({ params, trigger$ }) => {
+        const { transformer } = this.refStore.getReferences(params.id);
+        transformer.append((c) => {
+          if (c.type !== ComponentType.HTMLElement) {
+            return c;
+          }
+          const positiveComponent = params.positive.create();
+          const negativeComponent = params.negative?.create();
+          trigger$.next({
+            component: positiveComponent,
+            condition: true,
+          });
+          if (negativeComponent) {
+            trigger$.next({
+              component: negativeComponent,
+              condition: false,
+            });
+          }
+          const newComponent = conditional(
+            params.if$,
+            ref$(positiveComponent),
+            negativeComponent ? ref$(negativeComponent) : undefined,
+          );
+          if (c.getProp('name') !== 'SLOT') {
+            c.bindProp('children', [newComponent]);
+            return c;
+          }
+          return newComponent;
+        });
+      });
+
     component.setup();
     end();
 
@@ -65,18 +152,15 @@ export class CustomRendererHtml extends HtmlRendererBase {
       }
       if (template.length === 1) {
         const [componentTemplate] = template;
-        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        renderer.setComponent(componentTemplate);
-        renderer.target$.val = target;
+        const renderer = resolveRenderer(componentTemplate, target);
+        this.renderer = renderer;
         await renderer.render();
         return renderer.nextTarget$;
       }
       if (template.length > 1) {
-        const componentTemplate = listComponent.create();
-        componentTemplate.bindProp('content', template);
-        const renderer = container.resolve<IHtmlRenderer>('IHtmlRenderer');
-        renderer.setComponent(componentTemplate);
-        renderer.target$.val = target;
+        const componentTemplate = list(template);
+        const renderer = resolveRenderer(componentTemplate, target);
+        this.renderer = renderer;
         await renderer.render();
         return renderer.nextTarget$;
       }

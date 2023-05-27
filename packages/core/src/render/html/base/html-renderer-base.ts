@@ -1,28 +1,39 @@
+import { Component, TData } from '@core/components/component';
 import { ref$ } from '@core/reactivity/ref';
-import { Observable, take, lastValueFrom } from 'rxjs';
+import { Observable, take, lastValueFrom, filter } from 'rxjs';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
-export abstract class HtmlRendererBase implements IHtmlRenderer {
+export abstract class HtmlRendererBase<TProps extends TData = TData>
+  implements IHtmlRenderer
+{
   public target$ = ref$<IBinding>();
 
-  private $component: AnyComponent | undefined;
+  private $component = ref$<Component<TProps>>();
 
   protected get component() {
-    if (this.$component == null) {
+    if (this.$component.val == null) {
       throw new Error('Component must be set before render');
     }
-    return this.$component;
+    return this.$component.val;
+  }
+
+  protected get component$() {
+    return this.$component.pipe(
+      filter((c): c is Component<TProps> => c != null),
+    );
   }
 
   public setComponent(c: AnyComponent) {
-    this.$component = c;
+    this.$component.val = c;
   }
 
   public nextTarget$ = ref$<IBinding>();
 
   abstract renderInto(target: IBinding): Observable<IBinding | undefined>;
+
+  abstract unmount(): Promise<void>;
 
   public async render() {
     if (this.target$.val == null) {

@@ -1,5 +1,6 @@
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineComponent } from '..';
+import { ComponentType } from '../component-type';
 
 export interface IElementComponentProps {
   name: string;
@@ -7,15 +8,13 @@ export interface IElementComponentProps {
   children?: AnyComponent[];
 }
 
-export const htmlElementDefinitionName = 'html-element';
-
-export const htmlElementComponent = defineComponent<IElementComponentProps>({
-  props: { name: 'div' },
-  name: htmlElementDefinitionName,
+const htmlElementComponentDefinition = defineComponent<IElementComponentProps>({
+  props: () => ({ name: 'div' }),
+  type: ComponentType.HTMLElement,
 });
 
 export function el(props: IElementComponentProps, id?: string) {
-  const component = htmlElementComponent.create();
+  const component = htmlElementComponentDefinition.create();
   component.id = id;
   component.bindProps(props);
   return component;
