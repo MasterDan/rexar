@@ -16,10 +16,14 @@ export interface IConditionalHookParams {
   negative?: AnyComponentDefinition;
 }
 
-export const conditionalHook = defineHook<{
+export interface IConditionalHookArgs {
   component?: AnyComponent;
   condition: boolean;
-}>(BuiltInHooks.Conditional);
+}
+
+export const conditionalHook = defineHook<IConditionalHookArgs>(
+  BuiltInHooks.Conditional,
+);
 
 export function ifElse(
   if$: MayBeReadonlyRef<boolean>,
