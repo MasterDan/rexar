@@ -1,8 +1,8 @@
 import { AnyComponentDefinition, ComponentDefinition } from '@core/components';
 import { TData } from '@core/components/component';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
+import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { AnyComponent } from 'packages/core/dist/types';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
 interface IDefinitionWithProps<TProps extends TData = TData> {
@@ -11,6 +11,7 @@ interface IDefinitionWithProps<TProps extends TData = TData> {
 }
 
 export interface IConditionalHookParams {
+  id: string;
   if$: MayBeReadonlyRef<boolean>;
   positive: AnyComponentDefinition;
   negative?: AnyComponentDefinition;
@@ -26,6 +27,7 @@ export const conditionalHook = defineHook<IConditionalHookArgs>(
 );
 
 export function ifElse(
+  id: string,
   if$: MayBeReadonlyRef<boolean>,
   positive: IDefinitionWithProps,
   negative?: IDefinitionWithProps,
@@ -38,6 +40,7 @@ export function ifElse(
       component.bindProps(condition ? positive.props : negative?.props);
     },
     {
+      id,
       if$,
       positive: positive.definition,
       negative: negative?.definition,
