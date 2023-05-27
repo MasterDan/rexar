@@ -12,6 +12,7 @@ export const root = defineComponent({
   setup: () => {
     mountComponent('#simple-lorem-component', lorem);
     mountComponent('#test-text-inputs-component', inputTextTest);
+    mountComponent('#test-text-inputs-component-two', inputTextTest);
     mountComponent('#test-number-inputs-component', inputNumberTest);
     mountComponent('#test-number-inputs-component-two', inputNumberTest);
     mountComponent('#test-boolean-inputs-component', inputCheckboxTest);
