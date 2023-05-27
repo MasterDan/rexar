@@ -1,9 +1,7 @@
 import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
 import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
 import { IMountComponentHookParams } from '@core/components/builtIn/custom/hooks/mount-component.hook';
-import { IElementComponentProps } from '@core/components/builtIn/html-element.component';
 import { list } from '@core/components/builtIn/list.component';
-import { Component } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
 import { hookScope } from '@core/tools/hooks/hooks';
 
@@ -86,12 +84,9 @@ export class CustomRendererHtml extends HtmlRendererBase {
           }
           const newComponent = params.componentOrDefinition.create();
           trigger$.next(newComponent);
-          if (c.getProp('name') !== 'template') {
-            const resultComponent = {
-              ...c,
-            } as Component<IElementComponentProps>;
-            resultComponent.bindProp('children', [newComponent]);
-            return resultComponent;
+          if (c.getProp('name') !== 'SLOT') {
+            c.bindProp('children', [newComponent]);
+            return c;
           }
           return newComponent;
         });

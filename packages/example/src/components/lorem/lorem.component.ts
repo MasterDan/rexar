@@ -5,9 +5,11 @@ import {
   bindStringValue,
   bindNumericValue,
   bindBooleanValue,
+  mountComponent,
 } from '@rexar/core';
 // @ts-expect-error import template
 import template from 'bundle-text:./lorem.component.html';
+import { inner } from '../inner/inner.component';
 
 export const lorem = defineComponent({
   template,
@@ -41,5 +43,6 @@ export const lorem = defineComponent({
           }`,
       ),
     );
+    mountComponent('#inner-component', inner);
   },
 });
