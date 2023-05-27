@@ -1,5 +1,10 @@
 import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
+import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
+import { IMountComponentHookParams } from '@core/components/builtIn/custom/hooks/mount-component.hook';
+import { IElementComponentProps } from '@core/components/builtIn/html-element.component';
 import { list } from '@core/components/builtIn/list.component';
+import { Component } from '@core/components/component';
+import { ComponentType } from '@core/components/component-type';
 import { hookScope } from '@core/tools/hooks/hooks';
 
 import {
@@ -9,6 +14,7 @@ import {
   mergeMap,
   Observable,
   of,
+  Subject,
   switchMap,
   tap,
 } from 'rxjs';
@@ -46,7 +52,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
       .pipe(
         filter(
           ({ name, params }) =>
-            name === 'reference' &&
+            name === BuiltInHooks.ElementReference &&
             params.id != null &&
             typeof params.id === 'string',
         ),
@@ -61,6 +67,36 @@ export class CustomRendererHtml extends HtmlRendererBase {
       .subscribe(({ el, trigger$ }) => {
         trigger$.next(el);
       });
+    track$
+      .pipe(
+        filter(({ name }) => name === BuiltInHooks.MountComponent),
+        map(
+          ({ params, trigger$ }) =>
+            ({ params, trigger$ } as {
+              params: IMountComponentHookParams;
+              trigger$: Subject<AnyComponent>;
+            }),
+        ),
+      )
+      .subscribe(({ params, trigger$ }) => {
+        const { transformer } = this.refStore.getReferences(params.id);
+        transformer.append((c) => {
+          if (c.type !== ComponentType.HTMLElement) {
+            return c;
+          }
+          const newComponent = params.componentOrDefinition.create();
+          trigger$.next(newComponent);
+          if (c.getProp('name') !== 'template') {
+            const resultComponent = {
+              ...c,
+            } as Component<IElementComponentProps>;
+            resultComponent.bindProp('children', [newComponent]);
+            return resultComponent;
+          }
+          return newComponent;
+        });
+      });
+
     component.setup();
     end();
 
