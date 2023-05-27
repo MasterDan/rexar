@@ -4,14 +4,14 @@ import { defineHook } from '@core/tools/hooks/hooks';
 import { AnyComponent } from 'packages/core/dist/types';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
-const mountComponentHook = defineHook<AnyComponent>(
-  BuiltInHooks.MountComponent,
-);
-
 export interface IMountComponentHookParams {
   id: string;
   componentOrDefinition: AnyComponentDefinition;
 }
+
+const mountComponentHook = defineHook<AnyComponent, IMountComponentHookParams>(
+  BuiltInHooks.MountComponent,
+);
 
 export function mountComponent<TProps extends TData>(
   id: string,

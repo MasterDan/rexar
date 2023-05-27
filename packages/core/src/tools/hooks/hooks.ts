@@ -45,13 +45,16 @@ export const hookScope = {
 
 const hookNames: Record<string, boolean> = {};
 
-export function defineHook<T = void>(name: string) {
+export function defineHook<
+  TArg = void,
+  TParams extends AnyRecord<string> = AnyRecord<string>,
+>(name: string) {
   if (hookNames[name]) {
     throw new Error(`Hook wth name "${name}" already exists`);
   }
   hookNames[name] = true;
-  return (hook: (value: T) => void, params: AnyRecord<string> = {}) => {
-    const trigger$ = new Subject<T>();
+  return (hook: (value: TArg) => void, params: Partial<TParams> = {}) => {
+    const trigger$ = new Subject<TArg>();
     hookTracker$.next({
       name,
       trigger$,
