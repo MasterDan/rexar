@@ -10,6 +10,9 @@ interface IDefinitionWithProps<TProps extends TData = TData> {
   props?: TProps;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyDefinitionWithProps = IDefinitionWithProps<any>;
+
 export interface IConditionalHookParams {
   id: string;
   if$: MayBeReadonlyRef<boolean>;
@@ -29,8 +32,8 @@ export const conditionalHook = defineHook<IConditionalHookArgs>(
 export function ifElse(
   id: string,
   if$: MayBeReadonlyRef<boolean>,
-  positive: IDefinitionWithProps,
-  negative?: IDefinitionWithProps,
+  positive: AnyDefinitionWithProps,
+  negative?: AnyDefinitionWithProps,
 ) {
   conditionalHook(
     ({ component, condition }) => {

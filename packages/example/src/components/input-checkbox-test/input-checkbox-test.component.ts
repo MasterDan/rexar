@@ -3,9 +3,11 @@ import {
   innerTextFor,
   ref$,
   bindBooleanValue,
+  ifElse,
 } from '@rexar/core';
 // @ts-expect-error import template
 import template from 'bundle-text:./input-checkbox-test.component.html';
+import { inner } from '../inner/inner.component';
 
 export const inputCheckboxTest = defineComponent({
   template,
@@ -16,12 +18,36 @@ export const inputCheckboxTest = defineComponent({
     bindBooleanValue('#checkbox-two', checkTwo$);
     innerTextFor(
       '#options-text',
-      ref$(
-        () =>
-          ` ${checkOne$.val ? 'Option checked' : ''} ${
-            checkTwo$.val ? 'Second Option checked' : ''
-          }`,
+      ref$(() =>
+        !checkOne$.val && !checkTwo$.val
+          ? 'Nothing is checked'
+          : ` ${checkOne$.val ? 'Option checked' : ''}${
+              checkTwo$.val ? ' Second Option checked' : ''
+            }`,
       ),
+    );
+
+    ifElse('#inner', checkOne$, {
+      definition: inner,
+      props: {
+        message: 'This component displays if first checkbox is checked',
+      },
+    });
+    ifElse(
+      '#inner-two',
+      checkTwo$,
+      {
+        definition: inner,
+        props: {
+          message: 'This component displays if second checkbox is checked',
+        },
+      },
+      {
+        definition: inner,
+        props: {
+          message: 'This component displays if second checkbox is NOT checked',
+        },
+      },
     );
   },
 });

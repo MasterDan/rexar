@@ -1,7 +1,7 @@
 import { AnyComponentDefinition, ComponentDefinition } from '@core/components';
 import { TData } from '@core/components/component';
+import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { AnyComponent } from 'packages/core/dist/types';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
 export interface IMountComponentHookParams {
