@@ -1,6 +1,16 @@
-import { defineComponent } from '@rexar/core';
+import { defineComponent, innerTextFor } from '@rexar/core';
 
 // @ts-expect-error import template
 import template from 'bundle-text:./inner.component.html';
 
-export const inner = defineComponent({ template });
+export interface IInnerComponnentProps {
+  message: string;
+}
+
+export const inner = defineComponent<IInnerComponnentProps>({
+  template,
+  props: () => ({ message: 'No Message' }),
+  setup: ({ props }) => {
+    innerTextFor('#message', props.message);
+  },
+});

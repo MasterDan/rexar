@@ -1,5 +1,5 @@
 import 'reflect-metadata';
 import { createApp } from '@rexar/core';
-import { lorem } from './components/lorem/lorem.component';
+import { root } from './components/root/root.component';
 
-createApp(lorem).mount('#app');
+createApp(root).mount('body');
