@@ -13,6 +13,7 @@ export const inputTextTest = defineComponent({
     const textOne$ = ref$('hello');
     const textTwo$ = ref$('World');
     bindStringValue('#one', textOne$);
+    bindStringValue('#one-second', textOne$);
     bindStringValue('#two', textTwo$);
     innerTextFor(
       '#text',

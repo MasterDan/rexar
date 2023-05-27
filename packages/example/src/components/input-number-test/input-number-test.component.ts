@@ -13,6 +13,7 @@ export const inputNumberTest = defineComponent({
     const numberOne$ = ref$(2);
     const numberTwo$ = ref$(2);
     bindNumericValue('#number', numberOne$);
+    bindNumericValue('#number-copy', numberOne$);
     bindNumericValue('#number-two', numberTwo$);
     innerTextFor(
       '#sum-text',
