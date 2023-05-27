@@ -23,7 +23,7 @@ export class RefStore {
   }
 
   beginScope(scopeName: string) {
-    const scopeKey = Symbol.for(scopeName);
+    const scopeKey = Symbol(scopeName);
     if (this.storages[scopeKey] == null) {
       this.storages[scopeKey] = {};
     }
