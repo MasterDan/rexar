@@ -7,51 +7,73 @@ import { extractId } from './id-checker';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
 
-function parseNodes(nodes: NodeListOf<ChildNode>): (AnyComponent | null)[] {
+export type Templates = {
+  default: AnyComponent[];
+  inner: Record<string, AnyComponent[]>;
+};
+
+function parseNodes(
+  nodes: NodeListOf<ChildNode>,
+  templates: Templates,
+): AnyComponent[] {
   const nodesArray = Array.from(nodes);
-  return nodesArray.map((node): AnyComponent | null => {
-    if (isTextNode(node)) {
-      return isValidString(node.nodeValue)
-        ? (text({ value: ref$(node.nodeValue.trim()) }) as AnyComponent)
-        : null;
-    }
-    if (isHtmlElement(node)) {
-      const ittributesNotEmpty = node.attributes.length > 0;
-      const attributes: Record<string, string | null> | undefined =
-        ittributesNotEmpty ? {} : undefined;
-      let id: string | undefined;
-      if (ittributesNotEmpty) {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const attr of node.attributes) {
-          const mayBeId = extractId(attr.name);
-          if (mayBeId != null) {
-            id = mayBeId;
-          } else {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            attributes![attr.name] = attr.nodeValue;
+  const parsed = nodesArray
+    .map((node): AnyComponent | null => {
+      if (isTextNode(node)) {
+        return isValidString(node.nodeValue)
+          ? (text({ value: ref$(node.nodeValue.trim()) }) as AnyComponent)
+          : null;
+      }
+      if (isHtmlElement(node)) {
+        const ittributesNotEmpty = node.attributes.length > 0;
+        const attributes: Record<string, string | null> | undefined =
+          ittributesNotEmpty ? {} : undefined;
+        let id: string | undefined;
+        if (ittributesNotEmpty) {
+          // eslint-disable-next-line no-restricted-syntax
+          for (const attr of node.attributes) {
+            const mayBeId = extractId(attr.name);
+            if (mayBeId != null) {
+              id = mayBeId;
+            } else {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              attributes![attr.name] = attr.nodeValue;
+            }
           }
         }
+
+        if (node.nodeName === 'TEMPLATE' && id != null) {
+          const templateChildNodes = (node as HTMLTemplateElement).content
+            .childNodes;
+          const templateContent =
+            templateChildNodes.length > 0
+              ? parseNodes(templateChildNodes, templates)
+              : [];
+          templates.inner[id] = templateContent;
+          return null;
+        }
+        const children =
+          node.childNodes.length > 0
+            ? parseNodes(node.childNodes, templates)
+            : undefined;
+        return el(
+          {
+            name: node.nodeName,
+            attrs: attributes,
+            children,
+          },
+          id,
+        ) as AnyComponent;
       }
-      const children =
-        node.childNodes.length > 0
-          ? parseNodes(node.childNodes).filter(
-              (x): x is AnyComponent => x != null,
-            )
-          : undefined;
-      return el(
-        {
-          name: node.nodeName,
-          attrs: attributes,
-          children,
-        },
-        id,
-      ) as AnyComponent;
-    }
-    return null;
-  });
+      return null;
+    })
+    .filter((x): x is AnyComponent => x != null);
+  return parsed;
 }
 
-export async function parseHtml(html: string): Promise<AnyComponent[]> {
+export async function parseHtml(html: string): Promise<Templates> {
   const nodes = await resolveNodes(html);
-  return parseNodes(nodes).filter((c): c is AnyComponent => c != null);
+  const templates: Templates = { default: [], inner: {} };
+  templates.default = parseNodes(nodes, templates);
+  return templates;
 }

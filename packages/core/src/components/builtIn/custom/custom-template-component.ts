@@ -4,6 +4,7 @@ import {
   Component,
 } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
+import type { Templates } from '@core/parsers/html';
 import { ref$, readonly } from '@core/reactivity/ref';
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
@@ -27,7 +28,7 @@ export interface ICustomTemplateComponentDefinitionArgs<
   TProps extends TData = TData,
 > extends Omit<IComponentDefinitionArgs<TProps>, 'type'> {
   setup?: SetupFn<TProps>;
-  template: string | AnyComponent[];
+  template: string | AnyComponent[] | Templates;
 }
 
 export class CustomTemplateComponent<
@@ -35,7 +36,7 @@ export class CustomTemplateComponent<
 > extends Component<TProps> {
   private setupFn?: SetupFn<TProps>;
 
-  template: string | AnyComponent[];
+  template: string | AnyComponent[] | Templates;
 
   propsAccessors$ = ref$(
     this.props$.pipe(
@@ -72,3 +73,4 @@ export class CustomTemplateComponent<
     });
   }
 }
+
