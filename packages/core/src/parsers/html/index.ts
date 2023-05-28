@@ -3,6 +3,7 @@ import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { isValidString } from '@core/tools/string';
+import { extractId } from './id-checker';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
 
@@ -22,8 +23,9 @@ function parseNodes(nodes: NodeListOf<ChildNode>): (AnyComponent | null)[] {
       if (ittributesNotEmpty) {
         // eslint-disable-next-line no-restricted-syntax
         for (const attr of node.attributes) {
-          if (attr.name[0] === '#') {
-            id = attr.name;
+          const mayBeId = extractId(attr.name);
+          if (mayBeId != null) {
+            id = mayBeId;
           } else {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             attributes![attr.name] = attr.nodeValue;

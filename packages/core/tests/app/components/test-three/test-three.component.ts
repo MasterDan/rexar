@@ -8,7 +8,7 @@ export const testThree = defineComponent({
   template,
   setup() {
     const val = ref$<string | undefined>('hello');
-    bindStringValue('#one', val);
-    bindStringValue('#two', val);
+    bindStringValue('one', val);
+    bindStringValue('two', val);
   },
 });

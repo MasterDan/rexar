@@ -10,10 +10,10 @@ import { lorem } from '../lorem/lorem.component';
 export const root = defineComponent({
   template,
   setup: () => {
-    mountComponent('#simple-lorem-component', lorem);
-    mountComponent('#test-text-inputs-component', inputTextTest);
-    mountComponent('#test-number-inputs-component', inputNumberTest);
-    mountComponent('#test-boolean-inputs-component', inputCheckboxTest);
-    mountComponent('#inner-component', inner, { message: 'Hello, World!' });
+    mountComponent('simple-lorem-component', lorem);
+    mountComponent('test-text-inputs-component', inputTextTest);
+    mountComponent('test-number-inputs-component', inputNumberTest);
+    mountComponent('test-boolean-inputs-component', inputCheckboxTest);
+    mountComponent('inner-component', inner, { message: 'Hello, World!' });
   },
 });

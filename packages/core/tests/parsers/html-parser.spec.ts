@@ -13,7 +13,7 @@ describe('html-parser', () => {
     const first = tree[0] as Component<IElementComponentProps>;
     const children = first.getProp('children');
     expect(Array.isArray(children)).toBe(true);
-    const lorem = children?.find((c) => c.id === '#lorem');
+    const lorem = children?.find((c) => c.id === 'lorem');
     expect(lorem).not.toBeUndefined();
   });
   test('template-two', async () => {

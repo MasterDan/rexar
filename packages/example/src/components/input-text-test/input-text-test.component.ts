@@ -12,11 +12,11 @@ export const inputTextTest = defineComponent({
   setup() {
     const textOne$ = ref$('hello');
     const textTwo$ = ref$('World');
-    bindStringValue('#one', textOne$);
-    bindStringValue('#one-second', textOne$);
-    bindStringValue('#two', textTwo$);
+    bindStringValue('one', textOne$);
+    bindStringValue('one-second', textOne$);
+    bindStringValue('two', textTwo$);
     innerTextFor(
-      '#text',
+      'text',
       ref$(() => `${textOne$.val} ${textTwo$.val}`),
     );
   },
