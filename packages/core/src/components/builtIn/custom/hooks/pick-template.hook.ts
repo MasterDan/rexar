@@ -3,6 +3,7 @@ import { TData } from '@core/components/component';
 import { readonly, ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
+import { filter, Observable } from 'rxjs';
 import { SetupFn } from '../custom-template-component';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
@@ -22,7 +23,7 @@ const pickTemplateHook = defineHook<AnyComponent[], IPickTemplateHookArgs>(
 
 export const fromTemplate = <TProps extends TData = TData>(
   arg: IPickTemplateArgs<TProps>,
-) => {
+): Observable<ComponentDefinition<TProps>> => {
   const componentDefinition$ = ref$<ComponentDefinition<TProps>>();
   pickTemplateHook(
     (template) => {
@@ -36,5 +37,7 @@ export const fromTemplate = <TProps extends TData = TData>(
       id: arg.id,
     },
   );
-  return readonly(componentDefinition$);
+  return readonly(componentDefinition$).pipe(
+    filter((x): x is ComponentDefinition<TProps> => x != null),
+  );
 };

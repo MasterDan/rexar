@@ -8,6 +8,7 @@ export const lorem = defineComponent({
     const inner$ = fromTemplate({
       id: 'inner-template',
     });
+    inner$.subscribe((t) => console.log(t));
     mountComponent('target', inner$);
   },
 });
