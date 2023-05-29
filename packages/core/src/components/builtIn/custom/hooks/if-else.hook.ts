@@ -25,9 +25,10 @@ export interface IConditionalHookArgs {
   condition: boolean;
 }
 
-export const conditionalHook = defineHook<IConditionalHookArgs>(
-  BuiltInHooks.Conditional,
-);
+export const conditionalHook = defineHook<
+  IConditionalHookArgs,
+  IConditionalHookParams
+>(BuiltInHooks.Conditional);
 
 export function ifElse(
   id: string,
