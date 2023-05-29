@@ -13,6 +13,7 @@ import { IHookHandler } from './hook-handlers/base/hook-handler';
 import { ConditionalHookHandler } from './hook-handlers/conditional-hook-handler';
 import { ElementReferenceHookHandler } from './hook-handlers/element-reference-hook-handler';
 import { MountComponentHookHandler } from './hook-handlers/mount-component-hook-handler';
+import { PickTemplateHookHandler } from './hook-handlers/pick-template-hook-handler';
 
 const hookHandlerToken = 'IHookHandler';
 
@@ -21,6 +22,7 @@ const hookHandlerToken = 'IHookHandler';
   { token: hookHandlerToken, useClass: ElementReferenceHookHandler },
   { token: hookHandlerToken, useClass: MountComponentHookHandler },
   { token: hookHandlerToken, useClass: ConditionalHookHandler },
+  { token: hookHandlerToken, useClass: PickTemplateHookHandler },
 ])
 export class CustomRendererHtml extends HtmlRendererBase {
   private renderer: IHtmlRenderer | undefined;
@@ -45,14 +47,6 @@ export class CustomRendererHtml extends HtmlRendererBase {
     }
     const component = this.component as CustomTemplateComponent;
     this.refStore.beginScope(this.component.type);
-    const { track$, end } = hookScope.beginScope();
-
-    this.hookHandlers.forEach((handler) => {
-      handler.register(track$);
-    });
-
-    component.setup();
-    end();
 
     const renderAsync = async (): Promise<Observable<IBinding | undefined>> => {
       let template!: AnyComponent[];
@@ -69,6 +63,14 @@ export class CustomRendererHtml extends HtmlRendererBase {
               return component.template.default;
             })();
       }
+
+      const { track$, end } = hookScope.beginScope();
+      this.hookHandlers.forEach((handler) => {
+        handler.register(track$);
+      });
+      component.setup();
+      end();
+
       if (template.length === 1) {
         const [componentTemplate] = template;
         const renderer = resolveRenderer(componentTemplate, target);

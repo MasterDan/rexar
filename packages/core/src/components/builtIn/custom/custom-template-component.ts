@@ -23,7 +23,7 @@ export interface ISetupContext<TProps> {
   props: TPropsAccessors<TProps>;
 }
 
-type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
+export type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
 export interface ICustomTemplateComponentDefinitionArgs<
   TProps extends TData = TData,
 > extends Omit<IComponentDefinitionArgs<TProps>, 'type'> {
