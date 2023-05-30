@@ -4,7 +4,6 @@ import {
   ref$,
   bindStringValue,
 } from '@rexar/core';
-// @ts-expect-error import template
 import template from 'bundle-text:./input-text-test.component.html';
 
 export const inputTextTest = defineComponent({

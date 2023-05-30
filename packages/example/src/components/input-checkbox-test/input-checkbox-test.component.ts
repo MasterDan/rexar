@@ -5,7 +5,6 @@ import {
   bindBooleanValue,
   ifElse,
 } from '@rexar/core';
-// @ts-expect-error import template
 import template from 'bundle-text:./input-checkbox-test.component.html';
 import { inner } from '../inner/inner.component';
 

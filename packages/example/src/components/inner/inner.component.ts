@@ -1,6 +1,5 @@
 import { defineComponent, innerTextFor } from '@rexar/core';
 
-// @ts-expect-error import template
 import template from 'bundle-text:./inner.component.html';
 
 export interface IInnerComponnentProps {

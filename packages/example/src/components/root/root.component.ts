@@ -1,5 +1,4 @@
 import { defineComponent, mountComponent } from '@rexar/core';
-// @ts-expect-error template exists
 import template from 'bundle-text:./root.component.html';
 import { inner } from '../inner/inner.component';
 import { inputCheckboxTest } from '../input-checkbox-test/input-checkbox-test.component';
