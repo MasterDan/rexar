@@ -12,7 +12,6 @@ export interface IRefBuilder {
     set: (val: T) => void,
     options?: IComputedBuilderOptions,
   ): WritableReadonlyRef<T>;
-  buildRef<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
   buildRef<T>(
     init: Observable<T>,
     fallack: T,
@@ -24,6 +23,7 @@ export interface IRefBuilder {
     set: (val: T) => void,
   ): WritableReadonlyRef<T | undefined>;
   buildRef<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
+  buildRef<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
   buildRef<T>(): Ref<T | undefined>;
   buildRef<T>(init: T): Ref<T>;
   makeReadonly<T>(ref: RefBase<T>): ReadonlyRef<T>;

@@ -34,31 +34,41 @@ export class RefBuilder implements IRefBuilder {
     fallack: undefined,
     set: (val: T) => void,
   ): WritableReadonlyRef<T | undefined>;
-  buildRef<T>(init: Observable<T>): ReadonlyRef<T>;
+  buildRef<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
   buildRef<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
   buildRef<T>(): Ref<T | undefined>;
   buildRef<T>(init: T): Ref<T>;
   buildRef<T>(
     init?: MaybeObservable<T> | (() => T),
     optionsOrSetterOrfallack?: T | IComputedBuilderOptions | ((val: T) => void),
-    set?: IComputedBuilderOptions | ((val: T) => void),
+    setOrOptions?: IComputedBuilderOptions | ((val: T) => void),
   ) {
     if (typeof init === 'function') {
-      return this.computedBuilder.build(
-        init as () => T,
-        optionsOrSetterOrfallack as IComputedBuilderOptions,
-      );
+      return typeof optionsOrSetterOrfallack === 'function'
+        ? this.computedBuilder.build(
+            init as () => T,
+            optionsOrSetterOrfallack as (arg: T) => void,
+            setOrOptions as IComputedBuilderOptions,
+          )
+        : this.computedBuilder.build(
+            init as () => T,
+            optionsOrSetterOrfallack as IComputedBuilderOptions,
+          );
     }
     const fallack = optionsOrSetterOrfallack as T | undefined;
 
     if (isObservable(init)) {
-      if (set) {
+      if (setOrOptions) {
         return fallack
-          ? new WritableReadonlyRef<T>(init, fallack, set)
+          ? new WritableReadonlyRef<T>(
+              init,
+              fallack,
+              setOrOptions as (arg: T) => void,
+            )
           : new WritableReadonlyRef<T | undefined>(
               init,
               fallack,
-              set as (val: T | undefined) => void,
+              setOrOptions as (val: T | undefined) => void,
             );
       }
       return fallack

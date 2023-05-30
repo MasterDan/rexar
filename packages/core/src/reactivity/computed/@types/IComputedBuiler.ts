@@ -16,7 +16,7 @@ export interface IComputedBuiler {
   ): ReadonlyRef<T | null>;
   build<T>(
     fn: () => T,
-    setOrOptions?: (val: T) => void,
+    setOrOptions: (val: T) => void,
     options?: IComputedBuilderOptions,
   ): WritableReadonlyRef<T | null>;
 }
