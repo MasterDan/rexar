@@ -5,7 +5,7 @@ import { ref$ } from '@core/reactivity/ref';
 import template from './test-three.component.html';
 
 export const testThree = defineComponent({
-  template,
+  template: () => template,
   setup() {
     const val = ref$<string | undefined>('hello');
     bindStringValue('one', val);

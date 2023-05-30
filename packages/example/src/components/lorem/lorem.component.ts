@@ -9,7 +9,7 @@ import {
 import template from 'bundle-text:./lorem.component.html';
 
 export const lorem = defineComponent({
-  template,
+  template: () => template,
   setup() {
     const inner$ = fromTemplate({
       id: 'inner-template',

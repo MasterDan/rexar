@@ -5,7 +5,7 @@ import { filter } from 'rxjs';
 import template from './test-two.component.html';
 
 export const testTwo = defineComponent({
-  template,
+  template: () => template,
   setup() {
     useElement('middle')
       .pipe(filter((x): x is HTMLElement => x != null))

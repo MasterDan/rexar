@@ -8,7 +8,7 @@ import type { Templates } from '@core/parsers/html';
 import { ref$, readonly } from '@core/reactivity/ref';
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { Observable, isObservable, map } from 'rxjs';
+import { Observable, isObservable, map, filter } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ToReadonlyRef<T> = T extends Observable<infer V>
@@ -23,12 +23,14 @@ export interface ISetupContext<TProps> {
   props: TPropsAccessors<TProps>;
 }
 
+export type CustomTemplate = string | AnyComponent[] | Templates;
+
 export type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
 export interface ICustomTemplateComponentDefinitionArgs<
   TProps extends TData = TData,
 > extends Omit<IComponentDefinitionArgs<TProps>, 'type'> {
   setup?: SetupFn<TProps>;
-  template: string | AnyComponent[] | Templates;
+  template: () => CustomTemplate | Promise<CustomTemplate>;
 }
 
 export class CustomTemplateComponent<
@@ -36,7 +38,11 @@ export class CustomTemplateComponent<
 > extends Component<TProps> {
   private setupFn?: SetupFn<TProps>;
 
-  template: string | AnyComponent[] | Templates;
+  private $template = ref$<CustomTemplate>();
+
+  get template() {
+    return this.$template.pipe(filter((x): x is CustomTemplate => x != null));
+  }
 
   propsAccessors$ = ref$(
     this.props$.pipe(
@@ -58,7 +64,9 @@ export class CustomTemplateComponent<
   constructor(args: ICustomTemplateComponentDefinitionArgs<TProps>) {
     super({ ...args, type: ComponentType.CustomTemplate });
     this.setupFn = args.setup;
-    this.template = args.template;
+    Promise.resolve(args.template()).then((t) => {
+      this.$template.val = t;
+    });
   }
 
   setup() {

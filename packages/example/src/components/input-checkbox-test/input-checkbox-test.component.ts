@@ -10,7 +10,7 @@ import template from 'bundle-text:./input-checkbox-test.component.html';
 import { inner } from '../inner/inner.component';
 
 export const inputCheckboxTest = defineComponent({
-  template,
+  template: () => template,
   setup() {
     const checkOne$ = ref$(true);
     const checkTwo$ = ref$(false);

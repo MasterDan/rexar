@@ -8,7 +8,7 @@ import {
 import template from 'bundle-text:./input-number-test.component.html';
 
 export const inputNumberTest = defineComponent({
-  template,
+  template: () => template,
   setup() {
     const numberOne$ = ref$(2);
     const numberTwo$ = ref$(2);

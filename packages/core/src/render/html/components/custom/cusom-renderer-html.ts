@@ -1,7 +1,7 @@
 import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
 import { list } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
-import { from, Observable, of, switchMap, tap } from 'rxjs';
+import { firstValueFrom, from, Observable, of, switchMap, tap } from 'rxjs';
 import { injectable, injectAll, registry } from 'tsyringe';
 import { AnyComponent } from '../../@types/any-component';
 import { IBinding } from '../../@types/binding-target';
@@ -56,30 +56,31 @@ export class CustomRendererHtml extends HtmlRendererBase {
     end();
 
     const renderAsync = async (): Promise<Observable<IBinding | undefined>> => {
-      let template!: AnyComponent[];
-      if (typeof component.template === 'string') {
+      let templateToRender!: AnyComponent[];
+      const resolvedTemplate = await firstValueFrom(component.template);
+      if (typeof resolvedTemplate === 'string') {
         const { parseHtml } = await import('@core/parsers/html');
-        const templates = await parseHtml(component.template);
+        const templates = await parseHtml(resolvedTemplate);
         this.refStore.setInnerTemplates(templates.inner);
-        template = templates.default;
+        templateToRender = templates.default;
       } else {
-        template = Array.isArray(component.template)
-          ? component.template
+        templateToRender = Array.isArray(resolvedTemplate)
+          ? resolvedTemplate
           : (() => {
-              this.refStore.setInnerTemplates(component.template.inner);
-              return component.template.default;
+              this.refStore.setInnerTemplates(resolvedTemplate.inner);
+              return resolvedTemplate.default;
             })();
       }
 
-      if (template.length === 1) {
-        const [componentTemplate] = template;
+      if (templateToRender.length === 1) {
+        const [componentTemplate] = templateToRender;
         const renderer = resolveRenderer(componentTemplate, target);
         this.renderer = renderer;
         await renderer.render();
         return renderer.nextTarget$;
       }
-      if (template.length > 1) {
-        const componentTemplate = list(template);
+      if (templateToRender.length > 1) {
+        const componentTemplate = list(templateToRender);
         const renderer = resolveRenderer(componentTemplate, target);
         this.renderer = renderer;
         await renderer.render();

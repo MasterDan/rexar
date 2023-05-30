@@ -8,7 +8,7 @@ import {
 import template from 'bundle-text:./input-text-test.component.html';
 
 export const inputTextTest = defineComponent({
-  template,
+  template: () => template,
   setup() {
     const textOne$ = ref$('hello');
     const textTwo$ = ref$('World');
