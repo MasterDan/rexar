@@ -9,11 +9,7 @@ import type {
   IComputedBuilderOptions,
   IComputedBuiler,
 } from '../computed/@types/IComputedBuiler';
-import {
-  isWritableReadonlyRefArg,
-  IWritableReadonlyRefArg,
-  WritableReadonlyRef,
-} from './readonly.ref.writable';
+import { WritableReadonlyRef } from './readonly.ref.writable';
 
 @injectable()
 export class RefBuilder implements IRefBuilder {
@@ -23,35 +19,51 @@ export class RefBuilder implements IRefBuilder {
   ) {}
 
   buildRef<T>(init: () => T, options?: IComputedBuilderOptions): ReadonlyRef<T>;
-  buildRef<T>(init: IWritableReadonlyRefArg<T>): WritableReadonlyRef<T>;
-  buildRef<T>(init: Observable<T>): ReadonlyRef<T>;
+  buildRef<T>(
+    init: () => T,
+    set: (val: T) => void,
+    options?: IComputedBuilderOptions,
+  ): WritableReadonlyRef<T>;
+  buildRef<T>(
+    init: Observable<T>,
+    fallack: T,
+    set: (val: T) => void,
+  ): WritableReadonlyRef<T>;
+  buildRef<T>(
+    init: Observable<T>,
+    fallack: undefined,
+    set: (val: T) => void,
+  ): WritableReadonlyRef<T | undefined>;
   buildRef<T>(init: Observable<T>): ReadonlyRef<T>;
   buildRef<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
   buildRef<T>(): Ref<T | undefined>;
   buildRef<T>(init: T): Ref<T>;
   buildRef<T>(
-    init?: MaybeObservable<T> | (() => T) | IWritableReadonlyRefArg<T>,
-    optionsOrfallack?: T | IComputedBuilderOptions,
+    init?: MaybeObservable<T> | (() => T),
+    optionsOrSetterOrfallack?: T | IComputedBuilderOptions | ((val: T) => void),
+    set?: IComputedBuilderOptions | ((val: T) => void),
   ) {
     if (typeof init === 'function') {
       return this.computedBuilder.build(
         init as () => T,
-        optionsOrfallack as IComputedBuilderOptions,
+        optionsOrSetterOrfallack as IComputedBuilderOptions,
       );
     }
-    const fallack = optionsOrfallack as T | undefined;
+    const fallack = optionsOrSetterOrfallack as T | undefined;
 
     if (isObservable(init)) {
+      if (set) {
+        return fallack
+          ? new WritableReadonlyRef<T>(init, fallack, set)
+          : new WritableReadonlyRef<T | undefined>(
+              init,
+              fallack,
+              set as (val: T | undefined) => void,
+            );
+      }
       return fallack
         ? new ReadonlyRef<T>(init, fallack)
         : new ReadonlyRef<T | undefined>(init, fallack);
-    }
-    if (isWritableReadonlyRefArg<T>(init)) {
-      return fallack
-        ? new WritableReadonlyRef<T>(init)
-        : new WritableReadonlyRef<T | undefined>(
-            init as IWritableReadonlyRefArg<T | undefined>,
-          );
     }
     return init ? new Ref<T>(init) : new Ref<T | undefined>(init);
   }

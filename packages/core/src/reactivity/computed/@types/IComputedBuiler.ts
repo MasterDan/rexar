@@ -1,31 +1,34 @@
+import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { WritableReadonlyRef } from '@core/reactivity/ref/readonly.ref.writable';
-import { ReadonlyRef } from '../../ref/readonly.ref';
 
 export interface IComputedBuilderOptions {
   debounce: number;
 }
 
-export type ComputedBuilderArg<T> =
-  | (() => T)
-  | { get: () => T; set: (value: T) => void };
+export type WritableComputedArg<T> = { get: () => T; set: (value: T) => void };
+
+export type ComputedBuilderArg<T> = (() => T) | WritableComputedArg<T>;
 
 export interface IComputedBuiler {
   build<T>(
     fn: () => T,
-    options?: IComputedBuilderOptions,
+    setOrOptions?: IComputedBuilderOptions,
   ): ReadonlyRef<T | null>;
   build<T>(
-    fn: { get: () => T; set: (value: T) => void },
+    fn: () => T,
+    setOrOptions?: (val: T) => void,
     options?: IComputedBuilderOptions,
   ): WritableReadonlyRef<T | null>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isComputedArg<T>(val: any): val is ComputedBuilderArg<T> {
+export function isWritableComputedArg<T>(
+  val: any,
+): val is WritableComputedArg<T> {
   return (
-    typeof val === 'function' ||
-    (typeof val === 'object' &&
-      typeof val.get === 'function' &&
-      typeof val.set === 'function')
+    typeof val !== 'function' &&
+    typeof val === 'object' &&
+    typeof val.get === 'function' &&
+    typeof val.set === 'function'
   );
 }
