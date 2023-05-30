@@ -4,6 +4,7 @@ import { Observable, take, lastValueFrom, filter } from 'rxjs';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { ComponentLifecycle } from './lifecycle';
 
 export abstract class HtmlRendererBase<TProps extends TData = TData>
   implements IHtmlRenderer
@@ -44,4 +45,15 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
     );
     this.nextTarget$.val = nextTarget ?? this.target$.val;
   }
+
+  protected lifecycle$ = ref$(ComponentLifecycle.Created);
+
+  protected parentLifecycle = ref$(ComponentLifecycle.Created);
+
+  public subscribeParentLifecycle(life: Observable<ComponentLifecycle>) {
+    life.subscribe((lval) => {
+      this.parentLifecycle.val = lval;
+    });
+  }
 }
+
