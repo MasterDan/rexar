@@ -9,6 +9,11 @@ import type {
   IComputedBuilderOptions,
   IComputedBuiler,
 } from '../computed/@types/IComputedBuiler';
+import {
+  isWritableReadonlyRefArg,
+  IWritableReadonlyRefArg,
+  WritableReadonlyRef,
+} from './readonly.ref.writable';
 
 @injectable()
 export class RefBuilder implements IRefBuilder {
@@ -18,12 +23,14 @@ export class RefBuilder implements IRefBuilder {
   ) {}
 
   buildRef<T>(init: () => T, options?: IComputedBuilderOptions): ReadonlyRef<T>;
-  buildRef<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
+  buildRef<T>(init: IWritableReadonlyRefArg<T>): WritableReadonlyRef<T>;
+  buildRef<T>(init: Observable<T>): ReadonlyRef<T>;
+  buildRef<T>(init: Observable<T>): ReadonlyRef<T>;
   buildRef<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
   buildRef<T>(): Ref<T | undefined>;
   buildRef<T>(init: T): Ref<T>;
   buildRef<T>(
-    init?: MaybeObservable<T> | (() => T),
+    init?: MaybeObservable<T> | (() => T) | IWritableReadonlyRefArg<T>,
     optionsOrfallack?: T | IComputedBuilderOptions,
   ) {
     if (typeof init === 'function') {
@@ -38,6 +45,13 @@ export class RefBuilder implements IRefBuilder {
       return fallack
         ? new ReadonlyRef<T>(init, fallack)
         : new ReadonlyRef<T | undefined>(init, fallack);
+    }
+    if (isWritableReadonlyRefArg<T>(init)) {
+      return fallack
+        ? new WritableReadonlyRef<T>(init)
+        : new WritableReadonlyRef<T | undefined>(
+            init as IWritableReadonlyRefArg<T | undefined>,
+          );
     }
     return init ? new Ref<T>(init) : new Ref<T | undefined>(init);
   }
