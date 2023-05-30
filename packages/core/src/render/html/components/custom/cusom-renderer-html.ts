@@ -48,6 +48,13 @@ export class CustomRendererHtml extends HtmlRendererBase {
     const component = this.component as CustomTemplateComponent;
     this.refStore.beginScope(this.component.type);
 
+    const { track$, end } = hookScope.beginScope();
+    this.hookHandlers.forEach((handler) => {
+      handler.register(track$);
+    });
+    component.setup();
+    end();
+
     const renderAsync = async (): Promise<Observable<IBinding | undefined>> => {
       let template!: AnyComponent[];
       if (typeof component.template === 'string') {
@@ -63,13 +70,6 @@ export class CustomRendererHtml extends HtmlRendererBase {
               return component.template.default;
             })();
       }
-
-      const { track$, end } = hookScope.beginScope();
-      this.hookHandlers.forEach((handler) => {
-        handler.register(track$);
-      });
-      component.setup();
-      end();
 
       if (template.length === 1) {
         const [componentTemplate] = template;

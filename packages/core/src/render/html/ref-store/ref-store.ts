@@ -1,4 +1,5 @@
 import { Templates } from '@core/parsers/html';
+import { ref$ } from '@core/reactivity/ref';
 import { singleton } from 'tsyringe';
 import { ElementReference } from './element.reference';
 import { ElementTransformer } from './element.transformer';
@@ -17,7 +18,7 @@ type InnerTemplates = Templates['inner'];
 export class RefStore {
   private storages: Record<symbol, RefStorage | undefined> = {};
 
-  private innerTemplates: Record<symbol, InnerTemplates> = {};
+  private innerTemplates = ref$<Record<symbol, InnerTemplates>>({});
 
   private scopeStack: symbol[] = [];
 
@@ -32,8 +33,11 @@ export class RefStore {
     if (this.storages[scopeKey] == null) {
       this.storages[scopeKey] = {};
     }
-    if (this.innerTemplates[scopeKey] == null) {
-      this.innerTemplates[scopeKey] = {};
+    if (this.innerTemplates.val[scopeKey] == null) {
+      this.innerTemplates.patch((x) => {
+        x[scopeKey] = {};
+        return x;
+      });
     }
     this.scopeStack.push(scopeKey);
   }
@@ -66,11 +70,13 @@ export class RefStore {
     if (scopeKey == null) {
       throw new Error('Scope is not defined');
     }
-    const templates = this.innerTemplates[scopeKey];
-    if (templates == null) {
-      throw new Error('Templates for scope hasnt been instantiated');
-    }
-    return templates[id] ?? [];
+    return ref$(() => {
+      const templates = this.innerTemplates.val[scopeKey];
+      if (templates == null) {
+        throw new Error('Templates for scope hasnt been instantiated');
+      }
+      return templates[id] ?? [];
+    });
   }
 
   public setInnerTemplates(val: InnerTemplates) {
@@ -78,6 +84,9 @@ export class RefStore {
     if (scopeKey == null) {
       throw new Error('Scope is not defined');
     }
-    this.innerTemplates[scopeKey] = val;
+    this.innerTemplates.patch((x) => {
+      x[scopeKey] = val;
+      return x;
+    });
   }
 }
