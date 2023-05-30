@@ -5,12 +5,13 @@ import { filter } from 'rxjs';
 import template from './test-two.component.html';
 
 export const testTwo = defineComponent({
-  template,
+  template: () => template,
   setup() {
-    useElement('#middle')
+    useElement('middle')
       .pipe(filter((x): x is HTMLElement => x != null))
       .subscribe((el) => {
         el.innerHTML = 'middle text';
       });
   },
 });
+

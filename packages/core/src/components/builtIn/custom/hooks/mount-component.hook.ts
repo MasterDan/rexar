@@ -1,12 +1,15 @@
+import { MaybeObservable } from '@core/@types/MaybeObservable';
 import { AnyComponentDefinition, ComponentDefinition } from '@core/components';
 import { TData } from '@core/components/component';
+import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
+import { filter, Observable } from 'rxjs';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
 export interface IMountComponentHookParams {
   id: string;
-  componentOrDefinition: AnyComponentDefinition;
+  definition: Observable<AnyComponentDefinition>;
 }
 
 const mountComponentHook = defineHook<AnyComponent, IMountComponentHookParams>(
@@ -15,7 +18,7 @@ const mountComponentHook = defineHook<AnyComponent, IMountComponentHookParams>(
 
 export function mountComponent<TProps extends TData>(
   id: string,
-  componentOrDefinition: ComponentDefinition<TProps>,
+  componentOrDefinition: MaybeObservable<ComponentDefinition<TProps>>,
   props?: TProps,
 ) {
   mountComponentHook(
@@ -26,7 +29,9 @@ export function mountComponent<TProps extends TData>(
     },
     {
       id,
-      componentOrDefinition,
+      definition: ref$(componentOrDefinition).pipe(
+        filter((x): x is ComponentDefinition<TProps> => x != null),
+      ),
     },
   );
 }

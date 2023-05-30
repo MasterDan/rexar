@@ -8,9 +8,9 @@ export interface IInnerComponnentProps {
 }
 
 export const inner = defineComponent<IInnerComponnentProps>({
-  template,
+  template: () => template,
   props: () => ({ message: 'No Message' }),
   setup: ({ props }) => {
-    innerTextFor('#message', props.message);
+    innerTextFor('message', props.message);
   },
 });

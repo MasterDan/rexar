@@ -60,7 +60,7 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
       case ComponentType.CustomTemplate: {
         if (this.factories[type] == null) {
           const { CustomRendererHtml } = await import(
-            './components/cusom-renderer-html'
+            './components/custom/cusom-renderer-html'
           );
           container.register(type, CustomRendererHtml);
 
@@ -107,3 +107,4 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
     }
   }
 }
+

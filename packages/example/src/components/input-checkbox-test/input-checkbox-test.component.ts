@@ -10,14 +10,14 @@ import template from 'bundle-text:./input-checkbox-test.component.html';
 import { inner } from '../inner/inner.component';
 
 export const inputCheckboxTest = defineComponent({
-  template,
+  template: () => template,
   setup() {
     const checkOne$ = ref$(true);
     const checkTwo$ = ref$(false);
-    bindBooleanValue('#checkbox-one', checkOne$);
-    bindBooleanValue('#checkbox-two', checkTwo$);
+    bindBooleanValue('checkbox-one', checkOne$);
+    bindBooleanValue('checkbox-two', checkTwo$);
     innerTextFor(
-      '#options-text',
+      'options-text',
       ref$(() =>
         !checkOne$.val && !checkTwo$.val
           ? 'Nothing is checked'
@@ -27,14 +27,14 @@ export const inputCheckboxTest = defineComponent({
       ),
     );
 
-    ifElse('#inner', checkOne$, {
+    ifElse('inner', checkOne$, {
       definition: inner,
       props: {
         message: 'This component displays if first checkbox is checked',
       },
     });
     ifElse(
-      '#inner-two',
+      'inner-two',
       checkTwo$,
       {
         definition: inner,
