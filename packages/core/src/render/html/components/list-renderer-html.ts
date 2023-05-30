@@ -20,16 +20,11 @@ import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { resolveRenderer } from '../tools';
 
-let index = 1;
-
 @injectable()
 export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
   private listContent$ = ref$<AnyComponent[]>();
 
   private listRenderers$ = ref$<IHtmlRenderer[]>();
-
-  // eslint-disable-next-line no-plusplus
-  private index = index++;
 
   private unsub$ = new Subject<void>();
 
@@ -59,6 +54,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       .subscribe((content) => {
         this.listRenderers$.val = content.map((i) => resolveRenderer(i));
       });
+    // linking targets
     this.listRenderers$
       .pipe(
         filter((x): x is IHtmlRenderer[] => x != null),
@@ -76,13 +72,6 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       .subscribe(({ next, currNext }) => {
         next.val = currNext;
       });
-  }
-
-  get listComponent(): Component<IListComponentProps> {
-    if (this.component.type !== ComponentType.List) {
-      throw new Error('Component must render list of components');
-    }
-    return this.component;
   }
 
   async unmount(): Promise<void> {
@@ -119,3 +108,4 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     return from(renderContent());
   }
 }
+
