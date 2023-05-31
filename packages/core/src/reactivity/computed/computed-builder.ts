@@ -68,7 +68,7 @@ export class ComputedBuilder implements IComputedBuiler {
       });
 
     return isComptedWritable
-      ? this.refBuilder.buildRef(result, result.value, setOrOptions)
+      ? this.refBuilder.buildRef(result, setOrOptions, result.value)
       : this.refBuilder.makeReadonly(result);
   }
 }

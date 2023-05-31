@@ -17,12 +17,11 @@ export interface IRefBuilder {
   ): WritableReadonlyRef<T>;
   buildRef<T>(
     init: Observable<T>,
-    fallack: T,
     set: (val: T) => void,
+    fallack: T,
   ): WritableReadonlyRef<T>;
   buildRef<T>(
     init: Observable<T>,
-    fallack: undefined,
     set: (val: T) => void,
   ): WritableReadonlyRef<T | undefined>;
   buildRef<T>(init: Observable<T>): ReadonlyRef<T | undefined>;

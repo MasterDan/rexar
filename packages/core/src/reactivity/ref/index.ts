@@ -39,6 +39,15 @@ export function ref$<T>(
 ): WritableReadonlyRef<T>;
 export function ref$<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
 export function ref$<T>(init: Observable<T>): ReadonlyRef<T | undefined>;
+export function ref$<T>(
+  init: Observable<T>,
+  set: (val: T) => void,
+  fallack: T,
+): WritableReadonlyRef<T>;
+export function ref$<T>(
+  init: Observable<T>,
+  set: (val: T) => void,
+): WritableReadonlyRef<T | undefined>;
 export function ref$<T>(): Ref<T | undefined>;
 export function ref$<T>(init: T): Ref<T>;
 export function ref$<T>(

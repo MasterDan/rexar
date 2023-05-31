@@ -10,6 +10,18 @@ describe('refs', () => {
     expect(foo$.value).toBe('Foo');
     expect(bar$.value).toBe('Foo');
   });
+  test('writable readonly ref', () => {
+    const foo$ = ref$('Foo');
+    const bar$ = ref$(foo$, (x) => {
+      foo$.value = x;
+    });
+
+    expect(foo$.value).toBe('Foo');
+    expect(bar$.value).toBe('Foo');
+    bar$.value = 'Bar';
+    expect(foo$.value).toBe('Bar');
+    expect(bar$.value).toBe('Bar');
+  });
   test('simple computed', async () => {
     const name = ref$('John');
     const surname = ref$('Doe');

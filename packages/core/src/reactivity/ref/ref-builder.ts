@@ -29,12 +29,11 @@ export class RefBuilder implements IRefBuilder {
   ): WritableReadonlyRef<T>;
   buildRef<T>(
     init: Observable<T>,
-    fallack: T,
     set: (val: T) => void,
+    fallack: T,
   ): WritableReadonlyRef<T>;
   buildRef<T>(
     init: Observable<T>,
-    fallack: undefined,
     set: (val: T) => void,
   ): WritableReadonlyRef<T | undefined>;
   buildRef<T>(init: Observable<T>, fallack: T): ReadonlyRef<T>;
@@ -43,44 +42,43 @@ export class RefBuilder implements IRefBuilder {
   buildRef<T>(init: T): Ref<T>;
   buildRef<T>(
     init?: MaybeObservable<T> | (() => T),
-    optionsOrSetterOrfallack?:
-      | T
-      | Partial<IComputedBuilderOptions>
-      | ((val: T) => void),
-    setOrOptions?: Partial<IComputedBuilderOptions> | ((val: T) => void),
+    osfOne?: T | Partial<IComputedBuilderOptions> | ((val: T) => void),
+    osfTwo?: Partial<IComputedBuilderOptions> | ((val: T) => void) | T,
   ) {
     // creating computed
     if (typeof init === 'function') {
       // writable or "normal"
-      return typeof optionsOrSetterOrfallack === 'function'
+      return typeof osfOne === 'function'
         ? this.computedBuilder.build(
             init as () => T,
-            optionsOrSetterOrfallack as (arg: T) => void,
-            setOrOptions as Partial<IComputedBuilderOptions>,
+            osfOne as (arg: T) => void,
+            osfTwo as Partial<IComputedBuilderOptions>,
           )
         : this.computedBuilder.build(
             init as () => T,
-            optionsOrSetterOrfallack as Partial<IComputedBuilderOptions>,
+            osfOne as Partial<IComputedBuilderOptions>,
           );
     }
 
     // creating readonly ref, based on observable
     if (isObservable(init)) {
-      const fallack = optionsOrSetterOrfallack as T | undefined;
       // or may be writable readonly ref
-      if (setOrOptions) {
-        return fallack
+      if (typeof osfOne === 'function') {
+        const setter = osfOne;
+        const fallback = osfTwo as T;
+        return fallback
           ? new WritableReadonlyRef<T>(
               init,
-              fallack,
-              setOrOptions as (arg: T) => void,
+              fallback,
+              setter as (arg: T) => void,
             )
           : new WritableReadonlyRef<T | undefined>(
               init,
-              fallack,
-              setOrOptions as (val: T | undefined) => void,
+              fallback,
+              setter as (val: T | undefined) => void,
             );
       }
+      const fallack = osfOne as T;
       return fallack
         ? new ReadonlyRef<T>(init, fallack)
         : new ReadonlyRef<T | undefined>(init, fallack);
