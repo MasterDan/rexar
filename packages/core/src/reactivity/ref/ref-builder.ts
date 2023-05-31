@@ -18,11 +18,14 @@ export class RefBuilder implements IRefBuilder {
     private computedBuilder: IComputedBuiler,
   ) {}
 
-  buildRef<T>(init: () => T, options?: IComputedBuilderOptions): ReadonlyRef<T>;
+  buildRef<T>(
+    init: () => T,
+    options?: Partial<IComputedBuilderOptions>,
+  ): ReadonlyRef<T>;
   buildRef<T>(
     init: () => T,
     set: (val: T) => void,
-    options?: IComputedBuilderOptions,
+    options?: Partial<IComputedBuilderOptions>,
   ): WritableReadonlyRef<T>;
   buildRef<T>(
     init: Observable<T>,
@@ -40,24 +43,31 @@ export class RefBuilder implements IRefBuilder {
   buildRef<T>(init: T): Ref<T>;
   buildRef<T>(
     init?: MaybeObservable<T> | (() => T),
-    optionsOrSetterOrfallack?: T | IComputedBuilderOptions | ((val: T) => void),
-    setOrOptions?: IComputedBuilderOptions | ((val: T) => void),
+    optionsOrSetterOrfallack?:
+      | T
+      | Partial<IComputedBuilderOptions>
+      | ((val: T) => void),
+    setOrOptions?: Partial<IComputedBuilderOptions> | ((val: T) => void),
   ) {
+    // creating computed
     if (typeof init === 'function') {
+      // writable or "normal"
       return typeof optionsOrSetterOrfallack === 'function'
         ? this.computedBuilder.build(
             init as () => T,
             optionsOrSetterOrfallack as (arg: T) => void,
-            setOrOptions as IComputedBuilderOptions,
+            setOrOptions as Partial<IComputedBuilderOptions>,
           )
         : this.computedBuilder.build(
             init as () => T,
-            optionsOrSetterOrfallack as IComputedBuilderOptions,
+            optionsOrSetterOrfallack as Partial<IComputedBuilderOptions>,
           );
     }
-    const fallack = optionsOrSetterOrfallack as T | undefined;
 
+    // creating readonly ref, based on observable
     if (isObservable(init)) {
+      const fallack = optionsOrSetterOrfallack as T | undefined;
+      // or may be writable readonly ref
       if (setOrOptions) {
         return fallack
           ? new WritableReadonlyRef<T>(
@@ -75,6 +85,7 @@ export class RefBuilder implements IRefBuilder {
         ? new ReadonlyRef<T>(init, fallack)
         : new ReadonlyRef<T | undefined>(init, fallack);
     }
+    // creating classic ref, based on behavior subject
     return init ? new Ref<T>(init) : new Ref<T | undefined>(init);
   }
 

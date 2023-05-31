@@ -6,11 +6,14 @@ import { WritableReadonlyRef } from '../readonly.ref.writable';
 import { Ref } from '../ref';
 
 export interface IRefBuilder {
-  buildRef<T>(init: () => T, options?: IComputedBuilderOptions): ReadonlyRef<T>;
+  buildRef<T>(
+    init: () => T,
+    options?: Partial<IComputedBuilderOptions>,
+  ): ReadonlyRef<T>;
   buildRef<T>(
     init: () => T,
     set: (val: T) => void,
-    options?: IComputedBuilderOptions,
+    options?: Partial<IComputedBuilderOptions>,
   ): WritableReadonlyRef<T>;
   buildRef<T>(
     init: Observable<T>,

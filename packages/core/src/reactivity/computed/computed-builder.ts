@@ -19,33 +19,41 @@ export class ComputedBuilder implements IComputedBuiler {
 
   build<T>(
     fn: () => T,
-    setOrOptions?: IComputedBuilderOptions,
-  ): ReadonlyRef<T | null>;
+    setOrOptions?: Partial<IComputedBuilderOptions>,
+  ): ReadonlyRef<T>;
   build<T>(
     fn: () => T,
     setOrOptions?: (val: T) => void,
-    options?: IComputedBuilderOptions,
-  ): WritableReadonlyRef<T | null>;
+    options?: Partial<IComputedBuilderOptions>,
+  ): WritableReadonlyRef<T>;
   build<T>(
     fn: () => T,
-    setOrOptions?: ((val: T) => void) | IComputedBuilderOptions,
-    options?: IComputedBuilderOptions,
-  ): ReadonlyRef<T | null> | WritableReadonlyRef<T | null> {
-    const isComptedReadonly = typeof setOrOptions === 'function';
-    const result = this.refBuilder.buildRef<T | null>(null);
+    setOrOptions?: ((val: T) => void) | Partial<IComputedBuilderOptions>,
+    options: Partial<IComputedBuilderOptions> = {},
+  ): ReadonlyRef<T> | WritableReadonlyRef<T> {
+    const isComptedWritable = typeof setOrOptions === 'function';
+    const defaultOptions: IComputedBuilderOptions = { debounce: 0 };
+    const opts = (isComptedWritable ? options : setOrOptions) ?? {};
+    const { debounce } = {
+      ...defaultOptions,
+      ...opts,
+    } as IComputedBuilderOptions;
+
     const contextKey = Symbol('computed');
     const innerRefs$ = this.refBuilder.buildRef<RefBase[]>([]);
 
     const compute = () => {
-      this.context.init(contextKey, (ref) => {
-        innerRefs$.patch((v) => [...v, ref]);
+      this.context.beginScope(contextKey, (ref) => {
+        innerRefs$.patch((v) => {
+          v.push(ref);
+        });
       });
       const resultValue = fn();
-      this.context.cleanContext();
+      this.context.endScope();
       return resultValue;
     };
 
-    result.val = compute();
+    const result = this.refBuilder.buildRef<T>(compute());
 
     innerRefs$
       .pipe(
@@ -53,9 +61,14 @@ export class ComputedBuilder implements IComputedBuiler {
         debounce > 0 ? debounceTime(debounce) : tap(),
       )
       .subscribe(() => {
-        result.val = compute();
+        const newVal = compute();
+        if (result.val !== newVal) {
+          result.val = newVal;
+        }
       });
 
-    return this.refBuilder.makeReadonly(result);
+    return isComptedWritable
+      ? this.refBuilder.buildRef(result, result.val, setOrOptions)
+      : this.refBuilder.makeReadonly(result);
   }
 }

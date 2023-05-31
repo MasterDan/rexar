@@ -9,7 +9,8 @@ export class Ref<T> extends TrackableRef<T> {
     return super.val;
   }
 
-  patch(fn: (val: T) => T) {
-    super.next(fn(this.val));
+  patch(fn: (v: T) => T | void) {
+    const mayBeNewVal = fn(this.val);
+    super.next(mayBeNewVal ?? this.val);
   }
 }

@@ -42,4 +42,21 @@ describe('refs', () => {
     conditionOne.val = true;
     expect(checker.val).toBe('first');
   });
+  test('writable computed', () => {
+    const first$ = ref$('John');
+    const second$ = ref$('Smith');
+    const writableComputed$ = ref$(
+      () => `${first$.val} ${second$.val}`,
+      (v) => {
+        const [first, second] = v.split(' ');
+        first$.val = first;
+        second$.val = second;
+      },
+    );
+    expect(writableComputed$.val).toBe('John Smith');
+    writableComputed$.val = 'Jane Doe';
+    expect(first$.val).toBe('Jane');
+    expect(second$.val).toBe('Doe');
+    expect(writableComputed$.val).toBe('Jane Doe');
+  });
 });
