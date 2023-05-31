@@ -46,9 +46,20 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
     this.nextTarget$.value = nextTarget ?? this.target$.value;
   }
 
-  protected lifecycle$ = ref$(ComponentLifecycle.Created);
+  protected selfLifecycle$ = ref$(ComponentLifecycle.Created);
 
   protected parentLifecycle = ref$(ComponentLifecycle.Created);
+
+  public lifecycle$ = ref$(
+    () =>
+      Math.min(
+        this.selfLifecycle$.value,
+        this.parentLifecycle.value,
+      ) as ComponentLifecycle,
+    (val) => {
+      this.selfLifecycle$.value = val;
+    },
+  );
 
   public subscribeParentLifecycle(life: Observable<ComponentLifecycle>) {
     life.subscribe((lval) => {
