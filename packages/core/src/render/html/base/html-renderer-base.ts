@@ -1,6 +1,6 @@
 import { Component, TData } from '@core/components/component';
 import { ref$ } from '@core/reactivity/ref';
-import { Observable, take, lastValueFrom, filter } from 'rxjs';
+import { Observable, take, lastValueFrom, filter, combineLatest } from 'rxjs';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
@@ -9,6 +9,23 @@ import { ComponentLifecycle } from './lifecycle';
 export abstract class HtmlRendererBase<TProps extends TData = TData>
   implements IHtmlRenderer
 {
+  constructor() {
+    combineLatest([this.selfLifecycle$, this.parentLifecycle]).subscribe(
+      ([selfLife, parentLife]) => {
+        if (
+          parentLife === ComponentLifecycle.Mounted &&
+          selfLife === ComponentLifecycle.Rendered
+        ) {
+          this.selfLifecycle$.value = ComponentLifecycle.Mounted;
+        }
+
+        if (parentLife === ComponentLifecycle.BeforeUnmount) {
+          this.selfLifecycle$.value = parentLife;
+        }
+      },
+    );
+  }
+
   public target$ = ref$<IBinding>();
 
   private $component = ref$<Component<TProps>>();
