@@ -10,11 +10,11 @@ export class WritableReadonlyRef<T> extends ReadonlyRef<T> {
     super(source$, fallack);
   }
 
-  set val(v: T) {
+  set value(v: T) {
     this.setter(v);
   }
 
-  get val() {
-    return super.val;
+  get value() {
+    return super.value;
   }
 }

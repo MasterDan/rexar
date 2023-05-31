@@ -33,11 +33,11 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
 
   renderInto(): Observable<IBinding | undefined> {
     const renderAsync = async () => {
-      if (this.renderer$.val == null) {
+      if (this.renderer$.value == null) {
         return undefined;
       }
-      await this.renderer$.val.render();
-      return this.renderer$.val.nextTarget$;
+      await this.renderer$.value.render();
+      return this.renderer$.value.nextTarget$;
     };
 
     const firstMount$ = from(renderAsync()).pipe(
@@ -53,9 +53,9 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
         }
         if (current) {
           await current.render();
-          this.nextTarget$.val = current.nextTarget$.val;
+          this.nextTarget$.value = current.nextTarget$.value;
         } else {
-          this.nextTarget$.val = this.target$.val;
+          this.nextTarget$.value = this.target$.value;
         }
       });
 
@@ -63,8 +63,9 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
   }
 
   async unmount(): Promise<void> {
-    if (this.renderer$.val) {
-      await this.renderer$.val.unmount();
+    if (this.renderer$.value) {
+      await this.renderer$.value.unmount();
     }
   }
 }
+

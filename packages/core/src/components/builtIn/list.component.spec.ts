@@ -8,12 +8,13 @@ describe('list-component', () => {
       el({ name: 'div', attrs: { class: 'bar' } }),
       el({ name: 'span', attrs: { class: 'baz' } }),
     ]);
-    expect(testListOne.getProp('content').val.length).toBe(3);
+    expect(testListOne.getProp('content').value.length).toBe(3);
     const testListTwo = list([
       el({ name: 'div', attrs: { class: 'bar-2' } }),
       el({ name: 'span', attrs: { class: 'baz-2' } }),
     ]);
-    expect(testListTwo.getProp('content').val.length).toBe(2);
-    expect(testListOne.getProp('content').val.length).toBe(3);
+    expect(testListTwo.getProp('content').value.length).toBe(2);
+    expect(testListOne.getProp('content').value.length).toBe(3);
   });
 });
+

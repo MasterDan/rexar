@@ -90,6 +90,6 @@ export class RefBuilder implements IRefBuilder {
   }
 
   makeReadonly<T>(ref: RefBase<T>) {
-    return this.buildRef(ref, ref.val);
+    return this.buildRef(ref, ref.value);
   }
 }

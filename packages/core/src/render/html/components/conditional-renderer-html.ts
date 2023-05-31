@@ -37,19 +37,19 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
     this.target$
       .pipe(filter((t): t is IBinding => t != null))
       .subscribe((t) => {
-        this.innerDynamicRenderer.target$.val = t;
+        this.innerDynamicRenderer.target$.value = t;
       });
   }
 
   renderInto(): Observable<IBinding | undefined> {
     const condition$ = this.component.getProp('if$');
 
-    if (condition$.val) {
-      if (this.positiveComponent$.val) {
-        this.innerDynamic.bindProp('component$', this.positiveComponent$.val);
+    if (condition$.value) {
+      if (this.positiveComponent$.value) {
+        this.innerDynamic.bindProp('component$', this.positiveComponent$.value);
       }
-    } else if (this.negativeComponent$.val) {
-      this.innerDynamic.bindProp('component$', this.negativeComponent$.val);
+    } else if (this.negativeComponent$.value) {
+      this.innerDynamic.bindProp('component$', this.negativeComponent$.value);
     }
 
     const renderAsync = async () => {

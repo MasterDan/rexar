@@ -14,7 +14,7 @@ export const useElement = (id: string) => {
   const elRef = ref$<HTMLElement>();
   referenceHook(
     (el) => {
-      elRef.val = el;
+      elRef.value = el;
     },
     {
       id,

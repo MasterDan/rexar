@@ -18,10 +18,10 @@ export const inputCheckboxTest = defineComponent({
     innerTextFor(
       'options-text',
       ref$(() =>
-        !checkOne$.val && !checkTwo$.val
+        !checkOne$.value && !checkTwo$.value
           ? 'Nothing is checked'
-          : ` ${checkOne$.val ? 'Option checked' : ''}${
-              checkTwo$.val ? ' Second Option checked' : ''
+          : ` ${checkOne$.value ? 'Option checked' : ''}${
+              checkTwo$.value ? ' Second Option checked' : ''
             }`,
       ),
     );

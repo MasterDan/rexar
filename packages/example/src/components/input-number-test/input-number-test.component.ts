@@ -18,8 +18,8 @@ export const inputNumberTest = defineComponent({
       'sum-text',
       ref$(
         () =>
-          `${numberOne$.val} + ${numberTwo$.val} = ${
-            numberOne$.val + numberTwo$.val
+          `${numberOne$.value} + ${numberTwo$.value} = ${
+            numberOne$.value + numberTwo$.value
           }`,
       ),
     );

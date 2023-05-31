@@ -47,12 +47,12 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         ),
       )
       .subscribe((content) => {
-        this.listContent$.val = content;
+        this.listContent$.value = content;
       });
     this.listContent$
       .pipe(filter((x): x is AnyComponent[] => x != null))
       .subscribe((content) => {
-        this.listRenderers$.val = content.map((i) => resolveRenderer(i));
+        this.listRenderers$.value = content.map((i) => resolveRenderer(i));
       });
     // linking targets
     this.listRenderers$
@@ -70,16 +70,16 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         ),
       )
       .subscribe(({ next, currNext }) => {
-        next.val = currNext;
+        next.value = currNext;
       });
   }
 
   async unmount(): Promise<void> {
-    if (this.listRenderers$.val == null) {
+    if (this.listRenderers$.value == null) {
       throw new Error('Cannot remove non exisiting list');
     }
     // eslint-disable-next-line no-restricted-syntax
-    for (const renderer of this.listRenderers$.val) {
+    for (const renderer of this.listRenderers$.value) {
       // eslint-disable-next-line no-await-in-loop
       await renderer.unmount();
     }
@@ -87,20 +87,20 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   renderInto(target: IBinding) {
     const renderContent = async () => {
-      const renderers = this.listRenderers$.val;
+      const renderers = this.listRenderers$.value;
       if (renderers == null) {
         throw new Error('List renderers were not created');
       }
       let lastTarget: IBinding | undefined;
       // eslint-disable-next-line no-restricted-syntax
       for (const renderer of renderers) {
-        if (renderer.target$.val == null) {
-          renderer.target$.val = target;
+        if (renderer.target$.value == null) {
+          renderer.target$.value = target;
         }
         // eslint-disable-next-line no-await-in-loop
         await renderer.render();
 
-        lastTarget = renderer.nextTarget$.val;
+        lastTarget = renderer.nextTarget$.value;
       }
 
       return lastTarget;

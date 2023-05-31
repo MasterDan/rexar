@@ -8,7 +8,7 @@ export class AppRendererHtml {
   constructor(@inject('IHtmlRenderer') private renderer: IHtmlRenderer) {}
 
   async render(componentRoot: AnyComponent, target: Element) {
-    this.renderer.target$.val = {
+    this.renderer.target$.value = {
       parentEl: target,
       target,
       role: BindingTargetRole.Parent,

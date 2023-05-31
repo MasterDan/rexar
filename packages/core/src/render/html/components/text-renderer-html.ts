@@ -15,14 +15,14 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
     if (this.node == null) {
       throw new Error('Nothing To Unmount');
     }
-    if (this.target$.val == null) {
+    if (this.target$.value == null) {
       throw new Error('Target not exists');
     }
     this.node.parentNode?.removeChild(this.node);
     if (this.trailingComment) {
       this.trailingComment.remove();
     }
-    this.nextTarget$.val = this.target$.val;
+    this.nextTarget$.value = this.target$.value;
     return Promise.resolve();
   }
 
@@ -91,3 +91,4 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
     );
   }
 }
+

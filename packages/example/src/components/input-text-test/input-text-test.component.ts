@@ -16,7 +16,7 @@ export const inputTextTest = defineComponent({
     bindStringValue('two', textTwo$);
     innerTextFor(
       'text',
-      ref$(() => `${textOne$.val} ${textTwo$.val}`),
+      ref$(() => `${textOne$.value} ${textTwo$.value}`),
     );
   },
 });

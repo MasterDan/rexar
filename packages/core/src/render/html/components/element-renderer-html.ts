@@ -40,11 +40,11 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     if (this.el == null) {
       throw new Error('NothingToUnmount');
     }
-    if (this.target$.val == null) {
+    if (this.target$.value == null) {
       throw new Error('Target not exists');
     }
     this.el.remove();
-    this.nextTarget$.val = this.target$.val;
+    this.nextTarget$.value = this.target$.value;
     return Promise.resolve();
   }
 
@@ -60,7 +60,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         );
         this.target$.subscribe((t) => {
           if (this.transformedElementRenderer) {
-            this.transformedElementRenderer.target$.val = t;
+            this.transformedElementRenderer.target$.value = t;
           }
         });
         const renderTransformedAsync = async () => {
@@ -107,10 +107,10 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       // console.log(el.outerHTML);
       if (this.elComponent.id) {
         const ref = new ElementReference();
-        ref.el.val = el;
+        ref.el.value = el;
         const { reference } = this.refStore.getReferences(this.elComponent.id);
-        reference.el.val = el;
-        reference.component.val = this.elComponent;
+        reference.el.value = el;
+        reference.component.value = this.elComponent;
       }
       // console.log(binding.parentEl.outerHTML);
 

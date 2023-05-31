@@ -14,10 +14,10 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   private $component = ref$<Component<TProps>>();
 
   protected get component() {
-    if (this.$component.val == null) {
+    if (this.$component.value == null) {
       throw new Error('Component must be set before render');
     }
-    return this.$component.val;
+    return this.$component.value;
   }
 
   protected get component$() {
@@ -27,7 +27,7 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   }
 
   public setComponent(c: AnyComponent) {
-    this.$component.val = c;
+    this.$component.value = c;
   }
 
   public nextTarget$ = ref$<IBinding>();
@@ -37,13 +37,13 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   abstract unmount(): Promise<void>;
 
   public async render() {
-    if (this.target$.val == null) {
+    if (this.target$.value == null) {
       return;
     }
     const nextTarget = await lastValueFrom(
-      this.renderInto(this.target$.val).pipe(take(1)),
+      this.renderInto(this.target$.value).pipe(take(1)),
     );
-    this.nextTarget$.val = nextTarget ?? this.target$.val;
+    this.nextTarget$.value = nextTarget ?? this.target$.value;
   }
 
   protected lifecycle$ = ref$(ComponentLifecycle.Created);
@@ -52,7 +52,7 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
 
   public subscribeParentLifecycle(life: Observable<ComponentLifecycle>) {
     life.subscribe((lval) => {
-      this.parentLifecycle.val = lval;
+      this.parentLifecycle.value = lval;
     });
   }
 }

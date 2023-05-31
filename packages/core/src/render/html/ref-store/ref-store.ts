@@ -69,7 +69,7 @@ export class RefStore {
       throw new Error('Scope is not defined');
     }
     return ref$(() => {
-      const templates = this.innerTemplates[scopeKey].val;
+      const templates = this.innerTemplates[scopeKey].value;
       if (templates == null) {
         throw new Error('Templates for scope hasnt been instantiated');
       }
@@ -82,6 +82,6 @@ export class RefStore {
     if (scopeKey == null) {
       throw new Error('Scope is not defined');
     }
-    this.innerTemplates[scopeKey].val = val;
+    this.innerTemplates[scopeKey].value = val;
   }
 }

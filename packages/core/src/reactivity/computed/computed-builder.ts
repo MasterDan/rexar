@@ -62,13 +62,13 @@ export class ComputedBuilder implements IComputedBuiler {
       )
       .subscribe(() => {
         const newVal = compute();
-        if (result.val !== newVal) {
-          result.val = newVal;
+        if (result.value !== newVal) {
+          result.value = newVal;
         }
       });
 
     return isComptedWritable
-      ? this.refBuilder.buildRef(result, result.val, setOrOptions)
+      ? this.refBuilder.buildRef(result, result.value, setOrOptions)
       : this.refBuilder.makeReadonly(result);
   }
 }

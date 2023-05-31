@@ -32,7 +32,7 @@ export class ComponentRendererHtml extends HtmlRendererBase {
       switchMap((renderer) => {
         const renderComponent = async () => {
           renderer.setComponent(this.component);
-          renderer.target$.val = target;
+          renderer.target$.value = target;
           await renderer.render();
           return renderer.nextTarget$;
         };
@@ -41,3 +41,4 @@ export class ComponentRendererHtml extends HtmlRendererBase {
     );
   }
 }
+

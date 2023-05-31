@@ -26,13 +26,14 @@ describe('test renderer', () => {
     const testComponentSecond = text({ value: ref$('foo') });
     const one = new TestRenderer();
     const two = new TestRenderer();
-    expect(one.comp$.val).toBeUndefined();
-    expect(two.comp$.val).toBeUndefined();
+    expect(one.comp$.value).toBeUndefined();
+    expect(two.comp$.value).toBeUndefined();
     one.setComponent(testComponent);
-    expect(one.comp$.val).toEqual(testComponent);
-    expect(two.comp$.val).toBeUndefined();
+    expect(one.comp$.value).toEqual(testComponent);
+    expect(two.comp$.value).toBeUndefined();
     two.setComponent(testComponentSecond);
-    expect(one.comp$.val).toEqual(testComponent);
-    expect(two.comp$.val).toEqual(testComponentSecond);
+    expect(one.comp$.value).toEqual(testComponent);
+    expect(two.comp$.value).toEqual(testComponentSecond);
   });
 });
+

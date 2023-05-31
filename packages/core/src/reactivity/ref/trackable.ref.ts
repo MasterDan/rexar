@@ -10,7 +10,7 @@ export class TrackableRef<T> extends RefBase<T> {
     }
   }
 
-  get val(): T {
+  get value(): T {
     this.track();
     return super.value;
   }

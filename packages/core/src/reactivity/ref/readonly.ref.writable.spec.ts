@@ -7,6 +7,9 @@ describe('writable readonly ref', () => {
     const wref = new WritableReadonlyRef(bs, bs.value, (v) => {
       bs.next(v);
     });
-    expect(wref.val).toBe('foo');
+    expect(wref.value).toBe('foo');
+    wref.value = 'bar';
+    expect(bs.value).toBe('bar');
+    expect(wref.value).toBe('bar');
   });
 });

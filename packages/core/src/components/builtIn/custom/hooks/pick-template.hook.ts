@@ -27,7 +27,7 @@ export const fromTemplate = <TProps extends TData = TData>(
   const componentDefinition$ = ref$<ComponentDefinition<TProps>>();
   pickTemplateHook(
     (template) => {
-      componentDefinition$.val = defineComponent<TProps>({
+      componentDefinition$.value = defineComponent<TProps>({
         template: () => template,
         setup: arg.setup,
         props: arg.props ?? (() => ({} as TProps)),
