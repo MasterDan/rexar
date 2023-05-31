@@ -13,4 +13,8 @@ export class WritableReadonlyRef<T> extends ReadonlyRef<T> {
   set val(v: T) {
     this.setter(v);
   }
+
+  get val() {
+    return super.val;
+  }
 }
