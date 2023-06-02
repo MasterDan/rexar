@@ -1,7 +1,6 @@
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { filter, Observable, pairwise } from 'rxjs';
-import { Subject } from 'rxjs/internal/Subject';
+import { filter, Observable, pairwise, Subject } from 'rxjs';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
 const lifecycleHook = defineHook<Observable<ComponentLifecycle>>(

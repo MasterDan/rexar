@@ -1,9 +1,14 @@
 import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
 import { IElementReferenceHoolParams } from '@core/components/builtIn/custom/hooks/use-element.hook';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
-import { filter, map, mergeMap, Observable } from 'rxjs';
-import { combineLatest } from 'rxjs/internal/observable/combineLatest';
-import { pairwise } from 'rxjs/internal/operators/pairwise';
+import {
+  combineLatest,
+  filter,
+  map,
+  mergeMap,
+  Observable,
+  pairwise,
+} from 'rxjs';
 import { injectable } from 'tsyringe';
 import { HookHandler, IHookPayload } from './base/hook-handler';
 
