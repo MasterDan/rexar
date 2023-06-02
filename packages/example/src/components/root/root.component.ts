@@ -15,7 +15,7 @@ export const root = defineComponent({
     mountComponent('test-boolean-inputs-component', inputCheckboxTest);
     mountComponent('inner-component', inner, { message: 'Hello, World!' });
     onMounted(() => {
-      'root component mounted';
+      console.log('root component mounted');
     });
   },
 });

@@ -16,10 +16,6 @@ export class LifecycleHookHandler extends HookHandler<
   ): void {
     payload$.subscribe(({ trigger$ }) => {
       const lf = this.refStore.getLifecycle();
-      console.log('lf-triggered', lf);
-      lf.subscribe((v) => {
-        console.log('lf-changed', v);
-      });
       trigger$.next(lf);
     });
   }

@@ -3,6 +3,7 @@ import {
   innerTextFor,
   ref$,
   bindNumericValue,
+  onMounted,
 } from '@rexar/core';
 import template from 'bundle-text:./input-number-test.component.html';
 
@@ -23,5 +24,10 @@ export const inputNumberTest = defineComponent({
           }`,
       ),
     );
+    onMounted(() => {
+      setTimeout(() => {
+        numberOne$.value = 10;
+      }, 1000);
+    });
   },
 });

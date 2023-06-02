@@ -55,13 +55,17 @@ export function defineHook<
   hookNames[name] = true;
   return (hook: (value: TArg) => void, params: Partial<TParams> = {}) => {
     const trigger$ = new Subject<TArg>();
+
+    trigger$.subscribe((v) => {
+      hook(v);
+    });
+
     hookTracker$.next({
       name,
       trigger$,
       scope: getCurrent(),
       params,
     });
-    trigger$.subscribe(hook);
   };
 }
 

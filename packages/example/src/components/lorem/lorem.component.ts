@@ -15,14 +15,14 @@ export const lorem = defineComponent({
       id: 'inner-template',
       setup() {
         onMounted(() => {
-          'loren component mounted';
+          console.log('inner message component mounted');
         });
         innerTextFor('message', ref$('With some message'));
       },
     });
     mountComponent('target', inner$);
     onMounted(() => {
-      'loren component mounted';
+      console.log('lorem component mounted');
     });
   },
 });

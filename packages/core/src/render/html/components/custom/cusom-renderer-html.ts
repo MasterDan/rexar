@@ -54,8 +54,6 @@ export class CustomRendererHtml extends HtmlRendererBase {
     const component = this.component as CustomTemplateComponent;
     this.refStore.beginScope(this.component.type, this.lifecycle$);
 
-    console.log('ilf', this.lifecycle$.value);
-
     const { track$, end } = hookScope.beginScope();
     this.hookHandlers.forEach((handler) => {
       handler.register(track$);
