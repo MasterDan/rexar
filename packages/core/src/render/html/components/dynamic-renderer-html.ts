@@ -12,6 +12,8 @@ import {
   take,
   tap,
 } from 'rxjs';
+import { filter } from 'rxjs/internal/operators/filter';
+import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
@@ -52,8 +54,17 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
       take(1),
     );
 
+    const beforeUnmount$ = this.lifecycle$.pipe(
+      pairwise(),
+      filter(
+        ([prev, curr]) =>
+          prev === ComponentLifecycle.Mounted &&
+          curr === ComponentLifecycle.BeforeUnmount,
+      ),
+    );
+
     this.renderer$
-      .pipe(pairwise(), skipUntil(firstMount$))
+      .pipe(pairwise(), skipUntil(firstMount$), takeUntil(beforeUnmount$))
       .subscribe(async ([previous, current]) => {
         if (previous) {
           await previous.unmount();
