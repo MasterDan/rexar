@@ -11,6 +11,7 @@ import { RefStore } from '../ref-store/ref-store';
 import { ElementReference } from '../ref-store/element.reference';
 import { resolveRenderer } from '../tools';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { ComponentLifecycle } from '../base/lifecycle';
 
 @injectable()
 export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps> {
@@ -33,9 +34,12 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     return this.component;
   }
 
-  unmount(): Promise<void> {
+  async unmount(): Promise<void> {
     if (this.transformedElementRenderer) {
-      return this.transformedElementRenderer.unmount();
+      this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
+      await this.transformedElementRenderer.unmount();
+      this.lifecycle$.value = ComponentLifecycle.Unmounted;
+      return;
     }
     if (this.el == null) {
       throw new Error('NothingToUnmount');
@@ -43,12 +47,14 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     if (this.target$.value == null) {
       throw new Error('Target not exists');
     }
+    this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
     this.el.remove();
     this.nextTarget$.value = this.target$.value;
-    return Promise.resolve();
+    this.lifecycle$.value = ComponentLifecycle.Unmounted;
   }
 
   renderInto(binding: IBinding) {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     if (this.elComponent.id && !this.elComponent.preventTransformation) {
       const { transformer } = this.refStore.getReferences(this.elComponent.id);
       if (!transformer.isEmpty) {
@@ -58,6 +64,9 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         this.transformedElementRenderer = resolveRenderer(
           transformer.transformationResult,
         );
+        this.transformedElementRenderer.subscribeParentLifecycle(
+          this.lifecycle$,
+        );
         this.target$.subscribe((t) => {
           if (this.transformedElementRenderer) {
             this.transformedElementRenderer.target$.value = t;
@@ -65,9 +74,11 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         });
         const renderTransformedAsync = async () => {
           if (!this.transformedElementRenderer) {
+            this.lifecycle$.value = ComponentLifecycle.Rendered;
             return undefined;
           }
           await this.transformedElementRenderer.render();
+          this.lifecycle$.value = ComponentLifecycle.Rendered;
           return this.transformedElementRenderer.nextTarget$;
         };
         return from(renderTransformedAsync()).pipe(
@@ -92,6 +103,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
           role: BindingTargetRole.Parent,
           target: el,
         });
+        renderer.subscribeParentLifecycle(this.lifecycle$);
         await renderer.render();
       }
       switch (binding.role) {
@@ -113,7 +125,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         reference.component.value = this.elComponent;
       }
       // console.log(binding.parentEl.outerHTML);
-
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
       return {
         parentEl: binding.parentEl,
         role: BindingTargetRole.PreviousSibling,

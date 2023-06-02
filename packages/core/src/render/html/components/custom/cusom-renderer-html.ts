@@ -7,11 +7,13 @@ import { AnyComponent } from '../../@types/any-component';
 import { IBinding } from '../../@types/binding-target';
 import { IHtmlRenderer } from '../../@types/IHtmlRenderer';
 import { HtmlRendererBase } from '../../base/html-renderer-base';
+import { ComponentLifecycle } from '../../base/lifecycle';
 import { RefStore } from '../../ref-store/ref-store';
 import { resolveRenderer } from '../../tools';
 import { IHookHandler } from './hook-handlers/base/hook-handler';
 import { ConditionalHookHandler } from './hook-handlers/conditional-hook-handler';
 import { ElementReferenceHookHandler } from './hook-handlers/element-reference-hook-handler';
+import { LifecycleHookHandler } from './hook-handlers/lifecycle-hook-handler';
 import { MountComponentHookHandler } from './hook-handlers/mount-component-hook-handler';
 import { PickTemplateHookHandler } from './hook-handlers/pick-template-hook-handler';
 
@@ -23,6 +25,7 @@ const hookHandlerToken = 'IHookHandler';
   { token: hookHandlerToken, useClass: MountComponentHookHandler },
   { token: hookHandlerToken, useClass: ConditionalHookHandler },
   { token: hookHandlerToken, useClass: PickTemplateHookHandler },
+  { token: hookHandlerToken, useClass: LifecycleHookHandler },
 ])
 export class CustomRendererHtml extends HtmlRendererBase {
   private renderer: IHtmlRenderer | undefined;
@@ -38,15 +41,20 @@ export class CustomRendererHtml extends HtmlRendererBase {
     if (this.renderer == null) {
       throw new Error('Cannot unmout component that has not been rendered');
     }
+    this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
     await this.renderer.unmount();
+    this.lifecycle$.value = ComponentLifecycle.Unmounted;
   }
 
   renderInto(target: IBinding): Observable<IBinding | undefined> {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     if (!(this.component instanceof CustomTemplateComponent)) {
       throw new Error('Component should be custom');
     }
     const component = this.component as CustomTemplateComponent;
-    this.refStore.beginScope(this.component.type);
+    this.refStore.beginScope(this.component.type, this.lifecycle$);
+
+    console.log('ilf', this.lifecycle$.value);
 
     const { track$, end } = hookScope.beginScope();
     this.hookHandlers.forEach((handler) => {
@@ -75,17 +83,22 @@ export class CustomRendererHtml extends HtmlRendererBase {
       if (templateToRender.length === 1) {
         const [componentTemplate] = templateToRender;
         const renderer = resolveRenderer(componentTemplate, target);
+        renderer.subscribeParentLifecycle(this.lifecycle$);
         this.renderer = renderer;
         await renderer.render();
+        this.lifecycle$.value = ComponentLifecycle.Rendered;
         return renderer.nextTarget$;
       }
       if (templateToRender.length > 1) {
         const componentTemplate = list(templateToRender);
         const renderer = resolveRenderer(componentTemplate, target);
+        renderer.subscribeParentLifecycle(this.lifecycle$);
         this.renderer = renderer;
         await renderer.render();
+        this.lifecycle$.value = ComponentLifecycle.Rendered;
         return renderer.nextTarget$;
       }
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
       return of(undefined);
     };
     return from(renderAsync()).pipe(

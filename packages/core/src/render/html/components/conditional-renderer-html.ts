@@ -14,6 +14,7 @@ import {
 import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
 
 @injectable()
@@ -39,9 +40,11 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
       .subscribe((t) => {
         this.innerDynamicRenderer.target$.value = t;
       });
+    this.innerDynamicRenderer.subscribeParentLifecycle(this.lifecycle$);
   }
 
   renderInto(): Observable<IBinding | undefined> {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const condition$ = this.component.getProp('if$');
 
     if (condition$.value) {
@@ -54,6 +57,7 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
 
     const renderAsync = async () => {
       await this.innerDynamicRenderer.render();
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
       return this.innerDynamicRenderer.nextTarget$;
     };
 
@@ -77,6 +81,8 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
   }
 
   async unmount(): Promise<void> {
-    this.innerDynamicRenderer.unmount();
+    this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
+    await this.innerDynamicRenderer.unmount();
+    this.lifecycle$.value = ComponentLifecycle.Unmounted;
   }
 }

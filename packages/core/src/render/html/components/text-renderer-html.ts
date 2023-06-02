@@ -3,6 +3,7 @@ import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { map, switchMap } from 'rxjs';
 import { container, injectable } from 'tsyringe';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { DocumentRef } from '../documentRef';
 
 @injectable()
@@ -18,15 +19,18 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
     if (this.target$.value == null) {
       throw new Error('Target not exists');
     }
+    this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
     this.node.parentNode?.removeChild(this.node);
     if (this.trailingComment) {
       this.trailingComment.remove();
     }
     this.nextTarget$.value = this.target$.value;
+    this.lifecycle$.value = ComponentLifecycle.Unmounted;
     return Promise.resolve();
   }
 
   renderInto(binding: IBinding) {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const text$ = this.component.getProp('value');
     const inserTrailingComment =
       this.component.getProp('trailingComment') ?? false;
@@ -86,6 +90,7 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
             ? (this.trailingComment as HTMLElement)
             : binding.parentEl,
         };
+        this.lifecycle$.value = ComponentLifecycle.Rendered;
         return nextBinding;
       }),
     );

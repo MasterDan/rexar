@@ -10,10 +10,12 @@ import {
   skipUntil,
   switchMap,
   take,
+  tap,
 } from 'rxjs';
 import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
 
 @injectable()
@@ -28,15 +30,20 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
           ? resolveRenderer(component, target)
           : undefined,
       ),
+      tap((renderer) => {
+        renderer?.subscribeParentLifecycle(this.lifecycle$);
+      }),
     ),
   );
 
   renderInto(): Observable<IBinding | undefined> {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const renderAsync = async () => {
       if (this.renderer$.value == null) {
         return undefined;
       }
       await this.renderer$.value.render();
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
       return this.renderer$.value.nextTarget$;
     };
 
@@ -64,7 +71,9 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
 
   async unmount(): Promise<void> {
     if (this.renderer$.value) {
+      this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
       await this.renderer$.value.unmount();
+      this.lifecycle$.value = ComponentLifecycle.Unmounted;
     }
   }
 }

@@ -10,7 +10,7 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   implements IHtmlRenderer
 {
   constructor() {
-    combineLatest([this.selfLifecycle$, this.parentLifecycle]).subscribe(
+    combineLatest([this.selfLifecycle$, this.parentLifecycle$]).subscribe(
       ([selfLife, parentLife]) => {
         if (
           parentLife === ComponentLifecycle.Mounted &&
@@ -65,13 +65,13 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
 
   protected selfLifecycle$ = ref$(ComponentLifecycle.Created);
 
-  protected parentLifecycle = ref$(ComponentLifecycle.Created);
+  protected parentLifecycle$ = ref$(ComponentLifecycle.Created);
 
   public lifecycle$ = ref$(
     () =>
       Math.min(
         this.selfLifecycle$.value,
-        this.parentLifecycle.value,
+        this.parentLifecycle$.value,
       ) as ComponentLifecycle,
     (val) => {
       this.selfLifecycle$.value = val;
@@ -80,7 +80,7 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
 
   public subscribeParentLifecycle(life: Observable<ComponentLifecycle>) {
     life.subscribe((lval) => {
-      this.parentLifecycle.value = lval;
+      this.parentLifecycle$.value = lval;
     });
   }
 }

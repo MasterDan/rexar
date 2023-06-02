@@ -3,4 +3,5 @@ export enum BuiltInHooks {
   MountComponent = 'mount-component',
   Conditional = 'conditional-hook',
   PickTemplate = 'pick-template-hook',
+  Lisecycle = 'component-lifecycle',
 }

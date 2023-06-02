@@ -1,4 +1,4 @@
-import { defineComponent, mountComponent } from '@rexar/core';
+import { defineComponent, mountComponent, onMounted } from '@rexar/core';
 import template from 'bundle-text:./root.component.html';
 import { inner } from '../inner/inner.component';
 import { inputCheckboxTest } from '../input-checkbox-test/input-checkbox-test.component';
@@ -14,5 +14,8 @@ export const root = defineComponent({
     mountComponent('test-number-inputs-component', inputNumberTest);
     mountComponent('test-boolean-inputs-component', inputCheckboxTest);
     mountComponent('inner-component', inner, { message: 'Hello, World!' });
+    onMounted(() => {
+      'root component mounted';
+    });
   },
 });

@@ -18,6 +18,7 @@ import { injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
 
 @injectable()
@@ -52,7 +53,11 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     this.listContent$
       .pipe(filter((x): x is AnyComponent[] => x != null))
       .subscribe((content) => {
-        this.listRenderers$.value = content.map((i) => resolveRenderer(i));
+        this.listRenderers$.value = content.map((i) => {
+          const renderer = resolveRenderer(i);
+          renderer.subscribeParentLifecycle(this.lifecycle$);
+          return renderer;
+        });
       });
     // linking targets
     this.listRenderers$
@@ -78,14 +83,17 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     if (this.listRenderers$.value == null) {
       throw new Error('Cannot remove non exisiting list');
     }
+    this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
     // eslint-disable-next-line no-restricted-syntax
     for (const renderer of this.listRenderers$.value) {
       // eslint-disable-next-line no-await-in-loop
       await renderer.unmount();
     }
+    this.lifecycle$.value = ComponentLifecycle.Unmounted;
   }
 
   renderInto(target: IBinding) {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const renderContent = async () => {
       const renderers = this.listRenderers$.value;
       if (renderers == null) {
@@ -102,7 +110,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
         lastTarget = renderer.nextTarget$.value;
       }
-
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
       return lastTarget;
     };
     return from(renderContent());
