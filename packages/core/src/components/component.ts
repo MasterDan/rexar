@@ -34,31 +34,31 @@ export class Component<TProps extends TData = TData> {
     key: T,
     value: MaybeObservable<PropValue<TProps[T]>>,
   ) {
-    if (this.props$.val == null) {
-      this.props$.val = {} as TProps;
+    if (this.props$.value == null) {
+      this.props$.value = {} as TProps;
     }
-    if (isObservable(this.props$.val[key])) {
+    if (isObservable(this.props$.value[key])) {
       if (isObservable(value)) {
         value.subscribe((v) => {
-          (this.props$.val as TProps)[key].next(v);
+          (this.props$.value as TProps)[key].next(v);
         });
       } else {
-        this.props$.val[key].next(value);
+        this.props$.value[key].next(value);
       }
     } else if (isObservable(value)) {
       value.subscribe((v) => {
-        (this.props$.val as TProps)[key] = v;
+        (this.props$.value as TProps)[key] = v;
       });
     } else {
-      this.props$.val[key] = value;
+      this.props$.value[key] = value;
     }
   }
 
   bindProps(props: TProps) {
-    this.props$.val = props;
+    this.props$.value = props;
   }
 
   getProp<T extends keyof TProps>(key: T) {
-    return this.props$.val[key];
+    return this.props$.value[key];
   }
 }

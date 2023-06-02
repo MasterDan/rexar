@@ -4,10 +4,11 @@ export abstract class TestClassBase {
   private value$ = ref$<string[]>();
 
   public get value() {
-    return this.value$.val;
+    return this.value$.value;
   }
 
   public set value(v: string[] | undefined) {
-    this.value$.val = v;
+    this.value$.value = v;
   }
 }
+

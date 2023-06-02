@@ -3,8 +3,8 @@ import {
   innerTextFor,
   ref$,
   bindNumericValue,
+  onMounted,
 } from '@rexar/core';
-// @ts-expect-error import template
 import template from 'bundle-text:./input-number-test.component.html';
 
 export const inputNumberTest = defineComponent({
@@ -19,10 +19,15 @@ export const inputNumberTest = defineComponent({
       'sum-text',
       ref$(
         () =>
-          `${numberOne$.val} + ${numberTwo$.val} = ${
-            numberOne$.val + numberTwo$.val
+          `${numberOne$.value} + ${numberTwo$.value} = ${
+            numberOne$.value + numberTwo$.value
           }`,
       ),
     );
+    onMounted(() => {
+      setTimeout(() => {
+        numberOne$.value = 10;
+      }, 1000);
+    });
   },
 });

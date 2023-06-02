@@ -1,11 +1,8 @@
 import { IElementComponentProps } from '@core/components/builtIn/html-element.component';
 import { Component } from '@core/components/component';
 import { parseHtml } from '@core/parsers/html';
-// @ts-expect-error module exists
 import templateOne from './template-one.html';
-// @ts-expect-error module exists
 import templateTwo from './template-two.html';
-// @ts-expect-error module exists
 import templateMulti from './template-multi.html';
 
 describe('html-parser', () => {
@@ -24,9 +21,9 @@ describe('html-parser', () => {
     const tree = templates.default;
     expect(tree.length).toBe(4);
     expect(tree[0].getProp('children').length).toBe(5);
-    expect(tree[1].getProp('value').val.trim()).toBe('one');
+    expect(tree[1].getProp('value').value.trim()).toBe('one');
     expect(tree[2].getProp('children').length).toBe(2);
-    expect(tree[3].getProp('value').val.trim()).toBe('two');
+    expect(tree[3].getProp('value').value.trim()).toBe('two');
   });
   test('template-multi', async () => {
     const templates = await parseHtml(templateMulti);
@@ -41,8 +38,8 @@ describe('html-parser', () => {
     const { inner } = templates.inner;
     expect(inner.length).toBe(4);
     expect(inner[0].getProp('children').length).toBe(5);
-    expect(inner[1].getProp('value').val.trim()).toBe('one');
+    expect(inner[1].getProp('value').value.trim()).toBe('one');
     expect(inner[2].getProp('children').length).toBe(2);
-    expect(inner[3].getProp('value').val.trim()).toBe('two');
+    expect(inner[3].getProp('value').value.trim()).toBe('two');
   });
 });

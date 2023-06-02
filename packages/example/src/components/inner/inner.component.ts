@@ -1,6 +1,11 @@
-import { defineComponent, innerTextFor } from '@rexar/core';
+import {
+  defineComponent,
+  innerTextFor,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+} from '@rexar/core';
 
-// @ts-expect-error import template
 import template from 'bundle-text:./inner.component.html';
 
 export interface IInnerComponnentProps {
@@ -12,5 +17,26 @@ export const inner = defineComponent<IInnerComponnentProps>({
   props: () => ({ message: 'No Message' }),
   setup: ({ props }) => {
     innerTextFor('message', props.message);
+    onMounted(() => {
+      console.log(
+        'inner comonent with message\n',
+        props.message.value,
+        '\nbeen mounted',
+      );
+    });
+    onBeforeUnmount(() => {
+      console.log(
+        'inner comonent with message\n',
+        props.message.value,
+        '\ngoing to unmount',
+      );
+    });
+    onUnmounted(() => {
+      console.log(
+        'inner comonent with message\n',
+        props.message.value,
+        '\nbeen un-mounted',
+      );
+    });
   },
 });

@@ -1,6 +1,15 @@
 import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
-import { filter, switchMap, merge, fromEvent, map, combineLatest } from 'rxjs';
+import {
+  filter,
+  switchMap,
+  merge,
+  fromEvent,
+  map,
+  combineLatest,
+  takeUntil,
+} from 'rxjs';
+import { onBeforeUnmount } from './lifecycle.hook';
 import { useElement } from './use-element.hook';
 
 export const bindStringValue = (
@@ -12,7 +21,10 @@ export const bindStringValue = (
     filter((v): v is HTMLInputElement => v != null),
   );
 
+  const beforeUnmount$ = onBeforeUnmount();
+
   const valueChanged$ = validElement$.pipe(
+    takeUntil(beforeUnmount$),
     switchMap((el) =>
       merge(
         fromEvent(el, 'change'),
@@ -24,11 +36,12 @@ export const bindStringValue = (
     map((e) => e.target),
     filter((t): t is HTMLInputElement => t != null),
     map((t) => t.value),
-    filter((v) => v !== value$.val),
+    filter((v) => v !== value$.value),
+    takeUntil(beforeUnmount$),
   );
 
   valueChanged$.subscribe((val) => {
-    value$.val = val;
+    value$.value = val;
   });
 
   combineLatest([validElement$, value$])
@@ -47,21 +60,21 @@ export const bindNumericValue = (
   id: string,
   value$: Ref<number | undefined> | Ref<number>,
 ) => {
-  const stringified$ = ref$<string | undefined>(String(value$.val));
+  const stringified$ = ref$<string | undefined>(String(value$.value));
 
   const reverseNumber$ = ref$(() => {
-    const num = Number(stringified$.val);
+    const num = Number(stringified$.value);
 
     return Number.isNaN(num) ? undefined : num;
   });
 
   (value$ as Ref<number | undefined>)
-    .pipe(filter((v) => v !== reverseNumber$.val))
+    .pipe(filter((v) => v !== reverseNumber$.value))
     .subscribe((v) => {
-      stringified$.val = String(v);
+      stringified$.value = String(v);
     });
-  reverseNumber$.pipe(filter((rn) => rn !== value$.val)).subscribe((rn) => {
-    value$.val = rn;
+  reverseNumber$.pipe(filter((rn) => rn !== value$.value)).subscribe((rn) => {
+    value$.value = rn;
   });
   bindStringValue(id, stringified$);
 };
@@ -77,11 +90,11 @@ export const bindBooleanValue = (id: string, value$: Ref<boolean>) => {
     map((e) => e.target),
     filter((t): t is HTMLInputElement => t != null),
     map((t) => t.checked),
-    filter((v) => v !== value$.val),
+    filter((v) => v !== value$.value),
   );
 
   valueChanged$.subscribe((val) => {
-    value$.val = val;
+    value$.value = val;
   });
 
   combineLatest([validElement$, value$])

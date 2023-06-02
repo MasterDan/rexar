@@ -65,7 +65,7 @@ export class CustomTemplateComponent<
     super({ ...args, type: ComponentType.CustomTemplate });
     this.setupFn = args.setup;
     Promise.resolve(args.template()).then((t) => {
-      this.$template.val = t;
+      this.$template.value = t;
     });
   }
 
@@ -73,11 +73,11 @@ export class CustomTemplateComponent<
     if (this.setupFn == null) {
       return;
     }
-    if (this.propsAccessors$.val == null) {
+    if (this.propsAccessors$.value == null) {
       return;
     }
     this.setupFn({
-      props: this.propsAccessors$.val,
+      props: this.propsAccessors$.value,
     });
   }
 }

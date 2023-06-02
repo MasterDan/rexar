@@ -221,7 +221,7 @@ describe('app-tests', () => {
         'baz' +
         '</div>',
     );
-    bar.val = 'barChanged';
+    bar.value = 'barChanged';
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
         'foo' +
@@ -247,12 +247,12 @@ describe('app-tests', () => {
     expect(elApp).not.toBeNull();
     expect(elApp?.outerHTML).toBe('<div id="app"></div>');
     const wait = () => lastValueFrom(timer(100));
-    component$.val = first;
+    component$.value = first;
     await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><span class="foo"></span></div>',
     );
-    component$.val = second;
+    component$.value = second;
     await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><div class="bar"></div></div>',
@@ -281,12 +281,12 @@ describe('app-tests', () => {
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><span class="foo"></span></div>',
     );
-    component$.val = second;
+    component$.value = second;
     await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><div class="bar"></div></div>',
     );
-    component$.val = third;
+    component$.value = third;
     await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app">' +
@@ -296,7 +296,7 @@ describe('app-tests', () => {
         '<span class="l-bar"></span>' +
         '</div>',
     );
-    component$.val = undefined;
+    component$.value = undefined;
     await wait();
     expect(elApp?.outerHTML).toBe('<div id="app"></div>');
   });
@@ -312,10 +312,11 @@ describe('app-tests', () => {
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><div class="foo"></div></div>',
     );
-    condition.val = false;
+    condition.value = false;
     await wait();
     expect(elApp?.outerHTML).toBe(
       '<div id="app"><div class="bar"></div></div>',
     );
   });
 });
+

@@ -38,20 +38,23 @@ describe('list-renderer-html', () => {
       el({ name: 'div', attrs: { class: 'bar-2' } }),
       el({ name: 'span', attrs: { class: 'baz-2' } }),
     ]);
-    expect(listRendererOne.comp$.val).toBeUndefined();
-    expect(listRendererTwo.comp$.val).toBeUndefined();
+    expect(listRendererOne.comp$.value).toBeUndefined();
+    expect(listRendererTwo.comp$.value).toBeUndefined();
     listRendererOne.setComponent(testListOne);
 
-    const listInComponent = listRendererOne.comp$.val?.getProp('content').val;
-    const checkList = testListOne.getProp('content').val;
+    const listInComponent =
+      listRendererOne.comp$.value?.getProp('content').value;
+    const checkList = testListOne.getProp('content').value;
     expect(listInComponent).toEqual(checkList);
-    expect(listRendererTwo.comp$.val).toBeUndefined();
+    expect(listRendererTwo.comp$.value).toBeUndefined();
 
     listRendererTwo.setComponent(testListTwo);
-    const checkComponentOne = listRendererOne.comp$.val?.getProp('content').val;
-    const checkComponentTwo = listRendererTwo.comp$.val?.getProp('content').val;
-    const checkListOne2 = testListOne.getProp('content').val;
-    const checkListTwo2 = testListTwo.getProp('content').val;
+    const checkComponentOne =
+      listRendererOne.comp$.value?.getProp('content').value;
+    const checkComponentTwo =
+      listRendererTwo.comp$.value?.getProp('content').value;
+    const checkListOne2 = testListOne.getProp('content').value;
+    const checkListTwo2 = testListTwo.getProp('content').value;
     expect(checkComponentOne).toEqual(checkListOne2);
     expect(checkComponentTwo).toEqual(checkListTwo2);
   });
@@ -68,13 +71,13 @@ describe('list-renderer-html', () => {
         el({ name: 'span', attrs: { class: 'baz' } }),
       ]),
     );
-    listRenderer.target$.val = {
+    listRenderer.target$.value = {
       parentEl: rootDiv,
       target: rootDiv,
       role: BindingTargetRole.Parent,
     };
     await listRenderer.render();
-    expect(listRenderer.nextTarget$.val).not.toBeUndefined();
+    expect(listRenderer.nextTarget$.value).not.toBeUndefined();
     expect(rootDiv.outerHTML).toBe(
       '<div>' +
         '<div class="foo"></div>' +
@@ -84,3 +87,4 @@ describe('list-renderer-html', () => {
     );
   });
 });
+

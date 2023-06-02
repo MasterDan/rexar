@@ -12,3 +12,4 @@ describe('hierarchy test', () => {
     expect(one.value).toEqual(['bar']);
   });
 });
+

@@ -9,7 +9,7 @@ export class BindingContext {
 
   private tracker: ((ref: RefBase) => void) | undefined;
 
-  init(key: symbol, fn: (ref: RefBase) => void) {
+  beginScope(key: symbol, fn: (ref: RefBase) => void) {
     this.key = key;
     this.tracker = fn;
     if (this.tracked[key] == null) {
@@ -35,7 +35,7 @@ export class BindingContext {
     this.tracker(arg);
   }
 
-  cleanContext() {
+  endScope() {
     this.key = undefined;
     this.tracker = undefined;
   }

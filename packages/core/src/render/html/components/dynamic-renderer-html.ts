@@ -2,6 +2,7 @@ import { IDynamicComponentProps } from '@core/components/builtIn/dynamic.compone
 import { ref$ } from '@core/reactivity/ref';
 import {
   combineLatest,
+  filter,
   from,
   map,
   Observable,
@@ -10,10 +11,13 @@ import {
   skipUntil,
   switchMap,
   take,
+  takeUntil,
+  tap,
 } from 'rxjs';
 import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
 
 @injectable()
@@ -28,16 +32,21 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
           ? resolveRenderer(component, target)
           : undefined,
       ),
+      tap((renderer) => {
+        renderer?.subscribeParentLifecycle(this.lifecycle$);
+      }),
     ),
   );
 
   renderInto(): Observable<IBinding | undefined> {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const renderAsync = async () => {
-      if (this.renderer$.val == null) {
+      if (this.renderer$.value == null) {
         return undefined;
       }
-      await this.renderer$.val.render();
-      return this.renderer$.val.nextTarget$;
+      await this.renderer$.value.render();
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
+      return this.renderer$.value.nextTarget$;
     };
 
     const firstMount$ = from(renderAsync()).pipe(
@@ -45,17 +54,26 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
       take(1),
     );
 
+    const beforeUnmount$ = this.lifecycle$.pipe(
+      pairwise(),
+      filter(
+        ([prev, curr]) =>
+          prev === ComponentLifecycle.Mounted &&
+          curr === ComponentLifecycle.BeforeUnmount,
+      ),
+    );
+
     this.renderer$
-      .pipe(pairwise(), skipUntil(firstMount$))
+      .pipe(pairwise(), skipUntil(firstMount$), takeUntil(beforeUnmount$))
       .subscribe(async ([previous, current]) => {
         if (previous) {
           await previous.unmount();
         }
         if (current) {
           await current.render();
-          this.nextTarget$.val = current.nextTarget$.val;
+          this.nextTarget$.value = current.nextTarget$.value;
         } else {
-          this.nextTarget$.val = this.target$.val;
+          this.nextTarget$.value = this.target$.value;
         }
       });
 
@@ -63,8 +81,11 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
   }
 
   async unmount(): Promise<void> {
-    if (this.renderer$.val) {
-      await this.renderer$.val.unmount();
+    if (this.renderer$.value) {
+      this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
+      await this.renderer$.value.unmount();
+      this.lifecycle$.value = ComponentLifecycle.Unmounted;
     }
   }
 }
+

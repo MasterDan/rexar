@@ -18,18 +18,14 @@ import { injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
-
-let index = 1;
 
 @injectable()
 export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
   private listContent$ = ref$<AnyComponent[]>();
 
   private listRenderers$ = ref$<IHtmlRenderer[]>();
-
-  // eslint-disable-next-line no-plusplus
-  private index = index++;
 
   private unsub$ = new Subject<void>();
 
@@ -52,13 +48,18 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         ),
       )
       .subscribe((content) => {
-        this.listContent$.val = content;
+        this.listContent$.value = content;
       });
     this.listContent$
       .pipe(filter((x): x is AnyComponent[] => x != null))
       .subscribe((content) => {
-        this.listRenderers$.val = content.map((i) => resolveRenderer(i));
+        this.listRenderers$.value = content.map((i) => {
+          const renderer = resolveRenderer(i);
+          renderer.subscribeParentLifecycle(this.lifecycle$);
+          return renderer;
+        });
       });
+    // linking targets
     this.listRenderers$
       .pipe(
         filter((x): x is IHtmlRenderer[] => x != null),
@@ -74,48 +75,45 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         ),
       )
       .subscribe(({ next, currNext }) => {
-        next.val = currNext;
+        next.value = currNext;
       });
   }
 
-  get listComponent(): Component<IListComponentProps> {
-    if (this.component.type !== ComponentType.List) {
-      throw new Error('Component must render list of components');
-    }
-    return this.component;
-  }
-
   async unmount(): Promise<void> {
-    if (this.listRenderers$.val == null) {
+    if (this.listRenderers$.value == null) {
       throw new Error('Cannot remove non exisiting list');
     }
+    this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
     // eslint-disable-next-line no-restricted-syntax
-    for (const renderer of this.listRenderers$.val) {
+    for (const renderer of this.listRenderers$.value) {
       // eslint-disable-next-line no-await-in-loop
       await renderer.unmount();
     }
+    this.lifecycle$.value = ComponentLifecycle.Unmounted;
   }
 
   renderInto(target: IBinding) {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const renderContent = async () => {
-      const renderers = this.listRenderers$.val;
+      const renderers = this.listRenderers$.value;
       if (renderers == null) {
         throw new Error('List renderers were not created');
       }
       let lastTarget: IBinding | undefined;
       // eslint-disable-next-line no-restricted-syntax
       for (const renderer of renderers) {
-        if (renderer.target$.val == null) {
-          renderer.target$.val = target;
+        if (renderer.target$.value == null) {
+          renderer.target$.value = target;
         }
         // eslint-disable-next-line no-await-in-loop
         await renderer.render();
 
-        lastTarget = renderer.nextTarget$.val;
+        lastTarget = renderer.nextTarget$.value;
       }
-
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
       return lastTarget;
     };
     return from(renderContent());
   }
 }
+

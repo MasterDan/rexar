@@ -12,7 +12,8 @@ export const resolveRenderer = (
     renderer.setComponent(component);
   }
   if (target) {
-    renderer.target$.val = target;
+    renderer.target$.value = target;
   }
   return renderer;
 };
+

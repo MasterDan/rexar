@@ -14,6 +14,7 @@ import {
 import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
 
 @injectable()
@@ -37,23 +38,26 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
     this.target$
       .pipe(filter((t): t is IBinding => t != null))
       .subscribe((t) => {
-        this.innerDynamicRenderer.target$.val = t;
+        this.innerDynamicRenderer.target$.value = t;
       });
+    this.innerDynamicRenderer.subscribeParentLifecycle(this.lifecycle$);
   }
 
   renderInto(): Observable<IBinding | undefined> {
+    this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const condition$ = this.component.getProp('if$');
 
-    if (condition$.val) {
-      if (this.positiveComponent$.val) {
-        this.innerDynamic.bindProp('component$', this.positiveComponent$.val);
+    if (condition$.value) {
+      if (this.positiveComponent$.value) {
+        this.innerDynamic.bindProp('component$', this.positiveComponent$.value);
       }
-    } else if (this.negativeComponent$.val) {
-      this.innerDynamic.bindProp('component$', this.negativeComponent$.val);
+    } else if (this.negativeComponent$.value) {
+      this.innerDynamic.bindProp('component$', this.negativeComponent$.value);
     }
 
     const renderAsync = async () => {
       await this.innerDynamicRenderer.render();
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
       return this.innerDynamicRenderer.nextTarget$;
     };
 
@@ -77,6 +81,8 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
   }
 
   async unmount(): Promise<void> {
-    this.innerDynamicRenderer.unmount();
+    this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
+    await this.innerDynamicRenderer.unmount();
+    this.lifecycle$.value = ComponentLifecycle.Unmounted;
   }
 }

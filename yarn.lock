@@ -2752,7 +2752,7 @@ eslint-plugin-import@^2.27.5:
     is-core-module "^2.11.0"
     is-glob "^4.0.3"
     minimatch "^3.1.2"
-    object.values "^1.1.6"
+    object.valueues "^1.1.6"
     resolve "^1.22.1"
     semver "^6.3.0"
     tsconfig-paths "^3.14.1"
@@ -4549,9 +4549,9 @@ object.entries@^1.1.5:
     define-properties "^1.1.4"
     es-abstract "^1.20.4"
 
-object.values@^1.1.6:
+object.valueues@^1.1.6:
   version "1.1.6"
-  resolved "https://registry.yarnpkg.com/object.values/-/object.values-1.1.6.tgz#4abbaa71eba47d63589d402856f908243eea9b1d"
+  resolved "https://registry.yarnpkg.com/object.valueues/-/object.valueues-1.1.6.tgz#4abbaa71eba47d63589d402856f908243eea9b1d"
   integrity sha512-FVVTkD1vENCsAcwNs9k6jea2uHC/X0+JcjG8YA60FN5CMaJmG95wT9jek/xX9nornqGRrBkKtzuAu2wuHpKqvw==
   dependencies:
     call-bind "^1.0.2"

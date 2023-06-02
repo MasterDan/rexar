@@ -1,7 +1,9 @@
 import { Templates } from '@core/parsers/html';
 import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
+import { Observable } from 'rxjs/internal/Observable';
 import { singleton } from 'tsyringe';
+import { ComponentLifecycle } from '../base/lifecycle';
 import { ElementReference } from './element.reference';
 import { ElementTransformer } from './element.transformer';
 
@@ -21,6 +23,8 @@ export class RefStore {
 
   private innerTemplates: Record<symbol, Ref<InnerTemplates>> = {};
 
+  private lifecycles: Record<symbol, Observable<ComponentLifecycle>> = {};
+
   private scopeStack: symbol[] = [];
 
   get currentScopeKey() {
@@ -29,7 +33,7 @@ export class RefStore {
       : this.scopeStack[this.scopeStack.length - 1];
   }
 
-  beginScope(scopeName: string) {
+  beginScope(scopeName: string, lifecycle$: Observable<ComponentLifecycle>) {
     const scopeKey = Symbol(scopeName);
     if (this.storages[scopeKey] == null) {
       this.storages[scopeKey] = {};
@@ -37,6 +41,7 @@ export class RefStore {
     if (this.innerTemplates[scopeKey] == null) {
       this.innerTemplates[scopeKey] = ref$({});
     }
+    this.lifecycles[scopeKey] = lifecycle$;
     this.scopeStack.push(scopeKey);
   }
 
@@ -69,7 +74,7 @@ export class RefStore {
       throw new Error('Scope is not defined');
     }
     return ref$(() => {
-      const templates = this.innerTemplates[scopeKey].val;
+      const templates = this.innerTemplates[scopeKey].value;
       if (templates == null) {
         throw new Error('Templates for scope hasnt been instantiated');
       }
@@ -82,6 +87,17 @@ export class RefStore {
     if (scopeKey == null) {
       throw new Error('Scope is not defined');
     }
-    this.innerTemplates[scopeKey].val = val;
+    this.innerTemplates[scopeKey].value = val;
+  }
+
+  public getLifecycle() {
+    const scopeKey = this.currentScopeKey;
+    if (scopeKey == null) {
+      throw new Error('Scope is not defined');
+    }
+    if (this.lifecycles[scopeKey] == null) {
+      throw new Error('Cannot find lifecycle');
+    }
+    return this.lifecycles[scopeKey];
   }
 }

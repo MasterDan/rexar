@@ -3,9 +3,9 @@ import {
   fromTemplate,
   innerTextFor,
   mountComponent,
+  onMounted,
   ref$,
 } from '@rexar/core';
-// @ts-expect-error import template
 import template from 'bundle-text:./lorem.component.html';
 
 export const lorem = defineComponent({
@@ -14,9 +14,15 @@ export const lorem = defineComponent({
     const inner$ = fromTemplate({
       id: 'inner-template',
       setup() {
+        onMounted(() => {
+          console.log('inner message component mounted');
+        });
         innerTextFor('message', ref$('With some message'));
       },
     });
     mountComponent('target', inner$);
+    onMounted(() => {
+      console.log('lorem component mounted');
+    });
   },
 });

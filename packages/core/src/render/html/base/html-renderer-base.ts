@@ -1,22 +1,40 @@
 import { Component, TData } from '@core/components/component';
 import { ref$ } from '@core/reactivity/ref';
-import { Observable, take, lastValueFrom, filter } from 'rxjs';
+import { Observable, take, lastValueFrom, filter, combineLatest } from 'rxjs';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { ComponentLifecycle } from './lifecycle';
 
 export abstract class HtmlRendererBase<TProps extends TData = TData>
   implements IHtmlRenderer
 {
+  constructor() {
+    combineLatest([this.selfLifecycle$, this.parentLifecycle$])
+      .pipe(filter(([s, p]) => s !== p))
+      .subscribe(([selfLife, parentLife]) => {
+        if (
+          parentLife === ComponentLifecycle.Mounted &&
+          selfLife === ComponentLifecycle.Rendered
+        ) {
+          this.selfLifecycle$.value = ComponentLifecycle.Mounted;
+        }
+
+        if (parentLife >= ComponentLifecycle.BeforeUnmount) {
+          this.selfLifecycle$.value = parentLife;
+        }
+      });
+  }
+
   public target$ = ref$<IBinding>();
 
   private $component = ref$<Component<TProps>>();
 
   protected get component() {
-    if (this.$component.val == null) {
+    if (this.$component.value == null) {
       throw new Error('Component must be set before render');
     }
-    return this.$component.val;
+    return this.$component.value;
   }
 
   protected get component$() {
@@ -26,7 +44,7 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   }
 
   public setComponent(c: AnyComponent) {
-    this.$component.val = c;
+    this.$component.value = c;
   }
 
   public nextTarget$ = ref$<IBinding>();
@@ -36,12 +54,38 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   abstract unmount(): Promise<void>;
 
   public async render() {
-    if (this.target$.val == null) {
+    if (this.target$.value == null) {
       return;
     }
     const nextTarget = await lastValueFrom(
-      this.renderInto(this.target$.val).pipe(take(1)),
+      this.renderInto(this.target$.value).pipe(take(1)),
     );
-    this.nextTarget$.val = nextTarget ?? this.target$.val;
+    this.nextTarget$.value = nextTarget ?? this.target$.value;
+  }
+
+  protected selfLifecycle$ = ref$(ComponentLifecycle.Created);
+
+  protected parentLifecycle$ = ref$(ComponentLifecycle.Created);
+
+  public lifecycle$ = ref$(
+    () => {
+      if (this.parentLifecycle$.value >= ComponentLifecycle.Mounted) {
+        return this.selfLifecycle$.value;
+      }
+      return Math.min(
+        this.selfLifecycle$.value,
+        this.parentLifecycle$.value,
+      ) as ComponentLifecycle;
+    },
+    (val) => {
+      this.selfLifecycle$.value = val;
+    },
+  );
+
+  public subscribeParentLifecycle(life: Observable<ComponentLifecycle>) {
+    life.subscribe((lval) => {
+      this.parentLifecycle$.value = lval;
+    });
   }
 }
+

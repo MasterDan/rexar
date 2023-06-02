@@ -3,7 +3,7 @@ import { AppRendererHtml } from './app-renderer-html';
 import { ComponentRendererHtml } from './component-renderer-html';
 import { ComponentRendererResolver } from './component-renderer-resolver';
 
-const setup = () => {
+export const resolveAplicationRenderer = (() => {
   container.register(
     'IComponentRendererResolver',
     {
@@ -15,6 +15,4 @@ const setup = () => {
   container.register('IHtmlRenderer', ComponentRendererHtml);
 
   return () => container.resolve(AppRendererHtml);
-};
-
-export const getAppRenderer = setup();
+})();
