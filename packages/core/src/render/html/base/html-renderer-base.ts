@@ -10,8 +10,9 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   implements IHtmlRenderer
 {
   constructor() {
-    combineLatest([this.selfLifecycle$, this.parentLifecycle$]).subscribe(
-      ([selfLife, parentLife]) => {
+    combineLatest([this.selfLifecycle$, this.parentLifecycle$])
+      .pipe(filter(([s, p]) => s !== p))
+      .subscribe(([selfLife, parentLife]) => {
         if (
           parentLife === ComponentLifecycle.Mounted &&
           selfLife === ComponentLifecycle.Rendered
@@ -19,11 +20,10 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
           this.selfLifecycle$.value = ComponentLifecycle.Mounted;
         }
 
-        if (parentLife === ComponentLifecycle.BeforeUnmount) {
+        if (parentLife >= ComponentLifecycle.BeforeUnmount) {
           this.selfLifecycle$.value = parentLife;
         }
-      },
-    );
+      });
   }
 
   public target$ = ref$<IBinding>();
@@ -68,11 +68,15 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
   protected parentLifecycle$ = ref$(ComponentLifecycle.Created);
 
   public lifecycle$ = ref$(
-    () =>
-      Math.min(
+    () => {
+      if (this.parentLifecycle$.value >= ComponentLifecycle.Mounted) {
+        return this.selfLifecycle$.value;
+      }
+      return Math.min(
         this.selfLifecycle$.value,
         this.parentLifecycle$.value,
-      ) as ComponentLifecycle,
+      ) as ComponentLifecycle;
+    },
     (val) => {
       this.selfLifecycle$.value = val;
     },

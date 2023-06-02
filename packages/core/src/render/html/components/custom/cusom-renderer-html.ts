@@ -41,6 +41,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
     if (this.renderer == null) {
       throw new Error('Cannot unmout component that has not been rendered');
     }
+
     this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
     await this.renderer.unmount();
     this.lifecycle$.value = ComponentLifecycle.Unmounted;

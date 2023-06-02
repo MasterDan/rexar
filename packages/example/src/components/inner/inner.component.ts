@@ -19,23 +19,23 @@ export const inner = defineComponent<IInnerComponnentProps>({
     innerTextFor('message', props.message);
     onMounted(() => {
       console.log(
-        'inner comonent with message: ',
+        'inner comonent with message\n',
         props.message.value,
-        ' been mounted',
+        '\nbeen mounted',
       );
     });
     onBeforeUnmount(() => {
       console.log(
-        'inner comonent with message: ',
+        'inner comonent with message\n',
         props.message.value,
-        ' going to unmount',
+        '\ngoing to unmount',
       );
     });
     onUnmounted(() => {
       console.log(
-        'inner comonent with message: ',
+        'inner comonent with message\n',
         props.message.value,
-        ' been un-mounted',
+        '\nbeen un-mounted',
       );
     });
   },

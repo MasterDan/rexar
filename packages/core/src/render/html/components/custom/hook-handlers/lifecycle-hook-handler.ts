@@ -1,6 +1,6 @@
 import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
-import { Observable } from 'rxjs';
+import { distinct, Observable } from 'rxjs';
 import { injectable } from 'tsyringe';
 import { HookHandler, IHookPayload } from './base/hook-handler';
 
@@ -15,7 +15,7 @@ export class LifecycleHookHandler extends HookHandler<
     payload$: Observable<IHookPayload<Observable<ComponentLifecycle>, unknown>>,
   ): void {
     payload$.subscribe(({ trigger$ }) => {
-      const lf = this.refStore.getLifecycle();
+      const lf = this.refStore.getLifecycle().pipe(distinct());
       trigger$.next(lf);
     });
   }

@@ -1,7 +1,6 @@
 import { Templates } from '@core/parsers/html';
 import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
-import { filter } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { singleton } from 'tsyringe';
 import { ComponentLifecycle } from '../base/lifecycle';
@@ -43,11 +42,6 @@ export class RefStore {
       this.innerTemplates[scopeKey] = ref$({});
     }
     this.lifecycles[scopeKey] = lifecycle$;
-    lifecycle$
-      .pipe(filter((l) => l === ComponentLifecycle.Unmounted))
-      .subscribe(() => {
-        delete this.lifecycles[scopeKey];
-      });
     this.scopeStack.push(scopeKey);
   }
 

@@ -1,6 +1,6 @@
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { filter, Observable, pairwise, Subject } from 'rxjs';
+import { filter, Observable, pairwise, Subject, take } from 'rxjs';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
 const lifecycleHook = defineHook<Observable<ComponentLifecycle>>(
@@ -17,6 +17,7 @@ export const onMounted = (fn?: () => void) => {
           curr === ComponentLifecycle.Mounted &&
           prev === ComponentLifecycle.Rendered,
       ),
+      take(1),
     );
     if (fn) {
       isMounted$.subscribe(() => {
@@ -41,6 +42,7 @@ export const onBeforeUnmount = (fn?: () => void) => {
           curr === ComponentLifecycle.BeforeUnmount &&
           prev === ComponentLifecycle.Mounted,
       ),
+      take(1),
     );
     if (fn) {
       isBeforeUnmount$.subscribe(() => {
@@ -65,6 +67,7 @@ export const onUnmounted = (fn?: () => void) => {
           curr === ComponentLifecycle.Unmounted &&
           prev === ComponentLifecycle.BeforeUnmount,
       ),
+      take(1),
     );
     if (fn) {
       isUnmounted$.subscribe(() => {
