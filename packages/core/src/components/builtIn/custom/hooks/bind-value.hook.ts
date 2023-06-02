@@ -1,6 +1,15 @@
 import { ref$ } from '@core/reactivity/ref';
 import { Ref } from '@core/reactivity/ref/ref';
-import { filter, switchMap, merge, fromEvent, map, combineLatest } from 'rxjs';
+import {
+  filter,
+  switchMap,
+  merge,
+  fromEvent,
+  map,
+  combineLatest,
+  takeUntil,
+} from 'rxjs';
+import { onBeforeUnmount } from './lifecycle.hook';
 import { useElement } from './use-element.hook';
 
 export const bindStringValue = (
@@ -12,7 +21,10 @@ export const bindStringValue = (
     filter((v): v is HTMLInputElement => v != null),
   );
 
+  const beforeUnmount$ = onBeforeUnmount();
+
   const valueChanged$ = validElement$.pipe(
+    takeUntil(beforeUnmount$),
     switchMap((el) =>
       merge(
         fromEvent(el, 'change'),
@@ -25,6 +37,7 @@ export const bindStringValue = (
     filter((t): t is HTMLInputElement => t != null),
     map((t) => t.value),
     filter((v) => v !== value$.value),
+    takeUntil(beforeUnmount$),
   );
 
   valueChanged$.subscribe((val) => {

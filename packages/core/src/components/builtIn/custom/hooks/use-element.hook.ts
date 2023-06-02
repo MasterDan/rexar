@@ -1,4 +1,4 @@
-import { ref$ } from '@core/reactivity/ref';
+import { readonly, ref$ } from '@core/reactivity/ref';
 import { defineHook } from '@core/tools/hooks/hooks';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
@@ -6,9 +6,10 @@ export interface IElementReferenceHoolParams {
   id: string;
 }
 
-const referenceHook = defineHook<HTMLElement, IElementReferenceHoolParams>(
-  BuiltInHooks.ElementReference,
-);
+const referenceHook = defineHook<
+  HTMLElement | undefined,
+  IElementReferenceHoolParams
+>(BuiltInHooks.ElementReference);
 
 export const useElement = (id: string) => {
   const elRef = ref$<HTMLElement>();
@@ -20,5 +21,5 @@ export const useElement = (id: string) => {
       id,
     },
   );
-  return elRef;
+  return readonly(elRef);
 };

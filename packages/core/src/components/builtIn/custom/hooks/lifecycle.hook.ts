@@ -1,6 +1,7 @@
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import { defineHook } from '@core/tools/hooks/hooks';
 import { filter, Observable, pairwise } from 'rxjs';
+import { Subject } from 'rxjs/internal/Subject';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
 const lifecycleHook = defineHook<Observable<ComponentLifecycle>>(
@@ -8,8 +9,9 @@ const lifecycleHook = defineHook<Observable<ComponentLifecycle>>(
 );
 
 export const onMounted = (fn?: () => void) => {
+  const mounted$ = new Subject<void>();
   lifecycleHook((lf$) => {
-    const mounted$ = lf$.pipe(
+    const isMounted$ = lf$.pipe(
       pairwise(),
       filter(
         ([prev, curr]) =>
@@ -18,17 +20,22 @@ export const onMounted = (fn?: () => void) => {
       ),
     );
     if (fn) {
-      mounted$.subscribe(() => {
+      isMounted$.subscribe(() => {
         fn();
       });
     }
-    return mounted$;
+    isMounted$.subscribe(() => {
+      mounted$.next();
+      mounted$.complete();
+    });
   });
+  return mounted$;
 };
 
 export const onBeforeUnmount = (fn?: () => void) => {
+  const beforeUnmount$ = new Subject<void>();
   lifecycleHook((lf$) => {
-    const beforeUnmount$ = lf$.pipe(
+    const isBeforeUnmount$ = lf$.pipe(
       pairwise(),
       filter(
         ([prev, curr]) =>
@@ -37,17 +44,22 @@ export const onBeforeUnmount = (fn?: () => void) => {
       ),
     );
     if (fn) {
-      beforeUnmount$.subscribe(() => {
+      isBeforeUnmount$.subscribe(() => {
         fn();
       });
     }
-    return beforeUnmount$;
+    isBeforeUnmount$.subscribe(() => {
+      beforeUnmount$.next();
+      beforeUnmount$.complete();
+    });
   });
+  return beforeUnmount$;
 };
 
 export const onUnmounted = (fn?: () => void) => {
+  const unmounted$ = new Subject<void>();
   lifecycleHook((lf$) => {
-    const unmounted$ = lf$.pipe(
+    const isUnmounted$ = lf$.pipe(
       pairwise(),
       filter(
         ([prev, curr]) =>
@@ -56,11 +68,15 @@ export const onUnmounted = (fn?: () => void) => {
       ),
     );
     if (fn) {
-      unmounted$.subscribe(() => {
+      isUnmounted$.subscribe(() => {
         fn();
       });
     }
-    return unmounted$;
+    isUnmounted$.subscribe(() => {
+      unmounted$.next();
+      unmounted$.complete();
+    });
   });
+  return unmounted$;
 };
 
