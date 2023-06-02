@@ -1,12 +1,15 @@
-import { Observable, filter, switchMap, map } from 'rxjs';
+import { Observable, filter, switchMap, map, takeUntil } from 'rxjs';
+import { onBeforeUnmount } from './lifecycle.hook';
 import { useElement } from './use-element.hook';
 
 export const innerTextFor = (
   id: string,
   value$: Observable<string | undefined | null>,
 ) => {
+  const beforeUnmount$ = onBeforeUnmount();
   useElement(id)
     .pipe(
+      takeUntil(beforeUnmount$),
       filter((el): el is HTMLElement => el != null),
       switchMap((el) =>
         value$.pipe(
@@ -14,8 +17,10 @@ export const innerTextFor = (
           map((v) => ({ el, v })),
         ),
       ),
+      takeUntil(beforeUnmount$),
     )
     .subscribe(({ el, v }) => {
       el.innerText = v;
     });
 };
+
