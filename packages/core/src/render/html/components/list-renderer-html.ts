@@ -37,9 +37,13 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   private unsub$ = new Subject<void>();
 
+  private isArray = ref$(
+    this.component$.pipe(map((c) => c.getProp('isArray'))),
+    false,
+  );
+
   constructor() {
     super();
-    const isArray = this.component.getProp('isArray');
     this.component$
       .pipe(
         filter((c) => c.type === ComponentType.List),
@@ -70,7 +74,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         ),
       )
       .subscribe(([prev, curr]) => {
-        if (!isArray || prev == null) {
+        if (!this.isArray.value || prev == null) {
           this.listRenderers$.value = curr.map((i) => {
             const renderer = resolveRenderer(i);
             renderer.subscribeParentLifecycle(this.lifecycle$);
@@ -192,7 +196,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
     const firstMount$ = from(renderContent());
 
-    if (this.component.getProp('isArray')) {
+    if (this.isArray.value) {
       this.listRenderers$
         .pipe(
           skipUntil(firstMount$),
