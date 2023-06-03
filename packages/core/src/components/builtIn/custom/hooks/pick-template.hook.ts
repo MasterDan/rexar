@@ -21,7 +21,7 @@ const pickTemplateHook = defineHook<AnyComponent[], IPickTemplateHookArgs>(
   BuiltInHooks.PickTemplate,
 );
 
-export const fromTemplate = <TProps extends TData = TData>(
+export const pickTemplate = <TProps extends TData = TData>(
   arg: IPickTemplateArgs<TProps>,
 ): Observable<ComponentDefinition<TProps>> => {
   const componentDefinition$ = ref$<ComponentDefinition<TProps>>();

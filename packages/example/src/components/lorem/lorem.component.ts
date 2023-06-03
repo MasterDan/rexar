@@ -1,6 +1,6 @@
 import {
   defineComponent,
-  fromTemplate,
+  pickTemplate,
   innerTextFor,
   mountComponent,
   onMounted,
@@ -11,7 +11,7 @@ import template from 'bundle-text:./lorem.component.html';
 export const lorem = defineComponent({
   template: () => template,
   setup() {
-    const inner$ = fromTemplate({
+    const inner$ = pickTemplate({
       id: 'inner-template',
       setup() {
         onMounted(() => {
