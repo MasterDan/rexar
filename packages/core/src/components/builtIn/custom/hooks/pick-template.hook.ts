@@ -106,6 +106,6 @@ export const repeat = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
       component.bindProp('item', i);
       return component;
     });
-    return list(components);
+    return list(components, { isArray: true });
   });
 };

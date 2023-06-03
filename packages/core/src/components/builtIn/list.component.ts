@@ -6,15 +6,21 @@ import { ComponentType } from '../component-type';
 
 export interface IListComponentProps {
   content: Ref<AnyComponent[]>;
+  isArray: boolean;
 }
 
 const listComponentDefinition = defineComponent<IListComponentProps>({
-  props: () => ({ content: ref$<AnyComponent[]>([]) }),
+  props: () => ({ content: ref$<AnyComponent[]>([]), isArray: false }),
   type: ComponentType.List,
 });
 
-export const list = (components: AnyComponent[]) => {
+export const list = (
+  components: AnyComponent[],
+  opts?: { isArray: boolean },
+) => {
   const listComp = listComponentDefinition.create();
   listComp.bindProp('content', components);
+  listComp.bindProp('isArray', opts?.isArray ?? false);
   return listComp;
 };
+

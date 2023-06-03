@@ -30,7 +30,7 @@ export abstract class HtmlRendererBase<TProps extends TData = TData>
 
   private $component = ref$<Component<TProps>>();
 
-  protected get component() {
+  public get component() {
     if (this.$component.value == null) {
       throw new Error('Component must be set before render');
     }
