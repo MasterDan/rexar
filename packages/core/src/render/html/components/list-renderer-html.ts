@@ -191,27 +191,30 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     };
 
     const firstMount$ = from(renderContent());
-    this.listRenderers$
-      .pipe(
-        skipUntil(firstMount$),
-        filter((v): v is IRendererWithCommand[] => v != null),
-      )
-      .subscribe(async (renderers) => {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const { command, renderer } of renderers) {
-          if (command === 'mount') {
-            if (renderer.target$.value == null) {
-              renderer.target$.value = target;
+
+    if (this.component.getProp('isArray')) {
+      this.listRenderers$
+        .pipe(
+          skipUntil(firstMount$),
+          filter((v): v is IRendererWithCommand[] => v != null),
+        )
+        .subscribe(async (renderers) => {
+          // eslint-disable-next-line no-restricted-syntax
+          for (const { command, renderer } of renderers) {
+            if (command === 'mount') {
+              if (renderer.target$.value == null) {
+                renderer.target$.value = target;
+              }
+              // eslint-disable-next-line no-await-in-loop
+              await renderer.render();
             }
-            // eslint-disable-next-line no-await-in-loop
-            await renderer.render();
+            if (command === 'unmount') {
+              // eslint-disable-next-line no-await-in-loop
+              await renderer.unmount();
+            }
           }
-          if (command === 'unmount') {
-            // eslint-disable-next-line no-await-in-loop
-            await renderer.unmount();
-          }
-        }
-      });
+        });
+    }
 
     return firstMount$;
   }
