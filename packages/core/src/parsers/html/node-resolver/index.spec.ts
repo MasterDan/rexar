@@ -1,5 +1,4 @@
 import { resolveNodes } from '.';
-// @ts-expect-error module exisits
 import testHtml from './test.html';
 
 describe('html initial parser', () => {
