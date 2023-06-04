@@ -44,6 +44,24 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   constructor() {
     super();
+    this.listContent$.subscribe((lc) => {
+      console.log(
+        'list-content:',
+        lc == null ? 'empty' : lc.map((c) => c.type),
+      );
+    });
+    this.listRenderers$.subscribe((lr) => {
+      console.log(
+        'list-renderers:',
+        lr == null
+          ? 'empty'
+          : lr.map(
+              ({ command, renderer }) =>
+                `${renderer.component.type}: ${command}`,
+            ),
+      );
+    });
+
     this.component$
       .pipe(
         filter((c) => c.type === ComponentType.List),
@@ -122,16 +140,16 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
           };
 
           if (curr.length === prev.length) {
-            actualizeProps(curr.length - 1);
+            actualizeProps(curr.length);
           }
 
           if (curr.length < prev.length) {
-            actualizeProps(curr.length - 1);
-            removeOld(curr.length, prev.length - 1);
+            actualizeProps(curr.length);
+            removeOld(curr.length, prev.length);
           }
           if (curr.length > prev.length) {
-            actualizeProps(prev.length - 1);
-            addNew(prev.length, curr.length - 1);
+            actualizeProps(prev.length);
+            addNew(prev.length, curr.length);
           }
           this.listRenderers$.value = renderers;
         }
