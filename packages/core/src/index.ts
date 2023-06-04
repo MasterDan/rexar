@@ -12,7 +12,7 @@ export { innerTextFor } from './components/builtIn/custom/hooks/inner-text-for.h
 export { mountComponent } from './components/builtIn/custom/hooks/mount-component.hook';
 export {
   pickTemplate,
-  repeat,
+  repeatTemplate as repeat,
 } from './components/builtIn/custom/hooks/pick-template.hook';
 export {
   onMounted,

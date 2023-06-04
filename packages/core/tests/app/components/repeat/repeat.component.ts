@@ -1,5 +1,5 @@
 import { defineComponent } from '@core/components';
-import { repeat } from '@core/components/builtIn/custom/hooks/pick-template.hook';
+import { repeatTemplate } from '@core/components/builtIn/custom/hooks/pick-template.hook';
 import { innerTextFor, mountComponent } from '@core/index';
 import { ref$ } from '@core/reactivity/ref';
 import html from './repeat.component.html';
@@ -8,7 +8,7 @@ export const repeatComponent = defineComponent({
   template: () => html,
   setup() {
     const array$ = ref$(['One', 'Two', 'Three']);
-    const list = repeat({
+    const list = repeatTemplate({
       templateId: 'item-template',
       array: array$,
       key: (_, i) => i,

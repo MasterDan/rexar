@@ -5,7 +5,7 @@ import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { filter, map, Observable } from 'rxjs';
+import { combineLatest, filter, map, Observable, tap } from 'rxjs';
 import {
   IListComponentProps,
   listComponentDefinition,
@@ -71,7 +71,7 @@ export interface IRepeatTemplateArgs<TItem> {
   setup?: SetupFn<IArrayItemProps<TItem>>;
 }
 
-export const repeat = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
+export const repeatTemplate = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
   const arrayItems$ = ref$(() =>
     arg.array.value.map((v, i) => new ArrayItem(v, i, arg.key)),
   );
@@ -88,7 +88,10 @@ export const repeat = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
 
   const componentDefinition$ = ref$(
     template$.pipe(
-      filter((t): t is AnyComponent[] => t != null),
+      filter((t): t is AnyComponent[] => t != null && t.length > 0),
+      tap(() => {
+        console.log('template changed');
+      }),
       map((t) =>
         defineComponent<IArrayItemProps<TItem>>({
           template: () => t,
@@ -99,18 +102,29 @@ export const repeat = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
       ),
     ),
   );
-  const components$ = ref$(() => {
-    const definition = componentDefinition$.value;
-    if (definition == null) {
-      return [];
-    }
-    const components = arrayItems$.value.map((i) => {
-      const component = definition.create();
-      component.bindProp('item', i);
-      return component;
-    });
-    return components;
-  });
+  const components$ = ref$(
+    combineLatest([componentDefinition$, arrayItems$]).pipe(
+      filter(
+        (
+          arr,
+        ): arr is [
+          ComponentDefinition<IArrayItemProps<TItem>>,
+          ArrayItem<TItem>[],
+        ] => arr[0] != null,
+      ),
+      map(([definition, arrayItems]) => {
+        const components = arrayItems.map((i) => {
+          const component = definition.create();
+          component.bindProp('item', i);
+          return component;
+        });
+        console.log('components:', components.length);
+        return components;
+      }),
+    ),
+    [],
+  );
+
   const props: IListComponentProps = {
     content: components$,
     isArray: true,
