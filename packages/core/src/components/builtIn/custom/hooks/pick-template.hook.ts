@@ -6,7 +6,10 @@ import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
 import { filter, map, Observable } from 'rxjs';
-import { list } from '../../list.component';
+import {
+  IListComponentProps,
+  listComponentDefinition,
+} from '../../list.component';
 import { SetupFn } from '../custom-template-component';
 import { BuiltInHooks } from './@types/built-in-hooks';
 
@@ -96,16 +99,24 @@ export const repeat = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
       ),
     ),
   );
-  return ref$(() => {
+  const components$ = ref$(() => {
     const definition = componentDefinition$.value;
     if (definition == null) {
-      return undefined;
+      return [];
     }
     const components = arrayItems$.value.map((i) => {
       const component = definition.create();
       component.bindProp('item', i);
       return component;
     });
-    return list(components, { isArray: true });
+    return components;
   });
+  const props: IListComponentProps = {
+    content: components$,
+    isArray: true,
+  };
+  return {
+    definition: listComponentDefinition,
+    props,
+  };
 };

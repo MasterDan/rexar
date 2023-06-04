@@ -1,4 +1,5 @@
 import { createApp } from '@core/app';
+import { repeatComponent } from './components/repeat/repeat.component';
 import { testOne } from './components/test-one/test-one.component';
 import { testThree } from './components/test-three/test-three.component';
 import { testTwo } from './components/test-two/test-two.component';
@@ -48,5 +49,9 @@ describe('custom components', () => {
         'two' +
         '</div></div>',
     );
+  });
+  test('repeat-component', async () => {
+    const app = await createApp(repeatComponent).mount('#app');
+    console.log(app?.outerHTML);
   });
 });

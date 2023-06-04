@@ -1,15 +1,15 @@
 import { ref$ } from '@core/reactivity/ref';
-import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
+import { MayBeReadonlyRef } from 'packages/core/dist/types';
 import { defineComponent } from '..';
 import { ComponentType } from '../component-type';
 
 export interface IListComponentProps {
-  content: Ref<AnyComponent[]>;
+  content: MayBeReadonlyRef<AnyComponent[]>;
   isArray: boolean;
 }
 
-const listComponentDefinition = defineComponent<IListComponentProps>({
+export const listComponentDefinition = defineComponent<IListComponentProps>({
   props: () => ({ content: ref$<AnyComponent[]>([]), isArray: false }),
   type: ComponentType.List,
 });

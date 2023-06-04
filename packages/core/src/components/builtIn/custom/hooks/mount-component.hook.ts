@@ -18,7 +18,9 @@ const mountComponentHook = defineHook<AnyComponent, IMountComponentHookParams>(
 
 export function mountComponent<TProps extends TData>(
   id: string,
-  componentOrDefinition: MaybeObservable<ComponentDefinition<TProps>>,
+  componentOrDefinition: MaybeObservable<
+    ComponentDefinition<TProps> | undefined
+  >,
   props?: TProps,
 ) {
   mountComponentHook(
