@@ -5,7 +5,7 @@ import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { combineLatest, filter, map, Observable, tap } from 'rxjs';
+import { combineLatest, filter, map, Observable } from 'rxjs';
 import {
   IListComponentProps,
   listComponentDefinition,
@@ -89,15 +89,13 @@ export const repeatTemplate = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
   const componentDefinition$ = ref$(
     template$.pipe(
       filter((t): t is AnyComponent[] => t != null && t.length > 0),
-      tap(() => {
-        console.log('template changed');
-      }),
       map((t) =>
         defineComponent<IArrayItemProps<TItem>>({
           template: () => t,
           props: () => ({
             item: ref$(),
           }),
+          setup: arg.setup,
         }),
       ),
     ),
@@ -118,7 +116,6 @@ export const repeatTemplate = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
           component.bindProp('item', i);
           return component;
         });
-        console.log('components:', components.length);
         return components;
       }),
     ),
