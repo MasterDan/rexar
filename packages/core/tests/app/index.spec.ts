@@ -85,5 +85,16 @@ describe('custom components', () => {
         '<span>Two</span>' +
         '</div>',
     );
+    array$.patch((v) => {
+      v[0] = 'Hello, world';
+    });
+    await lastValueFrom(timer(100));
+    expect(app?.outerHTML).toBe(
+      '<div id="app">' +
+        '<h3>Repeat</h3>' +
+        '<span>Hello, world</span>' +
+        '<span>Two</span>' +
+        '</div>',
+    );
   });
 });
