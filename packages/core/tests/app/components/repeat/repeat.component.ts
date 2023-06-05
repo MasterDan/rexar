@@ -12,7 +12,7 @@ export const repeatComponent = defineComponent<{ array$: Ref<string[]> }>({
     repeatTemplate({
       templateId: 'item-template',
       array: props.array$,
-      key: (_, i) => i,
+      key: (i) => i,
       setup({ props: elemProps }) {
         const text$ = ref$(() => elemProps.item.value?.value ?? '');
         bindTextContent('value', text$);
