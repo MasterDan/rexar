@@ -12,7 +12,7 @@ export { bindTextContent } from './components/builtIn/custom/hooks/text-content.
 export { mountComponent } from './components/builtIn/custom/hooks/mount-component.hook';
 export {
   pickTemplate,
-  repeatTemplate as repeat,
+  repeatTemplate,
 } from './components/builtIn/custom/hooks/pick-template.hook';
 export {
   onMounted,
