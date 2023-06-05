@@ -12,6 +12,7 @@ import {
 } from '../../list.component';
 import { SetupFn } from '../custom-template-component';
 import { BuiltInHooks } from './@types/built-in-hooks';
+import { mountComponent } from './mount-component.hook';
 
 export interface IPickTemplateArgs<TProps extends TData = TData> {
   id: string;
@@ -86,7 +87,7 @@ export const repeatTemplate = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
     },
   );
 
-  const componentDefinition$ = ref$(
+  const itemDefinition$ = ref$(
     template$.pipe(
       filter((t): t is AnyComponent[] => t != null && t.length > 0),
       map((t) =>
@@ -100,8 +101,8 @@ export const repeatTemplate = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
       ),
     ),
   );
-  const components$ = ref$(
-    combineLatest([componentDefinition$, arrayItems$]).pipe(
+  const itemComponents$ = ref$(
+    combineLatest([itemDefinition$, arrayItems$]).pipe(
       filter(
         (
           arr,
@@ -123,11 +124,12 @@ export const repeatTemplate = <TItem>(arg: IRepeatTemplateArgs<TItem>) => {
   );
 
   const props: IListComponentProps = {
-    content: components$,
+    content: itemComponents$,
     isArray: true,
   };
   return {
-    definition: listComponentDefinition,
-    props,
+    mount: (id: string) => {
+      mountComponent(id, listComponentDefinition, props);
+    },
   };
 };

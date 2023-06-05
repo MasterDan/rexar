@@ -55,6 +55,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
 
   renderInto(binding: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
+
     if (this.elComponent.id && !this.elComponent.preventTransformation) {
       const { transformer } = this.refStore.getReferences(this.elComponent.id);
       if (!transformer.isEmpty) {
@@ -63,6 +64,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         }
         this.transformedElementRenderer = resolveRenderer(
           transformer.transformationResult,
+          binding,
         );
         this.transformedElementRenderer.subscribeParentLifecycle(
           this.lifecycle$,

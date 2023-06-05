@@ -1,22 +1,22 @@
 import { defineComponent } from '@core/components';
 import { repeatTemplate } from '@core/components/builtIn/custom/hooks/pick-template.hook';
-import { innerTextFor, mountComponent } from '@core/index';
+import { bindTextContent } from '@core/components/builtIn/custom/hooks/text-content.hook';
 import { ref$ } from '@core/reactivity/ref';
+import { Ref } from '@core/reactivity/ref/ref';
 import html from './repeat.component.html';
 
-export const repeatComponent = defineComponent({
+export const repeatComponent = defineComponent<{ array$: Ref<string[]> }>({
+  props: () => ({ array$: ref$<string[]>([]) }),
   template: () => html,
-  setup() {
-    const array$ = ref$(['One', 'Two', 'Three']);
-    const list = repeatTemplate({
+  setup({ props }) {
+    repeatTemplate({
       templateId: 'item-template',
-      array: array$,
+      array: props.array$,
       key: (_, i) => i,
-      setup({ props }) {
-        const text$ = ref$(() => props.item.value?.value ?? '');
-        innerTextFor('value', text$);
+      setup({ props: elemProps }) {
+        const text$ = ref$(() => elemProps.item.value?.value ?? '');
+        bindTextContent('value', text$);
       },
-    });
-    mountComponent('items', list.definition, list.props);
+    }).mount('items');
   },
 });

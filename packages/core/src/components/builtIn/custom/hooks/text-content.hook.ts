@@ -2,7 +2,7 @@ import { Observable, filter, switchMap, map, takeUntil } from 'rxjs';
 import { onBeforeUnmount } from './lifecycle.hook';
 import { useElement } from './use-element.hook';
 
-export const innerTextFor = (
+export const bindTextContent = (
   id: string,
   value$: Observable<string | undefined | null>,
 ) => {
@@ -20,7 +20,7 @@ export const innerTextFor = (
       takeUntil(beforeUnmount$),
     )
     .subscribe(({ el, v }) => {
-      el.innerText = v;
+      el.textContent = v;
     });
 };
 

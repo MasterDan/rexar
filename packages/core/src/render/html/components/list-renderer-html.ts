@@ -44,23 +44,23 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   constructor() {
     super();
-    this.listContent$.subscribe((lc) => {
-      console.log(
-        'list-content:',
-        lc == null ? 'empty' : lc.map((c) => c.type),
-      );
-    });
-    this.listRenderers$.subscribe((lr) => {
-      console.log(
-        'list-renderers:',
-        lr == null
-          ? 'empty'
-          : lr.map(
-              ({ command, renderer }) =>
-                `${renderer.component.type}: ${command}`,
-            ),
-      );
-    });
+    // this.listContent$.subscribe((lc) => {
+    //   console.log(
+    //     'list-content:',
+    //     lc == null ? 'empty' : lc.map((c) => c.type),
+    //   );
+    // });
+    // this.listRenderers$.subscribe((lr) => {
+    //   console.log(
+    //     'list-renderers:',
+    //     lr == null
+    //       ? 'empty'
+    //       : lr.map(
+    //           ({ command, renderer }) =>
+    //             `${renderer.component.type}: ${command}`,
+    //         ),
+    //   );
+    // });
 
     this.component$
       .pipe(
@@ -198,7 +198,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       let lastTarget: IBinding | undefined;
       // eslint-disable-next-line no-restricted-syntax
       for (const { renderer } of renderers.filter(
-        (r) => r.command === 'mount',
+        (r) => r.command !== 'unmount',
       )) {
         if (renderer.target$.value == null) {
           renderer.target$.value = target;

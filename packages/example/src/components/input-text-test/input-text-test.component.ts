@@ -1,6 +1,6 @@
 import {
   defineComponent,
-  innerTextFor,
+  bindTextContent,
   ref$,
   bindStringValue,
 } from '@rexar/core';
@@ -14,7 +14,7 @@ export const inputTextTest = defineComponent({
     bindStringValue('one', textOne$);
     bindStringValue('one-second', textOne$);
     bindStringValue('two', textTwo$);
-    innerTextFor(
+    bindTextContent(
       'text',
       ref$(() => `${textOne$.value} ${textTwo$.value}`),
     );

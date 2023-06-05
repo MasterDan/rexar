@@ -1,7 +1,7 @@
 import {
   defineComponent,
   pickTemplate,
-  innerTextFor,
+  bindTextContent,
   mountComponent,
   onMounted,
   ref$,
@@ -17,7 +17,7 @@ export const lorem = defineComponent({
         onMounted(() => {
           console.log('inner message component mounted');
         });
-        innerTextFor('message', ref$('With some message'));
+        bindTextContent('message', ref$('With some message'));
       },
     });
     mountComponent('target', inner$);
