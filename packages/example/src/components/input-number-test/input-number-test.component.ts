@@ -4,6 +4,7 @@ import {
   ref$,
   bindNumericValue,
   onMounted,
+  onEvent,
 } from '@rexar/core';
 import template from 'bundle-text:./input-number-test.component.html';
 
@@ -28,6 +29,10 @@ export const inputNumberTest = defineComponent({
       setTimeout(() => {
         numberOne$.value = 10;
       }, 1000);
+    });
+    onEvent('multiply', 'click').subscribe(() => {
+      numberOne$.patch((x) => x * 2);
+      numberTwo$.patch((x) => x * 2);
     });
   },
 });
