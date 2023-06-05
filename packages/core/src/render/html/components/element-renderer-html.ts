@@ -55,6 +55,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
 
   renderInto(binding: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
+
     if (this.elComponent.id && !this.elComponent.preventTransformation) {
       const { transformer } = this.refStore.getReferences(this.elComponent.id);
       if (!transformer.isEmpty) {
@@ -63,6 +64,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         }
         this.transformedElementRenderer = resolveRenderer(
           transformer.transformationResult,
+          binding,
         );
         this.transformedElementRenderer.subscribeParentLifecycle(
           this.lifecycle$,
@@ -95,16 +97,26 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       Object.keys(attrs).forEach((k) => {
         el.setAttribute(k, attrs[k] ?? '');
       });
-      if (children.length > 0) {
+      if (children.length > 1) {
         const listComp = list(children);
         listComp.bindProp('content', children);
-        const renderer = resolveRenderer(listComp, {
+        const childrenRenderer = resolveRenderer(listComp, {
           parentEl: el,
           role: BindingTargetRole.Parent,
           target: el,
         });
-        renderer.subscribeParentLifecycle(this.lifecycle$);
-        await renderer.render();
+        childrenRenderer.subscribeParentLifecycle(this.lifecycle$);
+        await childrenRenderer.render();
+      }
+      if (children.length === 1) {
+        const [child] = children;
+        const childRenderer = resolveRenderer(child, {
+          parentEl: el,
+          role: BindingTargetRole.Parent,
+          target: el,
+        });
+        childRenderer.subscribeParentLifecycle(this.lifecycle$);
+        await childRenderer.render();
       }
       switch (binding.role) {
         case BindingTargetRole.Parent:

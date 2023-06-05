@@ -1,6 +1,6 @@
 import {
   defineComponent,
-  innerTextFor,
+  bindTextContent,
   onBeforeUnmount,
   onMounted,
   onUnmounted,
@@ -16,7 +16,7 @@ export const inner = defineComponent<IInnerComponnentProps>({
   template: () => template,
   props: () => ({ message: 'No Message' }),
   setup: ({ props }) => {
-    innerTextFor('message', props.message);
+    bindTextContent('message', props.message);
     onMounted(() => {
       console.log(
         'inner comonent with message\n',

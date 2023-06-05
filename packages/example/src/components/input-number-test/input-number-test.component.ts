@@ -1,6 +1,6 @@
 import {
   defineComponent,
-  innerTextFor,
+  bindTextContent,
   ref$,
   bindNumericValue,
   onMounted,
@@ -15,7 +15,7 @@ export const inputNumberTest = defineComponent({
     bindNumericValue('number', numberOne$);
     bindNumericValue('number-copy', numberOne$);
     bindNumericValue('number-two', numberTwo$);
-    innerTextFor(
+    bindTextContent(
       'sum-text',
       ref$(
         () =>

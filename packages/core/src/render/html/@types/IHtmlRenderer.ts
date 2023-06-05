@@ -13,5 +13,6 @@ export interface IHtmlRenderer {
   setComponent(c: AnyComponent): void;
   render(): Promise<void>;
   unmount(): Promise<void>;
+  component: AnyComponent;
 }
 

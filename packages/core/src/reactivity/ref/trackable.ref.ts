@@ -3,10 +3,11 @@ import { BindingContext } from '../computed/binding-context';
 import { RefBase } from './base.ref';
 
 export class TrackableRef<T> extends RefBase<T> {
+  context = container.resolve(BindingContext);
+
   track() {
-    const context = container.resolve(BindingContext);
-    if (context.isValid) {
-      context.track(this);
+    if (this.context.isValid) {
+      this.context.track(this);
     }
   }
 

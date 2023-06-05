@@ -1,6 +1,6 @@
 import {
   defineComponent,
-  innerTextFor,
+  bindTextContent,
   ref$,
   bindBooleanValue,
   ifElse,
@@ -15,7 +15,7 @@ export const inputCheckboxTest = defineComponent({
     const checkTwo$ = ref$(false);
     bindBooleanValue('checkbox-one', checkOne$);
     bindBooleanValue('checkbox-two', checkTwo$);
-    innerTextFor(
+    bindTextContent(
       'options-text',
       ref$(() =>
         !checkOne$.value && !checkTwo$.value
