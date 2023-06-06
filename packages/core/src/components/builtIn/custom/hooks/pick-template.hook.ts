@@ -2,7 +2,6 @@ import { ComponentDefinition, defineComponent } from '@core/components';
 import { TData } from '@core/components/component';
 import { readonly, ref$ } from '@core/reactivity/ref';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
-import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
 import { combineLatest, filter, map, Observable } from 'rxjs';
@@ -12,6 +11,8 @@ import {
 } from '../../list.component';
 import { SetupFn } from '../custom-template-component';
 import { BuiltInHooks } from './@types/built-in-hooks';
+import { ArrayItem } from './inner/array-item';
+import { IArrayItemProps } from './inner/template-ref';
 import { mountComponent } from './mount-component.hook';
 
 export interface IPickTemplateArgs<TProps extends TData = TData> {
@@ -48,22 +49,6 @@ export const pickTemplate = <TProps extends TData = TData>(
     filter((x): x is ComponentDefinition<TProps> => x != null),
   );
 };
-
-export class ArrayItem<TItem> {
-  key: string | number | symbol;
-
-  constructor(
-    public value: TItem,
-    public index: number,
-    keyGetter: (item: TItem, index: number) => string | number | symbol,
-  ) {
-    this.key = keyGetter(value, index);
-  }
-}
-
-export interface IArrayItemProps<TItem> {
-  item: Ref<ArrayItem<TItem> | undefined>;
-}
 
 export interface IRepeatTemplateArgs<TItem> {
   templateId: string;
