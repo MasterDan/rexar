@@ -1,10 +1,4 @@
-import {
-  defineComponent,
-  bindTextContent,
-  ref$,
-  bindBooleanValue,
-  ifElse,
-} from '@rexar/core';
+import { defineComponent, ref$, ifElse, pickElement } from '@rexar/core';
 import template from 'bundle-text:./input-checkbox-test.component.html';
 import { inner } from '../inner/inner.component';
 
@@ -13,10 +7,9 @@ export const inputCheckboxTest = defineComponent({
   setup() {
     const checkOne$ = ref$(true);
     const checkTwo$ = ref$(false);
-    bindBooleanValue('checkbox-one', checkOne$);
-    bindBooleanValue('checkbox-two', checkTwo$);
-    bindTextContent(
-      'options-text',
+    pickElement('checkbox-one').bindValue.boolean(checkOne$);
+    pickElement('checkbox-two').bindValue.boolean(checkTwo$);
+    pickElement('options-text').bindContent.text(
       ref$(() =>
         !checkOne$.value && !checkTwo$.value
           ? 'Nothing is checked'

@@ -1,9 +1,9 @@
 import {
   defineComponent,
-  bindTextContent,
   onBeforeUnmount,
   onMounted,
   onUnmounted,
+  pickElement,
 } from '@rexar/core';
 
 import template from 'bundle-text:./inner.component.html';
@@ -16,7 +16,7 @@ export const inner = defineComponent<IInnerComponnentProps>({
   template: () => template,
   props: () => ({ message: 'No Message' }),
   setup: ({ props }) => {
-    bindTextContent('message', props.message);
+    pickElement('message').bindContent.text(props.message);
     onMounted(() => {
       console.log(
         'inner comonent with message\n',
