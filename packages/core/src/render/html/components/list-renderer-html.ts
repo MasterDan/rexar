@@ -1,4 +1,4 @@
-import { IArrayItemProps } from '@core/components/builtIn/custom/hooks/pick-template.hook';
+import { IArrayItemProps } from '@core/components/builtIn/custom/hooks/inner/template-ref';
 import { IListComponentProps } from '@core/components/builtIn/list.component';
 import { ITextComponentProps } from '@core/components/builtIn/text.component';
 import { Component } from '@core/components/component';

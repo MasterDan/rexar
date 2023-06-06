@@ -1,15 +1,11 @@
-import { defineComponent } from '@core/components';
-import {
-  IListComponentProps,
-  list,
-  listComponentDefinition,
-} from '@core/components/builtIn/list.component';
+import { ComponentDefinition, defineComponent } from '@core/components';
+import { listComponentDefinition } from '@core/components/builtIn/list.component';
 import { TData } from '@core/components/component';
 import { ref$ } from '@core/reactivity/ref';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { filter, map } from 'rxjs';
+import { combineLatest, filter, map, Observable } from 'rxjs';
 import { SetupFn } from '../../custom-template-component';
 import { mountComponent } from '../mount-component.hook';
 import { ArrayItem } from './array-item';
@@ -24,25 +20,33 @@ export interface IArrayItemProps<TItem> {
 }
 
 export class TemplateRef {
-  private template: AnyComponent;
+  private validTemplate$: Observable<AnyComponent[]>;
 
-  constructor(private components: AnyComponent[]) {
-    this.template = components.length === 1 ? components[0] : list(components);
+  constructor(private template$: MayBeReadonlyRef<AnyComponent[] | undefined>) {
+    this.validTemplate$ = this.template$.pipe(
+      filter((t): t is AnyComponent[] => t != null),
+    );
   }
 
   defineComponent<TProps extends TData = TData>(
     args: IMakeCompponentArgs<TProps> = {},
   ) {
-    const componentDef = defineComponent<TProps>({
-      template: () => this.components,
-      setup: args.setup,
-      props: args.props ?? (() => ({} as TProps)),
-    });
+    const componentDef$ = ref$(
+      this.validTemplate$.pipe(
+        map((t) =>
+          defineComponent<TProps>({
+            template: () => t,
+            setup: args.setup,
+            props: args.props ?? (() => ({} as TProps)),
+          }),
+        ),
+      ),
+    );
 
     return {
-      componentDef,
+      componentDef$,
       mount: (id: string) => {
-        mountComponent(id, componentDef);
+        mountComponent(id, componentDef$);
       },
     };
   }
@@ -55,22 +59,36 @@ export class TemplateRef {
       array.value.map((v, i) => new ArrayItem(v, i, key)),
     );
     return {
-      defineComponent: (arg: IMakeCompponentArgs<IArrayItemProps<TItem>>) => {
-        const componentDef = defineComponent<IArrayItemProps<TItem>>({
-          template: () => this.components,
-          props: () => ({
-            item: ref$(),
-          }),
-          setup: arg.setup,
-        });
+      defineComponent: (
+        arg: Omit<IMakeCompponentArgs<IArrayItemProps<TItem>>, 'props'>,
+      ) => {
+        const componentDef$ = this.validTemplate$.pipe(
+          map((t) =>
+            defineComponent<IArrayItemProps<TItem>>({
+              template: () => t,
+              props: () => ({
+                item: ref$(),
+              }),
+              setup: arg.setup,
+            }),
+          ),
+        );
+
         return {
           mount: (id: string) => {
             const itemComponents$ = ref$(
-              arrayItems$.pipe(
-                filter((arr): arr is ArrayItem<TItem>[] => arr != null),
-                map((arrayItems) => {
+              combineLatest([componentDef$, arrayItems$]).pipe(
+                filter(
+                  (
+                    arr,
+                  ): arr is [
+                    ComponentDefinition<IArrayItemProps<TItem>>,
+                    ArrayItem<TItem>[],
+                  ] => arr[0] != null,
+                ),
+                map(([definition, arrayItems]) => {
                   const components = arrayItems.map((i) => {
-                    const component = componentDef.create();
+                    const component = definition.create();
                     component.bindProp('item', i);
                     return component;
                   });
@@ -79,11 +97,10 @@ export class TemplateRef {
               ),
               [],
             );
-            const props: IListComponentProps = {
+            mountComponent(id, listComponentDefinition, {
               content: itemComponents$,
               isArray: true,
-            };
-            mountComponent(id, listComponentDefinition, props);
+            });
           },
         };
       },
