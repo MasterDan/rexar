@@ -4,4 +4,5 @@ export enum BuiltInHooks {
   Conditional = 'conditional-hook',
   PickTemplate = 'pick-template-hook',
   Lisecycle = 'component-lifecycle',
+  Transform = 'transform-hook',
 }

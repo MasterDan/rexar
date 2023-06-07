@@ -16,6 +16,7 @@ import { ElementReferenceHookHandler } from './hook-handlers/element-reference-h
 import { LifecycleHookHandler } from './hook-handlers/lifecycle-hook-handler';
 import { MountComponentHookHandler } from './hook-handlers/mount-component-hook-handler';
 import { PickTemplateHookHandler } from './hook-handlers/pick-template-hook-handler';
+import { TransformHookHandler } from './hook-handlers/transform-hook-handler';
 
 const hookHandlerToken = 'IHookHandler';
 
@@ -26,6 +27,7 @@ const hookHandlerToken = 'IHookHandler';
   { token: hookHandlerToken, useClass: ConditionalHookHandler },
   { token: hookHandlerToken, useClass: PickTemplateHookHandler },
   { token: hookHandlerToken, useClass: LifecycleHookHandler },
+  { token: hookHandlerToken, useClass: TransformHookHandler },
 ])
 export class CustomRendererHtml extends HtmlRendererBase {
   private renderer: IHtmlRenderer | undefined;
