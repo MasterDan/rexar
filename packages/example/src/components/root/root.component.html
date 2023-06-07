@@ -1,6 +1,12 @@
 <h2>Demo App</h2>
-<slot ::inner-component></slot>
-<slot ::simple-lorem-component></slot>
-<slot ::test-text-inputs-component></slot>
-<slot ::test-number-inputs-component></slot>
-<slot ::test-boolean-inputs-component></slot>
+<div>
+    <label for="show-content-checkbox">Option</label>
+    <input type="checkbox" id="show-content-checkbox" ::show-content>
+</div>
+<slot ::content>
+    <slot ::inner-component></slot>
+    <slot ::simple-lorem-component></slot>
+    <slot ::test-text-inputs-component></slot>
+    <slot ::test-number-inputs-component></slot>
+    <slot ::test-boolean-inputs-component></slot>
+</slot>

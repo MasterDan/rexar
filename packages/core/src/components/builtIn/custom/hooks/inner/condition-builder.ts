@@ -1,6 +1,9 @@
 import { ComponentDefinition } from '@core/components';
 import { conditional } from '@core/components/builtIn/conditional.component';
-import { TData } from '@core/components/component';
+import { IElementComponentProps } from '@core/components/builtIn/html-element.component';
+import { list } from '@core/components/builtIn/list.component';
+import { Component, TData } from '@core/components/component';
+import { ComponentType } from '@core/components/component-type';
 import { ref$ } from '@core/reactivity/ref';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { Ref } from '@core/reactivity/ref/ref';
@@ -17,37 +20,90 @@ function buildComponent<TProps extends TData = TData>(
   return component;
 }
 
+function displaySelf(component: Component<IElementComponentProps>) {
+  if (component.type !== ComponentType.HTMLElement) {
+    return component;
+  }
+
+  const self =
+    component.getProp('name') === 'SLOT'
+      ? list(component.getProp('children') ?? [])
+      : component;
+  return self;
+}
+
 export class ConditionBuilder {
-  constructor(private condition$: MayBeReadonlyRef<boolean>) {}
+  constructor(
+    private condition$: MayBeReadonlyRef<boolean>,
+    private self?: Component<IElementComponentProps>,
+  ) {}
 
-  positive$: Ref<AnyComponent> | undefined;
+  positive$: Ref<AnyComponent> | undefined | 'self';
 
-  negaitive$: Ref<AnyComponent> | undefined;
+  negative$: Ref<AnyComponent> | undefined | 'self';
 
-  ifTrue<TProps extends TData = TData>(
-    definition: ComponentDefinition<TProps>,
-    props?: TProps,
-  ) {
-    this.positive$ = ref$(buildComponent(definition, props));
+  get whenTrue() {
+    return {
+      displayComponent: <TProps extends TData = TData>(
+        definition: ComponentDefinition<TProps>,
+        props?: TProps,
+      ): ConditionBuilder => {
+        this.positive$ = ref$(buildComponent(definition, props));
+        return this;
+      },
+      displaySelf: (): ConditionBuilder => {
+        this.positive$ = 'self';
+        return this;
+      },
+      if: (
+        elseIf$: MayBeReadonlyRef<boolean>,
+        config: (builder: ConditionBuilder) => void,
+      ) => {
+        const builder = new ConditionBuilder(elseIf$, this.self);
+        config(builder);
+        this.positive$ = ref$(builder.build());
+      },
+    };
   }
 
-  else<TProps extends TData = TData>(
-    definition: ComponentDefinition<TProps>,
-    props?: TProps,
-  ) {
-    this.negaitive$ = ref$(buildComponent(definition, props));
-  }
-
-  elseIf(
-    elseIf$: MayBeReadonlyRef<boolean>,
-    config: (builder: ConditionBuilder) => void,
-  ) {
-    const elseIfBuilder = new ConditionBuilder(elseIf$);
-    config(elseIfBuilder);
-    this.negaitive$ = ref$(elseIfBuilder.build());
+  get whenFalse() {
+    return {
+      displayComponent: <TProps extends TData = TData>(
+        definition: ComponentDefinition<TProps>,
+        props?: TProps,
+      ): ConditionBuilder => {
+        this.negative$ = ref$(buildComponent(definition, props));
+        return this;
+      },
+      displaySelf: (): ConditionBuilder => {
+        this.negative$ = 'self';
+        return this;
+      },
+      if: (
+        elseIf$: MayBeReadonlyRef<boolean>,
+        config: (builder: ConditionBuilder) => void,
+      ) => {
+        const builder = new ConditionBuilder(elseIf$, this.self);
+        config(builder);
+        this.negative$ = ref$(builder.build());
+      },
+    };
   }
 
   build() {
-    return conditional(this.condition$, this.positive$, this.negaitive$);
+    const extract = (
+      val: Ref<AnyComponent> | undefined | 'self',
+    ): Ref<AnyComponent> | undefined => {
+      if (val !== 'self') {
+        return val;
+      }
+      return this.self == null ? undefined : ref$(displaySelf(this.self));
+    };
+
+    return conditional(
+      this.condition$,
+      extract(this.positive$),
+      extract(this.negative$),
+    );
   }
 }

@@ -1,4 +1,9 @@
-import { defineComponent, ref$, ifElse, pickElement } from '@rexar/core';
+import {
+  defineComponent,
+  ref$,
+  pickElement,
+  transformElement,
+} from '@rexar/core';
 import template from 'bundle-text:./input-checkbox-test.component.html';
 import { inner } from '../inner/inner.component';
 
@@ -18,28 +23,18 @@ export const inputCheckboxTest = defineComponent({
             }`,
       ),
     );
-
-    ifElse('inner', checkOne$, {
-      definition: inner,
-      props: {
+    transformElement('inner').if(checkOne$, (config) => {
+      config.whenTrue.displayComponent(inner, {
         message: 'This component displays if first checkbox is checked',
-      },
+      });
     });
-    ifElse(
-      'inner-two',
-      checkTwo$,
-      {
-        definition: inner,
-        props: {
-          message: 'This component displays if second checkbox is checked',
-        },
-      },
-      {
-        definition: inner,
-        props: {
-          message: 'This component displays if second checkbox is NOT checked',
-        },
-      },
-    );
+    transformElement('inner-two').if(checkTwo$, (c) => {
+      c.whenTrue.displayComponent(inner, {
+        message: 'This component displays if second checkbox is checked',
+      });
+      c.whenFalse.displayComponent(inner, {
+        message: 'This component displays if second checkbox is NOT checked',
+      });
+    });
   },
 });

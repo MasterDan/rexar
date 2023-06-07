@@ -11,7 +11,6 @@ import { ComponentLifecycle } from '../../base/lifecycle';
 import { RefStore } from '../../ref-store/ref-store';
 import { resolveRenderer } from '../../tools';
 import { IHookHandler } from './hook-handlers/base/hook-handler';
-import { ConditionalHookHandler } from './hook-handlers/conditional-hook-handler';
 import { ElementReferenceHookHandler } from './hook-handlers/element-reference-hook-handler';
 import { LifecycleHookHandler } from './hook-handlers/lifecycle-hook-handler';
 import { MountComponentHookHandler } from './hook-handlers/mount-component-hook-handler';
@@ -24,7 +23,6 @@ const hookHandlerToken = 'IHookHandler';
 @registry([
   { token: hookHandlerToken, useClass: ElementReferenceHookHandler },
   { token: hookHandlerToken, useClass: MountComponentHookHandler },
-  { token: hookHandlerToken, useClass: ConditionalHookHandler },
   { token: hookHandlerToken, useClass: PickTemplateHookHandler },
   { token: hookHandlerToken, useClass: LifecycleHookHandler },
   { token: hookHandlerToken, useClass: TransformHookHandler },
