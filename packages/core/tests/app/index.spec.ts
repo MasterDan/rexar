@@ -1,6 +1,7 @@
 import { createApp } from '@core/app';
 import { ref$ } from '@core/reactivity/ref';
 import { lastValueFrom, timer } from 'rxjs';
+import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';
 import { repeatComponent } from './components/repeat/repeat.component';
 import { slotTest } from './components/slot-test/slot-test.component';
@@ -109,7 +110,7 @@ describe('custom components', () => {
         '</div>',
     );
   });
-  test('if-else', async () => {
+  test('if-else:simple', async () => {
     const toggler$ = ref$(false);
     const root = await createApp(ifElseTest, { toggler$ }).mount('#app');
     expect(root?.outerHTML).toBe('<div id="app"><h2>If Else Test</h2></div>');
@@ -122,10 +123,31 @@ describe('custom components', () => {
         '<span>Simple html</span>' +
         '<div>And more</div>' +
         '</div>' +
+        '<span>Slot content</span>' +
         '</div>',
     );
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe('<div id="app"><h2>If Else Test</h2></div>');
+  });
+  test('if-else:slots', async () => {
+    const toggler$ = ref$(false);
+    const root = await createApp(ifElseSotsTest, { toggler$ }).mount('#app');
+    expect(root?.outerHTML).toBe(
+      '<div id="app"><h2>If Else Slots Test</h2></div>',
+    );
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(
+      '<div id="app">' +
+        '<h2>If Else Slots Test</h2>' +
+        '<span>Slot content</span>' +
+        '</div>',
+    );
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(
+      '<div id="app"><h2>If Else Slots Test</h2></div>',
+    );
   });
 });
