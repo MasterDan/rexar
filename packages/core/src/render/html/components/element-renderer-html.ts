@@ -56,17 +56,17 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   }
 
   renderInto(binding: IBinding) {
-    this.currentScope = this.refStore.currentScopeKey ?? this.currentScope;
-
     let shouldRememberScope = false;
 
     const checkAndRestoreScope = () => {
+      this.currentScope = this.refStore.currentScopeKey ?? this.currentScope;
       shouldRememberScope = this.refStore.currentScopeKey == null;
       if (shouldRememberScope) {
-        if (this.currentScope == null) {
-          throw new Error('Cannot remember scope');
+        if (this.currentScope != null) {
+          this.refStore.restoreScope(this.currentScope);
+        } else {
+          shouldRememberScope = false;
         }
-        this.refStore.restoreScope(this.currentScope);
       }
     };
 
@@ -75,6 +75,8 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         this.refStore.endScope();
       }
     };
+
+    checkAndRestoreScope();
 
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
 
@@ -85,8 +87,6 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       this.lifecycle$.value = ComponentLifecycle.Rendered;
       return of(binding);
     }
-
-    checkAndRestoreScope();
 
     if (this.elComponent.id && !this.elComponent.preventTransformation) {
       const { transformer } = this.refStore.getReferences(this.elComponent.id);

@@ -5,10 +5,21 @@ import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
+import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
+import { RefStore } from '@core/render/html/ref-store/ref-store';
 import { lastValueFrom, timer } from 'rxjs';
+import { container } from 'tsyringe';
 import { createApp } from '.';
 
 describe('app-tests', () => {
+  beforeEach(() => {
+    const store = container.resolve(RefStore);
+    store.beginScope('test-scope', ref$(ComponentLifecycle.Created));
+  });
+  afterEach(() => {
+    const store = container.resolve(RefStore);
+    store.endScope();
+  });
   test('simple text app', async () => {
     const textC = text({ value: ref$('Hello, World!') });
     const elApp = await createApp(textC).mount('#app');
