@@ -133,21 +133,22 @@ describe('custom components', () => {
   test('if-else:slots', async () => {
     const toggler$ = ref$(false);
     const root = await createApp(ifElseSotsTest, { toggler$ }).mount('#app');
-    expect(root?.outerHTML).toBe(
-      '<div id="app"><h2>If Else Slots Test</h2></div>',
-    );
+    const negativeContent = '<div id="app"><h2>If Else Slots Test</h2></div>';
+    const positiveContent =
+      '<div id="app">' +
+      '<h2>If Else Slots Test</h2>' +
+      '<span>Slot content</span>' +
+      'Inner Content' +
+      '</div>';
+    expect(root?.outerHTML).toBe(negativeContent);
     toggler$.value = true;
     await lastValueFrom(timer(100));
-    expect(root?.outerHTML).toBe(
-      '<div id="app">' +
-        '<h2>If Else Slots Test</h2>' +
-        '<span>Slot content</span>' +
-        '</div>',
-    );
+    expect(root?.outerHTML).toBe(positiveContent);
     toggler$.value = false;
     await lastValueFrom(timer(100));
-    expect(root?.outerHTML).toBe(
-      '<div id="app"><h2>If Else Slots Test</h2></div>',
-    );
+    expect(root?.outerHTML).toBe(negativeContent);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(positiveContent);
   });
 });
