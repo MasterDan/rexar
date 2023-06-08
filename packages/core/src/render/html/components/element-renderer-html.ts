@@ -19,6 +19,8 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
 
   private transformedElementRenderer: IHtmlRenderer | undefined;
 
+  currentScope: symbol | undefined;
+
   constructor(private refStore: RefStore) {
     super();
   }
@@ -54,6 +56,24 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   }
 
   renderInto(binding: IBinding) {
+    this.currentScope = this.refStore.currentScopeKey ?? this.currentScope;
+    let shouldRememberScope = false;
+    const checkAndRestoreScope = () => {
+      shouldRememberScope = this.refStore.currentScopeKey == null;
+      if (shouldRememberScope) {
+        if (this.currentScope == null) {
+          throw new Error('Cannot remember scope');
+        }
+        this.refStore.restoreScope(this.currentScope);
+      }
+    };
+
+    const forgetScopeIfNeed = () => {
+      if (shouldRememberScope) {
+        this.refStore.endScope();
+      }
+    };
+
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
 
     if (
@@ -63,6 +83,8 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       this.lifecycle$.value = ComponentLifecycle.Rendered;
       return of(binding);
     }
+
+    checkAndRestoreScope();
 
     if (this.elComponent.id && !this.elComponent.preventTransformation) {
       const { transformer } = this.refStore.getReferences(this.elComponent.id);
@@ -89,12 +111,14 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
           }
         });
         const renderTransformedAsync = async () => {
+          checkAndRestoreScope();
           if (!this.transformedElementRenderer) {
             this.lifecycle$.value = ComponentLifecycle.Rendered;
             return undefined;
           }
           await this.transformedElementRenderer.render();
           this.lifecycle$.value = ComponentLifecycle.Rendered;
+          forgetScopeIfNeed();
           return this.transformedElementRenderer.nextTarget$;
         };
         return from(renderTransformedAsync()).pipe(
@@ -146,12 +170,14 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       if (this.elComponent.id) {
         const ref = new ElementReference();
         ref.el.value = el;
+        checkAndRestoreScope();
         const { reference } = this.refStore.getReferences(this.elComponent.id);
         reference.el.value = el;
         reference.component.value = this.elComponent;
       }
       // console.log(binding.parentEl.outerHTML);
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      forgetScopeIfNeed();
       return {
         parentEl: binding.parentEl,
         role: BindingTargetRole.PreviousSibling,
