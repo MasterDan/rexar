@@ -56,8 +56,22 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   renderInto(binding: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
 
+    if (
+      this.elComponent.id == null &&
+      this.elComponent.getProp('name') === 'SLOT'
+    ) {
+      this.lifecycle$.value = ComponentLifecycle.Rendered;
+      return of(binding);
+    }
+
     if (this.elComponent.id && !this.elComponent.preventTransformation) {
       const { transformer } = this.refStore.getReferences(this.elComponent.id);
+      if (transformer.isEmpty && this.elComponent.getProp('name') === 'SLOT') {
+        transformer.append((c: Component<IElementComponentProps>) =>
+          list(c.getProp('children') ?? []),
+        );
+      }
+
       if (!transformer.isEmpty) {
         if (!transformer.isTrasformationDone) {
           transformer.apply(this.elComponent);

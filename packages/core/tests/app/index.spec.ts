@@ -3,6 +3,7 @@ import { ref$ } from '@core/reactivity/ref';
 import { lastValueFrom, timer } from 'rxjs';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';
 import { repeatComponent } from './components/repeat/repeat.component';
+import { slotTest } from './components/slot-test/slot-test.component';
 import { testOne } from './components/test-one/test-one.component';
 import { testThree } from './components/test-three/test-three.component';
 import { testTwo } from './components/test-two/test-two.component';
@@ -95,6 +96,15 @@ describe('custom components', () => {
         '<h3>Repeat</h3>' +
         '<span>Hello, world</span>' +
         '<span>Two</span>' +
+        '</div>',
+    );
+  });
+  test('slots', async () => {
+    const root = await createApp(slotTest).mount('#app');
+    expect(root?.outerHTML).toBe(
+      '<div id="app">' +
+        '<h2>Slot test</h2>' +
+        '<span>Default content</span>' +
         '</div>',
     );
   });

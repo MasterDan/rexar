@@ -20,7 +20,7 @@ function buildComponent<TProps extends TData = TData>(
   return component;
 }
 
-function displaySelf(component: Component<IElementComponentProps>) {
+export function displaySelf(component: Component<IElementComponentProps>) {
   if (component.type !== ComponentType.HTMLElement) {
     return component;
   }
