@@ -1,6 +1,7 @@
 import { createApp } from '@core/app';
 import { ref$ } from '@core/reactivity/ref';
 import { lastValueFrom, timer } from 'rxjs';
+import { ifElseTest } from './components/if-else.test/if-else-test.component';
 import { repeatComponent } from './components/repeat/repeat.component';
 import { testOne } from './components/test-one/test-one.component';
 import { testThree } from './components/test-three/test-three.component';
@@ -94,6 +95,22 @@ describe('custom components', () => {
         '<h3>Repeat</h3>' +
         '<span>Hello, world</span>' +
         '<span>Two</span>' +
+        '</div>',
+    );
+  });
+  test('if-else', async () => {
+    const toggler$ = ref$(false);
+    const root = await createApp(ifElseTest, { toggler$ }).mount('#app');
+    expect(root?.outerHTML).toBe('<div id="app"><h2>If Else Test</h2></div>');
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(
+      '<div id="app">' +
+        '<h2>If Else Test</h2>' +
+        '<div>' +
+        '<span>Simple html</span>' +
+        '<div>And more</div>' +
+        '</div>' +
         '</div>',
     );
   });
