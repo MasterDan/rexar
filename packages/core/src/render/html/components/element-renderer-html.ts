@@ -57,7 +57,9 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
 
   renderInto(binding: IBinding) {
     this.currentScope = this.refStore.currentScopeKey ?? this.currentScope;
+
     let shouldRememberScope = false;
+
     const checkAndRestoreScope = () => {
       shouldRememberScope = this.refStore.currentScopeKey == null;
       if (shouldRememberScope) {
