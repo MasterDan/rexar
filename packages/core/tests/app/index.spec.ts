@@ -105,6 +105,7 @@ describe('custom components', () => {
       '<div id="app">' +
         '<h2>Slot test</h2>' +
         '<span>Default content</span>' +
+        'Some Content' +
         '</div>',
     );
   });
