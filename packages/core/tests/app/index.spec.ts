@@ -113,5 +113,8 @@ describe('custom components', () => {
         '</div>' +
         '</div>',
     );
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe('<div id="app"><h2>If Else Test</h2></div>');
   });
 });

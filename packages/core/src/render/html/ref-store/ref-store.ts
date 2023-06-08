@@ -45,6 +45,12 @@ export class RefStore {
     this.scopeStack.push(scopeKey);
   }
 
+  restoreScope(scopeKey: symbol) {
+    if (this.currentScopeKey !== scopeKey) {
+      this.scopeStack.push(scopeKey);
+    }
+  }
+
   endScope() {
     this.scopeStack.pop();
   }

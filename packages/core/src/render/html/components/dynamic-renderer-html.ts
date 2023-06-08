@@ -18,6 +18,7 @@ import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { ComponentLifecycle } from '../base/lifecycle';
+import { RefStore } from '../ref-store/ref-store';
 import { resolveRenderer } from '../tools';
 
 @injectable()
@@ -38,14 +39,31 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
     ),
   );
 
+  currentScope: symbol | undefined;
+
+  constructor(private refStore: RefStore) {
+    super();
+  }
+
   renderInto(): Observable<IBinding | undefined> {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
+    this.currentScope = this.refStore.currentScopeKey;
+
+    const rememberScope = () => {
+      if (this.currentScope == null) {
+        throw new Error('Cannot detect scope');
+      }
+      this.refStore.restoreScope(this.currentScope);
+    };
+
     const renderAsync = async () => {
       if (this.renderer$.value == null) {
         return undefined;
       }
+      rememberScope();
       await this.renderer$.value.render();
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      this.refStore.endScope();
       return this.renderer$.value.nextTarget$;
     };
 
@@ -70,7 +88,9 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
           await previous.unmount();
         }
         if (current) {
+          rememberScope();
           await current.render();
+          this.refStore.endScope();
           this.nextTarget$.value = current.nextTarget$.value;
         } else {
           this.nextTarget$.value = this.target$.value;
