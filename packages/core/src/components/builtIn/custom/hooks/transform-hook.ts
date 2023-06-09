@@ -8,7 +8,7 @@ import { ElementTransformer } from '@core/render/html/ref-store/element.transfor
 import { defineHook } from '@core/tools/hooks/hooks';
 import { filter, take } from 'rxjs';
 import { dynamic } from '../../dynamic.component';
-import { IElementComponentProps } from '../../html-element.component';
+import { IElementComponentProps } from '../../element.component';
 import { BuiltInHooks } from './@types/built-in-hooks';
 import { ConditionBuilder } from './inner/condition-builder';
 

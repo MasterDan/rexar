@@ -1,6 +1,6 @@
 import { conditional } from '@core/components/builtIn/conditional.component';
 import { dynamic } from '@core/components/builtIn/dynamic.component';
-import { el } from '@core/components/builtIn/html-element.component';
+import { el } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';

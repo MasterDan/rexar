@@ -15,7 +15,7 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
       case ComponentType.HTMLElement: {
         if (this.factories[type] == null) {
           const { ElementRendererHtml } = await import(
-            './components/html-element-renderer-html'
+            './components/element-renderer-html'
           );
           container.register(type, ElementRendererHtml);
 

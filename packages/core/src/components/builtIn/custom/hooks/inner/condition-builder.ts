@@ -1,6 +1,6 @@
 import { ComponentDefinition } from '@core/components';
 import { conditional } from '@core/components/builtIn/conditional.component';
-import { IElementComponentProps } from '@core/components/builtIn/html-element.component';
+import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { Component, TData } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
