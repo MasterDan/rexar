@@ -1,6 +1,9 @@
 {
   "*.ts": { "alternate": "{}.spec.ts" },
   "*.component.ts": { "alternate": "{}.component.html" },
+  "packages/core/src/components/builtIn/**/*.component.ts": {
+    "alternate": "packages/core/src/render/html/components/{dirname}/{basename}-renderer-html.ts"
+  },
   "src/*.jsx": { "alternate": "src/test/{}.test.jsx" },
   "src/**/source/*.ts": {
     "alternate": "src/{dirname}/test/{basename}.test.ts"

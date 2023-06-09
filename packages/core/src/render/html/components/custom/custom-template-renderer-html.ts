@@ -1,4 +1,4 @@
-import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
+import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template.component';
 import { list } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
 import { firstValueFrom, from, Observable, of, switchMap, tap } from 'rxjs';

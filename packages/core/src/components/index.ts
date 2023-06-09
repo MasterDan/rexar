@@ -1,7 +1,7 @@
 import {
   CustomTemplateComponent,
   ICustomTemplateComponentDefinitionArgs,
-} from './builtIn/custom/custom-template-component';
+} from './builtIn/custom/custom-template.component';
 import { Component, IComponentDefinitionArgs, TData } from './component';
 import { ComponentType } from './component-type';
 
@@ -89,3 +89,4 @@ export function defineComponent<TProps extends TData>(
     ? defineComponentWithProps<TProps>(args)
     : defineComponentWithoutProps(args);
 }
+

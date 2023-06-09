@@ -6,7 +6,7 @@ import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { combineLatest, filter, map, Observable } from 'rxjs';
-import { SetupFn } from '../../custom-template-component';
+import { SetupFn } from '../../custom-template.component';
 import { mountComponent } from '../mount-component.hook';
 import { ArrayItem } from './array-item';
 
