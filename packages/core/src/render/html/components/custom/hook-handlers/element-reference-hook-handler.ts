@@ -1,5 +1,5 @@
 import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
-import { IElementReferenceHoolParams } from '@core/components/builtIn/custom/hooks/use-element.hook';
+import { IElementReferenceHoolParams } from '@core/components/builtIn/custom/hooks/element-reference.hook';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import {
   combineLatest,

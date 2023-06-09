@@ -1,5 +1,5 @@
 import { defineComponent } from '@core/components';
-import { pickElement } from '@core/components/builtIn/custom/hooks/use-element.hook';
+import { pickElement } from '@core/components/builtIn/custom/hooks/element-reference.hook';
 import { ref$ } from '@core/reactivity/ref';
 import template from './test-three.component.html';
 
