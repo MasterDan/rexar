@@ -35,6 +35,7 @@ export class RefStore {
 
   beginScope(scopeName: string, lifecycle$: Observable<ComponentLifecycle>) {
     const scopeKey = Symbol(scopeName);
+    // console.log('scopeStart:', scopeKey);
     if (this.storages[scopeKey] == null) {
       this.storages[scopeKey] = {};
     }
@@ -52,6 +53,7 @@ export class RefStore {
   }
 
   endScope() {
+    // console.log('scopeStart:', this.currentScopeKey);
     this.scopeStack.pop();
   }
 

@@ -45,6 +45,7 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
 
   renderInto(): Observable<IBinding | undefined> {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
+    this.refStoreMemo.rememberScope();
 
     const renderAsync = async () => {
       if (this.renderer$.value == null) {
