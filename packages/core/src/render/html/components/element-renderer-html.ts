@@ -5,6 +5,7 @@ import { container, injectable } from 'tsyringe';
 import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { Component } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
+import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { DocumentRef } from '../documentRef';
 import { RefStore } from '../ref-store/ref-store';
@@ -55,7 +56,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
 
   renderInto(binding: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
-    const isSlot = this.elComponent.getProp('name') === 'SLOT';
+    const isSlot = this.elComponent.getProp('name') === HtmlElementNames.Slot;
 
     if (this.elComponent.id == null && isSlot) {
       this.lifecycle$.value = ComponentLifecycle.Rendered;

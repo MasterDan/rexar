@@ -6,6 +6,7 @@ import { isValidString } from '@core/tools/string';
 import { extractId } from './id-checker';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
+import { HtmlElementNames } from './tags/html-names';
 
 export type Templates = {
   default: AnyComponent[];
@@ -42,7 +43,7 @@ function parseNodes(
           }
         }
 
-        if (node.nodeName === 'TEMPLATE' && id != null) {
+        if (node.nodeName === HtmlElementNames.Template && id != null) {
           const templateChildNodes = (node as HTMLTemplateElement).content
             .childNodes;
           const templateContent =
