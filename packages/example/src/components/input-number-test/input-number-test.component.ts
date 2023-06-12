@@ -20,7 +20,6 @@ export const inputNumberTest = defineComponent({
 
     onMounted(() => {
       console.log('input number is mounted');
-
       setTimeout(() => {
         numberOne$.value = 10;
       }, 1000);
