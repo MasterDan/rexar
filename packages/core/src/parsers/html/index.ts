@@ -13,6 +13,32 @@ export type Templates = {
   inner: Record<string, AnyComponent[]>;
 };
 
+function trimTextNode(node: ChildNode) {
+  if (node.nodeValue == null) {
+    return '';
+  }
+  let startIndex = 0;
+  let stopIndex = node.nodeValue.length;
+  for (let i = 0; i < node.nodeValue.length; i += 1) {
+    const code = node.nodeValue.charCodeAt(i);
+    if (code === 10 || code === 32) {
+      startIndex += 1;
+    } else {
+      break;
+    }
+  }
+
+  for (let i = node.nodeValue.length - 1; i >= 0; i -= 1) {
+    const code = node.nodeValue.charCodeAt(i);
+    if (code === 10 || code === 32) {
+      stopIndex -= 1;
+    } else {
+      break;
+    }
+  }
+  return node.nodeValue.substring(startIndex, stopIndex);
+}
+
 function parseNodes(
   nodes: NodeListOf<ChildNode>,
   templates: Templates,
@@ -22,7 +48,7 @@ function parseNodes(
     .map((node): AnyComponent | null => {
       if (isTextNode(node)) {
         return isValidString(node.nodeValue)
-          ? (text({ value: ref$(node.nodeValue.trim()) }) as AnyComponent)
+          ? (text({ value: ref$(trimTextNode(node)) }) as AnyComponent)
           : null;
       }
       if (isHtmlElement(node)) {
