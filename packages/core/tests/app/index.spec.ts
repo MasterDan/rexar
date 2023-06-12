@@ -159,9 +159,10 @@ describe('custom components', () => {
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(positiveContent);
   });
-  test('if-else:repeat', async () => {
+  test('if-else:repeat:from-false', async () => {
     const toggler$ = ref$(false);
     const array$ = ref$(['One', 'Two', 'Three']);
+
     const arrayHtml$ = ref$(() =>
       array$.value.map((i) => `<span>${i}</span>`).join(''),
     );
@@ -172,11 +173,12 @@ describe('custom components', () => {
         }</div>`,
     );
     content$.subscribe((c) => console.log('content is:', c));
+
     const root = await createApp(ifElseRepeat, { toggler$, array$ }).mount(
       '#app',
     );
-
     expect(root?.outerHTML).toBe(content$.value);
+
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
@@ -184,6 +186,36 @@ describe('custom components', () => {
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+  });
+  test('if-else:repeat:from-true', async () => {
+    const toggler$ = ref$(true);
+    const array$ = ref$(['One', 'Two', 'Three']);
+
+    const arrayHtml$ = ref$(() =>
+      array$.value.map((i) => `<span>${i}</span>`).join(''),
+    );
+    const content$ = ref$(
+      () =>
+        `<div id="app">${
+          toggler$.value ? `<h3>Repeat</h3>${arrayHtml$.value}` : ''
+        }</div>`,
+    );
+    content$.subscribe((c) => console.log('content is:', c));
+
+    const root = await createApp(ifElseRepeat, { toggler$, array$ }).mount(
+      '#app',
+    );
+    expect(root?.outerHTML).toBe(content$.value);
+
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
   });
