@@ -18,15 +18,17 @@ export const inputTextTest = defineComponent({
       () => `${textOne$.value}, ${textTwo$.value}`,
       (val) => {
         const [f, s] = val.replace(',', '').split(' ');
-        textOne$.value = f;
-        textTwo$.value = s;
+        textOne$.value = f ?? '';
+        textTwo$.value = s ?? '';
       },
     );
     pickElement('combine').bindValue.string(fullText$ as Ref<string>);
     pickElement('text').bindContent.text(fullText$);
     pickTemplate('item-template')
       .forEach(
-        ref$(() => fullText$.value.split('').filter((v) => v !== ' ')),
+        ref$(() =>
+          fullText$.value.split('').filter((v) => v !== ' ' && v !== ','),
+        ),
         (i) => i,
       )
       .defineComponent({
