@@ -38,6 +38,7 @@ export class MountComponentHookHandler extends HookHandler<
           trigger$.next(newComponent);
           if (c.getProp('name') !== 'SLOT') {
             c.bindProp('children', [newComponent]);
+            c.preventTransformation = true;
             return c;
           }
           return newComponent;

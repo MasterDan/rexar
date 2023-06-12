@@ -4,6 +4,7 @@ import { lastValueFrom, timer } from 'rxjs';
 import { ifElseRepeat } from './components/if-else.test/if-else-repeat.component';
 import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';
+import { inputTextTest } from './components/input-text-test/input-text-test.component';
 import { repeatComponent } from './components/repeat/repeat.component';
 import { slotTest } from './components/slot-test/slot-test.component';
 import { testOne } from './components/test-one/test-one.component';
@@ -237,5 +238,28 @@ describe('custom components', () => {
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
+  });
+  test('input-text-test', async () => {
+    const content = 'He,Wo'
+      .split('')
+      .map((i) => `<div>Letter -<!--end of text--><b> ${i}</b></div>`)
+      .join('');
+
+    const root = await createApp(inputTextTest).mount('#app');
+    const expectedContent =
+      `<div id="app">` +
+      `<div>` +
+      `<h3>Text inputs</h3>` +
+      `<div>` +
+      `<input type="text">` +
+      `<input style="margin-left: 1rem;" type="text">` +
+      `<input style="margin-left: 1rem;" type="text">` +
+      `</div>` +
+      `<h4>He, Wo</h4>` +
+      `<div>${content}</div>` +
+      `</div>` +
+      `</div>`;
+
+    expect(root?.outerHTML).toBe(expectedContent);
   });
 });
