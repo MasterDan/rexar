@@ -1,4 +1,4 @@
-import { defineComponent, pickElement, pickTemplate, ref$ } from '@rexar/core';
+import { defineComponent, pickElement, ref$ } from '@rexar/core';
 import template from 'bundle-text:./input-text-test.component.html';
 
 export const inputTextTest = defineComponent({
@@ -11,17 +11,17 @@ export const inputTextTest = defineComponent({
     pickElement('two').bindValue.string(textTwo$);
     const fullText$ = ref$(() => `${textOne$.value}, ${textTwo$.value}`);
     pickElement('text').bindContent.text(fullText$);
-    pickTemplate('item-template')
-      .forEach(
-        ref$(() => fullText$.value.split('').filter((v) => v !== ' ')),
-        (i) => i,
-      )
-      .defineComponent({
-        setup: ({ props: itemProps }) => {
-          const letter$ = ref$(() => ` ${itemProps.item.value?.value ?? '-'}`);
-          pickElement('letter').bindContent.text(letter$);
-        },
-      })
-      .mount('letters');
+    // pickTemplate('item-template')
+    //   .forEach(
+    //     ref$(() => fullText$.value.split('').filter((v) => v !== ' ')),
+    //     (i) => i,
+    //   )
+    //   .defineComponent({
+    //     setup: ({ props: itemProps }) => {
+    //       const letter$ = ref$(() => ` ${itemProps.item.value?.value ?? '-'}`);
+    //       pickElement('letter').bindContent.text(letter$);
+    //     },
+    //   })
+    //   .mount('letters');
   },
 });

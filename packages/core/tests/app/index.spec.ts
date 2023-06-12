@@ -1,6 +1,7 @@
 import { createApp } from '@core/app';
 import { ref$ } from '@core/reactivity/ref';
 import { lastValueFrom, timer } from 'rxjs';
+import { ifElseRepeat } from './components/if-else.test/if-else-repeat.component';
 import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';
 import { repeatComponent } from './components/repeat/repeat.component';
@@ -157,5 +158,33 @@ describe('custom components', () => {
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(positiveContent);
+  });
+  test('if-else:repeat', async () => {
+    const toggler$ = ref$(false);
+    const array$ = ref$(['One', 'Two', 'Three']);
+    const arrayHtml$ = ref$(() =>
+      array$.value.map((i) => `<span>${i}</span>`).join(''),
+    );
+    const content$ = ref$(
+      () =>
+        `<div id="app">${
+          toggler$.value ? `<h3>Repeat</h3>${arrayHtml$.value}` : ''
+        }</div>`,
+    );
+    content$.subscribe((c) => console.log('content is:', c));
+    const root = await createApp(ifElseRepeat, { toggler$, array$ }).mount(
+      '#app',
+    );
+
+    expect(root?.outerHTML).toBe(content$.value);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
   });
 });
