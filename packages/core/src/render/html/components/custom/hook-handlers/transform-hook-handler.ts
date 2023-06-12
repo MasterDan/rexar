@@ -1,5 +1,5 @@
 import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
-import { ITransformHookParams } from '@core/components/builtIn/custom/hooks/transform-hook';
+import { ITransformHookParams } from '@core/components/builtIn/custom/hooks/transform.hook';
 import { ElementTransformer } from '@core/render/html/ref-store/element.transformer';
 import { Observable } from 'rxjs';
 import { injectable } from 'tsyringe';

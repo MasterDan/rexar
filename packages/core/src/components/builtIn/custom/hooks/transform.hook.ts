@@ -41,6 +41,7 @@ export const transformElement = (id: string) => {
       transformer.append((c: Component<IElementComponentProps>) => {
         const builder = new ConditionBuilder(condition$, c);
         config(builder);
+        c.preventTransformation = true;
         return builder.build();
       });
     });
