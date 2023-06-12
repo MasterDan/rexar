@@ -138,7 +138,7 @@ describe('custom components', () => {
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content.positive);
   });
-  test('if-else:slots', async () => {
+  test('if-else:slots:from-false', async () => {
     const toggler$ = ref$(false);
     const root = await createApp(ifElseSotsTest, { toggler$ }).mount('#app');
     const negativeContent = '<div id="app"><h2>If Else Slots Test</h2></div>';
@@ -158,6 +158,27 @@ describe('custom components', () => {
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(positiveContent);
+  });
+  test('if-else:slots:from-true', async () => {
+    const toggler$ = ref$(true);
+    const root = await createApp(ifElseSotsTest, { toggler$ }).mount('#app');
+    const negativeContent = '<div id="app"><h2>If Else Slots Test</h2></div>';
+    const positiveContent =
+      '<div id="app">' +
+      '<h2>If Else Slots Test</h2>' +
+      '<span>Slot content</span>' +
+      'Inner Content' +
+      '</div>';
+    expect(root?.outerHTML).toBe(positiveContent);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(negativeContent);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(positiveContent);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(negativeContent);
   });
   test('if-else:repeat:from-false', async () => {
     const toggler$ = ref$(false);
