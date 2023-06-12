@@ -140,7 +140,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         default:
           break;
       }
-      console.log(el.outerHTML);
+      // console.log(el.outerHTML);
       if (this.elComponent.id) {
         const { reference } = this.refStore.getReferences(this.elComponent.id);
         // console.log(
