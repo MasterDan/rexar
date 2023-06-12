@@ -172,7 +172,6 @@ describe('custom components', () => {
           toggler$.value ? `<h3>Repeat</h3>${arrayHtml$.value}` : ''
         }</div>`,
     );
-    content$.subscribe((c) => console.log('content is:', c));
 
     const root = await createApp(ifElseRepeat, { toggler$, array$ }).mount(
       '#app',
@@ -202,7 +201,6 @@ describe('custom components', () => {
           toggler$.value ? `<h3>Repeat</h3>${arrayHtml$.value}` : ''
         }</div>`,
     );
-    content$.subscribe((c) => console.log('content is:', c));
 
     const root = await createApp(ifElseRepeat, { toggler$, array$ }).mount(
       '#app',

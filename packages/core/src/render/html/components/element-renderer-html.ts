@@ -9,7 +9,6 @@ import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { DocumentRef } from '../documentRef';
 import { RefStore } from '../ref-store/ref-store';
-import { ElementReference } from '../ref-store/element.reference';
 import { resolveRenderer } from '../tools';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { ComponentLifecycle } from '../base/lifecycle';
@@ -104,7 +103,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     const name = this.elComponent.getProp('name');
     const attrs = this.elComponent.getProp('attrs') ?? {};
     const children = this.elComponent.getProp('children') ?? [];
-    const renderEleMent = async (doc: Document) => {
+    const renderElement = async (doc: Document) => {
       const el = doc.createElement(name);
       this.el = el;
       Object.keys(attrs).forEach((k) => {
@@ -143,9 +142,13 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       }
       // console.log(el.outerHTML);
       if (this.elComponent.id) {
-        const ref = new ElementReference();
-        ref.el.value = el;
         const { reference } = this.refStore.getReferences(this.elComponent.id);
+        // console.log(
+        //   'element with id',
+        //   this.elComponent.id,
+        //   ' putting into refStore',
+        //   el,
+        // );
         reference.el.value = el;
         reference.component.value = this.elComponent;
       }
@@ -159,6 +162,6 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     };
     return container
       .resolve(DocumentRef)
-      .instance$.pipe(switchMap((d) => from(renderEleMent(d))));
+      .instance$.pipe(switchMap((d) => from(renderElement(d))));
   }
 }

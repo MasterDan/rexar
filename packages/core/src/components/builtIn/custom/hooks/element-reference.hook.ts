@@ -16,6 +16,7 @@ export const pickElement = (id: string) => {
   const elRef = ref$<HTMLElement>();
   referenceHook(
     (el) => {
+      // console.log('founded element for id: ', id, ' it is ', el);
       elRef.value = el;
     },
     {
