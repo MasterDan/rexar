@@ -33,7 +33,7 @@ export const inputTextTest = defineComponent({
       )
       .defineComponent({
         setup: ({ props: itemProps }) => {
-          const letter$ = ref$(() => ` ${itemProps.item.value?.value ?? '-'}`);
+          const letter$ = ref$(() => itemProps.item.value?.value ?? '-');
           pickElement('letter').bindContent.text(letter$);
         },
       })
