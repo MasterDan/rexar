@@ -26,9 +26,7 @@ export const inputTextTest = defineComponent({
     pickElement('text').bindContent.text(fullText$);
     pickTemplate('item-template')
       .forEach(
-        ref$(() =>
-          fullText$.value.split('').filter((v) => v !== ' ' && v !== ','),
-        ),
+        ref$(() => fullText$.value.split('').filter((v) => /\w/gm.exec(v))),
         (i) => i,
       )
       .defineComponent({
