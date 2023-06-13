@@ -10,7 +10,6 @@ import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { Observable, isObservable, map, filter } from 'rxjs';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ToReadonlyRef<T> = T extends Observable<infer V>
   ? ReadonlyRef<V>
   : ReadonlyRef<T>;
