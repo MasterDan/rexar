@@ -1,9 +1,8 @@
 import {
   defineComponent,
-  bindTextContent,
   ref$,
-  bindBooleanValue,
-  ifElse,
+  pickElement,
+  transformElement,
 } from '@rexar/core';
 import template from 'bundle-text:./input-checkbox-test.component.html';
 import { inner } from '../inner/inner.component';
@@ -13,10 +12,9 @@ export const inputCheckboxTest = defineComponent({
   setup() {
     const checkOne$ = ref$(true);
     const checkTwo$ = ref$(false);
-    bindBooleanValue('checkbox-one', checkOne$);
-    bindBooleanValue('checkbox-two', checkTwo$);
-    bindTextContent(
-      'options-text',
+    pickElement('checkbox-one').bindValue.boolean(checkOne$);
+    pickElement('checkbox-two').bindValue.boolean(checkTwo$);
+    pickElement('options-text').bindContent.text(
       ref$(() =>
         !checkOne$.value && !checkTwo$.value
           ? 'Nothing is checked'
@@ -25,28 +23,18 @@ export const inputCheckboxTest = defineComponent({
             }`,
       ),
     );
-
-    ifElse('inner', checkOne$, {
-      definition: inner,
-      props: {
+    transformElement('inner').if(checkOne$, (config) => {
+      config.whenTrue.displayComponent(inner, {
         message: 'This component displays if first checkbox is checked',
-      },
+      });
     });
-    ifElse(
-      'inner-two',
-      checkTwo$,
-      {
-        definition: inner,
-        props: {
-          message: 'This component displays if second checkbox is checked',
-        },
-      },
-      {
-        definition: inner,
-        props: {
-          message: 'This component displays if second checkbox is NOT checked',
-        },
-      },
-    );
+    transformElement('inner-two').if(checkTwo$, (c) => {
+      c.whenTrue.displayComponent(inner, {
+        message: 'This component displays if second checkbox is checked',
+      });
+      c.whenFalse.displayComponent(inner, {
+        message: 'This component displays if second checkbox is NOT checked',
+      });
+    });
   },
 });

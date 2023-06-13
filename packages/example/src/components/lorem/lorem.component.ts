@@ -1,26 +1,26 @@
 import {
   defineComponent,
   pickTemplate,
-  bindTextContent,
-  mountComponent,
   onMounted,
   ref$,
+  pickElement,
 } from '@rexar/core';
 import template from 'bundle-text:./lorem.component.html';
 
 export const lorem = defineComponent({
   template: () => template,
   setup() {
-    const inner$ = pickTemplate({
-      id: 'inner-template',
-      setup() {
-        onMounted(() => {
-          console.log('inner message component mounted');
-        });
-        bindTextContent('message', ref$('With some message'));
-      },
-    });
-    mountComponent('target', inner$);
+    pickTemplate('inner-template')
+      .defineComponent({
+        setup() {
+          onMounted(() => {
+            console.log('inner message component mounted');
+          });
+          pickElement('message').bindContent.text(ref$('With some message'));
+        },
+      })
+      .mount('target');
+
     onMounted(() => {
       console.log('lorem component mounted');
     });

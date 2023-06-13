@@ -1,7 +1,16 @@
 import { createApp } from '@core/app';
+import { createEvent } from '@core/components/events';
 import { ref$ } from '@core/reactivity/ref';
 import { lastValueFrom, timer } from 'rxjs';
-import { repeatComponent } from './components/repeat/repeat.component';
+import { ifElseRepeat } from './components/if-else.test/if-else-repeat.component';
+import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
+import { ifElseTest } from './components/if-else.test/if-else-test.component';
+import { inputTextTest } from './components/input-text-test/input-text-test.component';
+import {
+  LifecycleStatuses,
+  repeatComponent,
+} from './components/repeat/repeat.component';
+import { slotTest } from './components/slot-test/slot-test.component';
 import { testOne } from './components/test-one/test-one.component';
 import { testThree } from './components/test-three/test-three.component';
 import { testTwo } from './components/test-two/test-two.component';
@@ -96,5 +105,185 @@ describe('custom components', () => {
         '<span>Two</span>' +
         '</div>',
     );
+  });
+  test('slots', async () => {
+    const root = await createApp(slotTest).mount('#app');
+    expect(root?.outerHTML).toBe(
+      '<div id="app">' +
+        '<h2>Slot test</h2>' +
+        '<span>Default content</span>' +
+        'Some Content' +
+        '</div>',
+    );
+  });
+  test('if-else:simple', async () => {
+    const toggler$ = ref$(false);
+    const root = await createApp(ifElseTest, { toggler$ }).mount('#app');
+    const content = {
+      positive:
+        '<div id="app">' +
+        '<h2>If Else Test</h2>' +
+        '<div>' +
+        '<span>Simple html</span>' +
+        '<div>And more</div>' +
+        '</div>' +
+        '<span>Slot content</span>' +
+        '</div>',
+      negative: '<div id="app"><h2>If Else Test</h2></div>',
+    };
+
+    expect(root?.outerHTML).toBe(content.negative);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content.positive);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content.negative);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content.positive);
+  });
+  test('if-else:slots:from-false', async () => {
+    const toggler$ = ref$(false);
+    const root = await createApp(ifElseSotsTest, { toggler$ }).mount('#app');
+    const negativeContent = '<div id="app"><h2>If Else Slots Test</h2></div>';
+    const positiveContent =
+      '<div id="app">' +
+      '<h2>If Else Slots Test</h2>' +
+      '<span>Slot content</span>' +
+      'Inner Content' +
+      '</div>';
+    expect(root?.outerHTML).toBe(negativeContent);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(positiveContent);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(negativeContent);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(positiveContent);
+  });
+  test('if-else:slots:from-true', async () => {
+    const toggler$ = ref$(true);
+    const root = await createApp(ifElseSotsTest, { toggler$ }).mount('#app');
+    const negativeContent = '<div id="app"><h2>If Else Slots Test</h2></div>';
+    const positiveContent =
+      '<div id="app">' +
+      '<h2>If Else Slots Test</h2>' +
+      '<span>Slot content</span>' +
+      'Inner Content' +
+      '</div>';
+    expect(root?.outerHTML).toBe(positiveContent);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(negativeContent);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(positiveContent);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(negativeContent);
+  });
+  test('if-else:repeat:from-false', async () => {
+    const toggler$ = ref$(false);
+    const array$ = ref$(['One', 'Two', 'Three']);
+    const onLifecycleChange = createEvent<LifecycleStatuses>();
+    const repeatLife$ = ref$(onLifecycleChange.listener$);
+
+    const arrayHtml$ = ref$(() =>
+      array$.value.map((i) => `<span>${i}</span>`).join(''),
+    );
+    const content$ = ref$(
+      () =>
+        `<div id="app">${
+          toggler$.value ? `<h3>Repeat</h3>${arrayHtml$.value}` : ''
+        }</div>`,
+    );
+
+    const root = await createApp(ifElseRepeat, {
+      toggler$,
+      array$,
+      lifecycleChanged: onLifecycleChange.emitter,
+    }).mount('#app');
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBeUndefined();
+
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
+
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('unmounted');
+
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
+  });
+  test('if-else:repeat:from-true', async () => {
+    const toggler$ = ref$(true);
+    const array$ = ref$(['One', 'Two', 'Three']);
+    const onLifecycleChange = createEvent<LifecycleStatuses>();
+    const repeatLife$ = ref$(onLifecycleChange.listener$);
+
+    const arrayHtml$ = ref$(() =>
+      array$.value.map((i) => `<span>${i}</span>`).join(''),
+    );
+    const content$ = ref$(
+      () =>
+        `<div id="app">${
+          toggler$.value ? `<h3>Repeat</h3>${arrayHtml$.value}` : ''
+        }</div>`,
+    );
+
+    const root = await createApp(ifElseRepeat, {
+      toggler$,
+      array$,
+      lifecycleChanged: onLifecycleChange.emitter,
+    }).mount('#app');
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
+
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('unmounted');
+
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
+
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('unmounted');
+  });
+  test('input-text-test', async () => {
+    const content = 'He,Wo'
+      .split('')
+      .map((i) => `<div>Letter -<!--end of text--><b> ${i}</b></div>`)
+      .join('');
+
+    const root = await createApp(inputTextTest).mount('#app');
+    const expectedContent =
+      `<div id="app">` +
+      `<div>` +
+      `<h3>Text inputs</h3>` +
+      `<div>` +
+      `<input type="text">` +
+      `<input style="margin-left: 1rem;" type="text">` +
+      `<input style="margin-left: 1rem;" type="text">` +
+      `</div>` +
+      `<h4>He, Wo</h4>` +
+      `<div>${content}</div>` +
+      `</div>` +
+      `</div>`;
+
+    expect(root?.outerHTML).toBe(expectedContent);
   });
 });

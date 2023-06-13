@@ -18,6 +18,7 @@ import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { ComponentLifecycle } from '../base/lifecycle';
+import { RefStoreMemo } from '../ref-store/ref-store-memo';
 import { resolveRenderer } from '../tools';
 
 @injectable()
@@ -38,19 +39,28 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
     ),
   );
 
-  renderInto(): Observable<IBinding | undefined> {
+  constructor(private refStoreMemo: RefStoreMemo) {
+    super();
+  }
+
+  renderInto(target: IBinding): Observable<IBinding | undefined> {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
+    this.refStoreMemo.rememberScope();
+
     const renderAsync = async () => {
       if (this.renderer$.value == null) {
-        return undefined;
+        this.lifecycle$.value = ComponentLifecycle.Rendered;
+        return of(target);
       }
+      this.refStoreMemo.rememberScope();
       await this.renderer$.value.render();
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      this.refStoreMemo.forgetScope();
       return this.renderer$.value.nextTarget$;
     };
 
     const firstMount$ = from(renderAsync()).pipe(
-      switchMap((i) => (i == null ? of(i) : i)),
+      switchMap((i) => i),
       take(1),
     );
 
@@ -70,7 +80,9 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
           await previous.unmount();
         }
         if (current) {
+          this.refStoreMemo.rememberScope();
           await current.render();
+          this.refStoreMemo.forgetScope();
           this.nextTarget$.value = current.nextTarget$.value;
         } else {
           this.nextTarget$.value = this.target$.value;

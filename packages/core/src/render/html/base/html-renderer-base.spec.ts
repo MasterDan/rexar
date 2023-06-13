@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import { el } from '@core/components/builtIn/html-element.component';
+import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { Observable } from 'rxjs';
@@ -56,6 +56,9 @@ describe('test renderer', () => {
     expect(renderer.lifecycle$.value).toBe(ComponentLifecycle.Rendered);
 
     parentLife$.value = ComponentLifecycle.Mounted;
+    expect(renderer.lifecycle$.value).toBe(ComponentLifecycle.Mounted);
+
+    renderer.lifecycle$.value = ComponentLifecycle.Rendered;
     expect(renderer.lifecycle$.value).toBe(ComponentLifecycle.Mounted);
 
     parentLife$.value = ComponentLifecycle.BeforeUnmount;

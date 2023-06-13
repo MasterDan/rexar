@@ -5,7 +5,7 @@ export type ComponentTransformerFunc = (c: AnyComponent) => AnyComponent;
 export class ElementTransformer {
   private body: ComponentTransformerFunc[] = [];
 
-  transformationResult: AnyComponent | undefined;
+  public transformationResult: AnyComponent | undefined;
 
   append(fn: ComponentTransformerFunc) {
     this.body.push(fn);
@@ -26,7 +26,6 @@ export class ElementTransformer {
     if (this.isTrasformationDone) {
       throw new Error('Transformation has already been applied');
     }
-    c.preventTransformation = true;
     this.transformationResult = this.body.reduce<AnyComponent>(
       (component, transformer) => transformer(component),
       c,

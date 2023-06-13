@@ -16,9 +16,12 @@ const dynamicComponentDefinition = defineComponent<IDynamicComponentProps>({
 });
 
 export const dynamic = (
-  component$?: MayBeReadonlyRef<AnyComponent | undefined>,
+  component$?:
+    | MayBeReadonlyRef<AnyComponent | undefined>
+    | MayBeReadonlyRef<AnyComponent>,
 ) => {
   const component = dynamicComponentDefinition.create();
   component.bindProp('component$', component$);
   return component;
 };
+

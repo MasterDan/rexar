@@ -1,4 +1,4 @@
-import { el } from './html-element.component';
+import { el } from './element.component';
 import { list } from './list.component';
 
 describe('list-component', () => {

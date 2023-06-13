@@ -1,4 +1,4 @@
-import { el } from '@core/components/builtIn/html-element.component';
+import { el } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { ref$ } from '@core/reactivity/ref';
 import { container, delay, Lifecycle } from 'tsyringe';

@@ -1,4 +1,4 @@
-import { el } from '@core/components/builtIn/html-element.component';
+import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
@@ -6,11 +6,38 @@ import { isValidString } from '@core/tools/string';
 import { extractId } from './id-checker';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
+import { HtmlElementNames } from './tags/html-names';
 
 export type Templates = {
   default: AnyComponent[];
   inner: Record<string, AnyComponent[]>;
 };
+
+function trimTextNode(node: ChildNode) {
+  if (node.nodeValue == null) {
+    return '';
+  }
+  let startIndex = 0;
+  let stopIndex = node.nodeValue.length;
+  for (let i = 0; i < node.nodeValue.length; i += 1) {
+    const code = node.nodeValue.charCodeAt(i);
+    if (code === 10 || code === 32) {
+      startIndex += 1;
+    } else {
+      break;
+    }
+  }
+
+  for (let i = node.nodeValue.length - 1; i >= 0; i -= 1) {
+    const code = node.nodeValue.charCodeAt(i);
+    if (code === 10 || code === 32) {
+      stopIndex -= 1;
+    } else {
+      break;
+    }
+  }
+  return node.nodeValue.substring(startIndex, stopIndex);
+}
 
 function parseNodes(
   nodes: NodeListOf<ChildNode>,
@@ -21,7 +48,7 @@ function parseNodes(
     .map((node): AnyComponent | null => {
       if (isTextNode(node)) {
         return isValidString(node.nodeValue)
-          ? (text({ value: ref$(node.nodeValue.trim()) }) as AnyComponent)
+          ? (text({ value: ref$(trimTextNode(node)) }) as AnyComponent)
           : null;
       }
       if (isHtmlElement(node)) {
@@ -42,7 +69,7 @@ function parseNodes(
           }
         }
 
-        if (node.nodeName === 'TEMPLATE' && id != null) {
+        if (node.nodeName === HtmlElementNames.Template && id != null) {
           const templateChildNodes = (node as HTMLTemplateElement).content
             .childNodes;
           const templateContent =

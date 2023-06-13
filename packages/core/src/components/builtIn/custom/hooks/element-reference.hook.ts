@@ -1,6 +1,7 @@
-import { readonly, ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@core/reactivity/ref';
 import { defineHook } from '@core/tools/hooks/hooks';
 import { BuiltInHooks } from './@types/built-in-hooks';
+import { ElementRef } from './inner/element-ref';
 
 export interface IElementReferenceHoolParams {
   id: string;
@@ -11,15 +12,16 @@ const referenceHook = defineHook<
   IElementReferenceHoolParams
 >(BuiltInHooks.ElementReference);
 
-export const useElement = (id: string) => {
+export const pickElement = (id: string) => {
   const elRef = ref$<HTMLElement>();
   referenceHook(
     (el) => {
+      // console.log('founded element for id: ', id, ' it is ', el);
       elRef.value = el;
     },
     {
       id,
     },
   );
-  return readonly(elRef);
+  return new ElementRef(elRef);
 };

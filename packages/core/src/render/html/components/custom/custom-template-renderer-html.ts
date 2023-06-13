@@ -1,4 +1,4 @@
-import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template-component';
+import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template.component';
 import { list } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
 import { firstValueFrom, from, Observable, of, switchMap, tap } from 'rxjs';
@@ -11,11 +11,11 @@ import { ComponentLifecycle } from '../../base/lifecycle';
 import { RefStore } from '../../ref-store/ref-store';
 import { resolveRenderer } from '../../tools';
 import { IHookHandler } from './hook-handlers/base/hook-handler';
-import { ConditionalHookHandler } from './hook-handlers/conditional-hook-handler';
 import { ElementReferenceHookHandler } from './hook-handlers/element-reference-hook-handler';
 import { LifecycleHookHandler } from './hook-handlers/lifecycle-hook-handler';
 import { MountComponentHookHandler } from './hook-handlers/mount-component-hook-handler';
 import { PickTemplateHookHandler } from './hook-handlers/pick-template-hook-handler';
+import { TransformHookHandler } from './hook-handlers/transform-hook-handler';
 
 const hookHandlerToken = 'IHookHandler';
 
@@ -23,9 +23,9 @@ const hookHandlerToken = 'IHookHandler';
 @registry([
   { token: hookHandlerToken, useClass: ElementReferenceHookHandler },
   { token: hookHandlerToken, useClass: MountComponentHookHandler },
-  { token: hookHandlerToken, useClass: ConditionalHookHandler },
   { token: hookHandlerToken, useClass: PickTemplateHookHandler },
   { token: hookHandlerToken, useClass: LifecycleHookHandler },
+  { token: hookHandlerToken, useClass: TransformHookHandler },
 ])
 export class CustomRendererHtml extends HtmlRendererBase {
   private renderer: IHtmlRenderer | undefined;

@@ -1,9 +1,9 @@
 import {
   defineComponent,
-  bindTextContent,
+  pickElement,
+  pickTemplate,
+  Ref,
   ref$,
-  bindStringValue,
-  repeatTemplate,
 } from '@rexar/core';
 import template from 'bundle-text:./input-text-test.component.html';
 
@@ -12,19 +12,29 @@ export const inputTextTest = defineComponent({
   setup() {
     const textOne$ = ref$('Hello');
     const textTwo$ = ref$('World');
-    bindStringValue('one', textOne$);
-    bindStringValue('one-second', textOne$);
-    bindStringValue('two', textTwo$);
-    const fullText$ = ref$(() => `${textOne$.value}, ${textTwo$.value}`);
-    bindTextContent('text', fullText$);
-    repeatTemplate({
-      templateId: 'item-template',
-      array: ref$(() => fullText$.value.split('').filter((v) => v !== ' ')),
-      key: (i) => i,
-      setup: ({ props: itemProps }) => {
-        const letter$ = ref$(() => ` ${itemProps.item.value?.value ?? '-'}`);
-        bindTextContent('letter', letter$);
+    pickElement('one').bindValue.string(textOne$);
+    pickElement('two').bindValue.string(textTwo$);
+    const fullText$ = ref$(
+      () => `${textOne$.value}, ${textTwo$.value}`,
+      (val) => {
+        const [f, s] = val.replace(',', '').split(' ');
+        textOne$.value = f ?? '';
+        textTwo$.value = s ?? '';
       },
-    }).mount('letters');
+    );
+    pickElement('combine').bindValue.string(fullText$ as Ref<string>);
+    pickElement('text').bindContent.text(fullText$);
+    pickTemplate('item-template')
+      .forEach(
+        ref$(() => fullText$.value.split('').filter((v) => /\w/gm.exec(v))),
+        (i) => i,
+      )
+      .defineComponent({
+        setup: ({ props: itemProps }) => {
+          const letter$ = ref$(() => itemProps.item.value?.value ?? '-');
+          pickElement('letter').bindContent.text(letter$);
+        },
+      })
+      .mount('letters');
   },
 });
