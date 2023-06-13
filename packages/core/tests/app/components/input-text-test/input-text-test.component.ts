@@ -15,11 +15,12 @@ export const inputTextTest = defineComponent({
     const array$ = ref$(() =>
       fullText$.value.split('').filter((v) => v !== ' '),
     );
+
     pickTemplate('item-template')
       .forEach(array$, (i) => i)
       .defineComponent({
         setup: ({ props: itemProps }) => {
-          const letter$ = ref$(() => itemProps.item.value?.value ?? '-');
+          const letter$ = ref$(() => ` ${itemProps.item.value?.value ?? '-'}`);
           pickElement('letter').bindContent.text(letter$);
         },
       })
