@@ -58,6 +58,9 @@ describe('test renderer', () => {
     parentLife$.value = ComponentLifecycle.Mounted;
     expect(renderer.lifecycle$.value).toBe(ComponentLifecycle.Mounted);
 
+    renderer.lifecycle$.value = ComponentLifecycle.Rendered;
+    expect(renderer.lifecycle$.value).toBe(ComponentLifecycle.Mounted);
+
     parentLife$.value = ComponentLifecycle.BeforeUnmount;
     expect(renderer.lifecycle$.value).toBe(ComponentLifecycle.BeforeUnmount);
 

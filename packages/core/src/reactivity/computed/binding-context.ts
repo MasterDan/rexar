@@ -10,6 +10,9 @@ export class BindingContext {
   private tracker: ((ref: RefBase) => void) | undefined;
 
   beginScope(key: symbol, fn: (ref: RefBase) => void) {
+    if (this.key != null) {
+      throw new Error('Cannot create computed inside other computed');
+    }
     this.key = key;
     this.tracker = fn;
     if (this.tracked[key] == null) {
