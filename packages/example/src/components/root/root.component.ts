@@ -16,7 +16,7 @@ import { lorem } from '../lorem/lorem.component';
 export const root = defineComponent({
   template: () => template,
   setup: () => {
-    const showContent$ = ref$(true);
+    const showContent$ = ref$(false);
     pickElement('show-content').bindValue.boolean(showContent$);
     transformElement('content').if(showContent$, (c) => {
       c.whenTrue.displaySelf();
