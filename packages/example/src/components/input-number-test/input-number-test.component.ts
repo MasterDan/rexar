@@ -22,7 +22,7 @@ export const inputNumberTest = defineComponent({
       console.log('input number is mounted');
       setTimeout(() => {
         numberOne$.value = 10;
-      }, 1000);
+      }, 3 * 10 ** 3);
     });
     pickElement('multiply')
       .on('click')
