@@ -1,11 +1,15 @@
 import { createApp } from '@core/app';
+import { createEvent } from '@core/components/events';
 import { ref$ } from '@core/reactivity/ref';
 import { lastValueFrom, timer } from 'rxjs';
 import { ifElseRepeat } from './components/if-else.test/if-else-repeat.component';
 import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';
 import { inputTextTest } from './components/input-text-test/input-text-test.component';
-import { repeatComponent } from './components/repeat/repeat.component';
+import {
+  LifecycleStatuses,
+  repeatComponent,
+} from './components/repeat/repeat.component';
 import { slotTest } from './components/slot-test/slot-test.component';
 import { testOne } from './components/test-one/test-one.component';
 import { testThree } from './components/test-three/test-three.component';
@@ -184,6 +188,8 @@ describe('custom components', () => {
   test('if-else:repeat:from-false', async () => {
     const toggler$ = ref$(false);
     const array$ = ref$(['One', 'Two', 'Three']);
+    const onLifecycleChange = createEvent<LifecycleStatuses>();
+    const repeatLife$ = ref$(onLifecycleChange.listener$);
 
     const arrayHtml$ = ref$(() =>
       array$.value.map((i) => `<span>${i}</span>`).join(''),
@@ -195,24 +201,34 @@ describe('custom components', () => {
         }</div>`,
     );
 
-    const root = await createApp(ifElseRepeat, { toggler$, array$ }).mount(
-      '#app',
-    );
+    const root = await createApp(ifElseRepeat, {
+      toggler$,
+      array$,
+      lifecycleChanged: onLifecycleChange.emitter,
+    }).mount('#app');
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBeUndefined();
 
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
+
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('unmounted');
+
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
   });
   test('if-else:repeat:from-true', async () => {
     const toggler$ = ref$(true);
     const array$ = ref$(['One', 'Two', 'Three']);
+    const onLifecycleChange = createEvent<LifecycleStatuses>();
+    const repeatLife$ = ref$(onLifecycleChange.listener$);
 
     const arrayHtml$ = ref$(() =>
       array$.value.map((i) => `<span>${i}</span>`).join(''),
@@ -224,20 +240,28 @@ describe('custom components', () => {
         }</div>`,
     );
 
-    const root = await createApp(ifElseRepeat, { toggler$, array$ }).mount(
-      '#app',
-    );
+    const root = await createApp(ifElseRepeat, {
+      toggler$,
+      array$,
+      lifecycleChanged: onLifecycleChange.emitter,
+    }).mount('#app');
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
 
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('unmounted');
+
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
+
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('unmounted');
   });
   test('input-text-test', async () => {
     const content = 'He,Wo'

@@ -1,6 +1,6 @@
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { isObservable, Subject } from 'rxjs';
-import { EventEmitter, RexarEvent } from './event';
+import { EventEmitter } from './event';
 
 export function createEvent<T = void>() {
   const listener$ = new Subject<T>();
@@ -13,10 +13,15 @@ export function createEvent<T = void>() {
   };
 }
 
-export function triggerEvent<T = void>(
-  event: RexarEvent<T> | ReadonlyRef<RexarEvent<T>>,
+export function triggerEvent<T = unknown>(
+  event:
+    | EventEmitter<T>
+    | ReadonlyRef<EventEmitter<T>>
+    | ReadonlyRef<undefined>
+    | undefined
+    | null,
   value: T,
-) {
+): void {
   if (event == null) {
     return;
   }
