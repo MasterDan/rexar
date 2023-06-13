@@ -49,6 +49,7 @@ export class ComputedBuilder implements IComputedBuiler {
         });
       });
       const resultValue = fn();
+
       this.context.endScope();
       return resultValue;
     };

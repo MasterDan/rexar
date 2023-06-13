@@ -71,4 +71,14 @@ describe('refs', () => {
     expect(second$.value).toBe('Doe');
     expect(writableComputed$.value).toBe('Jane Doe');
   });
+  test('inner computed', () => {
+    const name$ = ref$('John');
+    const result$ = ref$(() => {
+      const length$ = ref$(() => name$.value.length);
+      return `${name$.value} len is ${length$.value}`;
+    });
+    expect(result$.value).toBe('John len is 4');
+    name$.value = 'Johnny';
+    expect(result$.value).toBe('Johnny len is 6');
+  });
 });

@@ -43,13 +43,14 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
     super();
   }
 
-  renderInto(): Observable<IBinding | undefined> {
+  renderInto(target: IBinding): Observable<IBinding | undefined> {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     this.refStoreMemo.rememberScope();
 
     const renderAsync = async () => {
       if (this.renderer$.value == null) {
-        return undefined;
+        this.lifecycle$.value = ComponentLifecycle.Rendered;
+        return of(target);
       }
       this.refStoreMemo.rememberScope();
       await this.renderer$.value.render();
@@ -59,7 +60,7 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
     };
 
     const firstMount$ = from(renderAsync()).pipe(
-      switchMap((i) => (i == null ? of(i) : i)),
+      switchMap((i) => i),
       take(1),
     );
 
