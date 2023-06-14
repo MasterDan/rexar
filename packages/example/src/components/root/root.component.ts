@@ -1,10 +1,9 @@
 import {
   defineComponent,
-  mountComponent,
+  into,
   onMounted,
   pickElement,
   ref$,
-  transformElement,
 } from '@rexar/core';
 import template from 'bundle-text:./root.component.html';
 import { delay } from 'rxjs';
@@ -19,14 +18,14 @@ export const root = defineComponent({
   setup: () => {
     const showContent$ = ref$(false);
     pickElement('show-content').bindValue.boolean(showContent$);
-    transformElement('content').if(showContent$, (c) => {
-      c.whenTrue.displaySelf();
+    into('content').if(showContent$, (c) => {
+      c.whenFalse.displaySelf();
     });
-    mountComponent('simple-lorem-component', lorem);
-    mountComponent('test-text-inputs-component', inputTextTest);
-    mountComponent('test-number-inputs-component', inputNumberTest);
-    mountComponent('test-boolean-inputs-component', inputCheckboxTest);
-    mountComponent('inner-component', inner, { message: 'Hello, World!' });
+    into('simple-lorem-component').mountComponent(lorem);
+    into('test-text-inputs-component').mountComponent(inputTextTest);
+    into('test-number-inputs-component').mountComponent(inputNumberTest);
+    into('test-boolean-inputs-component').mountComponent(inputCheckboxTest);
+    into('inner-component').mountComponent(inner, { message: 'Hello, World!' });
     onMounted()
       .pipe(delay(1 * 10 ** 3))
       .subscribe(() => {

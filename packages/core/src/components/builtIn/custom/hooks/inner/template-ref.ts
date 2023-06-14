@@ -7,7 +7,7 @@ import { Ref } from '@core/reactivity/ref/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { combineLatest, filter, map, Observable } from 'rxjs';
 import { SetupFn } from '../../custom-template.component';
-import { mountComponent } from '../mount-component.hook';
+import { into } from '../transform.hook';
 import { ArrayItem } from './array-item';
 
 export interface IMakeCompponentArgs<TProps extends TData = TData> {
@@ -46,7 +46,7 @@ export class TemplateRef {
     return {
       componentDef$,
       mount: (id: string) => {
-        mountComponent(id, componentDef$);
+        into(id).mountComponent(componentDef$);
       },
     };
   }
@@ -97,7 +97,7 @@ export class TemplateRef {
               ),
               [],
             );
-            mountComponent(id, listComponentDefinition, {
+            into(id).mountComponent(listComponentDefinition, {
               content: itemComponents$,
               isArray: true,
             });
