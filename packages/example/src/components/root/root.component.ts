@@ -7,6 +7,7 @@ import {
   transformElement,
 } from '@rexar/core';
 import template from 'bundle-text:./root.component.html';
+import { delay } from 'rxjs';
 import { inner } from '../inner/inner.component';
 import { inputCheckboxTest } from '../input-checkbox-test/input-checkbox-test.component';
 import { inputNumberTest } from '../input-number-test/input-number-test.component';
@@ -26,8 +27,10 @@ export const root = defineComponent({
     mountComponent('test-number-inputs-component', inputNumberTest);
     mountComponent('test-boolean-inputs-component', inputCheckboxTest);
     mountComponent('inner-component', inner, { message: 'Hello, World!' });
-    onMounted(() => {
-      console.log('root component mounted');
-    });
+    onMounted()
+      .pipe(delay(1 * 10 ** 3))
+      .subscribe(() => {
+        showContent$.value = true;
+      });
   },
 });
