@@ -1,1 +1,21 @@
 <h2>Todo List</h2>
+<slot ::todo-items>
+  <template ::todo-item>
+    <hr />
+    <slot ::value></slot>
+  </template>
+</slot>
+<hr />
+<div>
+  <button ::add-item style="float: right">Добавить</button>
+  <dialog style="min-width: 50vw" ::add-item-dialog>
+    <header>Добавление нового дела</header>
+    <div style="display: flex; flex-direction: column">
+      <label for="title">Название</label>
+      <input type="text" id="title" ::title />
+      <label for="description">Описание</label>
+      <textarea type="text" id="description" ::description />
+      <button ::save>Сохранить</button>
+    </div>
+  </dialog>
+</div>
