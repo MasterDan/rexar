@@ -9,12 +9,19 @@ export const inputNumberTest = defineComponent({
     pickElement('number').bindValue.number(numberOne$);
     pickElement('number-copy').bindValue.number(numberOne$);
     pickElement('number-two').bindValue.number(numberTwo$);
+
+    const numberToString = (numb = 0) => (numb >= 0 ? `${numb}` : `(${numb})`);
+
+    const numberOneString = ref$(() => numberToString(numberOne$.value));
+    const numberTwoString = ref$(() => numberToString(numberTwo$.value));
+    const sumString = ref$(() =>
+      numberToString((numberOne$.value ?? 0) + (numberTwo$.value ?? 0)),
+    );
+
     pickElement('sum-text').bindContent.text(
       ref$(
         () =>
-          `${numberOne$.value} + ${numberTwo$.value} = ${
-            numberOne$.value + numberTwo$.value
-          }`,
+          `${numberOneString.value} + ${numberTwoString.value} = ${sumString.value}`,
       ),
     );
 

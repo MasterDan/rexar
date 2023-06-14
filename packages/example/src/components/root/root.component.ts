@@ -19,7 +19,7 @@ export const root = defineComponent({
     const showContent$ = ref$(false);
     pickElement('show-content').bindValue.boolean(showContent$);
     into('content').if(showContent$, (c) => {
-      c.whenFalse.displaySelf();
+      c.whenTrue.displaySelf();
     });
     into('simple-lorem-component').mountComponent(lorem);
     into('test-text-inputs-component').mountComponent(inputTextTest);
