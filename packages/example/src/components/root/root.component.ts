@@ -12,15 +12,34 @@ import { inputCheckboxTest } from '../input-checkbox-test/input-checkbox-test.co
 import { inputNumberTest } from '../input-number-test/input-number-test.component';
 import { inputTextTest } from '../input-text-test/input-text-test.component';
 import { lorem } from '../lorem/lorem.component';
+import { todoList } from '../todo-list/todo-list.component';
 
 export const root = defineComponent({
   template: () => template,
   setup: () => {
-    const showContent$ = ref$(false);
-    pickElement('show-content').bindValue.boolean(showContent$);
-    into('content').if(showContent$, (c) => {
-      c.whenTrue.displaySelf();
-    });
+    const showContent$ = ref$<'main' | 'todo' | 'nothing'>('nothing');
+    into('content').if(
+      ref$(() => showContent$.value === 'main'),
+      (c) => {
+        c.whenTrue.displaySelf();
+        c.whenFalse.if(
+          ref$(() => showContent$.value === 'todo'),
+          (e) => {
+            e.whenTrue.displayComponent(todoList);
+          },
+        );
+      },
+    );
+    pickElement('show-main-app')
+      .on('click')
+      .subscribe(() => {
+        showContent$.value = 'main';
+      });
+    pickElement('show-todo')
+      .on('click')
+      .subscribe(() => {
+        showContent$.value = 'todo';
+      });
     into('simple-lorem-component').mountComponent(lorem);
     into('test-text-inputs-component').mountComponent(inputTextTest);
     into('test-number-inputs-component').mountComponent(inputNumberTest);
@@ -29,7 +48,7 @@ export const root = defineComponent({
     onMounted()
       .pipe(delay(1 * 10 ** 3))
       .subscribe(() => {
-        showContent$.value = true;
+        showContent$.value = 'main';
       });
   },
 });
