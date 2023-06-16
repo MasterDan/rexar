@@ -1,5 +1,6 @@
 import { defineComponent, ref$, onMounted, pickElement } from '@rexar/core';
 import template from 'bundle-text:./input-number-test.component.html';
+import { delay } from 'rxjs';
 
 export const inputNumberTest = defineComponent({
   template: () => template,
@@ -24,13 +25,11 @@ export const inputNumberTest = defineComponent({
           `${numberOneString.value} + ${numberTwoString.value} = ${sumString.value}`,
       ),
     );
-
-    onMounted(() => {
-      console.log('input number is mounted');
-      setTimeout(() => {
+    onMounted()
+      .pipe(delay(2 * 10 ** 3))
+      .subscribe(() => {
         numberOne$.value = 10;
-      }, 3 * 10 ** 3);
-    });
+      });
     pickElement('multiply')
       .on('click')
       .subscribe(() => {

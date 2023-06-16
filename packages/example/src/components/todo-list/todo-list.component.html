@@ -6,16 +6,16 @@
   </template>
 </slot>
 <hr />
-<div>
-  <button ::add-item style="float: right">Добавить</button>
+<div style="display: flex; justify-content: end">
+  <button ::add-item>➕</button>
   <dialog style="min-width: 50vw" ::add-item-dialog>
-    <header>Добавление нового дела</header>
+    <header>New Task</header>
     <div style="display: flex; flex-direction: column">
-      <label for="title">Название</label>
+      <label for="title">Task Name</label>
       <input type="text" id="title" ::title />
-      <label for="description">Описание</label>
+      <label for="description">Description</label>
       <textarea type="text" id="description" ::description />
-      <button ::save>Сохранить</button>
+      <button ::save>💾 Save</button>
     </div>
   </dialog>
 </div>

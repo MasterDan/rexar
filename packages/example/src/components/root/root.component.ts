@@ -1,12 +1,5 @@
-import {
-  defineComponent,
-  into,
-  onMounted,
-  pickElement,
-  ref$,
-} from '@rexar/core';
+import { defineComponent, into, pickElement, ref$ } from '@rexar/core';
 import template from 'bundle-text:./root.component.html';
-import { delay } from 'rxjs';
 import { inner } from '../inner/inner.component';
 import { inputCheckboxTest } from '../input-checkbox-test/input-checkbox-test.component';
 import { inputNumberTest } from '../input-number-test/input-number-test.component';
@@ -17,7 +10,7 @@ import { todoList } from '../todo-list/todo-list.component';
 export const root = defineComponent({
   template: () => template,
   setup: () => {
-    const showContent$ = ref$<'main' | 'todo' | 'nothing'>('nothing');
+    const showContent$ = ref$<'main' | 'todo' | 'nothing'>('todo');
     into('content').if(
       ref$(() => showContent$.value === 'main'),
       (c) => {
@@ -45,10 +38,10 @@ export const root = defineComponent({
     into('test-number-inputs-component').mountComponent(inputNumberTest);
     into('test-boolean-inputs-component').mountComponent(inputCheckboxTest);
     into('inner-component').mountComponent(inner, { message: 'Hello, World!' });
-    onMounted()
-      .pipe(delay(1 * 10 ** 3))
-      .subscribe(() => {
-        showContent$.value = 'main';
-      });
+    // onMounted()
+    //   .pipe(delay(1 * 10 ** 3))
+    //   .subscribe(() => {
+    //     showContent$.value = 'main';
+    //   });
   },
 });

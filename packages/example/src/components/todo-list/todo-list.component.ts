@@ -2,7 +2,6 @@ import {
   createEvent,
   defineComponent,
   into,
-  onMounted,
   pickElement,
   pickTemplate,
   ref$,
@@ -15,24 +14,20 @@ export const todoList = defineComponent({
   template: () => template,
   setup: () => {
     const list = ref$<Task[]>([]);
+
     pickTemplate('todo-item')
-      .forEach(list, (i) => i.title + i.description)
+      .forEach(list, () => Symbol('item'))
       .defineComponent({
         setup: ({ props }) => {
           const onDelete = createEvent();
           onDelete.listener$.subscribe(() => {
             const index = props.item.value?.index;
-
             if (index != null) {
               list.patch((arr) => arr.filter((_, i) => i !== index));
-              console.log(list.value);
             }
           });
-          onMounted(() => {
-            console.log(props.item.value?.key);
-          });
           into('value').mountComponent(task, {
-            task: props.item.value?.value,
+            task: ref$(() => props.item.value?.value),
             onDelete: onDelete.emitter,
           });
         },
