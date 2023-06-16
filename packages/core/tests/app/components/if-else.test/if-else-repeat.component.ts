@@ -1,6 +1,6 @@
 import { defineComponent } from '@core/components';
 import { EventEmitter } from '@core/components/events/event';
-import { mountComponent, ref$, transformElement } from '@core/index';
+import { into, ref$ } from '@core/index';
 import { Ref } from '@core/reactivity/ref/ref';
 import { LifecycleStatuses, repeatComponent } from '../repeat/repeat.component';
 import template from './if-else-repeat.component.html';
@@ -16,10 +16,10 @@ export const ifElseRepeat = defineComponent<{
     array$: ref$<string[]>([]),
   }),
   setup: ({ props }) => {
-    transformElement('frame').if(props.toggler$, (c) => {
+    into('frame').if(props.toggler$, (c) => {
       c.whenTrue.displaySelf();
     });
-    mountComponent('content', repeatComponent, {
+    into('content').mountComponent(repeatComponent, {
       array$: props.array$,
       lifecycleChanged: props.lifecycleChanged?.value,
     });

@@ -1,5 +1,6 @@
 import { defineComponent, ref$, onMounted, pickElement } from '@rexar/core';
 import template from 'bundle-text:./input-number-test.component.html';
+import { delay } from 'rxjs';
 
 export const inputNumberTest = defineComponent({
   template: () => template,
@@ -9,21 +10,26 @@ export const inputNumberTest = defineComponent({
     pickElement('number').bindValue.number(numberOne$);
     pickElement('number-copy').bindValue.number(numberOne$);
     pickElement('number-two').bindValue.number(numberTwo$);
+
+    const numberToString = (numb = 0) => (numb >= 0 ? `${numb}` : `(${numb})`);
+
+    const numberOneString = ref$(() => numberToString(numberOne$.value));
+    const numberTwoString = ref$(() => numberToString(numberTwo$.value));
+    const sumString = ref$(() =>
+      numberToString((numberOne$.value ?? 0) + (numberTwo$.value ?? 0)),
+    );
+
     pickElement('sum-text').bindContent.text(
       ref$(
         () =>
-          `${numberOne$.value} + ${numberTwo$.value} = ${
-            numberOne$.value + numberTwo$.value
-          }`,
+          `${numberOneString.value} + ${numberTwoString.value} = ${sumString.value}`,
       ),
     );
-
-    onMounted(() => {
-      console.log('input number is mounted');
-      setTimeout(() => {
+    onMounted()
+      .pipe(delay(2 * 10 ** 3))
+      .subscribe(() => {
         numberOne$.value = 10;
-      }, 3 * 10 ** 3);
-    });
+      });
     pickElement('multiply')
       .on('click')
       .subscribe(() => {

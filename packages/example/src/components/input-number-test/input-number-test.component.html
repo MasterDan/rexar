@@ -1,10 +1,18 @@
 <div>
-    <h3>Number inputs</h3>
+  <h3>Number inputs</h3>
+  <div style="display: flex">
     <div>
-        <input ::number type="number">
-        <input style="margin-left: 1rem;" ::number-copy type="number">
-        <input style="margin-left: 1rem;" ::number-two type="number">
-        <button ::multiply style="margin-left: 1rem;">Multiply x2</button>
+      <input ::number type="number" />
     </div>
-    <h4 ::sum-text></h4>
+    <div>
+      <input ::number-copy type="number" />
+    </div>
+    <div>
+      <input ::number-two type="number" />
+    </div>
+    <div style="flex-shrink: 0">
+      <button ::multiply>Multiply x2</button>
+    </div>
+  </div>
+  <h4 ::sum-text></h4>
 </div>

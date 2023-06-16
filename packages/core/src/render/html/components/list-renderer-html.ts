@@ -14,6 +14,7 @@ import {
   skipUntil,
   startWith,
   Subject,
+  switchMap,
   takeUntil,
   tap,
 } from 'rxjs';
@@ -50,17 +51,22 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     //     lc == null ? 'empty' : lc.map((c) => c.type),
     //   );
     // });
-    // this.listRenderers$.subscribe((lr) => {
-    //   console.log(
-    //     'list-renderers:',
-    //     lr == null
-    //       ? 'empty'
-    //       : lr.map(
-    //           ({ command, renderer }) =>
-    //             `${renderer.component.type}: ${command}`,
-    //         ),
-    //   );
-    // });
+    // this.isArray
+    //   .pipe(
+    //     filter((x) => x),
+    //     switchMap(() => this.listRenderers$),
+    //   )
+    //   .subscribe((lr) => {
+    //     console.log('list-renderers:', lr);
+    //   });
+    // this.isArray
+    //   .pipe(
+    //     filter((x) => x),
+    //     switchMap(() => this.target$),
+    //   )
+    //   .subscribe((t) => {
+    //     console.log('target is', t);
+    //   });
 
     this.component$
       .pipe(
@@ -126,6 +132,8 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
             for (let i = start; i < stop; i += 1) {
               const current = curr[i];
               const renderer = resolveRenderer(current);
+              // console.log('new Item target', renderer.target$.value);
+
               renderer.subscribeParentLifecycle(this.lifecycle$);
               renderers.push({ renderer, command: 'mount' });
             }
@@ -151,6 +159,8 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
             actualizeProps(prev.length);
             addNew(prev.length, curr.length);
           }
+          // console.log('updating renderers', renderers);
+
           this.listRenderers$.value = renderers;
         }
       });
@@ -159,9 +169,25 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       .pipe(
         filter((x): x is IRendererWithCommand[] => x != null),
         tap(() => this.unsub$.next()),
-        map((x) => x.map((i) => i.renderer)),
-        mergeMap((x) => from(x)),
-        pairwise(),
+        // tap((x) => {
+        //   if (this.isArray.value) {
+        //     console.log('list-renderers-to-link', x);
+        //   }
+        // }),
+        map((x) =>
+          x.filter((i) => i.command !== 'unmount').map((i) => i.renderer),
+        ),
+        // tap((x) => {
+        //   if (this.isArray.value) {
+        //     console.log('list-renderers-to-link:after filter', x);
+        //   }
+        // }),
+        switchMap((x) => from(x).pipe(pairwise())),
+        // tap(([curr, next]) => {
+        //   if (this.isArray.value) {
+        //     console.log({ curr, next });
+        //   }
+        // }),
         mergeMap(([curr, next]) =>
           curr.nextTarget$.pipe(
             takeUntil(this.unsub$),
@@ -171,6 +197,9 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         ),
       )
       .subscribe(({ next, currNext }) => {
+        // if (this.isArray.value) {
+        //   console.log('updating target', currNext);
+        // }
         next.value = currNext;
       });
   }
@@ -186,6 +215,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       await renderer.renderer.unmount();
     }
     this.lifecycle$.value = ComponentLifecycle.Unmounted;
+    this.nextTarget$.value = this.target$.value;
   }
 
   renderInto(target: IBinding) {
@@ -225,7 +255,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
           for (const { command, renderer } of renderers) {
             if (command === 'mount') {
               if (renderer.target$.value == null) {
-                renderer.target$.value = target;
+                renderer.target$.value = this.target$.value;
               }
               // eslint-disable-next-line no-await-in-loop
               await renderer.render();

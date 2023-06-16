@@ -1,6 +1,7 @@
 import { MaybeObservable } from '@core/@types/MaybeObservable';
 import { readonly, ref$ } from '@core/reactivity/ref';
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
+import { WritableReadonlyRef } from '@core/reactivity/ref/readonly.ref.writable';
 import { Ref } from '@core/reactivity/ref/ref';
 import {
   combineLatest,
@@ -86,7 +87,13 @@ export class ElementRef {
     const validElement$ = this.nativeElement.pipe(
       filter((v): v is HTMLInputElement => v != null),
     );
-    const bindText = (value$: Ref<string | undefined> | Ref<string>) => {
+    const bindText = (
+      value$:
+        | Ref<string | undefined>
+        | Ref<string>
+        | WritableReadonlyRef<string>
+        | WritableReadonlyRef<string | undefined>,
+    ) => {
       const valueChanged$ = validElement$.pipe(
         takeUntil(this.beforeUnmount$),
         switchMap((el) =>

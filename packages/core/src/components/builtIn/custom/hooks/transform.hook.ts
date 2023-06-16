@@ -1,3 +1,4 @@
+import { MaybeObservable } from '@core/@types/MaybeObservable';
 import { ComponentDefinition } from '@core/components';
 import { Component, TData } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
@@ -6,7 +7,7 @@ import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ElementTransformer } from '@core/render/html/ref-store/element.transformer';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { filter, take } from 'rxjs';
+import { combineLatest, filter, take } from 'rxjs';
 import { dynamic } from '../../dynamic.component';
 import { IElementComponentProps } from '../../element.component';
 import { BuiltInHooks } from './@types/built-in-hooks';
@@ -20,7 +21,7 @@ const transformHook = defineHook<ElementTransformer, ITransformHookParams>(
   BuiltInHooks.Transform,
 );
 
-export const transformElement = (id: string) => {
+export const into = (id: string) => {
   const transformerRef$ = ref$<ElementTransformer>();
   const validTransformer$ = transformerRef$.pipe(
     filter((t): t is ElementTransformer => t != null),
@@ -47,7 +48,7 @@ export const transformElement = (id: string) => {
     });
   };
 
-  const displayDynamicContent = (
+  const mountDynamic = (
     resolve: (
       render: <TProps extends TData = TData>(
         definition: ComponentDefinition<TProps>,
@@ -82,8 +83,40 @@ export const transformElement = (id: string) => {
     });
   };
 
+  const mountComponent = <TProps extends TData>(
+    componentOrDefinition: MaybeObservable<
+      ComponentDefinition<TProps> | undefined
+    >,
+    props?: TProps,
+  ) => {
+    const validComponentDef$ = ref$(componentOrDefinition).pipe(
+      filter((x): x is ComponentDefinition<TProps> => x != null),
+    );
+
+    combineLatest([validTransformer$, validComponentDef$]).subscribe(
+      ([transformer, componentDef]) => {
+        transformer.append((c) => {
+          if (c.type !== ComponentType.HTMLElement) {
+            return c;
+          }
+          const newComponent = componentDef.create();
+          if (props) {
+            newComponent.bindProps(props);
+          }
+          if (c.getProp('name') !== 'SLOT') {
+            c.bindProp('children', [newComponent]);
+            c.preventTransformation = true;
+            return c;
+          }
+          return newComponent;
+        });
+      },
+    );
+  };
+
   return {
     if: ifTrue,
-    displayDynamicContent,
+    mountDynamic,
+    mountComponent,
   };
 };

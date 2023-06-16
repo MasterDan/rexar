@@ -38,9 +38,9 @@ export class ConditionBuilder {
     private self?: Component<IElementComponentProps>,
   ) {}
 
-  positive$: Ref<AnyComponent> | undefined | 'self';
+  private positive$: Ref<AnyComponent> | undefined | 'self';
 
-  negative$: Ref<AnyComponent> | undefined | 'self';
+  private negative$: Ref<AnyComponent> | undefined | 'self';
 
   get whenTrue() {
     return {
