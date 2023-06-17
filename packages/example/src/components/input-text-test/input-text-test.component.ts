@@ -36,5 +36,9 @@ export const inputTextTest = defineComponent({
         },
       })
       .mount('letters');
+
+    const html$ = ref$('');
+    pickElement('html-input').bindValue.string(html$);
+    pickElement('html').bindContent.html(html$);
   },
 });
