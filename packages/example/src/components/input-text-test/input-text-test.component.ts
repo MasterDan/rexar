@@ -37,7 +37,9 @@ export const inputTextTest = defineComponent({
       })
       .mount('letters');
 
-    const html$ = ref$('');
+    const html$ = ref$(
+      '<h2>This is html</h2>\n<pre>\n<code>foo\nbar\nbaz\n</code>\n</pre>',
+    );
     pickElement('html-input').bindValue.string(html$);
     pickElement('html').bindContent.html(html$);
   },
