@@ -1,12 +1,12 @@
 <h2>Demo App</h2>
 <div style="display: flex">
-  <div><button ::show-main-app>Main App</button></div>
-  <div><button ::show-todo type="button">Todo List</button></div>
+  <div><button ::show-todo>Todo list</button></div>
+  <div><button ::show-text-inputs>Text inputs</button></div>
+  <div><button ::show-number-inputs>Number inputs</button></div>
+  <div><button ::show-boolean-inputs>Boolean inputs</button></div>
+  <div><button ::show-main-app>Raw template</button></div>
 </div>
 <slot ::content>
   <slot ::simple-lorem-component></slot>
   <slot ::inner-component></slot>
-  <slot ::test-text-inputs-component></slot>
-  <slot ::test-number-inputs-component></slot>
-  <slot ::test-boolean-inputs-component></slot>
 </slot>
