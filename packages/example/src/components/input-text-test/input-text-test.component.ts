@@ -5,10 +5,10 @@ import {
   Ref,
   ref$,
 } from '@rexar/core';
-import template from 'bundle-text:./input-text-test.component.html';
 
 export const inputTextTest = defineComponent({
-  template: () => template,
+  template: (c) =>
+    c.fromModule(() => import('./input-text-test.component.html')),
   setup() {
     const textOne$ = ref$('Hello');
     const textTwo$ = ref$('World');
@@ -37,7 +37,9 @@ export const inputTextTest = defineComponent({
       })
       .mount('letters');
 
-    const html$ = ref$('');
+    const html$ = ref$(
+      '<h2>This is html</h2>\n<pre>\n<code>foo\nbar\nbaz\n</code>\n</pre>',
+    );
     pickElement('html-input').bindValue.string(html$);
     pickElement('html').bindContent.html(html$);
   },

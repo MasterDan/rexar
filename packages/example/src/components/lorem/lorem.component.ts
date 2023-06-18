@@ -5,10 +5,9 @@ import {
   ref$,
   pickElement,
 } from '@rexar/core';
-import template from 'bundle-text:./lorem.component.html';
 
 export const lorem = defineComponent({
-  template: () => template,
+  template: (c) => c.fromModule(() => import('./lorem.component.html')),
   setup() {
     pickTemplate('inner-template')
       .defineComponent({

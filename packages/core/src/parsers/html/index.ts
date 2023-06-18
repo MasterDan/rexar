@@ -2,7 +2,9 @@ import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
+import { DocumentRef } from '@core/render/html/documentRef';
 import { isValidString } from '@core/tools/string';
+import { container } from 'tsyringe';
 import { extractId } from './id-checker';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
@@ -98,9 +100,58 @@ function parseNodes(
   return parsed;
 }
 
-export async function parseHtml(html: string): Promise<Templates> {
+function fromComponents(components: AnyComponent[]) {
+  const templates: Templates = { default: components, inner: {} };
+  return Promise.resolve(templates);
+}
+
+async function fromString(html: string): Promise<Templates> {
   const nodes = await resolveNodes(html);
   const templates: Templates = { default: [], inner: {} };
   templates.default = parseNodes(nodes, templates);
   return templates;
 }
+
+async function fromQuerySelector(selector: string) {
+  const docRef = container.resolve(DocumentRef);
+  const doc = await docRef.getDocument();
+  const templates: Templates = { default: [], inner: {} };
+  const element = doc.querySelector(selector);
+  if (element == null || element.nodeName !== HtmlElementNames.Template) {
+    return templates;
+  }
+  const nodes = (element as HTMLTemplateElement).content.childNodes;
+  templates.default = parseNodes(nodes, templates);
+  return templates;
+}
+
+async function fromModule(
+  fn: () => Promise<Record<string, string> | string | (string | undefined)[]>,
+) {
+  const module = await fn();
+  if (typeof module === 'string') {
+    return fromString(module);
+  }
+  if (Array.isArray(module)) {
+    const template = module.find((x) => typeof x === 'string');
+    if (template == null) {
+      throw new Error('Cannot parse module');
+    }
+    return fromString(template);
+  }
+  if (module.default == null) {
+    throw new Error('Cannot parse module');
+  }
+  return fromString(module.default);
+}
+
+const templateParser = {
+  fromComponents,
+  fromString,
+  fromQuerySelector,
+  fromModule,
+};
+
+export type TemplateParser = typeof templateParser;
+
+export { templateParser };

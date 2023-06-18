@@ -1,13 +1,22 @@
 import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { Component } from '@core/components/component';
-import { parseHtml } from '@core/parsers/html';
+import { templateParser } from '@core/parsers/html';
+import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
+import { IComponentDefinitionBuilder } from '@core/components/@types/IComponentDefinitionBuilder';
+import { container } from 'tsyringe';
 import templateOne from './template-one.html';
 import templateTwo from './template-two.html';
 import templateMulti from './template-multi.html';
 
 describe('html-parser', () => {
+  beforeEach(() => {
+    container.register<IComponentDefinitionBuilder>(
+      'IComponentDefinitionBuilder',
+      ComponentDefinitionBuilder,
+    );
+  });
   test('template-one', async () => {
-    const templates = await parseHtml(templateOne);
+    const templates = await templateParser.fromString(templateOne);
     const tree = templates.default;
     expect(tree.length).toBe(1);
     const first = tree[0] as Component<IElementComponentProps>;
@@ -17,7 +26,7 @@ describe('html-parser', () => {
     expect(lorem).not.toBeUndefined();
   });
   test('template-two', async () => {
-    const templates = await parseHtml(templateTwo);
+    const templates = await templateParser.fromString(templateTwo);
     const tree = templates.default;
     expect(tree.length).toBe(4);
     expect(tree[0].getProp('children').length).toBe(5);
@@ -26,7 +35,7 @@ describe('html-parser', () => {
     expect(tree[3].getProp('value').value.trim()).toBe('two');
   });
   test('template-multi', async () => {
-    const templates = await parseHtml(templateMulti);
+    const templates = await templateParser.fromString(templateMulti);
     const defaultTemplate = templates.default;
     expect(defaultTemplate.length).toBe(1);
     const first = defaultTemplate[0] as Component<IElementComponentProps>;

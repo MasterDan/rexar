@@ -3,7 +3,7 @@ import { ref$, pickElement, pickTemplate } from '@core/index';
 import template from './input-text-test.component.html';
 
 export const inputTextTest = defineComponent({
-  template: () => template,
+  template: (c) => c.fromString(template),
   setup() {
     const textOne$ = ref$('He');
     const textTwo$ = ref$('Wo');

@@ -1,7 +1,8 @@
 import { MaybeObservable } from '@core/@types/MaybeObservable';
-import { ComponentDefinition } from '@core/components';
 import { Component, TData } from '@core/components/component';
+import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ComponentType } from '@core/components/component-type';
+import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
 import { ref$ } from '@core/reactivity/ref';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { AnyComponent } from '@core/render/html/@types/any-component';
@@ -74,7 +75,7 @@ export const into = (id: string) => {
         if (c.type !== ComponentType.HTMLElement) {
           return c;
         }
-        if (c.getProp('name') === 'SLOT') {
+        if (c.getProp('name') === HtmlElementNames.Slot) {
           return dynamicContent;
         }
         c.bindProp('children', [dynamicContent]);
@@ -103,7 +104,7 @@ export const into = (id: string) => {
           if (props) {
             newComponent.bindProps(props);
           }
-          if (c.getProp('name') !== 'SLOT') {
+          if (c.getProp('name') !== HtmlElementNames.Slot) {
             c.bindProp('children', [newComponent]);
             c.preventTransformation = true;
             return c;

@@ -1,9 +1,9 @@
 import { defineComponent, ref$, onMounted, pickElement } from '@rexar/core';
-import template from 'bundle-text:./input-number-test.component.html';
 import { delay } from 'rxjs';
 
 export const inputNumberTest = defineComponent({
-  template: () => template,
+  template: (c) =>
+    c.fromModule(() => import('./input-number-test.component.html')),
   setup() {
     const numberOne$ = ref$(2);
     const numberTwo$ = ref$(2);

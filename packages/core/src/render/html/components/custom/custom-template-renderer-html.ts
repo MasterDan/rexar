@@ -61,21 +61,9 @@ export class CustomRendererHtml extends HtmlRendererBase {
     end();
 
     const renderAsync = async (): Promise<Observable<IBinding | undefined>> => {
-      let templateToRender!: AnyComponent[];
       const resolvedTemplate = await firstValueFrom(component.template);
-      if (typeof resolvedTemplate === 'string') {
-        const { parseHtml } = await import('@core/parsers/html');
-        const templates = await parseHtml(resolvedTemplate);
-        this.refStore.setInnerTemplates(templates.inner);
-        templateToRender = templates.default;
-      } else {
-        templateToRender = Array.isArray(resolvedTemplate)
-          ? resolvedTemplate
-          : (() => {
-              this.refStore.setInnerTemplates(resolvedTemplate.inner);
-              return resolvedTemplate.default;
-            })();
-      }
+      this.refStore.setInnerTemplates(resolvedTemplate.inner);
+      const templateToRender: AnyComponent[] = resolvedTemplate.default;
 
       if (templateToRender.length === 1) {
         const [componentTemplate] = templateToRender;

@@ -7,14 +7,13 @@ import {
   ref$,
   triggerEvent,
 } from '@rexar/core';
-import template from 'bundle-text:./task.component.html';
 import { Task } from '../../models/task';
 
 export const task = defineComponent<{
   task: MayBeReadonlyRef<Task | undefined>;
   onDelete?: EventEmitter;
 }>({
-  template: () => template,
+  template: (c) => c.fromModule(() => import('./task.component.html')),
   props: () => ({ task: ref$() }),
   setup: ({ props }) => {
     pickElement('title').bindContent.text(ref$(() => props.task?.value?.title));

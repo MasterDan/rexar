@@ -1,5 +1,4 @@
 import { defineComponent, into, pickElement, ref$ } from '@rexar/core';
-import template from 'bundle-text:./root.component.html';
 import { inner } from '../inner/inner.component';
 import { inputCheckboxTest } from '../input-checkbox-test/input-checkbox-test.component';
 import { inputNumberTest } from '../input-number-test/input-number-test.component';
@@ -16,7 +15,7 @@ type Pages =
   | 'nothing';
 
 export const root = defineComponent({
-  template: () => template,
+  template: (c) => c.fromModule(() => import('./root.component.html')),
   setup: () => {
     const showContent$ = ref$<Pages>('todo');
     into('content').if(

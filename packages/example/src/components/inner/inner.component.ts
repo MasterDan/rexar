@@ -6,14 +6,12 @@ import {
   pickElement,
 } from '@rexar/core';
 
-import template from 'bundle-text:./inner.component.html';
-
 export interface IInnerComponnentProps {
   message: string;
 }
 
 export const inner = defineComponent<IInnerComponnentProps>({
-  template: () => template,
+  template: (c) => c.fromModule(() => import('./inner.component.html')),
   props: () => ({ message: 'No Message' }),
   setup: ({ props }) => {
     pickElement('message').bindContent.text(props.message);

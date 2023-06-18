@@ -4,11 +4,11 @@ import {
   Component,
 } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
-import type { Templates } from '@core/parsers/html';
+import type { TemplateParser, Templates } from '@core/parsers/html';
 import { ref$, readonly } from '@core/reactivity/ref';
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
-import { AnyComponent } from '@core/render/html/@types/any-component';
 import { Observable, isObservable, filter } from 'rxjs';
+import { container } from 'tsyringe';
 
 type ToReadonlyRef<T> = T extends Observable<infer V>
   ? ReadonlyRef<V>
@@ -22,14 +22,12 @@ export interface ISetupContext<TProps> {
   props: TPropsAccessors<TProps>;
 }
 
-export type CustomTemplate = string | AnyComponent[] | Templates;
-
 export type SetupFn<TProps> = (context: ISetupContext<TProps>) => void;
 export interface ICustomTemplateComponentDefinitionArgs<
   TProps extends TData = TData,
 > extends Omit<IComponentDefinitionArgs<TProps>, 'type'> {
   setup?: SetupFn<TProps>;
-  template: () => CustomTemplate | Promise<CustomTemplate>;
+  template: (parser: TemplateParser) => Promise<Templates>;
 }
 
 export class CustomTemplateComponent<
@@ -37,10 +35,10 @@ export class CustomTemplateComponent<
 > extends Component<TProps> {
   private setupFn?: SetupFn<TProps>;
 
-  private $template = ref$<CustomTemplate>();
+  private $template = ref$<Templates>();
 
   get template() {
-    return this.$template.pipe(filter((x): x is CustomTemplate => x != null));
+    return this.$template.pipe(filter((x): x is Templates => x != null));
   }
 
   propsAccessors$ = ref$(() => {
@@ -60,7 +58,8 @@ export class CustomTemplateComponent<
   constructor(args: ICustomTemplateComponentDefinitionArgs<TProps>) {
     super({ ...args, type: ComponentType.CustomTemplate });
     this.setupFn = args.setup;
-    Promise.resolve(args.template()).then((t) => {
+    const parser = container.resolve<TemplateParser>('TemplateParser');
+    Promise.resolve(args.template(parser)).then((t) => {
       this.$template.value = t;
     });
   }

@@ -1,8 +1,10 @@
+import { IComponentDefinitionBuilder } from '@core/components/@types/IComponentDefinitionBuilder';
 import { conditional } from '@core/components/builtIn/conditional.component';
 import { dynamic } from '@core/components/builtIn/dynamic.component';
 import { el } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
+import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
 import { ref$ } from '@core/reactivity/ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
@@ -13,6 +15,10 @@ import { createApp } from '.';
 
 describe('app-tests', () => {
   beforeEach(() => {
+    container.register<IComponentDefinitionBuilder>(
+      'IComponentDefinitionBuilder',
+      ComponentDefinitionBuilder,
+    );
     const store = container.resolve(RefStore);
     store.beginScope('test-scope', ref$(ComponentLifecycle.Created));
   });
