@@ -64,8 +64,8 @@ export class CustomRendererHtml extends HtmlRendererBase {
       let templateToRender!: AnyComponent[];
       const resolvedTemplate = await firstValueFrom(component.template);
       if (typeof resolvedTemplate === 'string') {
-        const { parseHtml } = await import('@core/parsers/html');
-        const templates = await parseHtml(resolvedTemplate);
+        const { templateParser } = await import('@core/parsers/html');
+        const templates = await templateParser.fromString(resolvedTemplate);
         this.refStore.setInnerTemplates(templates.inner);
         templateToRender = templates.default;
       } else {
