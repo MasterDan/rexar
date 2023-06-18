@@ -5,10 +5,10 @@ import {
   Ref,
   ref$,
 } from '@rexar/core';
-import template from 'bundle-text:./input-text-test.component.html';
 
 export const inputTextTest = defineComponent({
-  template: () => template,
+  template: (c) =>
+    c.fromModule(() => import('./input-text-test.component.html')),
   setup() {
     const textOne$ = ref$('Hello');
     const textTwo$ = ref$('World');

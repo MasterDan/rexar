@@ -125,8 +125,20 @@ async function fromQuerySelector(selector: string) {
   return templates;
 }
 
-async function fromModule(fn: () => Promise<Record<string, string>>) {
+async function fromModule(
+  fn: () => Promise<Record<string, string> | string | (string | undefined)[]>,
+) {
   const module = await fn();
+  if (typeof module === 'string') {
+    return fromString(module);
+  }
+  if (Array.isArray(module)) {
+    const template = module.find((x) => typeof x === 'string');
+    if (template == null) {
+      throw new Error('Cannot parse module');
+    }
+    return fromString(template);
+  }
   if (module.default == null) {
     throw new Error('Cannot parse module');
   }

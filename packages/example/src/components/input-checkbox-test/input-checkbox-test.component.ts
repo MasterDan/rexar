@@ -1,9 +1,9 @@
 import { defineComponent, ref$, pickElement, into } from '@rexar/core';
-import template from 'bundle-text:./input-checkbox-test.component.html';
 import { inner } from '../inner/inner.component';
 
 export const inputCheckboxTest = defineComponent({
-  template: () => template,
+  template: (c) =>
+    c.fromModule(() => import('./input-checkbox-test.component.html')),
   setup() {
     const checkOne$ = ref$(true);
     const checkTwo$ = ref$(false);

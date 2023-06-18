@@ -6,12 +6,11 @@ import {
   pickTemplate,
   ref$,
 } from '@rexar/core';
-import template from 'bundle-text:./todo-list.component.html';
 import { Task } from '../../models/task';
 import { task } from './task.component';
 
 export const todoList = defineComponent({
-  template: () => template,
+  template: (c) => c.fromModule(() => import('./todo-list.component.html')),
   setup: () => {
     const list = ref$<Task[]>([]);
 

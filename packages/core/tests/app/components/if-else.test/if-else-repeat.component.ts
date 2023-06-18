@@ -1,6 +1,5 @@
-import { defineComponent } from '@core/components';
 import { EventEmitter } from '@core/components/events/event';
-import { into, ref$ } from '@core/index';
+import { defineComponent, into, ref$ } from '@core/index';
 import { Ref } from '@core/reactivity/ref/ref';
 import { LifecycleStatuses, repeatComponent } from '../repeat/repeat.component';
 
