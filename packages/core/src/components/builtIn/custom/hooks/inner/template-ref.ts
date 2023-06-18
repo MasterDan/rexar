@@ -1,6 +1,7 @@
-import { ComponentDefinition, defineComponent } from '@core/components';
+import { defineComponent } from '@core/components';
 import { listComponentDefinition } from '@core/components/builtIn/list.component';
 import { TData } from '@core/components/component';
+import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ref$ } from '@core/reactivity/ref';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
 import { Ref } from '@core/reactivity/ref/ref';
@@ -35,7 +36,7 @@ export class TemplateRef {
       this.validTemplate$.pipe(
         map((t) =>
           defineComponent<TProps>({
-            template: () => t,
+            template: (b) => b.fromComponents(t),
             setup: args.setup,
             props: args.props ?? (() => ({} as TProps)),
           }),
@@ -65,7 +66,7 @@ export class TemplateRef {
         const componentDef$ = this.validTemplate$.pipe(
           map((t) =>
             defineComponent<IArrayItemProps<TItem>>({
-              template: () => t,
+              template: (b) => b.fromComponents(t),
               props: () => ({
                 item: ref$(),
               }),

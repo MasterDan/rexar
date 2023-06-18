@@ -3,14 +3,14 @@ import { EventEmitter } from '@core/components/events/event';
 import { into, ref$ } from '@core/index';
 import { Ref } from '@core/reactivity/ref/ref';
 import { LifecycleStatuses, repeatComponent } from '../repeat/repeat.component';
-import template from './if-else-repeat.component.html';
 
 export const ifElseRepeat = defineComponent<{
   toggler$: Ref<boolean>;
   array$: Ref<string[]>;
   lifecycleChanged?: EventEmitter<LifecycleStatuses>;
 }>({
-  template: () => template,
+  template: (c) =>
+    c.fromModule(() => import('./if-else-repeat.component.html')),
   props: () => ({
     toggler$: ref$(false),
     array$: ref$<string[]>([]),

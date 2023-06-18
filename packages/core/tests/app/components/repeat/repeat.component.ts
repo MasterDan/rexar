@@ -14,7 +14,7 @@ export const repeatComponent = defineComponent<{
   lifecycleChanged?: EventEmitter<LifecycleStatuses>;
 }>({
   props: () => ({ array$: ref$<string[]>([]) }),
-  template: () => html,
+  template: (c) => c.fromString(html),
   setup({ props }) {
     onMounted(() => {
       triggerEvent<LifecycleStatuses>(props.lifecycleChanged, 'mounted');

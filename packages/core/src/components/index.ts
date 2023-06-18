@@ -1,92 +1,20 @@
-import {
-  CustomTemplateComponent,
-  ICustomTemplateComponentDefinitionArgs,
-} from './builtIn/custom/custom-template.component';
-import { Component, IComponentDefinitionArgs, TData } from './component';
-import { ComponentType } from './component-type';
+import { TemplateParser, templateParser } from '@core/parsers/html';
+import { container } from 'tsyringe';
+import { IComponentDefinitionBuilder } from './@types/IComponentDefinitionBuilder';
+import { ComponentDefinitionBuilder } from './component-definition-builder';
 
-export type ComponentDefinition<TProps extends TData = TData> = {
-  create: () => Component<TProps>;
-  type: ComponentType;
-};
+container.register<TemplateParser>('TemplateParser', {
+  useValue: templateParser,
+});
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyComponentDefinition = ComponentDefinition<any>;
+container.register<IComponentDefinitionBuilder>(
+  'IComponentDefinitionBuilder',
+  ComponentDefinitionBuilder,
+);
 
-function shouldWeCreateCustomComponent<TProps extends TData>(
-  args:
-    | IComponentDefinitionArgs<TProps>
-    | ICustomTemplateComponentDefinitionArgs<TProps>,
-): args is ICustomTemplateComponentDefinitionArgs<TProps> {
-  return (
-    (args as ICustomTemplateComponentDefinitionArgs<TProps>).template != null
-  );
-}
+const builder = container.resolve<IComponentDefinitionBuilder>(
+  'IComponentDefinitionBuilder',
+);
 
-function checkProps<TProps extends TData>(
-  args:
-    | IComponentDefinitionArgs<TProps>
-    | ICustomTemplateComponentDefinitionArgs<TProps>
-    | Omit<IComponentDefinitionArgs<TProps>, 'props'>
-    | Omit<ICustomTemplateComponentDefinitionArgs<TProps>, 'props'>,
-): args is
-  | IComponentDefinitionArgs<TProps>
-  | ICustomTemplateComponentDefinitionArgs<TProps> {
-  return (args as Record<string, unknown>).props != null;
-}
-
-function defineComponentWithoutProps(
-  args:
-    | Omit<IComponentDefinitionArgs<TData>, 'props'>
-    | Omit<ICustomTemplateComponentDefinitionArgs<TData>, 'props'>,
-): ComponentDefinition<TData> {
-  const creationArgs = { ...args, props: () => ({}) };
-  return shouldWeCreateCustomComponent(creationArgs)
-    ? {
-        create: () => new CustomTemplateComponent<TData>(creationArgs),
-        type: ComponentType.CustomTemplate,
-      }
-    : {
-        create: () => new Component<TData>(creationArgs),
-        type: creationArgs.type,
-      };
-}
-
-function defineComponentWithProps<TProps extends TData = TData>(
-  args:
-    | IComponentDefinitionArgs<TProps>
-    | ICustomTemplateComponentDefinitionArgs<TProps>,
-): ComponentDefinition<TProps> {
-  return shouldWeCreateCustomComponent(args)
-    ? {
-        create: () => new CustomTemplateComponent<TProps>(args),
-        type: ComponentType.CustomTemplate,
-      }
-    : {
-        create: () => new Component<TProps>(args),
-        type: args.type,
-      };
-}
-
-export function defineComponent(
-  args:
-    | Omit<IComponentDefinitionArgs<TData>, 'props'>
-    | Omit<ICustomTemplateComponentDefinitionArgs<TData>, 'props'>,
-): ComponentDefinition<TData>;
-export function defineComponent<TProps extends TData>(
-  args:
-    | IComponentDefinitionArgs<TProps>
-    | ICustomTemplateComponentDefinitionArgs<TProps>,
-): ComponentDefinition<TProps>;
-export function defineComponent<TProps extends TData>(
-  args:
-    | IComponentDefinitionArgs<TProps>
-    | ICustomTemplateComponentDefinitionArgs<TProps>
-    | Omit<IComponentDefinitionArgs<TData>, 'props'>
-    | Omit<ICustomTemplateComponentDefinitionArgs<TData>, 'props'>,
-): ComponentDefinition<TProps> | ComponentDefinition<TData> {
-  return checkProps<TProps>(args)
-    ? defineComponentWithProps<TProps>(args)
-    : defineComponentWithoutProps(args);
-}
+export const { defineComponent } = builder;
 

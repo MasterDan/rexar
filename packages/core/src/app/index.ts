@@ -2,8 +2,8 @@ import { DocumentRef } from '@core/render/html/documentRef';
 import { container } from 'tsyringe';
 import { resolveAplicationRenderer } from '@core/render/html';
 import { lastValueFrom } from 'rxjs';
-import { ComponentDefinition } from '@core/components';
 import { Component, TData } from '@core/components/component';
+import { ComponentDefinition } from '@core/components/component-definition-builder';
 
 export function createApp<TProps extends TData>(
   root: Component<TProps> | ComponentDefinition<TProps>,

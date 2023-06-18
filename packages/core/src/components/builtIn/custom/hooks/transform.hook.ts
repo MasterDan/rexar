@@ -1,6 +1,6 @@
 import { MaybeObservable } from '@core/@types/MaybeObservable';
-import { ComponentDefinition } from '@core/components';
 import { Component, TData } from '@core/components/component';
+import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ComponentType } from '@core/components/component-type';
 import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
 import { ref$ } from '@core/reactivity/ref';

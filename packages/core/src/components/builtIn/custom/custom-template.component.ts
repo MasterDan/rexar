@@ -4,11 +4,12 @@ import {
   Component,
 } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
-import type { Templates } from '@core/parsers/html';
+import type { TemplateParser, Templates } from '@core/parsers/html';
 import { ref$, readonly } from '@core/reactivity/ref';
 import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { Observable, isObservable, filter } from 'rxjs';
+import { container } from 'tsyringe';
 
 type ToReadonlyRef<T> = T extends Observable<infer V>
   ? ReadonlyRef<V>
@@ -29,7 +30,7 @@ export interface ICustomTemplateComponentDefinitionArgs<
   TProps extends TData = TData,
 > extends Omit<IComponentDefinitionArgs<TProps>, 'type'> {
   setup?: SetupFn<TProps>;
-  template: () => CustomTemplate | Promise<CustomTemplate>;
+  template: (parser: TemplateParser) => Promise<Templates>;
 }
 
 export class CustomTemplateComponent<
@@ -60,7 +61,8 @@ export class CustomTemplateComponent<
   constructor(args: ICustomTemplateComponentDefinitionArgs<TProps>) {
     super({ ...args, type: ComponentType.CustomTemplate });
     this.setupFn = args.setup;
-    Promise.resolve(args.template()).then((t) => {
+    const parser = container.resolve<TemplateParser>('TemplateParser');
+    Promise.resolve(args.template(parser)).then((t) => {
       this.$template.value = t;
     });
   }

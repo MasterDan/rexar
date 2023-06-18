@@ -1,8 +1,11 @@
 /* eslint-disable class-methods-use-this */
+import { IComponentDefinitionBuilder } from '@core/components/@types/IComponentDefinitionBuilder';
 import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
+import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
 import { ref$ } from '@core/reactivity/ref';
 import { Observable } from 'rxjs';
+import { container } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from './html-renderer-base';
 import { ComponentLifecycle } from './lifecycle';
@@ -22,6 +25,12 @@ class TestRenderer extends HtmlRendererBase {
 }
 
 describe('test renderer', () => {
+  beforeEach(() => {
+    container.register<IComponentDefinitionBuilder>(
+      'IComponentDefinitionBuilder',
+      ComponentDefinitionBuilder,
+    );
+  });
   test('simple', () => {
     const testComponent = el({ name: 'div' });
     const testComponentSecond = text({ value: ref$('foo') });

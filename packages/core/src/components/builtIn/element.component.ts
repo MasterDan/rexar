@@ -1,5 +1,7 @@
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { defineComponent } from '..';
+import { container } from 'tsyringe';
+import { IComponentDefinitionBuilder } from '../@types/IComponentDefinitionBuilder';
+import { ComponentDefinition } from '../component-definition-builder';
 import { ComponentType } from '../component-type';
 
 export interface IElementComponentProps {
@@ -8,14 +10,24 @@ export interface IElementComponentProps {
   children?: AnyComponent[];
 }
 
-const htmlElementComponentDefinition = defineComponent<IElementComponentProps>({
-  props: () => ({ name: 'div' }),
-  type: ComponentType.HTMLElement,
-});
+let htmlElementComponentDefinition:
+  | ComponentDefinition<IElementComponentProps>
+  | undefined;
 
 export function el(props: IElementComponentProps, id?: string) {
+  if (htmlElementComponentDefinition == null) {
+    const builder = container.resolve<IComponentDefinitionBuilder>(
+      'IComponentDefinitionBuilder',
+    );
+    htmlElementComponentDefinition =
+      builder.defineComponent<IElementComponentProps>({
+        props: () => ({ name: 'div' }),
+        type: ComponentType.HTMLElement,
+      });
+  }
   const component = htmlElementComponentDefinition.create();
   component.id = id;
   component.bindProps(props);
   return component;
 }
+

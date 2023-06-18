@@ -1,8 +1,8 @@
-import { ComponentDefinition } from '@core/components';
 import { conditional } from '@core/components/builtIn/conditional.component';
 import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { Component, TData } from '@core/components/component';
+import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ComponentType } from '@core/components/component-type';
 import { ref$ } from '@core/reactivity/ref';
 import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';

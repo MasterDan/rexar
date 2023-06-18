@@ -1,11 +1,20 @@
 import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { Component } from '@core/components/component';
 import { templateParser } from '@core/parsers/html';
+import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
+import { IComponentDefinitionBuilder } from '@core/components/@types/IComponentDefinitionBuilder';
+import { container } from 'tsyringe';
 import templateOne from './template-one.html';
 import templateTwo from './template-two.html';
 import templateMulti from './template-multi.html';
 
 describe('html-parser', () => {
+  beforeEach(() => {
+    container.register<IComponentDefinitionBuilder>(
+      'IComponentDefinitionBuilder',
+      ComponentDefinitionBuilder,
+    );
+  });
   test('template-one', async () => {
     const templates = await templateParser.fromString(templateOne);
     const tree = templates.default;

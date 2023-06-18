@@ -3,7 +3,7 @@ import { pickElement } from '@core/components/builtIn/custom/hooks/element-refer
 import template from './test-two.component.html';
 
 export const testTwo = defineComponent({
-  template: () => template,
+  template: (c) => c.fromString(template),
   setup() {
     pickElement('middle').bindContent.html('middle text');
   },

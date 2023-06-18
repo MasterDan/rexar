@@ -100,6 +100,11 @@ function parseNodes(
   return parsed;
 }
 
+function fromComponents(components: AnyComponent[]) {
+  const templates: Templates = { default: components, inner: {} };
+  return Promise.resolve(templates);
+}
+
 async function fromString(html: string): Promise<Templates> {
   const nodes = await resolveNodes(html);
   const templates: Templates = { default: [], inner: {} };
@@ -128,10 +133,13 @@ async function fromModule(fn: () => Promise<Record<string, string>>) {
   return fromString(module.default);
 }
 
-export const templateParser = {
+const templateParser = {
+  fromComponents,
   fromString,
   fromQuerySelector,
   fromModule,
 };
 
 export type TemplateParser = typeof templateParser;
+
+export { templateParser };
