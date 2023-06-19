@@ -6,7 +6,8 @@
   "main": "dist/main.js",
   "types": "dist/types.d.ts",
   "alias": {
-    "@core/*": "../../packages/core/src/$1"
+    "@core/*": "../../packages/core/src/$1",
+    "@reactivity/*": "../../packages/reactivity/src/$1"
   },
   "targets": {
     "main": {

@@ -1,4 +1,4 @@
-import { MaybeObservable } from '@core/@types/MaybeObservable';
+import { MaybeObservable } from '@reactivity/@types/MaybeObservable';
 import { isObservable, Observable } from 'rxjs';
 import { inject, injectable } from 'tsyringe';
 import { ReadonlyRef } from './readonly.ref';

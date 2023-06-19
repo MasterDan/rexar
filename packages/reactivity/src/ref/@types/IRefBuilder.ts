@@ -1,4 +1,4 @@
-import { IComputedBuilderOptions } from '@core/reactivity/computed/@types/IComputedBuiler';
+import { IComputedBuilderOptions } from '@reactivity/computed/@types/IComputedBuiler';
 import { Observable } from 'rxjs';
 import { RefBase } from '../base.ref';
 import { ReadonlyRef } from '../readonly.ref';
