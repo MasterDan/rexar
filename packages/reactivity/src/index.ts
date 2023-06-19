@@ -1,13 +1,13 @@
 import { Observable } from 'rxjs';
 import { container, delay, Lifecycle } from 'tsyringe';
-import { IComputedBuilderOptions } from '../computed/@types/IComputedBuiler';
-import { ComputedBuilder } from '../computed/computed-builder';
-import { IRefBuilder } from './@types/IRefBuilder';
-import { RefBase } from './base.ref';
-import { ReadonlyRef } from './readonly.ref';
-import { WritableReadonlyRef } from './readonly.ref.writable';
-import { Ref } from './ref';
-import { RefBuilder } from './ref-builder';
+import { IComputedBuilderOptions } from './computed/@types/IComputedBuiler';
+import { ComputedBuilder } from './computed/computed-builder';
+import { IRefBuilder } from './ref/@types/IRefBuilder';
+import { RefBase } from './ref/base.ref';
+import { ReadonlyRef } from './ref/readonly.ref';
+import { WritableReadonlyRef } from './ref/readonly.ref.writable';
+import { Ref } from './ref/ref';
+import { RefBuilder } from './ref/ref-builder';
 
 const buildRefModule = () => {
   const refContainer = container.createChildContainer();

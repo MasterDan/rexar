@@ -7,9 +7,11 @@
     "@reactivity/*": "../../packages/reactivity/src/$1"
   },
   "devDependencies": {
-    "parcel": "^2.9.2"
+    "parcel": "^2.9.2",
+    "ts-jest": "^29.1.0"
   },
   "dependencies": {
+    "jest": "^29.5.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "tsyringe": "^4.7.0"
