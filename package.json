@@ -6,16 +6,17 @@
   "author": "MasterDan <MihaylovDS@gmail.com>",
   "license": "MIT",
   "alias": {
-    "@core/*": "packages/core/src/$1"
+    "@core/*": "packages/core/src/$1",
+    "@reactivity/*": "packages/reactivity/src/$1"
   },
   "workspaces": [
     "packages/*"
   ],
   "dependencies": {
-    "@rexar/core": "link:./packages/core"
+    "@rexar/core": "link:./packages/core",
+    "@rexar/reactivity": "link:./packages/reactivity"
   },
   "devDependencies": {
-    "@parcel/transformer-typescript-types": "2.9.2",
     "@types/jest": "^29.4.0",
     "@types/jsdom": "^21.1.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
