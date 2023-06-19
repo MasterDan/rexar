@@ -8,6 +8,15 @@
   "alias": {
     "@core/*": "../../packages/core/src/$1"
   },
+  "targets": {
+    "main": {
+      "optimize": true,
+      "includeNodeModules": [
+        "tsyringe",
+        "reflect-metadata"
+      ]
+    }
+  },
   "scripts": {
     "watch": "parcel watch",
     "build": "rimraf dist && parcel build",
@@ -38,3 +47,4 @@
     "tsyringe": "^4.7.0"
   }
 }
+
