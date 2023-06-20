@@ -13,6 +13,8 @@
     "@rexar/reactivity": "link:./packages/reactivity"
   },
   "devDependencies": {
+    "@parcel/transformer-typescript-types": "2.8.3",
+    "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "eslint": "^8.33.0",
