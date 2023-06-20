@@ -35,7 +35,7 @@
     "jest-html-loader": "^1.0.0",
     "parcel": "^2.8.3",
     "rimraf": "^4.1.2",
-    "ts-jest": "^29.0.5"
+    "ts-jest": "^29.1.0"
   },
   "dependencies": {
     "@rexar/reactivity": "*",
@@ -46,4 +46,3 @@
     "tsyringe": "^4.7.0"
   }
 }
-
