@@ -27,7 +27,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@parcel/packager-ts": "2.8.3",
     "@parcel/transformer-typescript-tsc": "^2.9.2",
     "@parcel/transformer-typescript-types": "^2.9.2",
     "@types/jest": "^29.5.2",
@@ -47,3 +46,4 @@
     "tsyringe": "^4.7.0"
   }
 }
+
