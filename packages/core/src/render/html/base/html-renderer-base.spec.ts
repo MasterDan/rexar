@@ -3,7 +3,7 @@ import { IComponentDefinitionBuilder } from '@core/components/@types/IComponentD
 import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { Observable } from 'rxjs';
 import { container } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';

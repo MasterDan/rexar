@@ -1,6 +1,6 @@
 import { IConditionalComponentProps } from '@core/components/builtIn/conditional.component';
 import { dynamic } from '@core/components/builtIn/dynamic.component';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import {
   filter,
   from,

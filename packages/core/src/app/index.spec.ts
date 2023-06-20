@@ -5,7 +5,7 @@ import { el } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import { RefStore } from '@core/render/html/ref-store/ref-store';

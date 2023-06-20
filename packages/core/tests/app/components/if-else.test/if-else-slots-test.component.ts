@@ -1,7 +1,7 @@
 import { defineComponent } from '@core/components';
 import { into, pickTemplate } from '@core/index';
-import { ref$ } from '@core/reactivity/ref';
-import { Ref } from '@core/reactivity/ref/ref';
+import { ref$, Ref } from '@rexar/reactivity';
+
 import template from './if-else-slots-test.component.html';
 
 export const ifElseSotsTest = defineComponent<{ toggler$: Ref<boolean> }>({

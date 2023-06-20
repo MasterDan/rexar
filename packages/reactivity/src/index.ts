@@ -71,3 +71,6 @@ export function ref$<T>(
 export function readonly<T>(ref: RefBase<T>): ReadonlyRef<T> {
   return builder.makeReadonly(ref);
 }
+
+export type { MaybeObservable } from './@types/MaybeObservable';
+export type { MayBeReadonlyRef } from './ref/@types/MayBeReadonlyRef';

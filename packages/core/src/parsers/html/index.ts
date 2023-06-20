@@ -1,6 +1,6 @@
 import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { DocumentRef } from '@core/render/html/documentRef';
 import { isValidString } from '@core/tools/string';

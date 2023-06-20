@@ -1,6 +1,6 @@
 import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built-in-hooks';
 import { IElementReferenceHoolParams } from '@core/components/builtIn/custom/hooks/element-reference.hook';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import {
   combineLatest,

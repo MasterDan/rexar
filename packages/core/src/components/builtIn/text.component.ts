@@ -1,5 +1,4 @@
-import { ref$ } from '@core/reactivity/ref';
-import { Ref } from '@core/reactivity/ref/ref';
+import { ref$, Ref } from '@rexar/reactivity';
 import { container } from 'tsyringe';
 import { IComponentDefinitionBuilder } from '../@types/IComponentDefinitionBuilder';
 import { Component } from '../component';

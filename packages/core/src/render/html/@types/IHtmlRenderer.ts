@@ -1,5 +1,4 @@
-import { WritableReadonlyRef } from '@core/reactivity/ref/readonly.ref.writable';
-import { Ref } from '@core/reactivity/ref/ref';
+import { WritableReadonlyRef, Ref } from '@rexar/reactivity';
 import { Observable } from 'rxjs';
 import { ComponentLifecycle } from '../base/lifecycle';
 import { AnyComponent } from './any-component';

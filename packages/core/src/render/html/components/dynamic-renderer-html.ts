@@ -1,5 +1,5 @@
 import { IDynamicComponentProps } from '@core/components/builtIn/dynamic.component';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import {
   combineLatest,
   filter,
