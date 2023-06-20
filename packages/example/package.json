@@ -1,6 +1,6 @@
 {
   "name": "@rexar/example",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "rexar lib demo",
   "source": "./public/index.html",
   "license": "MIT",
@@ -37,3 +37,4 @@
     "util": "^0.12.3"
   }
 }
+
