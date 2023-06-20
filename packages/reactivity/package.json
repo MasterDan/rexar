@@ -5,6 +5,11 @@
   "source": "src/index.ts",
   "main": "dist/main.js",
   "types": "dist/types.d.ts",
+  "targets": {
+    "main": {
+      "optimize": true
+    }
+  },
   "scripts": {
     "watch": "parcel watch",
     "build": "rimraf dist && parcel build",
@@ -27,3 +32,4 @@
     "tsyringe": "^4.7.0"
   }
 }
+
