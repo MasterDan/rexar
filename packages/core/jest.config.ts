@@ -1,14 +1,24 @@
-import type { Config } from '@jest/types';
+import type { JestConfigWithTsJest } from 'ts-jest';
 
-export default async (): Promise<Config.InitialOptions> => ({
-  verbose: false,
-  transform: {
-    '\\.[jt]s$': 'ts-jest',
-    '^.+\\.html?$': 'jest-html-loader',
-  },
-
+const jestConfig: JestConfigWithTsJest = {
+  // [...]
+  preset: 'ts-jest/presets/default-esm',
+  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
     '@core/(.*)': '<rootDir>/src/$1',
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-});
+  transform: {
+    // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
+    // '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+      },
+    ],
+    '^.+\\.html?$': 'jest-html-loader',
+  },
+};
+
+export default jestConfig;
