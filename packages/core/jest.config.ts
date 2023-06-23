@@ -4,15 +4,20 @@ const jestConfig: JestConfigWithTsJest = {
   // [...]
   extensionsToTreatAsEsm: ['.ts'],
   verbose: true,
-
   moduleNameMapper: {
-    '^@Core/(.*)$': '<rootDir>/src/$1',
-    '^.+\\.html?$': 'jest-html-loader',
+    '^@core/(.*)$': '<rootDir>/src/$1',
+    '^@rexar/reactivity': '<rootDir>/../reactivity/src/index.ts',
+    '^.+\\.html?$': '<rootDir>/jest/text.loader.js',
   },
   transform: {
     // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
     // '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+      },
+    ],
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
