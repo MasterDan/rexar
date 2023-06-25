@@ -1,6 +1,6 @@
 import { defineComponent } from '@core/components';
 import { pickElement } from '@core/components/builtIn/custom/hooks/element-reference.hook';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import template from './test-three.component.html';
 
 export const testThree = defineComponent({

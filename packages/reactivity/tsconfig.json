@@ -6,5 +6,6 @@
     "./src/**/*.html",
     "./tests/**/*.ts",
     "./tests/**/*.html",
+    "../../jest.config.ts",
   ]
 }

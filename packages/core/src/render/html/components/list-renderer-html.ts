@@ -3,7 +3,7 @@ import { IListComponentProps } from '@core/components/builtIn/list.component';
 import { ITextComponentProps } from '@core/components/builtIn/text.component';
 import { Component } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import {
   filter,

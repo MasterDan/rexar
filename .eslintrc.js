@@ -13,6 +13,7 @@ module.exports = {
     project: [
       './packages/core/tsconfig.json',
       './packages/example/tsconfig.json',
+      './packages/reactivity/tsconfig.json',
     ],
   },
   rules: {

@@ -1,5 +1,5 @@
 import { Component, TData } from '@core/components/component';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { Observable, take, lastValueFrom, filter, combineLatest } from 'rxjs';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';

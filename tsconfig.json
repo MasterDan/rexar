@@ -22,6 +22,9 @@
         "paths": {
             "@core/*": [
                 "packages/core/src/*"
+            ],
+            "@reactivity/*": [
+                "packages/reactivity/src/*"
             ]
         }
     },

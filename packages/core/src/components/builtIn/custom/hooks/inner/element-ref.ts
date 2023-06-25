@@ -1,8 +1,12 @@
 import { MaybeObservable } from '@core/@types/MaybeObservable';
-import { readonly, ref$ } from '@core/reactivity/ref';
-import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
-import { WritableReadonlyRef } from '@core/reactivity/ref/readonly.ref.writable';
-import { Ref } from '@core/reactivity/ref/ref';
+import {
+  readonly,
+  ref$,
+  ReadonlyRef,
+  WritableReadonlyRef,
+  Ref,
+} from '@rexar/reactivity';
+
 import {
   combineLatest,
   filter,

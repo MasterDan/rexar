@@ -1,5 +1,5 @@
-import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
-import { WritableReadonlyRef } from '@core/reactivity/ref/readonly.ref.writable';
+import { ReadonlyRef } from '@reactivity/ref/readonly.ref';
+import { WritableReadonlyRef } from '@reactivity/ref/readonly.ref.writable';
 
 export interface IComputedBuilderOptions {
   debounce: number;

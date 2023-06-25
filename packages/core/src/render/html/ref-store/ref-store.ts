@@ -1,6 +1,6 @@
 import { Templates } from '@core/parsers/html';
-import { ref$ } from '@core/reactivity/ref';
-import { Ref } from '@core/reactivity/ref/ref';
+import { ref$, Ref } from '@rexar/reactivity';
+
 import { Observable } from 'rxjs/internal/Observable';
 import { singleton } from 'tsyringe';
 import { ComponentLifecycle } from '../base/lifecycle';

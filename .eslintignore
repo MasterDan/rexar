@@ -1,4 +1,5 @@
 **/node_modules/
 **/dist/
+**/jest/
 **/.eslintrc.js
 **/jest.setup.js

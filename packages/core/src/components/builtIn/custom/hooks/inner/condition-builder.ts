@@ -4,9 +4,8 @@ import { list } from '@core/components/builtIn/list.component';
 import { Component, TData } from '@core/components/component';
 import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ComponentType } from '@core/components/component-type';
-import { ref$ } from '@core/reactivity/ref';
-import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
-import { Ref } from '@core/reactivity/ref/ref';
+import { ref$, Ref, MayBeReadonlyRef } from '@rexar/reactivity';
+
 import { AnyComponent } from '@core/render/html/@types/any-component';
 
 function buildComponent<TProps extends TData = TData>(

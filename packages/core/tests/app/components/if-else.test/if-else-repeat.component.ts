@@ -1,6 +1,6 @@
 import { EventEmitter } from '@core/components/events/event';
 import { defineComponent, into, ref$ } from '@core/index';
-import { Ref } from '@core/reactivity/ref/ref';
+import { Ref } from '@rexar/reactivity';
 import { LifecycleStatuses, repeatComponent } from '../repeat/repeat.component';
 
 export const ifElseRepeat = defineComponent<{

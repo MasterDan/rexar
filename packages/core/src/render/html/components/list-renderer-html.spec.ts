@@ -1,6 +1,6 @@
 import { el } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { container, delay, Lifecycle } from 'tsyringe';
 import { BindingTargetRole } from '../@types/binding-target';
 import { ComponentRendererHtml } from '../component-renderer-html';

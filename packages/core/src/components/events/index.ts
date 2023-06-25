@@ -1,4 +1,4 @@
-import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
+import { ReadonlyRef } from '@rexar/reactivity';
 import { isObservable, Subject } from 'rxjs';
 import { EventEmitter } from './event';
 

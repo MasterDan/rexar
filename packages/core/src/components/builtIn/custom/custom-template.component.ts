@@ -5,8 +5,7 @@ import {
 } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
 import type { TemplateParser, Templates } from '@core/parsers/html';
-import { ref$, readonly } from '@core/reactivity/ref';
-import { ReadonlyRef } from '@core/reactivity/ref/readonly.ref';
+import { ref$, readonly, ReadonlyRef } from '@rexar/reactivity';
 import { Observable, isObservable, filter } from 'rxjs';
 import { container } from 'tsyringe';
 

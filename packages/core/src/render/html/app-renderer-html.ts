@@ -1,4 +1,4 @@
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { inject, injectable } from 'tsyringe';
 import { AnyComponent } from './@types/any-component';
 import { BindingTargetRole } from './@types/binding-target';

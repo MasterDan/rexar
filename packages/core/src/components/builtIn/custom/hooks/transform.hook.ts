@@ -3,8 +3,8 @@ import { Component, TData } from '@core/components/component';
 import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ComponentType } from '@core/components/component-type';
 import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
-import { ref$ } from '@core/reactivity/ref';
-import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
+import { ref$, MayBeReadonlyRef } from '@rexar/reactivity';
+
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ElementTransformer } from '@core/render/html/ref-store/element.transformer';
 import { defineHook } from '@core/tools/hooks/hooks';

@@ -1,4 +1,4 @@
-import { ref$ } from '@core/reactivity/ref';
+import { ref$ } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineHook } from '@core/tools/hooks/hooks';
 import { BuiltInHooks } from './@types/built-in-hooks';

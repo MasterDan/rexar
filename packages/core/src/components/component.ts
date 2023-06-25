@@ -1,6 +1,5 @@
 import { MaybeObservable } from '@core/@types/MaybeObservable';
-import { ref$ } from '@core/reactivity/ref';
-import { Ref } from '@core/reactivity/ref/ref';
+import { ref$, Ref } from '@rexar/reactivity';
 import { isObservable, Observable } from 'rxjs';
 import { ComponentType } from './component-type';
 

@@ -1,5 +1,4 @@
-import { ref$ } from '@core/reactivity/ref';
-import { MayBeReadonlyRef } from '@core/reactivity/ref/@types/MayBeReadonlyRef';
+import { ref$, MayBeReadonlyRef } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { defineComponent } from '..';
 import { ComponentType } from '../component-type';
