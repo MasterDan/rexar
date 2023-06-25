@@ -1,7 +1,7 @@
-import path from 'path';
-
-export function process(sourceText, sourcePath, options) {
-  return {
-    code: `module.exports = ${JSON.stringify(sourceText)};`,
-  };
-}
+module.exports = {
+  process(sourceText) {
+    return {
+      code: `module.exports = ${JSON.stringify(sourceText)};`,
+    };
+  },
+};
