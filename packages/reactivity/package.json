@@ -5,7 +5,6 @@
   "source": "src/index.ts",
   "main": "dist/main.js",
   "types": "dist/types.d.ts",
-  "type": "module",
   "targets": {
     "main": {
       "optimize": true
@@ -35,3 +34,4 @@
     "tsyringe": "^4.7.0"
   }
 }
+
