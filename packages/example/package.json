@@ -2,6 +2,7 @@
   "name": "@rexar/example",
   "version": "1.0.0",
   "description": "rexar lib demo",
+  "private": "true",
   "source": "./public/index.html",
   "license": "MIT",
   "scripts": {
@@ -37,3 +38,4 @@
     "util": "^0.12.3"
   }
 }
+
