@@ -1812,22 +1812,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/transformer-typescript-types@npm:2.8.3":
-  version: 2.8.3
-  resolution: "@parcel/transformer-typescript-types@npm:2.8.3"
-  dependencies:
-    "@parcel/diagnostic": 2.8.3
-    "@parcel/plugin": 2.8.3
-    "@parcel/source-map": ^2.1.1
-    "@parcel/ts-utils": 2.8.3
-    "@parcel/utils": 2.8.3
-    nullthrows: ^1.1.1
-  peerDependencies:
-    typescript: ">=3.0.0"
-  checksum: 60d879b25481d22f8588e4b5e499193164393db39f1a4d41a9779b12fd1115b053658370268374b56bc855c2214930a4466cdf845d9d4cd76e54ed1ee1bb6317
-  languageName: node
-  linkType: hard
-
 "@parcel/transformer-typescript-types@npm:^2.8.3":
   version: 2.9.3
   resolution: "@parcel/transformer-typescript-types@npm:2.9.3"
@@ -1841,17 +1825,6 @@ __metadata:
   peerDependencies:
     typescript: ">=3.0.0"
   checksum: 33ac58ec7d7163b4181ec1b27b55e7d533451991de9adfabfee7ede7a3f3eef6587cb845abb54d33565ef45d1be9dd4664d5d1a127ff8b1f72fc8486abf8415c
-  languageName: node
-  linkType: hard
-
-"@parcel/ts-utils@npm:2.8.3":
-  version: 2.8.3
-  resolution: "@parcel/ts-utils@npm:2.8.3"
-  dependencies:
-    nullthrows: ^1.1.1
-  peerDependencies:
-    typescript: ">=3.0.0"
-  checksum: 002665a6e890420f15cc257afab814355a84e01a554d184e309c483e5c4fc7d2fda3edf9e8fc138a9f50792e9d3c95b705bc683f582bbc3f8e770f96ed305f24
   languageName: node
   linkType: hard
 
@@ -2021,6 +1994,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@rexar/core@link:./packages/core::locator=rexar%40workspace%3A."
   languageName: node
+  linkType: soft
+
+"@rexar/di@workspace:packages/di":
+  version: 0.0.0-use.local
+  resolution: "@rexar/di@workspace:packages/di"
+  dependencies:
+    "@parcel/transformer-typescript-types": ^2.8.3
+    "@types/jest": ^29.5.2
+    jest: ^29.5.0
+    parcel: ^2.8.3
+    rimraf: ^5.0.1
+    ts-jest: ^29.1.0
+    ts-node: ^10.9.1
+    tslib: ^2.5.3
+  languageName: unknown
   linkType: soft
 
 "@rexar/example@workspace:packages/example":
@@ -7761,7 +7749,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "rexar@workspace:."
   dependencies:
-    "@parcel/transformer-typescript-types": 2.8.3
+    "@parcel/transformer-typescript-types": ^2.8.3
     "@rexar/core": "link:./packages/core"
     "@rexar/reactivity": "link:./packages/reactivity"
     "@types/jsdom": ^21.1.1

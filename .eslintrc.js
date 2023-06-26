@@ -11,9 +11,10 @@ module.exports = {
   root: true,
   parserOptions: {
     project: [
+      './packages/di/tsconfig.json',
       './packages/core/tsconfig.json',
-      './packages/example/tsconfig.json',
       './packages/reactivity/tsconfig.json',
+      './packages/example/tsconfig.json',
     ],
   },
   rules: {
