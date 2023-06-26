@@ -1,4 +1,4 @@
-import { IToken } from './@types/IToken';
+import { AnyToken, IToken } from './@types/IToken';
 import { TokenOperator } from './@types/TokenOperator';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,27 +27,25 @@ export class InjectionToken<TValue = any> implements IToken<TValue> {
     );
   }
 
-  pipe<TResult, TMiddle, TMiddle2, TMiddle3>(
-    op1: TokenOperator<TValue, TMiddle>,
-    op2: TokenOperator<TMiddle, TMiddle2>,
-    op3: TokenOperator<TMiddle2, TMiddle3>,
-    op4: TokenOperator<TMiddle3, TResult>,
-  ): IToken<TResult>;
-  pipe<TResult, TMiddle, TMiddle2>(
-    op1: TokenOperator<TValue, TMiddle>,
-    op2: TokenOperator<TMiddle, TMiddle2>,
-    op3: TokenOperator<TMiddle2, TResult>,
-  ): IToken<TResult>;
-  pipe<TResult, TMiddle>(
-    op1: TokenOperator<TValue, TMiddle>,
-    op2: TokenOperator<TMiddle, TResult>,
-  ): IToken<TResult>;
   pipe<TResult>(operator: TokenOperator<TValue, TResult>): IToken<TResult>;
+  pipe<B, C>(
+    op1: TokenOperator<TValue, B>,
+    op2: TokenOperator<B, C>,
+  ): IToken<C>;
+  pipe<B, C, D>(
+    op1: TokenOperator<TValue, B>,
+    op2: TokenOperator<B, C>,
+    op3: TokenOperator<C, D>,
+  ): IToken<D>;
+  pipe<B, C, D, E>(
+    op1: TokenOperator<TValue, B>,
+    op2: TokenOperator<B, C>,
+    op3: TokenOperator<C, D>,
+    op4: TokenOperator<D, E>,
+    ...rest: TokenOperator[]
+  ): IToken<E>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  pipe<TResult = any>(...operators: TokenOperator[]): IToken<TResult> {
-    return operators.reduce(
-      (t, o) => o(t),
-      this as IToken<unknown>,
-    ) as IToken<TResult>;
+  pipe(...operators: TokenOperator[]): AnyToken {
+    return operators.reduce((t, o) => o(t), this as AnyToken) as AnyToken;
   }
 }
