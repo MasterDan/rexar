@@ -1,14 +1,11 @@
-import { AnyToken, IToken } from './@types/IToken';
+import { AnyFnToken, IToken } from './@types/IToken';
+import { TokenOperator } from './@types/TokenOperator';
 
 export class ValueToken<TValue> implements IToken<TValue> {
-  constructor(private token: IToken<TValue>) {}
+  constructor(private token: IToken<TValue, () => TValue>) {}
 
-  provide(resolver: () => TValue): void {
-    this.token.provide(resolver);
-  }
-
-  provideValue(value: TValue) {
-    this.provide(() => value);
+  provide(value: TValue): void {
+    this.token.provide(() => value);
   }
 
   resolve(): TValue {
@@ -16,10 +13,15 @@ export class ValueToken<TValue> implements IToken<TValue> {
   }
 }
 
-export function useValue<TValue>(value: TValue) {
-  return (arg: AnyToken) => {
-    const valueToken = new ValueToken<TValue>(arg);
-    valueToken.provideValue(value);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useValue<TValue, TFrom = any>(
+  defaultVal?: TValue,
+): TokenOperator<TFrom, () => TFrom, TValue, TValue> {
+  return (arg: AnyFnToken) => {
+    const valueToken: IToken<TValue> = new ValueToken<TValue>(arg);
+    if (defaultVal != null) {
+      valueToken.provide(defaultVal);
+    }
     return valueToken;
   };
 }
