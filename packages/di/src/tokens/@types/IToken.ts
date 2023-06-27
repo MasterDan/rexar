@@ -1,4 +1,6 @@
 export interface IToken<TValue, TResolver = TValue> {
+  key: symbol;
+  name: string;
   provide(resolver: TResolver): void;
   resolve(): TValue;
 }
