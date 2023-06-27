@@ -2,7 +2,7 @@ import { AnyFnToken, IToken } from './@types/IToken';
 import { TokenOperator } from './@types/TokenOperator';
 
 export class ValueToken<TValue> implements IToken<TValue> {
-  constructor(private token: IToken<TValue, () => TValue>) {}
+  constructor(private token: AnyFnToken) {}
 
   provide(value: TValue): void {
     this.token.provide(() => value);
