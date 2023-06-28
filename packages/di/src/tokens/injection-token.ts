@@ -1,3 +1,4 @@
+import type { DiContainer } from '../container/di-container';
 import { AnyToken, IToken } from './@types/IToken';
 import { TokenOperator } from './@types/TokenOperator';
 
@@ -29,7 +30,10 @@ export class InjectionToken<TValue = any>
     );
   }
 
-  pipe(...operators: TokenOperator[]): AnyToken {
-    return operators.reduce((t, o) => o(t), this as AnyToken) as AnyToken;
+  pipe(container: DiContainer, ...operators: TokenOperator[]): AnyToken {
+    return operators.reduce(
+      (t, o) => o(t, container),
+      this as AnyToken,
+    ) as AnyToken;
   }
 }

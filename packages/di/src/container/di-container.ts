@@ -68,16 +68,17 @@ export class DiContainer {
   ): AnyToken;
   createToken<TValue>(name: string, ...operators: TokenOperator[]): AnyToken {
     const token = new InjectionToken<TValue>(name);
-    const finalToken = operators.length > 0 ? token.pipe(...operators) : token;
+    const finalToken =
+      operators.length > 0 ? token.pipe(this, ...operators) : token;
     this.tokens[finalToken.key] = finalToken;
     return finalToken;
   }
 
   resolve<TValue>(key: string | symbol) {
     if (typeof key === 'string') {
-      const token = Object.values<IToken<TValue>>(this.tokens).find(
-        (t) => t.name === key,
-      );
+      const token = Object.getOwnPropertySymbols(this.tokens)
+        .map((s) => this.tokens[s] as IToken<TValue>)
+        .find((t) => t.name === key);
       if (token != null) {
         return token.resolve();
       }
@@ -91,3 +92,5 @@ export class DiContainer {
     }
   }
 }
+
+export const container = new DiContainer();
