@@ -1,5 +1,6 @@
 import { container } from '../container/di-container';
 import { useFunction } from './function-token';
+import { singleton } from './singleton-token';
 import { useValue } from './value-token';
 
 describe('dependecy injection', () => {
@@ -34,5 +35,29 @@ describe('dependecy injection', () => {
     const multi =
       container.resolve<(x: number, y: number) => number>('simple-func');
     expect(multi(2, 3)).toBe(6);
+  });
+  test('singleton Injection', () => {
+    const valueToken = container.createToken('value', useValue<string>());
+    valueToken.provide('foo');
+    let sr1 = valueToken.resolve();
+    const sr2 = valueToken.resolve();
+    expect(sr1).toBe('foo');
+    expect(sr2).toBe('foo');
+    sr1 = 'bar';
+    expect(sr1).toBe('bar');
+    expect(sr2).toBe('foo');
+    const singletonValueToken = container.createToken(
+      'value',
+      useValue<{ val: string }>(),
+      singleton(),
+    );
+    singletonValueToken.provide({ val: 'foo' });
+    const r1 = singletonValueToken.resolve();
+    const r2 = singletonValueToken.resolve();
+    expect(r1.val).toBe('foo');
+    expect(r2.val).toBe('foo');
+    r1.val = 'bar';
+    expect(r1.val).toBe('bar');
+    expect(r2.val).toBe('bar');
   });
 });
