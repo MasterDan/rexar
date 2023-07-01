@@ -14,4 +14,4 @@ export {
 export { createEvent, triggerEvent } from './components/events';
 export { EventEmitter } from './components/events/event';
 
-export { ref$ } from '@rexar/reactivity';
+export { ref$, Ref, ReadonlyRef, WritableReadonlyRef } from '@rexar/reactivity';
