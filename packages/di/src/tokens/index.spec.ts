@@ -2,6 +2,8 @@
 import { container } from '../container/di-container';
 import { useClass } from './class.token';
 import { useFunction } from './function.token';
+import { Lazy } from './lazy';
+import { lazy } from './lazy.token';
 import { singleton } from './singleton.token';
 import { useValue } from './value.token';
 
@@ -13,6 +15,18 @@ class TestClass {
   val = 'bar';
 
   constructor(public inner: TestInner) {}
+}
+
+class TestInnerLazy {
+  val = 'foo';
+
+  constructor(public inner: Lazy<TestLazyClass>) {}
+}
+
+class TestLazyClass {
+  val = 'bar';
+
+  constructor(public inner: Lazy<TestInnerLazy>) {}
 }
 
 describe('dependecy injection', () => {
@@ -96,5 +110,27 @@ describe('dependecy injection', () => {
     stc2.val = 'baz';
     expect(stc.val).toBe('baz');
     expect(stc2.val).toBe('baz');
+  });
+  test('lazy injection', () => {
+    const classToken = container.createToken(
+      'lazy',
+      useClass<TestLazyClass>((c) => [c.resolve('inner-lazy')]),
+      singleton(),
+      lazy(),
+    );
+    classToken.provide(TestLazyClass);
+    const innerClassToken = container.createToken(
+      'inner-lazy',
+      useClass<TestInnerLazy>((c) => [c.resolve('lazy')]),
+      lazy(),
+    );
+    innerClassToken.provide(TestInnerLazy);
+    const instance = classToken.resolve();
+    expect(instance.value.val).toBe('bar');
+    expect(instance.value.inner.value.val).toBe('foo');
+    expect(instance.value.inner.value.inner.value.val).toBe('bar');
+    instance.value.val = 'baz';
+    expect(instance.value.val).toBe('baz');
+    expect(instance.value.inner.value.inner.value.val).toBe('baz');
   });
 });
