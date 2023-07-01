@@ -1,20 +1,19 @@
 import { combineLatest, debounceTime, switchMap, tap } from 'rxjs';
-import { inject, injectable } from 'tsyringe';
+import { Lazy } from '@rexar/di';
 import type { IRefBuilder } from '../ref/@types/IRefBuilder';
 import type { RefBase } from '../ref/base.ref';
 import type { ReadonlyRef } from '../ref/readonly.ref';
 import { BindingContext } from './binding-context';
 import {
   IComputedBuilderOptions,
-  IComputedBuiler,
-} from './@types/IComputedBuiler';
+  IComputedBuilder,
+} from './@types/IComputedBuilder';
 import { WritableReadonlyRef } from '../ref/readonly.ref.writable';
 
-@injectable()
-export class ComputedBuilder implements IComputedBuiler {
+export class ComputedBuilder implements IComputedBuilder {
   constructor(
     private context: BindingContext,
-    @inject('IRefBuilder') private refBuilder: IRefBuilder,
+    private refBuilder: Lazy<IRefBuilder>,
   ) {}
 
   build<T>(
@@ -40,7 +39,7 @@ export class ComputedBuilder implements IComputedBuiler {
     } as IComputedBuilderOptions;
 
     const contextKey = Symbol('computed');
-    const innerRefs$ = this.refBuilder.buildRef<RefBase[]>([]);
+    const innerRefs$ = this.refBuilder.value.buildRef<RefBase[]>([]);
 
     const compute = () => {
       this.context.beginScope(contextKey, (ref) => {
@@ -54,7 +53,7 @@ export class ComputedBuilder implements IComputedBuiler {
       return resultValue;
     };
 
-    const result = this.refBuilder.buildRef<T>(compute());
+    const result = this.refBuilder.value.buildRef<T>(compute());
 
     innerRefs$
       .pipe(
@@ -69,7 +68,7 @@ export class ComputedBuilder implements IComputedBuiler {
       });
 
     return isComptedWritable
-      ? this.refBuilder.buildRef(result, setOrOptions, result.value)
-      : this.refBuilder.makeReadonly(result);
+      ? this.refBuilder.value.buildRef(result, setOrOptions, result.value)
+      : this.refBuilder.value.makeReadonly(result);
   }
 }

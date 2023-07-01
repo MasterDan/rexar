@@ -1,5 +1,5 @@
 {
-  "name": "@rexar/reactivity",
+  "name": "@rexar/di",
   "version": "1.0.0",
   "license": "MIT",
   "source": "src/index.ts",
@@ -7,10 +7,7 @@
   "types": "dist/types.d.ts",
   "targets": {
     "main": {
-      "optimize": true,
-      "includeNodeModules": [
-        "@rexar/di"
-      ]
+      "optimize": true
     }
   },
   "scripts": {
@@ -19,7 +16,7 @@
     "test": "jest"
   },
   "alias": {
-    "@reactivity/*": "../../packages/reactivity/src/$1"
+    "@di/*": "../../packages/di/src/$1"
   },
   "devDependencies": {
     "@parcel/transformer-typescript-tsc": "2.8.3",
@@ -32,8 +29,6 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "@rexar/di": "*",
-    "rxjs": "^7.8.1",
     "tslib": "^2.5.3"
   }
 }

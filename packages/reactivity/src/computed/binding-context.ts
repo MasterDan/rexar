@@ -1,7 +1,5 @@
-import { singleton } from 'tsyringe';
 import { RefBase } from '../ref/base.ref';
 
-@singleton()
 export class BindingContext {
   private scopeStack: symbol[] = [];
 

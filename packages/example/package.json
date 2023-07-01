@@ -2,7 +2,6 @@
   "name": "@rexar/example",
   "version": "1.0.0",
   "description": "rexar lib demo",
-  "private": "true",
   "source": "./public/index.html",
   "license": "MIT",
   "scripts": {
@@ -10,8 +9,7 @@
     "build": "rimraf dist && parcel build"
   },
   "dependencies": {
-    "@parcel/packager-ts": "^2.8.3",
-    "@parcel/transformer-typescript-tsc": "^2.8.3",
+    "@parcel/transformer-typescript-tsc": "2.8.3",
     "@rexar/core": "*",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
@@ -26,7 +24,7 @@
     "events": "^3.1.0",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
-    "parcel": "^2.8.3",
+    "parcel": "2.8.3",
     "path-browserify": "^1.0.0",
     "process": "^0.11.10",
     "punycode": "^1.4.1",
@@ -38,4 +36,3 @@
     "util": "^0.12.3"
   }
 }
-
