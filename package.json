@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@rexar/core": "link:./packages/core",
+    "@rexar/di": "link:./packages/di",
     "@rexar/reactivity": "link:./packages/reactivity"
   },
   "devDependencies": {

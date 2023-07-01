@@ -1996,7 +1996,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@rexar/di@workspace:packages/di":
+"@rexar/di@*, @rexar/di@workspace:packages/di":
   version: 0.0.0-use.local
   resolution: "@rexar/di@workspace:packages/di"
   dependencies:
@@ -2009,6 +2009,12 @@ __metadata:
     ts-node: ^10.9.1
     tslib: ^2.5.3
   languageName: unknown
+  linkType: soft
+
+"@rexar/di@link:./packages/di::locator=rexar%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@rexar/di@link:./packages/di::locator=rexar%40workspace%3A."
+  languageName: node
   linkType: soft
 
 "@rexar/example@workspace:packages/example":
@@ -2047,16 +2053,15 @@ __metadata:
   resolution: "@rexar/reactivity@workspace:packages/reactivity"
   dependencies:
     "@parcel/transformer-typescript-types": ^2.8.3
+    "@rexar/di": "*"
     "@types/jest": ^29.5.2
     jest: ^29.5.0
     parcel: ^2.8.3
-    reflect-metadata: ^0.1.13
     rimraf: ^5.0.1
     rxjs: ^7.8.1
     ts-jest: ^29.1.0
     ts-node: ^10.9.1
     tslib: ^2.5.3
-    tsyringe: ^4.7.0
   languageName: unknown
   linkType: soft
 
@@ -7751,6 +7756,7 @@ __metadata:
   dependencies:
     "@parcel/transformer-typescript-types": ^2.8.3
     "@rexar/core": "link:./packages/core"
+    "@rexar/di": "link:./packages/di"
     "@rexar/reactivity": "link:./packages/reactivity"
     "@types/jsdom": ^21.1.1
     "@types/node": ^20.3.1

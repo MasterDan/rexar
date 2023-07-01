@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { container, delay, Lifecycle } from 'tsyringe';
-import { IComputedBuilderOptions } from './computed/@types/IComputedBuiler';
+import { BindingContext } from './computed/binding-context';
+import { IComputedBuilderOptions } from './computed/@types/IComputedBuilder';
 import { ComputedBuilder } from './computed/computed-builder';
 import { IRefBuilder } from './ref/@types/IRefBuilder';
 import { RefBase } from './ref/base.ref';
@@ -8,22 +8,19 @@ import { ReadonlyRef } from './ref/readonly.ref';
 import { WritableReadonlyRef } from './ref/readonly.ref.writable';
 import { Ref } from './ref/ref';
 import { RefBuilder } from './ref/ref-builder';
+import {
+  bindingContextToken,
+  computedBuilderToken,
+  refBuilderToken,
+} from './module';
 
 const buildRefModule = () => {
-  const refContainer = container.createChildContainer();
-  refContainer.register(
-    'IRefBuilder',
-    { useToken: delay(() => RefBuilder) },
-    { lifecycle: Lifecycle.Singleton },
-  );
-  refContainer.register(
-    'IComputedBuilder',
-    { useToken: delay(() => ComputedBuilder) },
-    { lifecycle: Lifecycle.Singleton },
-  );
+  bindingContextToken.provide(BindingContext);
+  refBuilderToken.provide(RefBuilder);
+  computedBuilderToken.provide(ComputedBuilder);
 
-  const refbulder = refContainer.resolve<IRefBuilder>('IRefBuilder');
-  return refbulder;
+  const refbulder = refBuilderToken.resolve();
+  return refbulder.value;
 };
 
 const builder: IRefBuilder = buildRefModule();

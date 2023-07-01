@@ -9,7 +9,7 @@ export type WritableComputedArg<T> = { get: () => T; set: (value: T) => void };
 
 export type ComputedBuilderArg<T> = (() => T) | WritableComputedArg<T>;
 
-export interface IComputedBuiler {
+export interface IComputedBuilder {
   build<T>(
     fn: () => T,
     setOrOptions?: Partial<IComputedBuilderOptions>,

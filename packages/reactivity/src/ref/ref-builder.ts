@@ -1,22 +1,18 @@
 import { MaybeObservable } from '@reactivity/@types/MaybeObservable';
 import { isObservable, Observable } from 'rxjs';
-import { inject, injectable } from 'tsyringe';
+import { Lazy } from '@rexar/di';
 import { ReadonlyRef } from './readonly.ref';
 import { RefBase } from './base.ref';
 import { Ref } from './ref';
 import { IRefBuilder } from './@types/IRefBuilder';
 import type {
   IComputedBuilderOptions,
-  IComputedBuiler,
-} from '../computed/@types/IComputedBuiler';
+  IComputedBuilder,
+} from '../computed/@types/IComputedBuilder';
 import { WritableReadonlyRef } from './readonly.ref.writable';
 
-@injectable()
 export class RefBuilder implements IRefBuilder {
-  constructor(
-    @inject('IComputedBuilder')
-    private computedBuilder: IComputedBuiler,
-  ) {}
+  constructor(private computedBuilder: Lazy<IComputedBuilder>) {}
 
   buildRef<T>(
     init: () => T,
@@ -49,12 +45,12 @@ export class RefBuilder implements IRefBuilder {
     if (typeof init === 'function') {
       // writable or "normal"
       return typeof osfOne === 'function'
-        ? this.computedBuilder.build(
+        ? this.computedBuilder.value.build(
             init as () => T,
             osfOne as (arg: T) => void,
             osfTwo as Partial<IComputedBuilderOptions>,
           )
-        : this.computedBuilder.build(
+        : this.computedBuilder.value.build(
             init as () => T,
             osfOne as Partial<IComputedBuilderOptions>,
           );
