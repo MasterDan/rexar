@@ -1,7 +1,7 @@
 import { AnyFnToken, IToken } from './@types/IToken';
 import { TokenOperator } from './@types/TokenOperator';
 
-export class ValueToken<TValue> implements IToken<TValue> {
+class ValueToken<TValue> implements IToken<TValue> {
   key: symbol;
 
   name: string;

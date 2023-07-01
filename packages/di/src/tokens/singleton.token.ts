@@ -1,9 +1,7 @@
 import { IToken } from './@types/IToken';
 import { TokenOperator } from './@types/TokenOperator';
 
-export class SingletonToken<TValue, TResolver>
-  implements IToken<TValue, TResolver>
-{
+class SingletonToken<TValue, TResolver> implements IToken<TValue, TResolver> {
   key: symbol;
 
   name: string;

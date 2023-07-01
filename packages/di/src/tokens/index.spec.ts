@@ -1,7 +1,19 @@
+/* eslint-disable max-classes-per-file */
 import { container } from '../container/di-container';
+import { useClass } from './class.token';
 import { useFunction } from './function.token';
 import { singleton } from './singleton.token';
 import { useValue } from './value.token';
+
+class TestInner {
+  val = 'foo';
+}
+
+class TestClass {
+  val = 'bar';
+
+  constructor(public inner: TestInner) {}
+}
 
 describe('dependecy injection', () => {
   test('value injection', () => {
@@ -36,28 +48,53 @@ describe('dependecy injection', () => {
       container.resolve<(x: number, y: number) => number>('simple-func');
     expect(multi(2, 3)).toBe(6);
   });
+  test('class innjection', () => {
+    const innerToken = container.createToken(
+      'inner-class',
+      useClass<TestInner>(),
+    );
+    innerToken.provide(TestInner);
+    const classToken = container.createToken(
+      'test-class',
+      useClass<TestClass>((c) => [c.resolve('inner-class')]),
+    );
+    classToken.provide(TestClass);
+    const testClassInst = classToken.resolve();
+    expect(testClassInst.inner.val).toBe('foo');
+    expect(testClassInst.val).toBe('bar');
+  });
   test('singleton Injection', () => {
-    const valueToken = container.createToken('value', useValue<string>());
-    valueToken.provide('foo');
-    let sr1 = valueToken.resolve();
-    const sr2 = valueToken.resolve();
-    expect(sr1).toBe('foo');
-    expect(sr2).toBe('foo');
-    sr1 = 'bar';
-    expect(sr1).toBe('bar');
-    expect(sr2).toBe('foo');
-    const singletonValueToken = container.createToken(
-      'value',
-      useValue<{ val: string }>(),
+    const innerToken = container.createToken(
+      'inner-class',
+      useClass<TestInner>(),
+    );
+    innerToken.provide(TestInner);
+    const classToken = container.createToken(
+      'test-class',
+      useClass<TestClass>((c) => [c.resolve('inner-class')]),
+    );
+    const classTokenSingleton = container.createToken(
+      'test-class',
+      useClass<TestClass>((c) => [c.resolve('inner-class')]),
       singleton(),
     );
-    singletonValueToken.provide({ val: 'foo' });
-    const r1 = singletonValueToken.resolve();
-    const r2 = singletonValueToken.resolve();
-    expect(r1.val).toBe('foo');
-    expect(r2.val).toBe('foo');
-    r1.val = 'bar';
-    expect(r1.val).toBe('bar');
-    expect(r2.val).toBe('bar');
+    classToken.provide(TestClass);
+    classTokenSingleton.provide(TestClass);
+
+    const tc = classToken.resolve();
+    const tc2 = classToken.resolve();
+    expect(tc.val).toBe('bar');
+    expect(tc2.val).toBe('bar');
+    tc2.val = 'baz';
+    expect(tc.val).toBe('bar');
+    expect(tc2.val).toBe('baz');
+
+    const stc = classTokenSingleton.resolve();
+    const stc2 = classTokenSingleton.resolve();
+    expect(stc.val).toBe('bar');
+    expect(stc2.val).toBe('bar');
+    stc2.val = 'baz';
+    expect(stc.val).toBe('baz');
+    expect(stc2.val).toBe('baz');
   });
 });

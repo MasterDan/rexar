@@ -1,10 +1,9 @@
 import type { DiContainer } from '../container/di-container';
 import { AnyFnToken, IToken } from './@types/IToken';
 import { TokenOperator } from './@types/TokenOperator';
+import { AnyAray } from './@types/AnyAray';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyAray = Array<any>;
-export class FunctionToken<
+class FunctionToken<
   TArgs extends AnyAray,
   TResult,
   TInitialArgs extends AnyAray = TArgs,
@@ -41,13 +40,13 @@ export function useFunction<
   TResult,
   TArgs extends AnyAray,
   TInitialArgs extends AnyAray = TArgs,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TFrom = any,
 >(
   transformArgs?: (container: DiContainer, ...args: TInitialArgs) => TArgs,
 ): TokenOperator<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  () => any,
+  TFrom,
+  () => TFrom,
   (...args: TInitialArgs) => TResult,
   (...args: TArgs) => TResult
 > {
