@@ -1,6 +1,6 @@
 import { AnyToken, IToken } from '../tokens/@types/IToken';
 import { TokenOperator } from '../tokens/@types/TokenOperator';
-import { InjectionToken } from '../tokens/injection-token';
+import { InjectionToken } from '../tokens/injection.token';
 
 export class DiContainer {
   tokens: Record<symbol, AnyToken | undefined> = {};

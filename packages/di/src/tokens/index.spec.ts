@@ -1,7 +1,7 @@
 import { container } from '../container/di-container';
-import { useFunction } from './function-token';
-import { singleton } from './singleton-token';
-import { useValue } from './value-token';
+import { useFunction } from './function.token';
+import { singleton } from './singleton.token';
+import { useValue } from './value.token';
 
 describe('dependecy injection', () => {
   test('value injection', () => {
