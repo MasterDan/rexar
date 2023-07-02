@@ -12,6 +12,10 @@ class LazyToken<T, TResolver> implements IToken<Lazy<T>, TResolver> {
     this.name = token.name;
   }
 
+  $clone(): IToken<Lazy<T>, TResolver> {
+    return new LazyToken(this.token.$clone());
+  }
+
   provide(resolver: TResolver): void {
     this.token.provide(resolver);
   }

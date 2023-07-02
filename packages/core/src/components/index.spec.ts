@@ -42,3 +42,4 @@ describe('component class', () => {
     expect(inst.getProp('n')).toBe(20);
   });
 });
+

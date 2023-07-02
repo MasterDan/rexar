@@ -1,12 +1,13 @@
 import { el } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { ref$ } from '@rexar/reactivity';
-import { container, delay, Lifecycle } from 'tsyringe';
+import { container, singleton, useClass } from '@rexar/di';
 import { BindingTargetRole } from '../@types/binding-target';
 import { ComponentRendererHtml } from '../component-renderer-html';
 import { ComponentRendererResolver } from '../component-renderer-resolver';
 import { DocumentRef } from '../documentRef';
 import { ListRendererHtml } from './list-renderer-html';
+import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 
 class ListRendererTest extends ListRendererHtml {
   public get comp$() {
@@ -16,15 +17,17 @@ class ListRendererTest extends ListRendererHtml {
 
 describe('list-renderer-html', () => {
   beforeAll(() => {
-    container.register(
-      'IComponentRendererResolver',
-      {
-        useToken: delay(() => ComponentRendererResolver),
-      },
-      { lifecycle: Lifecycle.Singleton },
-    );
-
-    container.register('IHtmlRenderer', ComponentRendererHtml);
+    container
+      .createToken('IComponentRendererResolver', useClass(), singleton())
+      .provide(ComponentRendererResolver);
+    container
+      .createToken(
+        'IHtmlRenderer',
+        useClass<IHtmlRenderer>((c) => [
+          c.resolve('IComponentRendererResolver'),
+        ]),
+      )
+      .provide(ComponentRendererHtml);
   });
   test('component leak tests', () => {
     const listRendererOne = new ListRendererTest();
@@ -60,7 +63,7 @@ describe('list-renderer-html', () => {
   });
 
   test('simple list', async () => {
-    const docRef = container.resolve(DocumentRef);
+    const docRef = container.resolve<DocumentRef>('DocumentRef');
     const doc = await docRef.getDocument();
     const rootDiv = doc.createElement('div');
     const listRenderer = new ListRendererHtml();

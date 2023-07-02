@@ -2,7 +2,6 @@ import { Templates } from '@core/parsers/html';
 import { ref$, Ref } from '@rexar/reactivity';
 
 import { Observable } from 'rxjs/internal/Observable';
-import { singleton } from 'tsyringe';
 import { ComponentLifecycle } from '../base/lifecycle';
 import { ElementReference } from './element.reference';
 import { ElementTransformer } from './element.transformer';
@@ -16,7 +15,6 @@ type RefStorage = Record<string, INodeRefs | undefined>;
 
 type InnerTemplates = Templates['inner'];
 
-@singleton()
 /** Global storage for Components or HTML elements */
 export class RefStore {
   private storages: Record<symbol, RefStorage | undefined> = {};

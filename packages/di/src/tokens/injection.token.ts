@@ -17,6 +17,10 @@ export class InjectionToken<TValue = any>
     this.key = Symbol(name);
   }
 
+  $clone(): IToken<TValue, () => TValue> {
+    return new InjectionToken(this.name);
+  }
+
   provide(resolver: () => TValue): void {
     this.resolver = resolver;
   }

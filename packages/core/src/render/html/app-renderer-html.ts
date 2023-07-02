@@ -1,15 +1,13 @@
 import { ref$ } from '@rexar/reactivity';
-import { inject, injectable } from 'tsyringe';
 import { AnyComponent } from './@types/any-component';
 import { BindingTargetRole } from './@types/binding-target';
 import type { IHtmlRenderer } from './@types/IHtmlRenderer';
 import { ComponentLifecycle } from './base/lifecycle';
 
-@injectable()
 export class AppRendererHtml {
   lifecycle$ = ref$(ComponentLifecycle.Created);
 
-  constructor(@inject('IHtmlRenderer') private renderer: IHtmlRenderer) {
+  constructor(private renderer: IHtmlRenderer) {
     this.renderer.subscribeParentLifecycle(this.lifecycle$);
   }
 

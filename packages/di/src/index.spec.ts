@@ -1,11 +1,12 @@
 /* eslint-disable max-classes-per-file */
-import { container } from '../container/di-container';
-import { useClass } from './class.token';
-import { useFunction } from './function.token';
-import { Lazy } from './lazy';
-import { lazy } from './lazy.token';
-import { singleton } from './singleton.token';
-import { useValue } from './value.token';
+import { container } from './container/di-container';
+import { useClass } from './tokens/class.token';
+import { useFunction } from './tokens/function.token';
+import { Lazy } from './tokens/lazy';
+import { lazy } from './tokens/lazy.token';
+import { multiple } from './tokens/multiple.token';
+import { singleton } from './tokens/singleton.token';
+import { useValue } from './tokens/value.token';
 
 class TestInner {
   val = 'foo';
@@ -132,5 +133,16 @@ describe('dependecy injection', () => {
     instance.value.val = 'baz';
     expect(instance.value.val).toBe('baz');
     expect(instance.value.inner.value.inner.value.val).toBe('baz');
+  });
+  test('multiple resolve', () => {
+    const token = container.createToken(
+      'multi',
+      useValue<number>(),
+      multiple(),
+    );
+    token.provide(1);
+    token.provide(2);
+    token.provide(3);
+    expect(token.resolve()).toEqual([1, 2, 3]);
   });
 });

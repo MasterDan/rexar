@@ -1,5 +1,5 @@
 import { DocumentRef } from '@core/render/html/documentRef';
-import { container } from 'tsyringe';
+import { container } from '@rexar/di';
 import { resolveAplicationRenderer } from '@core/render/html';
 import { lastValueFrom } from 'rxjs';
 import { Component, TData } from '@core/components/component';
@@ -15,7 +15,9 @@ export function createApp<TProps extends TData>(
   }
   const renderer = resolveAplicationRenderer();
   const mount = async (selector: string) => {
-    const doc = await lastValueFrom(container.resolve(DocumentRef).instance$);
+    const doc = await lastValueFrom(
+      container.resolve<DocumentRef>('DocumentRef').instance$,
+    );
     const el = doc.querySelector(selector);
     if (el) {
       await renderer.render(rootComponent, el as HTMLElement);

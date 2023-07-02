@@ -11,6 +11,10 @@ class ValueToken<TValue> implements IToken<TValue> {
     this.name = token.name;
   }
 
+  $clone(): IToken<TValue, TValue> {
+    return new ValueToken(this.token.$clone());
+  }
+
   provide(value: TValue): void {
     this.token.provide(() => value);
   }
@@ -20,8 +24,7 @@ class ValueToken<TValue> implements IToken<TValue> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useValue<TValue, TFrom = any>(
+export function useValue<TValue, TFrom = unknown>(
   defaultVal?: TValue,
 ): TokenOperator<TFrom, () => TFrom, TValue, TValue> {
   return (arg: AnyFnToken) => {

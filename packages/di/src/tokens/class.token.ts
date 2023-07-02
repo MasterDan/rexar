@@ -16,6 +16,10 @@ class ClassToken<T, TArgs extends AnyAray = AnyAray>
     this.key = token.key;
   }
 
+  $clone(): IToken<T, Constructor<T, TArgs>> {
+    return new ClassToken(this.token.$clone(), this.resolveArgs);
+  }
+
   provide(resolver: Constructor<T, TArgs>): void {
     this.token.provide(() => resolver);
   }
@@ -26,8 +30,7 @@ class ClassToken<T, TArgs extends AnyAray = AnyAray>
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useClass<T, TArgs extends AnyAray = AnyAray, TFrom = any>(
+export function useClass<T, TArgs extends AnyAray = AnyAray, TFrom = unknown>(
   resolveArgs: (container: DiContainer) => TArgs = () => [] as unknown as TArgs,
 ): TokenOperator<TFrom, () => TFrom, T, Constructor<T, TArgs>> {
   return (token, container) =>

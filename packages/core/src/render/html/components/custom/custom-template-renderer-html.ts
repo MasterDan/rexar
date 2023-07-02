@@ -2,7 +2,6 @@ import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-
 import { list } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
 import { firstValueFrom, from, Observable, of, switchMap, tap } from 'rxjs';
-import { injectable, injectAll, registry } from 'tsyringe';
 import { AnyComponent } from '../../@types/any-component';
 import { IBinding } from '../../@types/binding-target';
 import { IHtmlRenderer } from '../../@types/IHtmlRenderer';
@@ -11,26 +10,13 @@ import { ComponentLifecycle } from '../../base/lifecycle';
 import { RefStore } from '../../ref-store/ref-store';
 import { resolveRenderer } from '../../tools';
 import { IHookHandler } from './hook-handlers/base/hook-handler';
-import { ElementReferenceHookHandler } from './hook-handlers/element-reference-hook-handler';
-import { LifecycleHookHandler } from './hook-handlers/lifecycle-hook-handler';
-import { PickTemplateHookHandler } from './hook-handlers/pick-template-hook-handler';
-import { TransformHookHandler } from './hook-handlers/transform-hook-handler';
 
-const hookHandlerToken = 'IHookHandler';
-
-@injectable()
-@registry([
-  { token: hookHandlerToken, useClass: ElementReferenceHookHandler },
-  { token: hookHandlerToken, useClass: PickTemplateHookHandler },
-  { token: hookHandlerToken, useClass: LifecycleHookHandler },
-  { token: hookHandlerToken, useClass: TransformHookHandler },
-])
 export class CustomRendererHtml extends HtmlRendererBase {
   private renderer: IHtmlRenderer | undefined;
 
   constructor(
     private refStore: RefStore,
-    @injectAll(hookHandlerToken) private hookHandlers: IHookHandler[],
+    private hookHandlers: IHookHandler[],
   ) {
     super();
   }

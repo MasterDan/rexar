@@ -3,17 +3,20 @@ import { Component } from '@core/components/component';
 import { templateParser } from '@core/parsers/html';
 import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
 import { IComponentDefinitionBuilder } from '@core/components/@types/IComponentDefinitionBuilder';
-import { container } from 'tsyringe';
+import { container, singleton, useClass } from '@rexar/di';
 import templateOne from './template-one.html';
 import templateTwo from './template-two.html';
 import templateMulti from './template-multi.html';
 
 describe('html-parser', () => {
   beforeEach(() => {
-    container.register<IComponentDefinitionBuilder>(
-      'IComponentDefinitionBuilder',
-      ComponentDefinitionBuilder,
-    );
+    container
+      .createToken(
+        'IComponentDefinitionBuilder',
+        useClass<IComponentDefinitionBuilder>(),
+        singleton(),
+      )
+      .provide(ComponentDefinitionBuilder);
   });
   test('template-one', async () => {
     const templates = await templateParser.fromString(templateOne);

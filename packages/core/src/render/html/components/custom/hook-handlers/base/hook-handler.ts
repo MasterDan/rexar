@@ -1,7 +1,6 @@
 import { RefStore } from '@core/render/html/ref-store/ref-store';
 import { HookPassAny } from '@core/tools/hooks/hooks';
 import { filter, map, Observable, Subject } from 'rxjs';
-import { inject } from 'tsyringe';
 
 export interface IHookPayload<THookArg, THookParams> {
   trigger$: Subject<THookArg>;
@@ -17,7 +16,7 @@ export abstract class HookHandler<THookArg, THookParams>
 {
   abstract readonly hookName: string;
 
-  constructor(@inject(RefStore) protected refStore: RefStore) {}
+  constructor(protected refStore: RefStore) {}
 
   abstract handle(
     payload$: Observable<IHookPayload<THookArg, THookParams>>,

@@ -1,5 +1,6 @@
 import { TemplateParser, templateParser } from '@core/parsers/html';
-import { container } from 'tsyringe';
+import { DocumentRef } from '@core/render/html/documentRef';
+import { container, singleton, useClass, useValue } from '@rexar/di';
 import { IComponentDefinitionBuilder } from './@types/IComponentDefinitionBuilder';
 import { ICustomTemplateComponentDefinitionArgs } from './builtIn/custom/custom-template.component';
 import { IComponentDefinitionArgs, TData } from './component';
@@ -8,14 +9,21 @@ import {
   ComponentDefinitionBuilder,
 } from './component-definition-builder';
 
-container.register<TemplateParser>('TemplateParser', {
-  useValue: templateParser,
-});
+container
+  .createToken('DocumentRef', useClass<DocumentRef>(), singleton())
+  .provide(DocumentRef);
 
-container.register<IComponentDefinitionBuilder>(
-  'IComponentDefinitionBuilder',
-  ComponentDefinitionBuilder,
-);
+container
+  .createToken('TemplateParser', useValue<TemplateParser>())
+  .provide(templateParser);
+
+container
+  .createToken(
+    'IComponentDefinitionBuilder',
+    useClass<ComponentDefinitionBuilder>(),
+    singleton(),
+  )
+  .provide(ComponentDefinitionBuilder);
 
 const builder = container.resolve<IComponentDefinitionBuilder>(
   'IComponentDefinitionBuilder',

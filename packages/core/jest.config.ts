@@ -7,7 +7,9 @@ const jestConfig: JestConfigWithTsJest = {
   verbose: true,
   moduleNameMapper: {
     '^@core/(.*)$': '<rootDir>/src/$1',
+    '^@reactivity/(.*)$': '<rootDir>/../reactivity/src/$1',
     '^@rexar/reactivity': '<rootDir>/../reactivity/src/index.ts',
+    '^@rexar/di': '<rootDir>/../di/src/index.ts',
   },
   transform: {
     // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
@@ -21,7 +23,6 @@ const jestConfig: JestConfigWithTsJest = {
     '^.+\\.html?$': '<rootDir>/jest/text.loader.js',
   },
   transformIgnorePatterns: ['@rexar/reactivity'],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
 export default jestConfig;

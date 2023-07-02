@@ -18,7 +18,6 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { injectable } from 'tsyringe';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
@@ -30,7 +29,6 @@ interface IRendererWithCommand {
   command: 'mount' | 'unmount' | 'skip';
 }
 
-@injectable()
 export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
   private listContent$ = ref$<AnyComponent[]>();
 
