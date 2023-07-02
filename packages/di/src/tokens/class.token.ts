@@ -16,6 +16,10 @@ class ClassToken<T, TArgs extends AnyAray = AnyAray>
     this.key = token.key;
   }
 
+  $clone(): IToken<T, Constructor<T, TArgs>> {
+    return new ClassToken(this.token.$clone(), this.resolveArgs);
+  }
+
   provide(resolver: Constructor<T, TArgs>): void {
     this.token.provide(() => resolver);
   }

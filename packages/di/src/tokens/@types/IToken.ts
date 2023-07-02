@@ -3,6 +3,7 @@ export interface IToken<TValue, TResolver = TValue> {
   name: string;
   provide(resolver: TResolver): void;
   resolve(): TValue;
+  $clone(): IToken<TValue, TResolver>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

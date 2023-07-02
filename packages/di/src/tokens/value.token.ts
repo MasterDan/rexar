@@ -11,6 +11,10 @@ class ValueToken<TValue> implements IToken<TValue> {
     this.name = token.name;
   }
 
+  $clone(): IToken<TValue, TValue> {
+    return new ValueToken(this.token.$clone());
+  }
+
   provide(value: TValue): void {
     this.token.provide(() => value);
   }

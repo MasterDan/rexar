@@ -13,6 +13,10 @@ class SingletonToken<TValue, TResolver> implements IToken<TValue, TResolver> {
     this.name = token.name;
   }
 
+  $clone(): IToken<TValue, TResolver> {
+    return new SingletonToken(this.token.$clone());
+  }
+
   provide(resolver: TResolver): void {
     this.token.provide(resolver);
   }

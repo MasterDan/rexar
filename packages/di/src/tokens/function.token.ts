@@ -24,6 +24,13 @@ class FunctionToken<
     this.name = token.name;
   }
 
+  $clone(): IToken<
+    (...args: TInitialArgs) => TResult,
+    (...args: TArgs) => TResult
+  > {
+    return new FunctionToken(this.token.$clone(), this.fnResolve);
+  }
+
   provide(fn: (...args: TArgs) => TResult): void {
     this.token.provide(() => fn);
   }
