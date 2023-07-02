@@ -1,5 +1,5 @@
 import type { Component } from '@core/components/component';
-import { container, multiple, useClass } from '@rexar/di';
+import { container, multiple, singleton, useClass } from '@rexar/di';
 import { ComponentType } from '@core/components/component-type';
 import { HtmlRendererBase } from './base/html-renderer-base';
 import { AnyComponent } from './@types/any-component';
@@ -19,7 +19,11 @@ import { LifecycleHookHandler } from './components/custom/hook-handlers/lifecycl
 import { TransformHookHandler } from './components/custom/hook-handlers/transform-hook-handler';
 import { RefStoreMemo } from './ref-store/ref-store-memo';
 
-const refStoreToken = container.createToken('RefStore', useClass<RefStore>());
+export const refStoreToken = container.createToken(
+  'RefStore',
+  useClass<RefStore>(),
+  singleton(),
+);
 refStoreToken.provide(RefStore);
 
 export class ComponentRendererResolver implements IComponentRendererResolver {
@@ -85,7 +89,10 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
           container
             .createToken(
               type,
-              useClass<CustomRendererHtml>(() => hookHandlerToken.resolve()),
+              useClass<CustomRendererHtml>(() => [
+                refStoreToken.resolve(),
+                hookHandlerToken.resolve(),
+              ]),
             )
             .provide(CustomRendererHtml);
 
@@ -114,7 +121,10 @@ export class ComponentRendererResolver implements IComponentRendererResolver {
       case ComponentType.Dynamic: {
         if (this.factories[type] == null) {
           container
-            .createToken('RefStoreMemo', useClass<RefStoreMemo>())
+            .createToken(
+              'RefStoreMemo',
+              useClass<RefStoreMemo>(() => [refStoreToken.resolve()]),
+            )
             .provide(RefStoreMemo);
           container
             .createToken(

@@ -8,9 +8,9 @@ import { ComponentDefinitionBuilder } from '@core/components/component-definitio
 import { ref$ } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
-import { RefStore } from '@core/render/html/ref-store/ref-store';
 import { lastValueFrom, timer } from 'rxjs';
 import { container, singleton, useClass } from '@rexar/di';
+import { refStoreToken } from '@core/render/html/component-renderer-resolver';
 import { createApp } from '.';
 
 describe('app-tests', () => {
@@ -22,12 +22,11 @@ describe('app-tests', () => {
         singleton(),
       )
       .provide(ComponentDefinitionBuilder);
-
-    const store = container.resolve<RefStore>('RefStore');
+    const store = refStoreToken.resolve();
     store.beginScope('test-scope', ref$(ComponentLifecycle.Created));
   });
   afterEach(() => {
-    const store = container.resolve<RefStore>('RefStore');
+    const store = refStoreToken.resolve();
     store.endScope();
   });
   test('simple text app', async () => {
