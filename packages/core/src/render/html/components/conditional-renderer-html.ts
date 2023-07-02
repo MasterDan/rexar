@@ -11,13 +11,11 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
 
-@injectable()
 export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalComponentProps> {
   innerDynamic = dynamic();
 

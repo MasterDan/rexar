@@ -25,6 +25,9 @@
             ],
             "@reactivity/*": [
                 "packages/reactivity/src/*"
+            ],
+            "@di/*": [
+                "packages/di/src/*"
             ]
         }
     },

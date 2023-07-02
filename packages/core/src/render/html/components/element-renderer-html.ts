@@ -1,7 +1,7 @@
 import { list } from '@core/components/builtIn/list.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { from, of, switchMap } from 'rxjs';
-import { container, injectable } from 'tsyringe';
+import { container } from '@rexar/di';
 import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { Component } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
@@ -13,7 +13,6 @@ import { resolveRenderer } from '../tools';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { ComponentLifecycle } from '../base/lifecycle';
 
-@injectable()
 export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps> {
   private el: HTMLElement | undefined;
 
@@ -161,7 +160,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       };
     };
     return container
-      .resolve(DocumentRef)
+      .resolve<DocumentRef>('DocumentRef')
       .instance$.pipe(switchMap((d) => from(renderElement(d))));
   }
 }

@@ -1,19 +1,14 @@
 import { from, map, Observable, switchMap, tap } from 'rxjs';
-import { inject, injectable } from 'tsyringe';
 import { HtmlRendererBase } from './base/html-renderer-base';
 import { IBinding } from './@types/binding-target';
 import type { IComponentRendererResolver } from './@types/IComponentRendererResolver';
 import { IHtmlRenderer } from './@types/IHtmlRenderer';
 import { ComponentLifecycle } from './base/lifecycle';
 
-@injectable()
 export class ComponentRendererHtml extends HtmlRendererBase {
   private renderer: IHtmlRenderer | undefined;
 
-  constructor(
-    @inject('IComponentRendererResolver')
-    private resolver: IComponentRendererResolver,
-  ) {
+  constructor(private resolver: IComponentRendererResolver) {
     super();
   }
 

@@ -7,7 +7,7 @@ import { ComponentType } from '@core/components/component-type';
 import type { TemplateParser, Templates } from '@core/parsers/html';
 import { ref$, readonly, ReadonlyRef } from '@rexar/reactivity';
 import { Observable, isObservable, filter } from 'rxjs';
-import { container } from 'tsyringe';
+import { container } from '@rexar/di';
 
 type ToReadonlyRef<T> = T extends Observable<infer V>
   ? ReadonlyRef<V>

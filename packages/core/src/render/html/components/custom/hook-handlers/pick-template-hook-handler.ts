@@ -2,10 +2,8 @@ import { BuiltInHooks } from '@core/components/builtIn/custom/hooks/@types/built
 import { IPickTemplateHookArgs } from '@core/components/builtIn/custom/hooks/pick-template.hook';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { filter, map, mergeMap, Observable } from 'rxjs';
-import { injectable } from 'tsyringe';
 import { HookHandler, IHookPayload } from './base/hook-handler';
 
-@injectable()
 export class PickTemplateHookHandler extends HookHandler<
   AnyComponent[],
   IPickTemplateHookArgs

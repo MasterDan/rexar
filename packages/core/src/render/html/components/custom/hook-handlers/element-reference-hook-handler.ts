@@ -10,10 +10,8 @@ import {
   Observable,
   pairwise,
 } from 'rxjs';
-import { injectable } from 'tsyringe';
 import { HookHandler, IHookPayload } from './base/hook-handler';
 
-@injectable()
 export class ElementReferenceHookHandler extends HookHandler<
   HTMLElement | undefined,
   IElementReferenceHoolParams

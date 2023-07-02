@@ -1,7 +1,5 @@
-import { injectable } from 'tsyringe';
 import { RefStore } from './ref-store';
 
-@injectable()
 export class RefStoreMemo {
   scopeKey: symbol | undefined;
 

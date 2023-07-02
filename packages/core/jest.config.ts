@@ -8,6 +8,7 @@ const jestConfig: JestConfigWithTsJest = {
   moduleNameMapper: {
     '^@core/(.*)$': '<rootDir>/src/$1',
     '^@rexar/reactivity': '<rootDir>/../reactivity/src/index.ts',
+    '^@rexar/di': '<rootDir>/../di/src/index.ts',
   },
   transform: {
     // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`

@@ -60,7 +60,7 @@ describe('list-renderer-html', () => {
   });
 
   test('simple list', async () => {
-    const docRef = container.resolve(DocumentRef);
+    const docRef = container.resolve<DocumentRef>('DocumentRef');
     const doc = await docRef.getDocument();
     const rootDiv = doc.createElement('div');
     const listRenderer = new ListRendererHtml();

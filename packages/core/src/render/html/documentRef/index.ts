@@ -1,8 +1,6 @@
 import { isBrowser } from '@core/tools/env';
 import { filter, from, take } from 'rxjs';
-import { singleton } from 'tsyringe';
 
-@singleton()
 export class DocumentRef {
   // eslint-disable-next-line class-methods-use-this
   async getDocument(): Promise<Document> {
