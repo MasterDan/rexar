@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 export { createApp } from '@core/app';
 export { defineComponent } from '@core/components';
 export { pickElement } from '@core/components/builtIn/custom/hooks/element-reference.hook';

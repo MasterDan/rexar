@@ -23,7 +23,6 @@ const jestConfig: JestConfigWithTsJest = {
     '^.+\\.html?$': '<rootDir>/jest/text.loader.js',
   },
   transformIgnorePatterns: ['@rexar/reactivity'],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
 export default jestConfig;
