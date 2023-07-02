@@ -10,20 +10,24 @@ import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import { RefStore } from '@core/render/html/ref-store/ref-store';
 import { lastValueFrom, timer } from 'rxjs';
-import { container } from 'tsyringe';
+import { container, singleton, useClass } from '@rexar/di';
 import { createApp } from '.';
 
 describe('app-tests', () => {
   beforeEach(() => {
-    container.register<IComponentDefinitionBuilder>(
-      'IComponentDefinitionBuilder',
-      ComponentDefinitionBuilder,
-    );
-    const store = container.resolve(RefStore);
+    container
+      .createToken(
+        'IComponentDefinitionBuilder',
+        useClass<IComponentDefinitionBuilder>(),
+        singleton(),
+      )
+      .provide(ComponentDefinitionBuilder);
+
+    const store = container.resolve<RefStore>('RefStore');
     store.beginScope('test-scope', ref$(ComponentLifecycle.Created));
   });
   afterEach(() => {
-    const store = container.resolve(RefStore);
+    const store = container.resolve<RefStore>('RefStore');
     store.endScope();
   });
   test('simple text app', async () => {

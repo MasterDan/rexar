@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-import { singleton } from 'tsyringe';
 import type { IComponentDefinitionBuilder } from './@types/IComponentDefinitionBuilder';
 import {
   CustomTemplateComponent,
@@ -71,7 +70,6 @@ function defineComponentWithProps<TProps extends TData = TData>(
       };
 }
 
-@singleton()
 export class ComponentDefinitionBuilder implements IComponentDefinitionBuilder {
   defineComponent(
     args:

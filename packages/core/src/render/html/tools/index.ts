@@ -1,4 +1,4 @@
-import { container } from 'tsyringe';
+import { container } from '@rexar/di';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';

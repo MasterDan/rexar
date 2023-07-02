@@ -14,14 +14,12 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { injectable } from 'tsyringe';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from '../base/html-renderer-base';
 import { ComponentLifecycle } from '../base/lifecycle';
 import { RefStoreMemo } from '../ref-store/ref-store-memo';
 import { resolveRenderer } from '../tools';
 
-@injectable()
 export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps> {
   renderer$ = ref$(
     combineLatest([

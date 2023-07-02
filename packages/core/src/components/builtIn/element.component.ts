@@ -1,5 +1,5 @@
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { container } from 'tsyringe';
+import { container } from '@rexar/di';
 import { IComponentDefinitionBuilder } from '../@types/IComponentDefinitionBuilder';
 import { ComponentDefinition } from '../component-definition-builder';
 import { ComponentType } from '../component-type';

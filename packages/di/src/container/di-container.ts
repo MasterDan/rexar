@@ -82,13 +82,13 @@ export class DiContainer {
       if (token != null) {
         return token.resolve();
       }
-      throw new Error('Cannot resolve depandency');
+      throw new Error(`Cannot resolve depandency "${key}"`);
     } else {
       const token = this.tokens[key];
       if (token) {
         token.resolve() as TValue;
       }
-      throw new Error('Cannot resolve depandency');
+      throw new Error(`Cannot resolve depandency "${key.toString()}"`);
     }
   }
 }

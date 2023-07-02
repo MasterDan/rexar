@@ -20,7 +20,6 @@ export const resolveAplicationRenderer = (() => {
     )
     .provide(ComponentRendererHtml);
 
-  // container.register('IHtmlRenderer', ComponentRendererHtml);
   const appRendererToken = container.createToken(
     'AppRendererHtml',
     useClass<AppRendererHtml>((c) => [c.resolve('IHtmlRenderer')]),

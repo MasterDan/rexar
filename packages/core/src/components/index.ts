@@ -17,10 +17,6 @@ container
   .createToken('TemplateParser', useValue<TemplateParser>())
   .provide(templateParser);
 
-// container.register<TemplateParser>('TemplateParser', {
-//   useValue: templateParser,
-// });
-
 container
   .createToken(
     'IComponentDefinitionBuilder',
@@ -28,11 +24,6 @@ container
     singleton(),
   )
   .provide(ComponentDefinitionBuilder);
-
-// container.register<IComponentDefinitionBuilder>(
-//   'IComponentDefinitionBuilder',
-//   ComponentDefinitionBuilder,
-// );
 
 const builder = container.resolve<IComponentDefinitionBuilder>(
   'IComponentDefinitionBuilder',

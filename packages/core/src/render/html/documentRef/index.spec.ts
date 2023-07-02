@@ -1,8 +1,13 @@
 import { lastValueFrom } from 'rxjs';
-import { container } from '@rexar/di';
+import { container, singleton, useClass } from '@rexar/di';
 import { DocumentRef } from '.';
 
 describe('document resolver', () => {
+  beforeAll(() => {
+    container
+      .createToken('DocumentRef', useClass<DocumentRef>(), singleton())
+      .provide(DocumentRef);
+  });
   test('resolve document', async () => {
     const dRef = container.resolve<DocumentRef>('DocumentRef');
     const doc = await lastValueFrom(dRef.instance$);

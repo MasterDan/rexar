@@ -1,5 +1,5 @@
 import { ref$, Ref } from '@rexar/reactivity';
-import { container } from 'tsyringe';
+import { container } from '@rexar/di';
 import { IComponentDefinitionBuilder } from '../@types/IComponentDefinitionBuilder';
 import { Component } from '../component';
 import { ComponentDefinition } from '../component-definition-builder';
