@@ -30,8 +30,7 @@ class ClassToken<T, TArgs extends AnyAray = AnyAray>
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useClass<T, TArgs extends AnyAray = AnyAray, TFrom = any>(
+export function useClass<T, TArgs extends AnyAray = AnyAray, TFrom = unknown>(
   resolveArgs: (container: DiContainer) => TArgs = () => [] as unknown as TArgs,
 ): TokenOperator<TFrom, () => TFrom, T, Constructor<T, TArgs>> {
   return (token, container) =>

@@ -24,8 +24,7 @@ class ValueToken<TValue> implements IToken<TValue> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useValue<TValue, TFrom = any>(
+export function useValue<TValue, TFrom = unknown>(
   defaultVal?: TValue,
 ): TokenOperator<TFrom, () => TFrom, TValue, TValue> {
   return (arg: AnyFnToken) => {

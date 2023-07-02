@@ -47,8 +47,7 @@ export function useFunction<
   TResult,
   TArgs extends AnyAray,
   TInitialArgs extends AnyAray = TArgs,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TFrom = any,
+  TFrom = unknown,
 >(
   transformArgs?: (container: DiContainer, ...args: TInitialArgs) => TArgs,
 ): TokenOperator<
