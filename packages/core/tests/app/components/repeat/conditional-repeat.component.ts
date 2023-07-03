@@ -19,13 +19,16 @@ export const conditionalRepeat = defineComponent<{
           );
         },
       });
-    const { componentDef$: listDef } = pickTemplate('list').defineComponent({
+    const { componentDef$: listDef$ } = pickTemplate('list').defineComponent({
       setup() {
         mountList('list-content');
       },
     });
+    const { componentDef$: otherDef$ } =
+      pickTemplate('other').defineComponent();
     into('content').if(props.condition, (b) => {
-      b.whenTrue.displayComponent(listDef);
+      b.whenTrue.displayComponent(listDef$);
+      b.whenFalse.displayComponent(otherDef$);
     });
   },
 });
