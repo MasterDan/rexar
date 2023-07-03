@@ -43,25 +43,25 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   constructor() {
     super();
-    this.isArray
-      .pipe(
-        filter((x) => x),
-        switchMap(() => this.listContent$),
-      )
-      .subscribe((lc) => {
-        console.log(
-          'list-content:',
-          lc == null ? 'empty' : lc.map((c) => c.type),
-        );
-      });
-    this.isArray
-      .pipe(
-        filter((x) => x),
-        switchMap(() => this.listRenderers$),
-      )
-      .subscribe((lr) => {
-        console.log('list-renderers:', lr);
-      });
+    // this.isArray
+    //   .pipe(
+    //     filter((x) => x),
+    //     switchMap(() => this.listContent$),
+    //   )
+    //   .subscribe((lc) => {
+    //     console.log(
+    //       'list-content:',
+    //       lc == null ? 'empty' : lc.map((c) => c.type),
+    //     );
+    //   });
+    // this.isArray
+    //   .pipe(
+    //     filter((x) => x),
+    //     switchMap(() => this.listRenderers$),
+    //   )
+    //   .subscribe((lr) => {
+    //     console.log('list-renderers:', lr);
+    //   });
     // this.isArray
     //   .pipe(
     //     filter((x) => x),
@@ -75,9 +75,9 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       .pipe(
         filter((c) => c.type === ComponentType.List),
         mergeMap((c) => c.getProp('content')),
-        tap((c) => {
-          console.log('content is:', c);
-        }),
+        // tap((c) => {
+        //   console.log('content is:', c);
+        // }),
         map((content) =>
           content.map((c, i, a) => {
             if (c.type === ComponentType.Text && i < a.length - 1) {

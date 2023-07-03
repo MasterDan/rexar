@@ -324,7 +324,11 @@ describe('app-tests', () => {
     const condition = ref$(true);
     const ifTrue = el({ name: 'div', attrs: { class: 'foo' } });
     const iFalse = el({ name: 'div', attrs: { class: 'bar' } });
-    const root = conditional(condition, ref$(ifTrue), ref$(iFalse));
+    const root = conditional(
+      condition,
+      ref$<AnyComponent | undefined>(ifTrue),
+      ref$<AnyComponent | undefined>(iFalse),
+    );
     const elApp = await createApp(root).mount('#app');
     const wait = () => lastValueFrom(timer(100));
 
