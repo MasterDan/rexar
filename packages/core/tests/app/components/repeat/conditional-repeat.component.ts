@@ -11,7 +11,7 @@ export const conditionalRepeat = defineComponent<{
     b.fromModule(() => import('./conditional-repeat.component.html')),
   setup({ props }) {
     const { mount: mountList } = pickTemplate('list-item')
-      .forEach(props.array)
+      .forEach(props.array, (x) => x)
       .defineComponent({
         setup({ props: itemProps }) {
           pickElement('value').bindContent.text(
