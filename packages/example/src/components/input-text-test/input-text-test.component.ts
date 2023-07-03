@@ -24,11 +24,14 @@ export const inputTextTest = defineComponent({
     );
     pickElement('combine').bindValue.string(fullText$ as Ref<string>);
     pickElement('text').bindContent.text(fullText$);
+    const letters$ = ref$(() =>
+      fullText$.value.split('').filter((v) => /\w/gm.exec(v)),
+    );
+    letters$.subscribe((l) => {
+      console.log('Letters are:', l);
+    });
     pickTemplate('item-template')
-      .forEach(
-        ref$(() => fullText$.value.split('').filter((v) => /\w/gm.exec(v))),
-        (i) => i,
-      )
+      .forEach(letters$, (i) => i)
       .defineComponent({
         setup: ({ props: itemProps }) => {
           const letter$ = ref$(() => itemProps.item.value?.value ?? '-');
