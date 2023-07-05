@@ -6,6 +6,7 @@ import { ComponentType } from '@core/components/component-type';
 import { ref$ } from '@rexar/reactivity';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import {
+  combineLatest,
   filter,
   from,
   map,
@@ -251,10 +252,14 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
     const firstMount$ = from(renderContent());
 
     if (this.isArray.value) {
-      this.listRenderers$
+      combineLatest([this.listRenderers$, this.lifecycle$])
         .pipe(
           skipUntil(firstMount$),
-          filter((v): v is IRendererWithCommand[] => v != null),
+          filter(
+            (arr): arr is [IRendererWithCommand[], ComponentLifecycle] =>
+              arr[0] != null && arr[1] === ComponentLifecycle.Mounted,
+          ),
+          map(([v]) => v),
         )
         .subscribe(async (renderers) => {
           // eslint-disable-next-line no-restricted-syntax
