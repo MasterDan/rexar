@@ -1754,13 +1754,11 @@ __metadata:
     jsdom: ^22.1.0
     parcel: 2.8.3
     path: ^0.12.7
-    reflect-metadata: ^0.1.13
     rimraf: ^4.1.2
     rxjs: ^7.8.1
     ts-jest: ^29.1.0
     ts-node: ^10.9.1
     tslib: ^2.5.0
-    tsyringe: ^4.7.0
   languageName: unknown
   linkType: soft
 
@@ -1819,6 +1817,29 @@ __metadata:
     stream-http: ^3.1.0
     url: ^0.11.0
     util: ^0.12.3
+  languageName: unknown
+  linkType: soft
+
+"@rexar/logger@link:./packages/logger::locator=rexar%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@rexar/logger@link:./packages/logger::locator=rexar%40workspace%3A."
+  languageName: node
+  linkType: soft
+
+"@rexar/logger@workspace:packages/logger":
+  version: 0.0.0-use.local
+  resolution: "@rexar/logger@workspace:packages/logger"
+  dependencies:
+    "@parcel/transformer-typescript-tsc": 2.8.3
+    "@parcel/transformer-typescript-types": 2.8.3
+    "@types/jest": ^29.5.2
+    jest: ^29.5.0
+    parcel: 2.8.3
+    print-tree: ^0.1.5
+    rimraf: ^5.0.1
+    ts-jest: ^29.1.0
+    ts-node: ^10.9.1
+    tslib: ^2.5.3
   languageName: unknown
   linkType: soft
 
@@ -7059,6 +7080,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"print-tree@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "print-tree@npm:0.1.5"
+  checksum: a9b5231e9e2ea3057119060a7cb0289772ecf320ddddf97151488d72b71d65ee5c086e0a4d6a399bf961760710395aeb5e14b37b3f3ad5e2b38fe5195b01f7df
+  languageName: node
+  linkType: hard
+
 "private@npm:~0.1.5":
   version: 0.1.8
   resolution: "private@npm:0.1.8"
@@ -7368,6 +7396,7 @@ __metadata:
     "@parcel/transformer-typescript-types": 2.8.3
     "@rexar/core": "link:./packages/core"
     "@rexar/di": "link:./packages/di"
+    "@rexar/logger": "link:./packages/logger"
     "@rexar/reactivity": "link:./packages/reactivity"
     "@types/jsdom": ^21.1.1
     "@types/node": ^20.3.1
@@ -8164,7 +8193,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.8.1, tslib@npm:^1.9.3":
+"tslib@npm:^1.8.1":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd
@@ -8186,15 +8215,6 @@ __metadata:
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
   checksum: 1843f4c1b2e0f975e08c4c21caa4af4f7f65a12ac1b81b3b8489366826259323feb3fc7a243123453d2d1a02314205a7634e048d4a8009921da19f99755cdc48
-  languageName: node
-  linkType: hard
-
-"tsyringe@npm:^4.7.0":
-  version: 4.8.0
-  resolution: "tsyringe@npm:4.8.0"
-  dependencies:
-    tslib: ^1.9.3
-  checksum: 6bf13235cc1ae86829169e3a887c3ff6ee2d220678df01dd0fff202b5a533d4eb47a52334b76d2b1b1cf80c8c92ff22173a54ad72c9f1b8ea0ea4957304966f0
   languageName: node
   linkType: hard
 
