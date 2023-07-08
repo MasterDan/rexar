@@ -28,6 +28,9 @@
             ],
             "@di/*": [
                 "packages/di/src/*"
+            ],
+            "@logger/*": [
+                "packages/logger/src/*"
             ]
         }
     },
