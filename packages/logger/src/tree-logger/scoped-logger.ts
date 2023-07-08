@@ -6,13 +6,13 @@ import { LogScope } from './log-scope';
 import { LogStatus } from './log-staus';
 
 export class ScopedLogger {
-  private static rootScope = new LogScope('root');
+  private static scopeStack: LogScope[] = [];
+
+  private static all: ScopedLogger[] = [];
+
+  private static rootScope = new LogScope('Root');
 
   private static rootLogger = new ScopedLogger(this.rootScope);
-
-  private static scopeStack: LogScope[] = [this.rootScope];
-
-  private static all: ScopedLogger[] = [this.rootLogger];
 
   records: LogRecord[] = [];
 
@@ -30,7 +30,11 @@ export class ScopedLogger {
 
   static get current() {
     const scope = this.currentScope;
-    return this.all.find((l) => l.scope.key === scope.key);
+    const logger = this.all.find((l) => l.scope.key === scope.key);
+    if (logger == null) {
+      throw new Error('Logger not found');
+    }
+    return logger;
   }
 
   static get root() {
@@ -40,9 +44,16 @@ export class ScopedLogger {
   static dump() {
     printTree(
       ScopedLogger.root,
-      (node: ScopedLogger) => node.toString(),
-      (node: ScopedLogger) =>
-        ScopedLogger.all.filter((l) => l.scope.parentKey === node.scope.key),
+      (node: ScopedLogger | LogRecord) => node.toString(),
+      (node: ScopedLogger | LogRecord) => {
+        if (node instanceof LogRecord) {
+          return [];
+        }
+        const clildLoggers = ScopedLogger.all.filter(
+          (l) => l.scope.parentKey === node.scope.key,
+        );
+        return [...node.records, ...clildLoggers];
+      },
     );
   }
 
@@ -67,10 +78,16 @@ export class ScopedLogger {
   }
 
   toString() {
-    return [
-      `[ ${this.scope.name} ]`,
-      ...this.records.map((r) => r.toString),
-    ].join('\n');
+    return `[ ${this.scope.name} ]`;
+  }
+
+  static get createScope() {
+    const child = (name?: string) => this.current.createChild(name);
+    const sibling = (name?: string) => this.current.createSibling(name);
+    return {
+      child,
+      sibling,
+    };
   }
 
   createChild(name?: string) {
