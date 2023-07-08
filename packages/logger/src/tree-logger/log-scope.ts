@@ -1,4 +1,4 @@
-export class Scope {
+export class LogScope {
   key: symbol;
 
   parentKey: symbol | undefined;
@@ -12,13 +12,13 @@ export class Scope {
   }
 
   createChild(name?: string) {
-    const child = new Scope(name);
+    const child = new LogScope(name);
     child.parentKey = this.key;
     return child;
   }
 
-  createBrother(name?: string) {
-    const child = new Scope(name);
+  createSibling(name?: string) {
+    const child = new LogScope(name);
     child.parentKey = this.parentKey;
     return child;
   }
