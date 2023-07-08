@@ -27,6 +27,7 @@ describe('scoped logger', () => {
     ScopedLogger.createScope.sibling('Sibling');
     ScopedLogger.current.info('Foo');
     ScopedLogger.current.info('Bar');
+    ScopedLogger.setRootName('HEAD');
     ScopedLogger.dump();
   });
 });

@@ -16,9 +16,22 @@ export class ScopedLogger {
 
   records: LogRecord[] = [];
 
-  constructor(public scope: LogScope) {
+  protected constructor(public scope: LogScope) {
     ScopedLogger.scopeStack.push(scope);
     ScopedLogger.all.push(this);
+  }
+
+  static setRootName(name: string) {
+    const oldKey = this.rootScope.key;
+    this.rootScope = new LogScope(name);
+    this.all.forEach((logger) => {
+      if (logger.scope.key === oldKey) {
+        logger.scope.key = this.rootScope.key;
+      }
+      if (logger.scope.parentKey === oldKey) {
+        logger.scope.parentKey = this.rootScope.key;
+      }
+    });
   }
 
   static get currentScope() {
