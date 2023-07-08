@@ -1,3 +1,1 @@
-export function foo() {
-  console.log('Bar');
-}
+export { ScopedLogger } from './tree-logger/scoped-logger';
