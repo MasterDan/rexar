@@ -19,6 +19,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
+import { ScopedLogger } from '@rexar/logger';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
@@ -227,6 +228,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   renderInto(target: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
+    ScopedLogger.createScope.sibling('List');
     const renderContent = async () => {
       const renderers = this.listRenderers$.value;
       if (renderers == null) {
@@ -246,6 +248,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         lastTarget = renderer.nextTarget$.value;
       }
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      ScopedLogger.endScope();
       return lastTarget;
     };
 
