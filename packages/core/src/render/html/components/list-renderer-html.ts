@@ -235,6 +235,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
         throw new Error('List renderers were not created');
       }
       let lastTarget: IBinding | undefined;
+      ScopedLogger.createScope.child('ListContent');
       // eslint-disable-next-line no-restricted-syntax
       for (const { renderer } of renderers.filter(
         (r) => r.command !== 'unmount',
@@ -247,7 +248,9 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
         lastTarget = renderer.nextTarget$.value;
       }
+
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      ScopedLogger.endScope();
       ScopedLogger.endScope();
       return lastTarget;
     };
