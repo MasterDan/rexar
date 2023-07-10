@@ -6,6 +6,7 @@ import { IElementComponentProps } from '@core/components/builtIn/element.compone
 import { Component } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
 import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
+import { ScopedLogger } from '@rexar/logger';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { DocumentRef } from '../documentRef';
 import { RefStore } from '../ref-store/ref-store';
@@ -55,6 +56,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   renderInto(binding: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const isSlot = this.elComponent.getProp('name') === HtmlElementNames.Slot;
+    ScopedLogger.createScope.sibling(this.elComponent.getProp('name'));
 
     if (this.elComponent.id == null && isSlot) {
       this.lifecycle$.value = ComponentLifecycle.Rendered;
@@ -70,6 +72,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       }
 
       if (!transformer.isEmpty) {
+        ScopedLogger.current.debug('This node needs transformation');
         if (!transformer.isTrasformationDone) {
           transformer.apply(this.elComponent);
         }
@@ -109,6 +112,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         el.setAttribute(k, attrs[k] ?? '');
       });
       if (children.length > 1) {
+        ScopedLogger.createScope.child('Content');
         const listComp = list(children);
         listComp.bindProp('content', children);
         const childrenRenderer = resolveRenderer(listComp, {
@@ -118,8 +122,10 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         });
         childrenRenderer.subscribeParentLifecycle(this.lifecycle$);
         await childrenRenderer.render();
+        ScopedLogger.endScope();
       }
       if (children.length === 1) {
+        ScopedLogger.createScope.child('Content');
         const [child] = children;
         const childRenderer = resolveRenderer(child, {
           parentEl: el,
@@ -128,6 +134,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         });
         childRenderer.subscribeParentLifecycle(this.lifecycle$);
         await childRenderer.render();
+        ScopedLogger.endScope();
       }
       switch (binding.role) {
         case BindingTargetRole.Parent:
@@ -153,6 +160,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       }
       // console.log(binding.parentEl.outerHTML);
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      ScopedLogger.endScope();
       return {
         parentEl: binding.parentEl,
         role: BindingTargetRole.PreviousSibling,
