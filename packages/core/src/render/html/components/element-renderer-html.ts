@@ -56,7 +56,11 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   renderInto(binding: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const isSlot = this.elComponent.getProp('name') === HtmlElementNames.Slot;
-    ScopedLogger.createScope.sibling(this.elComponent.getProp('name'));
+    ScopedLogger.createScope.sibling(
+      `${this.elComponent.getProp('name')}${
+        this.elComponent.id == null ? '' : ` (${this.elComponent.id})`
+      }`,
+    );
 
     if (this.elComponent.id == null && isSlot) {
       this.lifecycle$.value = ComponentLifecycle.Rendered;
@@ -72,7 +76,6 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       }
 
       if (!transformer.isEmpty) {
-        ScopedLogger.current.debug('This node needs transformation');
         if (!transformer.isTrasformationDone) {
           transformer.apply(this.elComponent);
         }
@@ -88,6 +91,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
             this.transformedElementRenderer.target$.value = t;
           }
         });
+        ScopedLogger.createScope.child('Transformation', { captureNext: true });
         const renderTransformedAsync = async () => {
           if (!this.transformedElementRenderer) {
             this.lifecycle$.value = ComponentLifecycle.Rendered;
@@ -95,6 +99,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
           }
           await this.transformedElementRenderer.render();
           this.lifecycle$.value = ComponentLifecycle.Rendered;
+          ScopedLogger.endScope();
           return this.transformedElementRenderer.nextTarget$;
         };
         return from(renderTransformedAsync()).pipe(
