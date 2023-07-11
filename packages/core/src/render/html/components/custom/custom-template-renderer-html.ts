@@ -1,6 +1,7 @@
 import { CustomTemplateComponent } from '@core/components/builtIn/custom/custom-template.component';
 import { list } from '@core/components/builtIn/list.component';
 import { hookScope } from '@core/tools/hooks/hooks';
+import { ScopedLogger } from '@rexar/logger';
 import { firstValueFrom, from, Observable, of, switchMap, tap } from 'rxjs';
 import { AnyComponent } from '../../@types/any-component';
 import { IBinding } from '../../@types/binding-target';
@@ -32,6 +33,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
   }
 
   renderInto(target: IBinding): Observable<IBinding | undefined> {
+    ScopedLogger.createScope.sibling('Custom Component', { captureNext: true });
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     if (!(this.component instanceof CustomTemplateComponent)) {
       throw new Error('Component should be custom');
@@ -75,6 +77,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
     return from(renderAsync()).pipe(
       switchMap((x) => x),
       tap(() => {
+        ScopedLogger.endScope();
         this.refStore.endScope();
       }),
     );
