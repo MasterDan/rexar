@@ -228,14 +228,13 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   renderInto(target: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
-    ScopedLogger.createScope.sibling('List');
+    ScopedLogger.createScope.sibling('List', { captureNext: true });
     const renderContent = async () => {
       const renderers = this.listRenderers$.value;
       if (renderers == null) {
         throw new Error('List renderers were not created');
       }
       let lastTarget: IBinding | undefined;
-      ScopedLogger.createScope.child('ListContent');
       // eslint-disable-next-line no-restricted-syntax
       for (const { renderer } of renderers.filter(
         (r) => r.command !== 'unmount',
@@ -250,7 +249,6 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       }
 
       this.lifecycle$.value = ComponentLifecycle.Rendered;
-      ScopedLogger.endScope();
       ScopedLogger.endScope();
       return lastTarget;
     };

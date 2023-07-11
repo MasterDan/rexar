@@ -112,7 +112,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         el.setAttribute(k, attrs[k] ?? '');
       });
       if (children.length > 1) {
-        ScopedLogger.createScope.child('Content');
+        ScopedLogger.createScope.child('Content', { captureNext: true });
         const listComp = list(children);
         listComp.bindProp('content', children);
         const childrenRenderer = resolveRenderer(listComp, {
@@ -125,7 +125,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         ScopedLogger.endScope();
       }
       if (children.length === 1) {
-        ScopedLogger.createScope.child('Content');
+        ScopedLogger.createScope.child('Content', { captureNext: true });
         const [child] = children;
         const childRenderer = resolveRenderer(child, {
           parentEl: el,

@@ -5,6 +5,10 @@ import { LogRecord } from './log-record';
 import { LogScope } from './log-scope';
 import { LogStatus } from './log-staus';
 
+export interface IScopeOptions {
+  captureNext: boolean;
+}
+
 export class ScopedLogger {
   private static scopeStack: LogScope[] = [];
 
@@ -71,7 +75,12 @@ export class ScopedLogger {
   }
 
   static endScope() {
-    this.scopeStack.pop();
+    const scope = this.scopeStack.pop();
+    if (scope != null) {
+      this.scopesCapturing = this.scopesCapturing.filter(
+        (s) => s.key !== scope.key,
+      );
+    }
   }
 
   debug(value: string) {
@@ -94,9 +103,41 @@ export class ScopedLogger {
     return `[ ${this.scope.name} ]`;
   }
 
+  static scopesCapturing: LogScope[] = [];
+
   static get createScope() {
-    const child = (name?: string) => this.current.createChild(name);
-    const sibling = (name?: string) => this.current.createSibling(name);
+    const child = (name?: string, userOptions: Partial<IScopeOptions> = {}) => {
+      const { captureNext }: IScopeOptions = {
+        captureNext: false,
+        ...userOptions,
+      };
+      const logger = this.current.createChild(name);
+      if (captureNext) {
+        this.scopesCapturing.push(logger.scope);
+      }
+      return logger;
+    };
+
+    const sibling = (
+      name?: string,
+      userOptions: Partial<IScopeOptions> = {},
+    ) => {
+      const { captureNext }: IScopeOptions = {
+        captureNext: false,
+        ...userOptions,
+      };
+      const captured = this.scopesCapturing.some(
+        (s) => s.key === this.currentScope.key,
+      );
+      const logger = captured
+        ? this.current.createChild(name)
+        : this.current.createSibling(name);
+      if (captureNext) {
+        this.scopesCapturing.push(logger.scope);
+      }
+      return logger;
+    };
+
     return {
       child,
       sibling,
