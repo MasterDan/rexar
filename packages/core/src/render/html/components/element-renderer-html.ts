@@ -1,6 +1,6 @@
 import { list } from '@core/components/builtIn/list.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { from, of, switchMap } from 'rxjs';
+import { filter, from, of, pairwise, switchMap } from 'rxjs';
 import { container } from '@rexar/di';
 import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { Component } from '@core/components/component';
@@ -15,6 +15,15 @@ import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { ComponentLifecycle } from '../base/lifecycle';
 
 export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps> {
+  private $logger: ScopedLogger | undefined;
+
+  private get logger() {
+    if (this.$logger == null) {
+      throw new Error('Logger for custom component not been set');
+    }
+    return this.$logger;
+  }
+
   private el: HTMLElement | undefined;
 
   private transformedElementRenderer: IHtmlRenderer | undefined;
@@ -35,9 +44,11 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   }
 
   async unmount(): Promise<void> {
+    this.logger.debug('Unmounting');
     if (this.transformedElementRenderer) {
       this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
       await this.transformedElementRenderer.unmount();
+      this.logger.debug('Transformation unmounted');
       this.lifecycle$.value = ComponentLifecycle.Unmounted;
       return;
     }
@@ -56,11 +67,24 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
   renderInto(binding: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const isSlot = this.elComponent.getProp('name') === HtmlElementNames.Slot;
-    ScopedLogger.createScope.sibling(
+    this.$logger = ScopedLogger.createScope.sibling(
       `${this.elComponent.getProp('name')}${
         this.elComponent.id == null ? '' : ` (${this.elComponent.id})`
       }`,
     );
+
+    const beforeUnmount$ = this.lifecycle$.pipe(
+      pairwise(),
+      filter(
+        ([prev, curr]) =>
+          prev === ComponentLifecycle.Mounted &&
+          curr === ComponentLifecycle.BeforeUnmount,
+      ),
+    );
+    beforeUnmount$.subscribe(() => {
+      this.component.preventTransformation = false;
+      this.logger.debug('Not preventing transformation anymore');
+    });
 
     if (this.elComponent.id == null && isSlot) {
       this.lifecycle$.value = ComponentLifecycle.Rendered;
@@ -68,7 +92,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     }
 
     if (this.elComponent.preventTransformation) {
-      ScopedLogger.current.debug('Transformation is prevented');
+      this.logger.debug('Transformation is prevented');
     }
 
     if (this.elComponent.id && !this.elComponent.preventTransformation) {

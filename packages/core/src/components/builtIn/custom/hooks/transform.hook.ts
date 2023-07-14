@@ -8,7 +8,7 @@ import { ref$, MayBeReadonlyRef } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ElementTransformer } from '@core/render/html/ref-store/element.transformer';
 import { defineHook } from '@core/tools/hooks/hooks';
-import { combineLatest, filter, isObservable, take } from 'rxjs';
+import { combineLatest, filter, take } from 'rxjs';
 import { dynamic } from '../../dynamic.component';
 import { IElementComponentProps } from '../../element.component';
 import { BuiltInHooks } from './@types/built-in-hooks';
@@ -103,20 +103,6 @@ export const into = (id: string) => {
           const newComponent = componentDef.create();
           if (props) {
             newComponent.bindProps(props);
-          }
-          console.log(
-            'mounting component',
-            newComponent.type,
-            props ?? 'no-props',
-          );
-          if (
-            props != null &&
-            props.content != null &&
-            isObservable(props.content)
-          ) {
-            props.content.subscribe((v) => {
-              console.log('content changed', v);
-            });
           }
 
           if (c.getProp('name') !== HtmlElementNames.Slot) {
