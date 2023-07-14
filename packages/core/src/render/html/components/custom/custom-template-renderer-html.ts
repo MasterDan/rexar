@@ -15,6 +15,20 @@ import { IHookHandler } from './hook-handlers/base/hook-handler';
 export class CustomRendererHtml extends HtmlRendererBase {
   private renderer: IHtmlRenderer | undefined;
 
+  private $logger: ScopedLogger | undefined;
+
+  private get logger() {
+    if (this.$logger == null) {
+      this.$logger = ScopedLogger.createScope.sibling(
+        this.component.id ?? 'Custom Component',
+        {
+          captureNext: true,
+        },
+      );
+    }
+    return this.$logger;
+  }
+
   constructor(
     private refStore: RefStore,
     private hookHandlers: IHookHandler[],
@@ -30,6 +44,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
     this.lifecycle$.value = ComponentLifecycle.BeforeUnmount;
     await this.renderer.unmount();
     this.lifecycle$.value = ComponentLifecycle.Unmounted;
+    this.logger.debug('Component is unmounted');
   }
 
   renderInto(target: IBinding): Observable<IBinding | undefined> {
