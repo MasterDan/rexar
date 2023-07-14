@@ -67,6 +67,10 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       return of(binding);
     }
 
+    if (this.elComponent.preventTransformation) {
+      ScopedLogger.current.debug('Transformation is prevented');
+    }
+
     if (this.elComponent.id && !this.elComponent.preventTransformation) {
       const { transformer } = this.refStore.getReferences(this.elComponent.id);
       if (transformer.isEmpty && isSlot) {

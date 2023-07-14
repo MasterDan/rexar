@@ -1,5 +1,6 @@
 import { IDynamicComponentProps } from '@core/components/builtIn/dynamic.component';
 import { ref$ } from '@rexar/reactivity';
+import { ScopedLogger } from '@rexar/logger';
 import {
   combineLatest,
   filter,
@@ -21,6 +22,15 @@ import { RefStoreMemo } from '../ref-store/ref-store-memo';
 import { resolveRenderer } from '../tools';
 
 export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps> {
+  private $logger: ScopedLogger | undefined;
+
+  private get logger() {
+    if (this.$logger == null) {
+      throw new Error('Logger for custom component not been set');
+    }
+    return this.$logger;
+  }
+
   renderer$ = ref$(
     combineLatest([
       this.component$.pipe(switchMap((c) => c.getProp('component$'))),
@@ -42,6 +52,9 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
   }
 
   renderInto(target: IBinding): Observable<IBinding | undefined> {
+    this.$logger = ScopedLogger.createScope.child('Dynamic', {
+      captureNext: true,
+    });
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     this.refStoreMemo.rememberScope();
 
@@ -54,6 +67,7 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
       await this.renderer$.value.render();
       this.lifecycle$.value = ComponentLifecycle.Rendered;
       this.refStoreMemo.forgetScope();
+      ScopedLogger.endScope();
       return this.renderer$.value.nextTarget$;
     };
 
@@ -74,6 +88,7 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
     this.renderer$
       .pipe(pairwise(), skipUntil(firstMount$), takeUntil(beforeUnmount$))
       .subscribe(async ([previous, current]) => {
+        this.logger.rememberMe({ captureNext: true });
         if (previous) {
           await previous.unmount();
         }
@@ -85,6 +100,7 @@ export class DynamicRendererHtml extends HtmlRendererBase<IDynamicComponentProps
         } else {
           this.nextTarget$.value = this.target$.value;
         }
+        ScopedLogger.endScope();
       });
 
     return firstMount$;

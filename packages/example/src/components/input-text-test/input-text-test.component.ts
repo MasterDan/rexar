@@ -7,6 +7,7 @@ import {
 } from '@rexar/core';
 
 export const inputTextTest = defineComponent({
+  id: 'Text inputs test',
   template: (c) =>
     c.fromModule(() => import('./input-text-test.component.html')),
   setup() {
