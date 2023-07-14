@@ -19,12 +19,7 @@ export class CustomRendererHtml extends HtmlRendererBase {
 
   private get logger() {
     if (this.$logger == null) {
-      this.$logger = ScopedLogger.createScope.sibling(
-        this.component.id ?? 'Custom Component',
-        {
-          captureNext: true,
-        },
-      );
+      throw new Error('Logger for custom component not been set');
     }
     return this.$logger;
   }
@@ -48,7 +43,12 @@ export class CustomRendererHtml extends HtmlRendererBase {
   }
 
   renderInto(target: IBinding): Observable<IBinding | undefined> {
-    ScopedLogger.createScope.sibling('Custom Component', { captureNext: true });
+    this.$logger = ScopedLogger.createScope.sibling(
+      this.component.id ?? 'Custom Component',
+      {
+        captureNext: true,
+      },
+    );
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     if (!(this.component instanceof CustomTemplateComponent)) {
       throw new Error('Component should be custom');

@@ -77,7 +77,7 @@ export class ScopedLogger {
   static endScope() {
     const scope = this.scopeStack.pop();
     if (scope != null) {
-      this.scopesCapturing = this.scopesCapturing.filter(
+      this.futureParents = this.futureParents.filter(
         (s) => s.key !== scope.key,
       );
     }
@@ -103,7 +103,7 @@ export class ScopedLogger {
     return `[ ${this.scope.name} ]`;
   }
 
-  static scopesCapturing: LogScope[] = [];
+  static futureParents: LogScope[] = [];
 
   static get createScope() {
     const child = (name?: string, userOptions: Partial<IScopeOptions> = {}) => {
@@ -113,7 +113,7 @@ export class ScopedLogger {
       };
       const logger = this.current.createChild(name);
       if (captureNext) {
-        this.scopesCapturing.push(logger.scope);
+        this.futureParents.push(logger.scope);
       }
       return logger;
     };
@@ -126,14 +126,14 @@ export class ScopedLogger {
         captureNext: false,
         ...userOptions,
       };
-      const captured = this.scopesCapturing.some(
+      const captured = this.futureParents.some(
         (s) => s.key === this.currentScope.key,
       );
       const logger = captured
         ? this.current.createChild(name)
         : this.current.createSibling(name);
       if (captureNext) {
-        this.scopesCapturing.push(logger.scope);
+        this.futureParents.push(logger.scope);
       }
       return logger;
     };
@@ -152,6 +152,17 @@ export class ScopedLogger {
   createSibling(name?: string) {
     const siblingScope = this.scope.createSibling(name);
     return new ScopedLogger(siblingScope);
+  }
+
+  rememberMe(userOptions: Partial<IScopeOptions> = {}) {
+    const { captureNext }: IScopeOptions = {
+      captureNext: false,
+      ...userOptions,
+    };
+    ScopedLogger.scopeStack.push(this.scope);
+    if (captureNext) {
+      ScopedLogger.futureParents.push(this.scope);
+    }
   }
 
   end() {
