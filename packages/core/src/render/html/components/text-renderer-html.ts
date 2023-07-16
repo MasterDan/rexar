@@ -2,6 +2,7 @@ import { ITextComponentProps } from '@core/components/builtIn/text.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import { map, switchMap } from 'rxjs';
 import { container } from '@rexar/di';
+import { ScopedLogger } from '@rexar/logger';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { ComponentLifecycle } from '../base/lifecycle';
 import { DocumentRef } from '../documentRef';
@@ -29,6 +30,7 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
   }
 
   renderInto(binding: IBinding) {
+    const logger = ScopedLogger.createScope.sibling('Text');
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const text$ = this.component.getProp('value');
     const inserTrailingComment =
@@ -49,14 +51,17 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
     valueChanged$.subscribe(({ str }) => {
       if (this.node) {
         this.node.textContent = str;
+        logger.info(str);
       }
     });
+    ScopedLogger.endScope();
     return valueChanged$.pipe(
       map(({ doc, str }) => {
         if (this.node != null) {
           return undefined;
         }
         this.node = doc.createTextNode(str);
+        logger.info(str);
         this.trailingComment = inserTrailingComment
           ? (doc.createComment('end of text') as unknown as Element)
           : undefined;

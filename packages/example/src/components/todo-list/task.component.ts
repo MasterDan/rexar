@@ -13,6 +13,7 @@ export const task = defineComponent<{
   task: MayBeReadonlyRef<Task | undefined>;
   onDelete?: EventEmitter;
 }>({
+  id: 'Task',
   template: (c) => c.fromModule(() => import('./task.component.html')),
   props: () => ({ task: ref$() }),
   setup: ({ props }) => {

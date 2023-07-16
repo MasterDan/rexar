@@ -17,5 +17,6 @@ export {
   readonly,
   Ref,
   ReadonlyRef,
+  MayBeReadonlyRef,
   WritableReadonlyRef,
 } from '@rexar/reactivity';

@@ -206,23 +206,45 @@ describe('custom components', () => {
       array$,
       lifecycleChanged: onLifecycleChange.emitter,
     }).mount('#app');
+
+    let tryNumb = 0;
+    const addRemoveTest = async () => {
+      tryNumb += 1;
+      console.log(`${tryNumb}-st check`);
+
+      array$.patch((arr) => {
+        arr.push('Four');
+      });
+      await lastValueFrom(timer(100));
+      expect(root?.outerHTML).toBe(content$.value);
+      array$.patch((arr) => {
+        arr.pop();
+      });
+      await lastValueFrom(timer(100));
+      expect(root?.outerHTML).toBe(content$.value);
+    };
+
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBeUndefined();
+    await addRemoveTest();
 
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('mounted');
+    await addRemoveTest();
 
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('unmounted');
+    await addRemoveTest();
 
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('mounted');
+    await addRemoveTest();
   });
   test('if-else:repeat:from-true', async () => {
     const toggler$ = ref$(true);
@@ -245,23 +267,45 @@ describe('custom components', () => {
       array$,
       lifecycleChanged: onLifecycleChange.emitter,
     }).mount('#app');
+
+    let tryNumb = 0;
+    const addRemoveTest = async () => {
+      tryNumb += 1;
+      console.log(`${tryNumb}-st check`);
+
+      array$.patch((arr) => {
+        arr.push('Four');
+      });
+      await lastValueFrom(timer(100));
+      expect(root?.outerHTML).toBe(content$.value);
+      array$.patch((arr) => {
+        arr.pop();
+      });
+      await lastValueFrom(timer(100));
+      expect(root?.outerHTML).toBe(content$.value);
+    };
+
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('mounted');
+    await addRemoveTest();
 
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('unmounted');
+    await addRemoveTest();
 
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('mounted');
+    await addRemoveTest();
 
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('unmounted');
+    await addRemoveTest();
   });
   test('input-text-test', async () => {
     const content = 'He,Wo'

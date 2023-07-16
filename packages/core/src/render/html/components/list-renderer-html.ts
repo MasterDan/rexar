@@ -6,6 +6,7 @@ import { ComponentType } from '@core/components/component-type';
 import { ref$ } from '@rexar/reactivity';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
 import {
+  combineLatest,
   filter,
   from,
   map,
@@ -18,6 +19,7 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
+import { ScopedLogger } from '@rexar/logger';
 import { AnyComponent } from '../@types/any-component';
 import { IBinding } from '../@types/binding-target';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
@@ -43,12 +45,17 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   constructor() {
     super();
-    // this.listContent$.subscribe((lc) => {
-    //   console.log(
-    //     'list-content:',
-    //     lc == null ? 'empty' : lc.map((c) => c.type),
-    //   );
-    // });
+    // this.isArray
+    //   .pipe(
+    //     filter((x) => x),
+    //     switchMap(() => this.listContent$),
+    //   )
+    //   .subscribe((lc) => {
+    //     console.log(
+    //       'list-content:',
+    //       lc == null ? 'empty' : lc.map((c) => c.type),
+    //     );
+    //   });
     // this.isArray
     //   .pipe(
     //     filter((x) => x),
@@ -70,6 +77,9 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
       .pipe(
         filter((c) => c.type === ComponentType.List),
         mergeMap((c) => c.getProp('content')),
+        // tap((c) => {
+        //   console.log('content is:', c);
+        // }),
         map((content) =>
           content.map((c, i, a) => {
             if (c.type === ComponentType.Text && i < a.length - 1) {
@@ -218,6 +228,7 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
   renderInto(target: IBinding) {
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
+    ScopedLogger.createScope.sibling('List', { captureNext: true });
     const renderContent = async () => {
       const renderers = this.listRenderers$.value;
       if (renderers == null) {
@@ -236,17 +247,23 @@ export class ListRendererHtml extends HtmlRendererBase<IListComponentProps> {
 
         lastTarget = renderer.nextTarget$.value;
       }
+
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      ScopedLogger.endScope();
       return lastTarget;
     };
 
     const firstMount$ = from(renderContent());
 
     if (this.isArray.value) {
-      this.listRenderers$
+      combineLatest([this.listRenderers$, this.lifecycle$])
         .pipe(
           skipUntil(firstMount$),
-          filter((v): v is IRendererWithCommand[] => v != null),
+          filter(
+            (arr): arr is [IRendererWithCommand[], ComponentLifecycle] =>
+              arr[0] != null && arr[1] === ComponentLifecycle.Mounted,
+          ),
+          map(([v]) => v),
         )
         .subscribe(async (renderers) => {
           // eslint-disable-next-line no-restricted-syntax

@@ -1,6 +1,7 @@
 import { IConditionalComponentProps } from '@core/components/builtIn/conditional.component';
 import { dynamic } from '@core/components/builtIn/dynamic.component';
 import { ref$ } from '@rexar/reactivity';
+import { ScopedLogger } from '@rexar/logger';
 import {
   filter,
   from,
@@ -17,6 +18,15 @@ import { ComponentLifecycle } from '../base/lifecycle';
 import { resolveRenderer } from '../tools';
 
 export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalComponentProps> {
+  private $logger: ScopedLogger | undefined;
+
+  private get logger() {
+    if (this.$logger == null) {
+      throw new Error('Logger for custom component not been set');
+    }
+    return this.$logger;
+  }
+
   innerDynamic = dynamic();
 
   innerDynamicRenderer = resolveRenderer(this.innerDynamic);
@@ -42,6 +52,9 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
   }
 
   renderInto(): Observable<IBinding | undefined> {
+    this.$logger = ScopedLogger.createScope.child('If-else', {
+      captureNext: true,
+    });
     this.lifecycle$.value = ComponentLifecycle.BeforeRender;
     const condition$ = this.component.getProp('if$');
 
@@ -56,6 +69,7 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
     const renderAsync = async () => {
       await this.innerDynamicRenderer.render();
       this.lifecycle$.value = ComponentLifecycle.Rendered;
+      ScopedLogger.endScope();
       return this.innerDynamicRenderer.nextTarget$;
     };
 
@@ -68,10 +82,13 @@ export class ConditionalRendererHtml extends HtmlRendererBase<IConditionalCompon
       .pipe(
         skipUntil(firstMount$),
         switchMap((c) =>
-          c ? this.positiveComponent$ : this.negativeComponent$,
+          (c ? this.positiveComponent$ : this.negativeComponent$).pipe(
+            map((component) => ({ component, condition: c })),
+          ),
         ),
       )
-      .subscribe(async (component) => {
+      .subscribe(async ({ component, condition }) => {
+        this.logger.debug(`Condition is ${condition}`);
         this.innerDynamic.bindProp('component$', component);
       });
 

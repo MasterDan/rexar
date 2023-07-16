@@ -2,6 +2,7 @@ import { defineComponent, ref$, pickElement, into } from '@rexar/core';
 import { inner } from '../inner/inner.component';
 
 export const inputCheckboxTest = defineComponent({
+  id: 'Input Checkbox Test',
   template: (c) =>
     c.fromModule(() => import('./input-checkbox-test.component.html')),
   setup() {

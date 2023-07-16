@@ -4,7 +4,6 @@ import { ComponentDefinition } from '@core/components/component-definition-build
 import { ComponentType } from '@core/components/component-type';
 import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
 import { ref$, MayBeReadonlyRef } from '@rexar/reactivity';
-
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { ElementTransformer } from '@core/render/html/ref-store/element.transformer';
 import { defineHook } from '@core/tools/hooks/hooks';
@@ -104,6 +103,7 @@ export const into = (id: string) => {
           if (props) {
             newComponent.bindProps(props);
           }
+
           if (c.getProp('name') !== HtmlElementNames.Slot) {
             c.bindProp('children', [newComponent]);
             c.preventTransformation = true;

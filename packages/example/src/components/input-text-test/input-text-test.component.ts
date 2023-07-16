@@ -7,6 +7,7 @@ import {
 } from '@rexar/core';
 
 export const inputTextTest = defineComponent({
+  id: 'Text inputs test',
   template: (c) =>
     c.fromModule(() => import('./input-text-test.component.html')),
   setup() {
@@ -24,11 +25,11 @@ export const inputTextTest = defineComponent({
     );
     pickElement('combine').bindValue.string(fullText$ as Ref<string>);
     pickElement('text').bindContent.text(fullText$);
+    const letters$ = ref$(() =>
+      fullText$.value.split('').filter((v) => /\w/gm.exec(v)),
+    );
     pickTemplate('item-template')
-      .forEach(
-        ref$(() => fullText$.value.split('').filter((v) => /\w/gm.exec(v))),
-        (i) => i,
-      )
+      .forEach(letters$, (i) => i)
       .defineComponent({
         setup: ({ props: itemProps }) => {
           const letter$ = ref$(() => itemProps.item.value?.value ?? '-');

@@ -23,8 +23,8 @@ const conditionalComponentDefinition =
 
 export const conditional = (
   if$: MayBeReadonlyRef<boolean>,
-  ifTrue$?: MayBeReadonlyRef<AnyComponent>,
-  ifFalse$?: MayBeReadonlyRef<AnyComponent>,
+  ifTrue$?: MayBeReadonlyRef<AnyComponent | undefined>,
+  ifFalse$?: MayBeReadonlyRef<AnyComponent | undefined>,
 ) => {
   const component = conditionalComponentDefinition.create();
   component.bindProp('if$', if$);

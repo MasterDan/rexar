@@ -18,7 +18,7 @@ export const list = (
   opts?: { isArray: boolean },
 ) => {
   const listComp = listComponentDefinition.create();
-  listComp.bindProp('content', components);
+  listComp.bindProp('content', ref$(components));
   listComp.bindProp('isArray', opts?.isArray ?? false);
   return listComp;
 };
