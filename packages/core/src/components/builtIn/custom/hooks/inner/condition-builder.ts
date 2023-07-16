@@ -5,7 +5,6 @@ import { Component, TData } from '@core/components/component';
 import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ComponentType } from '@core/components/component-type';
 import { ref$, MayBeReadonlyRef } from '@rexar/reactivity';
-
 import { AnyComponent } from '@core/render/html/@types/any-component';
 import { Observable } from 'rxjs';
 

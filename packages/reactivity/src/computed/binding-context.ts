@@ -47,7 +47,7 @@ export class BindingContext {
     if (this.key == null) {
       return false;
     }
-    return this.tracked[this.key].find((key) => key === ref.key) != null;
+    return this.tracked[this.key].some((key) => key === ref.key);
   }
 
   track(ref: RefBase) {

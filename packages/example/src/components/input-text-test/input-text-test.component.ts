@@ -28,9 +28,6 @@ export const inputTextTest = defineComponent({
     const letters$ = ref$(() =>
       fullText$.value.split('').filter((v) => /\w/gm.exec(v)),
     );
-    letters$.subscribe((l) => {
-      console.log('Letters are:', l);
-    });
     pickTemplate('item-template')
       .forEach(letters$, (i) => i)
       .defineComponent({

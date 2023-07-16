@@ -6,7 +6,7 @@ import {
 import { ComponentType } from '@core/components/component-type';
 import type { TemplateParser, Templates } from '@core/parsers/html';
 import { ref$, readonly, ReadonlyRef } from '@rexar/reactivity';
-import { Observable, isObservable, filter } from 'rxjs';
+import { Observable, isObservable, filter, map } from 'rxjs';
 import { container } from '@rexar/di';
 
 type ToReadonlyRef<T> = T extends Observable<infer V>
@@ -40,19 +40,22 @@ export class CustomTemplateComponent<
     return this.$template.pipe(filter((x): x is Templates => x != null));
   }
 
-  propsAccessors$ = ref$(() => {
-    const props = this.props$.value;
-    const resultProps: Record<string, Observable<unknown>> = {};
-    Object.keys(props).forEach((pk) => {
-      const item = props[pk];
-      if (isObservable(item)) {
-        resultProps[pk] = ref$(item);
-      } else {
-        resultProps[pk] = readonly(ref$(item));
-      }
-    });
-    return resultProps as TPropsAccessors<TProps>;
-  });
+  propsAccessors$ = ref$(
+    this.props$.pipe(
+      map((props) => {
+        const resultProps: Record<string, Observable<unknown>> = {};
+        Object.keys(props).forEach((pk) => {
+          const item = props[pk];
+          if (isObservable(item)) {
+            resultProps[pk] = ref$(item);
+          } else {
+            resultProps[pk] = readonly(ref$(item));
+          }
+        });
+        return resultProps as TPropsAccessors<TProps>;
+      }),
+    ),
+  );
 
   constructor(args: ICustomTemplateComponentDefinitionArgs<TProps>) {
     super({ ...args, type: ComponentType.CustomTemplate });
