@@ -2,21 +2,22 @@
   "name": "@rexar/di",
   "version": "1.0.0",
   "license": "MIT",
-  "source": "src/index.ts",
-  "main": "dist/main.js",
-  "types": "dist/types.d.ts",
-  "targets": {
-    "main": {
-      "optimize": true
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/main.umd.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.umd.cjs"
     }
   },
   "scripts": {
-    "watch": "parcel watch",
-    "build": "rimraf dist && parcel build",
+    "build": "rimraf dist && vite build",
     "test": "jest"
-  },
-  "alias": {
-    "@di/*": "../../packages/di/src/$1"
   },
   "devDependencies": {
     "@parcel/transformer-typescript-tsc": "2.8.3",
@@ -26,9 +27,10 @@
     "parcel": "2.8.3",
     "rimraf": "^5.0.1",
     "ts-jest": "^29.1.0",
-    "ts-node": "^10.9.1"
-  },
-  "dependencies": {
-    "tslib": "^2.5.3"
+    "ts-node": "^10.9.1",
+    "tslib": "^2.5.3",
+    "vite": "^4.4.4",
+    "vite-plugin-dts": "^3.3.1"
   }
 }
+
