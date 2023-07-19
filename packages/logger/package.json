@@ -24,7 +24,10 @@
   "devDependencies": {
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
-    "tslib": "^2.5.3"
+    "tslib": "^2.5.3",
+    "vite": "^4.4.4",
+    "vite-plugin-dts": "^3.3.1",
+    "vitest": "^0.33.0"
   },
   "dependencies": {
     "print-tree": "^0.1.5"
