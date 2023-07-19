@@ -1,4 +1,5 @@
 /* eslint-disable max-classes-per-file */
+import { describe, test, expect } from 'vitest';
 import { container } from './container/di-container';
 import { useClass } from './tokens/class.token';
 import { useFunction } from './tokens/function.token';
