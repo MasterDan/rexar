@@ -1,3 +1,4 @@
+import { describe, test } from 'vitest';
 import { ScopedLogger } from './scoped-logger';
 
 describe('scoped logger', () => {

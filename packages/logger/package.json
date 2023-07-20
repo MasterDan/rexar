@@ -2,24 +2,22 @@
   "name": "@rexar/logger",
   "version": "1.0.0",
   "license": "MIT",
-  "source": "src/index.ts",
-  "main": "dist/main.js",
-  "types": "dist/types.d.ts",
-  "targets": {
-    "main": {
-      "optimize": true,
-      "includeNodeModules": [
-        "print-tree"
-      ]
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/main.umd.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.umd.cjs"
     }
   },
   "scripts": {
-    "watch": "parcel watch",
-    "build": "rimraf dist && parcel build",
-    "test": "jest"
-  },
-  "alias": {
-    "@logger/*": "../../packages/logger/src/$1"
+    "build": "rimraf dist && vite build",
+    "test": "npx vitest"
   },
   "devDependencies": {
     "rimraf": "^5.0.1",
@@ -33,3 +31,4 @@
     "print-tree": "^0.1.5"
   }
 }
+
