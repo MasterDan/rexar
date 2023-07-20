@@ -6,14 +6,22 @@ import dts from 'vite-plugin-dts';
 export default defineConfig(() => ({
   resolve: {
     alias: {
-      '@logger': path.resolve(__dirname, './src'),
+      '@reactivity': path.resolve(__dirname, './src'),
     },
   },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: '@rexar/logger',
+      name: '@rexar/reactivity',
       fileName: 'main',
+    },
+    rollupOptions: {
+      external: ['rxjs'],
+      output: {
+        globals: {
+          rxjs: 'rx',
+        },
+      },
     },
   },
   plugins: [
