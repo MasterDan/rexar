@@ -1,5 +1,6 @@
+import { describe, test, expect } from 'vitest';
 import { resolveNodes } from '.';
-import testHtml from './test.html';
+import testHtml from './test.html?raw';
 
 describe('html initial parser', () => {
   test('test-page', async () => {

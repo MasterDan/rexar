@@ -1,7 +1,7 @@
 import { defineComponent } from '@core/components';
 import { pickElement } from '@core/components/builtIn/custom/hooks/element-reference.hook';
 import { ref$ } from '@rexar/reactivity';
-import template from './test-three.component.html';
+import template from './test-three.component.html?raw';
 
 export const testThree = defineComponent({
   template: (c) => c.fromString(template),

@@ -4,9 +4,10 @@ import { templateParser } from '@core/parsers/html';
 import { ComponentDefinitionBuilder } from '@core/components/component-definition-builder';
 import { IComponentDefinitionBuilder } from '@core/components/@types/IComponentDefinitionBuilder';
 import { container, singleton, useClass } from '@rexar/di';
-import templateOne from './template-one.html';
-import templateTwo from './template-two.html';
-import templateMulti from './template-multi.html';
+import { describe, test, expect, beforeEach } from 'vitest';
+import templateOne from './template-one.html?raw';
+import templateTwo from './template-two.html?raw';
+import templateMulti from './template-multi.html?raw';
 
 describe('html-parser', () => {
   beforeEach(() => {

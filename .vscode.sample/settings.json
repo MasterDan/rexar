@@ -7,5 +7,6 @@
         "*.tsx": "${capture}.ts",
         "tsconfig.json": "tsconfig.*.json",
         "package.json": "package-lock.json, yarn.lock, .*, *.config.js, *.config.ts"
-    }
+    },
+    "vitest.commandLine": "npx vitest"
 }

@@ -6,6 +6,7 @@ import { ComponentDefinitionBuilder } from '@core/components/component-definitio
 import { ref$ } from '@rexar/reactivity';
 import { Observable } from 'rxjs';
 import { container, singleton, useClass } from '@rexar/di';
+import { describe, test, expect, beforeEach } from 'vitest';
 import { IBinding } from '../@types/binding-target';
 import { HtmlRendererBase } from './html-renderer-base';
 import { ComponentLifecycle } from './lifecycle';

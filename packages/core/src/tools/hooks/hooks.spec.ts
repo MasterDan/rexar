@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { catchHooks, defineHook, hookScope } from './hooks';
 
 describe('hooks-next', () => {
@@ -46,3 +47,4 @@ describe('hooks-next', () => {
     expect(checkTwo).toBe('two:world');
   });
 });
+

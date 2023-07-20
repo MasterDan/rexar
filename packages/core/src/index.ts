@@ -12,11 +12,12 @@ export {
 export { createEvent, triggerEvent } from './components/events';
 export { EventEmitter } from './components/events/event';
 
+export type { MayBeReadonlyRef, MaybeObservable } from '@rexar/reactivity';
+
 export {
   ref$,
   readonly,
   Ref,
   ReadonlyRef,
-  MayBeReadonlyRef,
   WritableReadonlyRef,
 } from '@rexar/reactivity';

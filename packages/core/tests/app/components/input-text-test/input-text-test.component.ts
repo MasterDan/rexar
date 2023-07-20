@@ -1,6 +1,6 @@
 import { defineComponent } from '@core/components';
 import { ref$, pickElement, pickTemplate } from '@core/index';
-import template from './input-text-test.component.html';
+import template from './input-text-test.component.html?raw';
 
 export const inputTextTest = defineComponent({
   template: (c) => c.fromString(template),

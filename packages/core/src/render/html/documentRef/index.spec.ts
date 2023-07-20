@@ -1,5 +1,6 @@
 import { lastValueFrom } from 'rxjs';
 import { container, singleton, useClass } from '@rexar/di';
+import { describe, test, expect, beforeAll } from 'vitest';
 import { DocumentRef } from '.';
 
 describe('document resolver', () => {

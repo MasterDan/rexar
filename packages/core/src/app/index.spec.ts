@@ -11,6 +11,7 @@ import { ComponentLifecycle } from '@core/render/html/base/lifecycle';
 import { lastValueFrom, timer } from 'rxjs';
 import { container, singleton, useClass } from '@rexar/di';
 import { refStoreToken } from '@core/render/html/component-renderer-resolver';
+import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { createApp } from '.';
 
 describe('app-tests', () => {

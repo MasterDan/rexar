@@ -2,6 +2,7 @@ import { createApp } from '@core/app';
 import { createEvent } from '@core/components/events';
 import { ref$ } from '@rexar/reactivity';
 import { lastValueFrom, timer } from 'rxjs';
+import { describe, test, expect } from 'vitest';
 import { ifElseRepeat } from './components/if-else.test/if-else-repeat.component';
 import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';

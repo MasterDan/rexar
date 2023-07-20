@@ -9,7 +9,7 @@ export const ifElseRepeat = defineComponent<{
   lifecycleChanged?: EventEmitter<LifecycleStatuses>;
 }>({
   template: (c) =>
-    c.fromModule(() => import('./if-else-repeat.component.html')),
+    c.fromModule(() => import('./if-else-repeat.component.html?raw')),
   props: () => ({
     toggler$: ref$(false),
     array$: ref$<string[]>([]),

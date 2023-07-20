@@ -2,6 +2,7 @@ import { el } from '@core/components/builtIn/element.component';
 import { list } from '@core/components/builtIn/list.component';
 import { ref$ } from '@rexar/reactivity';
 import { container, singleton, useClass } from '@rexar/di';
+import { describe, test, expect, beforeAll } from 'vitest';
 import { BindingTargetRole } from '../@types/binding-target';
 import { ComponentRendererHtml } from '../component-renderer-html';
 import { ComponentRendererResolver } from '../component-renderer-resolver';

@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { SubclassOne } from './subclass-one';
 import { SubclassTwo } from './subclass-two';
 
