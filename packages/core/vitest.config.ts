@@ -9,7 +9,6 @@ export default defineConfig({
     },
   },
   test: {
-    teardownTimeout: 1000,
     threads: false,
   },
 });
