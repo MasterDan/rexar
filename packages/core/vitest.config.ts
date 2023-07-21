@@ -8,4 +8,8 @@ export default defineConfig({
       '@core': path.resolve(__dirname, './src'),
     },
   },
+  test: {
+    teardownTimeout: 1000,
+    threads: false,
+  },
 });
