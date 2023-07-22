@@ -1,13 +1,12 @@
 import { lastValueFrom } from 'rxjs';
-import { container, singleton, useClass } from '@rexar/di';
+import { container } from '@rexar/di';
 import { describe, test, expect, beforeAll } from 'vitest';
+import { documentRefToken } from '@core/components/module';
 import { DocumentRef } from '.';
 
 describe('document resolver', () => {
   beforeAll(() => {
-    container
-      .createToken('DocumentRef', useClass<DocumentRef>(), singleton())
-      .provide(DocumentRef);
+    documentRefToken.provide(DocumentRef);
   });
   test('resolve document', async () => {
     const dRef = container.resolve<DocumentRef>('DocumentRef');
