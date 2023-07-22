@@ -16,7 +16,7 @@ export default defineConfig(() => ({
       fileName: 'main',
     },
     rollupOptions: {
-      external: ['rxjs'],
+      external: ['rxjs', 'document-ref.dev.ts'],
       output: {
         globals: {
           rxjs: 'rx',
