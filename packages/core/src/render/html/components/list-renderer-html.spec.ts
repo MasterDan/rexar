@@ -3,12 +3,14 @@ import { list } from '@core/components/builtIn/list.component';
 import { ref$ } from '@rexar/reactivity';
 import { container, singleton, useClass } from '@rexar/di';
 import { describe, test, expect, beforeAll } from 'vitest';
+import { documentRefToken } from '@core/components/module';
 import { BindingTargetRole } from '../@types/binding-target';
 import { ComponentRendererHtml } from '../component-renderer-html';
 import { ComponentRendererResolver } from '../component-renderer-resolver';
-import { DocumentRef } from '../documentRef';
 import { ListRendererHtml } from './list-renderer-html';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
+import { IDocumentRef } from '../documentRef/@types/IDocumentRef';
+import { DocumentRefDev } from '../documentRef/document-ref.dev';
 
 class ListRendererTest extends ListRendererHtml {
   public get comp$() {
@@ -29,6 +31,7 @@ describe('list-renderer-html', () => {
         ]),
       )
       .provide(ComponentRendererHtml);
+    documentRefToken.provide(DocumentRefDev);
   });
   test('component leak tests', () => {
     const listRendererOne = new ListRendererTest();
@@ -64,8 +67,7 @@ describe('list-renderer-html', () => {
   });
 
   test('simple list', async () => {
-    const docRef = container.resolve<DocumentRef>('DocumentRef');
-    const doc = await docRef.getDocument();
+    const doc = container.resolve<IDocumentRef>('IDocumentRef').document;
     const rootDiv = doc.createElement('div');
     const listRenderer = new ListRendererHtml();
     listRenderer.setComponent(

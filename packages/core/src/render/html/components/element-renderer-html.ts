@@ -8,11 +8,11 @@ import { ComponentType } from '@core/components/component-type';
 import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
 import { ScopedLogger } from '@rexar/logger';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
-import { DocumentRef } from '../documentRef';
 import { RefStore } from '../ref-store/ref-store';
 import { resolveRenderer } from '../tools';
 import { IHtmlRenderer } from '../@types/IHtmlRenderer';
 import { ComponentLifecycle } from '../base/lifecycle';
+import { IDocumentRef } from '../documentRef/@types/IDocumentRef';
 
 export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps> {
   private $logger: ScopedLogger | undefined;
@@ -138,7 +138,8 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     const name = this.elComponent.getProp('name');
     const attrs = this.elComponent.getProp('attrs') ?? {};
     const children = this.elComponent.getProp('children') ?? [];
-    const renderElement = async (doc: Document) => {
+    const renderElement = async () => {
+      const doc = container.resolve<IDocumentRef>('IDocumentRef').document;
       const el = doc.createElement(name);
       this.el = el;
       Object.keys(attrs).forEach((k) => {
@@ -200,8 +201,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         target: el,
       };
     };
-    return container
-      .resolve<DocumentRef>('DocumentRef')
-      .instance$.pipe(switchMap((d) => from(renderElement(d))));
+
+    return from(renderElement());
   }
 }

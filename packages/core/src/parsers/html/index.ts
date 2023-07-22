@@ -2,9 +2,9 @@ import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { DocumentRef } from '@core/render/html/documentRef';
 import { isValidString } from '@core/tools/string';
 import { container } from '@rexar/di';
+import { IDocumentRef } from '@core/render/html/documentRef/@types/IDocumentRef';
 import { extractId } from './id-checker';
 import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
@@ -113,8 +113,7 @@ async function fromString(html: string): Promise<Templates> {
 }
 
 async function fromQuerySelector(selector: string) {
-  const docRef = container.resolve<DocumentRef>('DocumentRef');
-  const doc = await docRef.getDocument();
+  const doc = container.resolve<IDocumentRef>('IDocumentRef').document;
   const templates: Templates = { default: [], inner: {} };
   const element = doc.querySelector(selector);
   if (element == null || element.nodeName !== HtmlElementNames.Template) {

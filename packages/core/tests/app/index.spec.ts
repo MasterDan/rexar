@@ -2,7 +2,9 @@ import { createApp } from '@core/app';
 import { createEvent } from '@core/components/events';
 import { lastValueFrom, timer } from 'rxjs';
 import { ref$ } from '@rexar/reactivity';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, beforeAll } from 'vitest';
+import { DocumentRefDev } from '@core/render/html/documentRef/document-ref.dev';
+import { documentRefToken } from '@core/components/module';
 import { ifElseRepeat } from './components/if-else.test/if-else-repeat.component';
 import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';
@@ -17,6 +19,9 @@ import { testThree } from './components/test-three/test-three.component';
 import { testTwo } from './components/test-two/test-two.component';
 
 describe('custom components', () => {
+  beforeAll(() => {
+    documentRefToken.provide(DocumentRefDev);
+  });
   test('test-one', async () => {
     const elApp = await createApp(testOne).mount('#app');
     expect(elApp?.outerHTML).toBe(

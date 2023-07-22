@@ -16,11 +16,10 @@ export default defineConfig(() => ({
       fileName: 'main',
     },
     rollupOptions: {
-      external: ['rxjs', 'jsdom'],
+      external: ['rxjs'],
       output: {
         globals: {
           rxjs: 'rx',
-          jsdom: 'jsdom',
         },
       },
     },

@@ -1,11 +1,12 @@
 import { TemplateParser, templateParser } from '@core/parsers/html';
-import { DocumentRef } from '@core/render/html/documentRef';
+import { DocumentRef } from '@core/render/html/documentRef/document-ref';
 import { container, singleton, useClass, useValue } from '@rexar/di';
+import { IDocumentRef } from '@core/render/html/documentRef/@types/IDocumentRef';
 import { ComponentDefinitionBuilder } from './component-definition-builder';
 
 export const documentRefToken = container.createToken(
-  'DocumentRef',
-  useClass<DocumentRef>(),
+  'IDocumentRef',
+  useClass<IDocumentRef>(),
   singleton(),
 );
 

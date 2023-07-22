@@ -12,6 +12,8 @@ import { lastValueFrom, timer } from 'rxjs';
 import { container, singleton, useClass } from '@rexar/di';
 import { refStoreToken } from '@core/render/html/component-renderer-resolver';
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
+import { documentRefToken } from '@core/components/module';
+import { DocumentRefDev } from '@core/render/html/documentRef/document-ref.dev';
 import { createApp } from '.';
 
 describe('app-tests', () => {
@@ -24,6 +26,7 @@ describe('app-tests', () => {
       )
       .provide(ComponentDefinitionBuilder);
     const store = refStoreToken.resolve();
+    documentRefToken.provide(DocumentRefDev);
     store.beginScope('test-scope', ref$(ComponentLifecycle.Created));
   });
   afterEach(() => {

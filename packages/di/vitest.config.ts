@@ -8,4 +8,7 @@ export default defineConfig({
       '@di': path.resolve(__dirname, './src'),
     },
   },
+  test: {
+    threads: false,
+  },
 });
