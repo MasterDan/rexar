@@ -16,7 +16,7 @@ export default defineConfig(() => ({
       fileName: 'main',
     },
     rollupOptions: {
-      external: ['rxjs', 'document-ref.dev.ts'],
+      external: ['rxjs', '@rexar/logger'],
       output: {
         globals: {
           rxjs: 'rx',

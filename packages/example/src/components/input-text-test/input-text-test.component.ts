@@ -9,7 +9,7 @@ import {
 export const inputTextTest = defineComponent({
   id: 'Text inputs test',
   template: (c) =>
-    c.fromModule(() => import('./input-text-test.component.html')),
+    c.fromModule(() => import('./input-text-test.component.html?raw')),
   setup() {
     const textOne$ = ref$('Hello');
     const textTwo$ = ref$('World');

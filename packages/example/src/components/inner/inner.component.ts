@@ -11,7 +11,7 @@ export interface IInnerComponnentProps {
 }
 
 export const inner = defineComponent<IInnerComponnentProps>({
-  template: (c) => c.fromModule(() => import('./inner.component.html')),
+  template: (c) => c.fromModule(() => import('./inner.component.html?raw')),
   props: () => ({ message: 'No Message' }),
   setup: ({ props }) => {
     pickElement('message').bindContent.text(props.message);

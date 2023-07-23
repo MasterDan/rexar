@@ -14,7 +14,7 @@ export const task = defineComponent<{
   onDelete?: EventEmitter;
 }>({
   id: 'Task',
-  template: (c) => c.fromModule(() => import('./task.component.html')),
+  template: (c) => c.fromModule(() => import('./task.component.html?raw')),
   props: () => ({ task: ref$() }),
   setup: ({ props }) => {
     pickElement('title').bindContent.text(ref$(() => props.task?.value?.title));
