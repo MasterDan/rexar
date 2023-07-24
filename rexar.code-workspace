@@ -1,0 +1,31 @@
+{
+  "folders": [
+    {
+      "path": "packages/core",
+    },
+    {
+      "path": "packages/reactivity",
+    },
+    {
+      "path": "packages/di",
+    },
+    {
+      "path": "packages/logger",
+    },
+    {
+      "path": "packages/example",
+    },
+    {
+      "path": ".",
+      "name": "root",
+    },
+  ],
+  "settings": {
+    "vitest.disabledWorkspaceFolders": [
+      "root"
+    ],
+    "eslint.workingDirectories": [
+      "./packages/di"
+    ]
+  }
+}
