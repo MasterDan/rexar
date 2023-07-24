@@ -1,11 +1,11 @@
 import { ITextComponentProps } from '@core/components/builtIn/text.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { map, switchMap } from 'rxjs';
+import { map } from 'rxjs';
 import { container } from '@rexar/di';
 import { ScopedLogger } from '@rexar/logger';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { ComponentLifecycle } from '../base/lifecycle';
-import { DocumentRef } from '../documentRef';
+import { IDocumentRef } from '../documentRef/@types/IDocumentRef';
 
 export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
   private node: Text | undefined;
@@ -35,19 +35,15 @@ export class TextRendererHtml extends HtmlRendererBase<ITextComponentProps> {
     const text$ = this.component.getProp('value');
     const inserTrailingComment =
       this.component.getProp('trailingComment') ?? false;
+    const documentInstance =
+      container.resolve<IDocumentRef>('IDocumentRef').document;
 
-    const valueChanged$ = container
-      .resolve<DocumentRef>('DocumentRef')
-      .instance$.pipe(
-        switchMap((doc) =>
-          text$.pipe(
-            map((str) => ({
-              str,
-              doc,
-            })),
-          ),
-        ),
-      );
+    const valueChanged$ = text$.pipe(
+      map((str) => ({
+        str,
+        doc: documentInstance,
+      })),
+    );
     valueChanged$.subscribe(({ str }) => {
       if (this.node) {
         this.node.textContent = str;

@@ -6,6 +6,7 @@
         "jsx": "preserve",
         "importHelpers": true,
         "moduleResolution": "node",
+        "isolatedModules": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "skipLibCheck": true,
@@ -36,5 +37,6 @@
     },
     "exclude": [
         "**/node_modules/**",
+        "**/dist/**"
     ]
 }

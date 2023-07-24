@@ -5,7 +5,7 @@ import { EventEmitter } from '@core/components/events/event';
 import { onMounted, onUnmounted, pickTemplate } from '@core/index';
 import { ref$, MayBeReadonlyRef } from '@rexar/reactivity';
 
-import html from './repeat.component.html';
+import html from './repeat.component.html?raw';
 
 export type LifecycleStatuses = 'mounted' | 'unmounted';
 

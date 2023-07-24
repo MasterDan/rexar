@@ -1,4 +1,5 @@
 import { lastValueFrom, timer } from 'rxjs';
+import { describe, test, expect } from 'vitest';
 import { ref$ } from '.';
 
 const wait = () => lastValueFrom(timer(100));

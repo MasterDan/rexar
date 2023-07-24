@@ -8,7 +8,7 @@ export const conditionalRepeat = defineComponent<{
 }>({
   props: () => ({ array: ref$<string[]>([]), condition: ref$(false) }),
   template: (b) =>
-    b.fromModule(() => import('./conditional-repeat.component.html')),
+    b.fromModule(() => import('./conditional-repeat.component.html?raw')),
   setup({ props }) {
     const { mount: mountList } = pickTemplate('list-item')
       .forEach(props.array, (x) => x)

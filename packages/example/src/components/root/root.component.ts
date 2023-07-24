@@ -16,7 +16,7 @@ type Pages =
 
 export const root = defineComponent({
   id: 'Root Component',
-  template: (c) => c.fromModule(() => import('./root.component.html')),
+  template: (c) => c.fromModule(() => import('./root.component.html?raw')),
   setup: () => {
     const showContent$ = ref$<Pages>('todo');
     into('content').if(

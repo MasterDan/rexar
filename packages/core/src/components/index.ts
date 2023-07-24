@@ -1,33 +1,9 @@
-import { TemplateParser, templateParser } from '@core/parsers/html';
-import { DocumentRef } from '@core/render/html/documentRef';
-import { container, singleton, useClass, useValue } from '@rexar/di';
-import { IComponentDefinitionBuilder } from './@types/IComponentDefinitionBuilder';
 import { ICustomTemplateComponentDefinitionArgs } from './builtIn/custom/custom-template.component';
 import { IComponentDefinitionArgs, TData } from './component';
-import {
-  ComponentDefinition,
-  ComponentDefinitionBuilder,
-} from './component-definition-builder';
+import { ComponentDefinition } from './component-definition-builder';
+import { componentDefinitionBuilderToken, setup } from './module';
 
-container
-  .createToken('DocumentRef', useClass<DocumentRef>(), singleton())
-  .provide(DocumentRef);
-
-container
-  .createToken('TemplateParser', useValue<TemplateParser>())
-  .provide(templateParser);
-
-container
-  .createToken(
-    'IComponentDefinitionBuilder',
-    useClass<ComponentDefinitionBuilder>(),
-    singleton(),
-  )
-  .provide(ComponentDefinitionBuilder);
-
-const builder = container.resolve<IComponentDefinitionBuilder>(
-  'IComponentDefinitionBuilder',
-);
+setup();
 
 export function defineComponent(
   args:
@@ -46,6 +22,7 @@ export function defineComponent<TProps extends TData>(
     | Omit<IComponentDefinitionArgs<TData>, 'props'>
     | Omit<ICustomTemplateComponentDefinitionArgs<TData>, 'props'>,
 ): ComponentDefinition<TProps> | ComponentDefinition<TData> {
+  const builder = componentDefinitionBuilderToken.resolve();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return builder.defineComponent(args as any);
 }

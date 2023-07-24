@@ -1,16 +1,16 @@
-import { lastValueFrom } from 'rxjs';
-import { container, singleton, useClass } from '@rexar/di';
-import { DocumentRef } from '.';
+import { container } from '@rexar/di';
+import { describe, test, expect, beforeAll } from 'vitest';
+import { documentRefToken } from '@core/components/module';
+import { IDocumentRef } from './@types/IDocumentRef';
+import { DocumentRefDev } from './document-ref.dev';
 
 describe('document resolver', () => {
   beforeAll(() => {
-    container
-      .createToken('DocumentRef', useClass<DocumentRef>(), singleton())
-      .provide(DocumentRef);
+    documentRefToken.provide(DocumentRefDev);
   });
-  test('resolve document', async () => {
-    const dRef = container.resolve<DocumentRef>('DocumentRef');
-    const doc = await lastValueFrom(dRef.instance$);
+  test('resolve document', () => {
+    const dRef = container.resolve<IDocumentRef>('IDocumentRef');
+    const doc = dRef.document;
     expect(doc.body.innerHTML).toBe('<div id="app"></div>');
     const el = doc.querySelector('#app');
     expect(el).not.toBeNull();

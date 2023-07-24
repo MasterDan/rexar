@@ -1,0 +1,6 @@
+{
+    "vitest.enable": true,
+    "eslint.workingDirectories": [
+        "../.."
+    ],
+}

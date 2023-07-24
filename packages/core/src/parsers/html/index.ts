@@ -2,13 +2,13 @@ import { el } from '@core/components/builtIn/element.component';
 import { text } from '@core/components/builtIn/text.component';
 import { ref$ } from '@rexar/reactivity';
 import { AnyComponent } from '@core/render/html/@types/any-component';
-import { DocumentRef } from '@core/render/html/documentRef';
 import { isValidString } from '@core/tools/string';
 import { container } from '@rexar/di';
+import { IDocumentRef } from '@core/render/html/documentRef/@types/IDocumentRef';
 import { extractId } from './id-checker';
-import { resolveNodes } from './node-resolver';
 import { isHtmlElement, isTextNode } from './node-types';
 import { HtmlElementNames } from './tags/html-names';
+import { NodeResolver } from './node-resolver/NodeResolver';
 
 export type Templates = {
   default: AnyComponent[];
@@ -106,15 +106,15 @@ function fromComponents(components: AnyComponent[]) {
 }
 
 async function fromString(html: string): Promise<Templates> {
-  const nodes = await resolveNodes(html);
+  const resolveNodes = container.resolve<NodeResolver>('NodeResolver');
+  const nodes = resolveNodes(html);
   const templates: Templates = { default: [], inner: {} };
   templates.default = parseNodes(nodes, templates);
-  return templates;
+  return Promise.resolve(templates);
 }
 
 async function fromQuerySelector(selector: string) {
-  const docRef = container.resolve<DocumentRef>('DocumentRef');
-  const doc = await docRef.getDocument();
+  const doc = container.resolve<IDocumentRef>('IDocumentRef').document;
   const templates: Templates = { default: [], inner: {} };
   const element = doc.querySelector(selector);
   if (element == null || element.nodeName !== HtmlElementNames.Template) {

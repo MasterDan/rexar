@@ -42,7 +42,12 @@ function defineComponentWithoutProps(
     | Omit<IComponentDefinitionArgs<TData>, 'props'>
     | Omit<ICustomTemplateComponentDefinitionArgs<TData>, 'props'>,
 ): ComponentDefinition<TData> {
-  const creationArgs = { ...args, props: () => ({}) };
+  const creationArgs:
+    | IComponentDefinitionArgs<TData>
+    | ICustomTemplateComponentDefinitionArgs<TData> = {
+    ...args,
+    props: () => ({}),
+  };
   return shouldWeCreateCustomComponent(creationArgs)
     ? {
         create: () => new CustomTemplateComponent<TData>(creationArgs),

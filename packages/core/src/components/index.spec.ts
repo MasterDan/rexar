@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { defineComponent } from '.';
 import { ComponentType } from './component-type';
 

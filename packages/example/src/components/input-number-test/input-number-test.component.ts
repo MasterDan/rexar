@@ -3,7 +3,7 @@ import { delay } from 'rxjs';
 
 export const inputNumberTest = defineComponent({
   template: (c) =>
-    c.fromModule(() => import('./input-number-test.component.html')),
+    c.fromModule(() => import('./input-number-test.component.html?raw')),
   setup() {
     const numberOne$ = ref$(2);
     const numberTwo$ = ref$(2);

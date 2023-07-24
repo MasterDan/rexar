@@ -7,7 +7,7 @@ import {
 } from '@rexar/core';
 
 export const lorem = defineComponent({
-  template: (c) => c.fromModule(() => import('./lorem.component.html')),
+  template: (c) => c.fromModule(() => import('./lorem.component.html?raw')),
   setup() {
     pickTemplate('inner-template')
       .defineComponent({

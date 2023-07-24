@@ -1,7 +1,13 @@
+import { describe, test, expect, beforeAll } from 'vitest';
+import { DocumentRefDev } from '@core/render/html/documentRef/document-ref.dev';
 import { el } from './element.component';
 import { list } from './list.component';
+import { documentRefToken } from '../module';
 
 describe('list-component', () => {
+  beforeAll(() => {
+    documentRefToken.provide(DocumentRefDev);
+  });
   test('simple', () => {
     const testListOne = list([
       el({ name: 'div', attrs: { class: 'foo' } }),

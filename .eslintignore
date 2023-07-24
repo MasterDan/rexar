@@ -3,3 +3,4 @@
 **/jest/
 **/.eslintrc.js
 **/jest.setup.js
+vitest.workspace.ts

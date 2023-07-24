@@ -11,7 +11,7 @@ import { task } from './task.component';
 
 export const todoList = defineComponent({
   id: 'Todo List',
-  template: (c) => c.fromModule(() => import('./todo-list.component.html')),
+  template: (c) => c.fromModule(() => import('./todo-list.component.html?raw')),
   setup: () => {
     const list = ref$<Task[]>([]);
 

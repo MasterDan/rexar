@@ -9,14 +9,14 @@
 		},
 		{
 			"type": "npm",
-			"script": "start",
+			"script": "dev",
 			"path": "packages/example",
 			"isBackground": true,
 			"problemMatcher": [
 				{
 					"owner": "npm",
 					"background": {
-						"endsPattern": "Server running at.",
+						"endsPattern": "VITE",
 						"beginsPattern": ".",
 						"activeOnStart": true
 					},
@@ -25,8 +25,8 @@
 					}
 				}
 			],
-			"label": "npm: start - packages/example",
-			"detail": "parcel"
+			"label": "npm: dev - packages/example",
+			"detail": "vite"
 		},
 		{
 			"type": "npm",

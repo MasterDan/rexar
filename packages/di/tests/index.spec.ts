@@ -1,34 +1,15 @@
-/* eslint-disable max-classes-per-file */
-import { container } from './container/di-container';
-import { useClass } from './tokens/class.token';
-import { useFunction } from './tokens/function.token';
-import { Lazy } from './tokens/lazy';
-import { lazy } from './tokens/lazy.token';
-import { multiple } from './tokens/multiple.token';
-import { singleton } from './tokens/singleton.token';
-import { useValue } from './tokens/value.token';
-
-class TestInner {
-  val = 'foo';
-}
-
-class TestClass {
-  val = 'bar';
-
-  constructor(public inner: TestInner) {}
-}
-
-class TestInnerLazy {
-  val = 'foo';
-
-  constructor(public inner: Lazy<TestLazyClass>) {}
-}
-
-class TestLazyClass {
-  val = 'bar';
-
-  constructor(public inner: Lazy<TestInnerLazy>) {}
-}
+import { describe, test, expect } from 'vitest';
+import { container } from '../src/container/di-container';
+import { useClass } from '../src/tokens/class.token';
+import { useFunction } from '../src/tokens/function.token';
+import { lazy } from '../src/tokens/lazy.token';
+import { multiple } from '../src/tokens/multiple.token';
+import { singleton } from '../src/tokens/singleton.token';
+import { useValue } from '../src/tokens/value.token';
+import { TestInner } from './TestInner';
+import { TestClass } from './TestClass';
+import { TestInnerLazy } from './TestInnerLazy';
+import { TestLazyClass } from './TestLazyClass';
 
 describe('dependecy injection', () => {
   test('value injection', () => {

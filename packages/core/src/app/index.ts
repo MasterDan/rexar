@@ -1,10 +1,9 @@
-import { DocumentRef } from '@core/render/html/documentRef';
 import { container } from '@rexar/di';
 import { resolveAplicationRenderer } from '@core/render/html';
-import { lastValueFrom } from 'rxjs';
 import { Component, TData } from '@core/components/component';
 import { ComponentDefinition } from '@core/components/component-definition-builder';
 import { ScopedLogger } from '@rexar/logger';
+import { IDocumentRef } from '@core/render/html/documentRef/@types/IDocumentRef';
 
 export function createApp<TProps extends TData>(
   root: Component<TProps> | ComponentDefinition<TProps>,
@@ -17,9 +16,7 @@ export function createApp<TProps extends TData>(
   const renderer = resolveAplicationRenderer();
   const mount = async (selector: string) => {
     ScopedLogger.createScope.child('App Rendering');
-    const doc = await lastValueFrom(
-      container.resolve<DocumentRef>('DocumentRef').instance$,
-    );
+    const doc = container.resolve<IDocumentRef>('IDocumentRef').document;
     const el = doc.querySelector(selector);
     if (el) {
       await renderer.render(rootComponent, el as HTMLElement);
