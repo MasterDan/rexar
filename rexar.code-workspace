@@ -24,8 +24,5 @@
     "vitest.disabledWorkspaceFolders": [
       "root"
     ],
-    "eslint.workingDirectories": [
-      "./packages/di"
-    ]
   }
 }
