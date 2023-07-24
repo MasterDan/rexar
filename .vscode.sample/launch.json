@@ -8,10 +8,10 @@
             "type": "chrome",
             "request": "launch",
             "name": "chrome:example",
-            "preLaunchTask": "npm: start - packages/example",
+            "preLaunchTask": "npm: dev - packages/example",
             "postDebugTask": "terminate: all",
-            "url": "http://localhost:1234",
-            "webRoot": "${workspaceFolder}"
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}/packages/example/src"
         }
     ]
 }

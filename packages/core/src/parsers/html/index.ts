@@ -110,7 +110,7 @@ async function fromString(html: string): Promise<Templates> {
   const nodes = resolveNodes(html);
   const templates: Templates = { default: [], inner: {} };
   templates.default = parseNodes(nodes, templates);
-  return templates;
+  return Promise.resolve(templates);
 }
 
 async function fromQuerySelector(selector: string) {
