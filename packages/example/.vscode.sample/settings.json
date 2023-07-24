@@ -3,6 +3,7 @@
     "eslint.workingDirectories": [
         "../.."
     ],
+    "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
         "*.ts": "${capture}.js, ${capture}.spec.ts",
         "*.component.ts": "${capture}.component.html",
