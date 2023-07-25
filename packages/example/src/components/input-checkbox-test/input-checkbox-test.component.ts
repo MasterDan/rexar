@@ -1,5 +1,6 @@
 import { defineComponent, ref$, pickElement, into } from '@rexar/core';
 import { inner } from '../inner/inner.component';
+import { ifElseTest } from './if-else-test.component';
 
 export const inputCheckboxTest = defineComponent({
   id: 'Input Checkbox Test',
@@ -32,5 +33,6 @@ export const inputCheckboxTest = defineComponent({
         message: 'This component displays if second checkbox is NOT checked',
       });
     });
+    into('if-else-test').mountComponent(ifElseTest, { toggler$: checkTwo$ });
   },
 });
