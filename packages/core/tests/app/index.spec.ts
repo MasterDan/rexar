@@ -224,10 +224,10 @@ describe('custom components', () => {
       lifecycleChanged: onLifecycleChange.emitter,
     }).mount('#app');
 
-    let tryNumb = 0;
+    // let tryNumb = 0;
     const addRemoveTest = async () => {
-      tryNumb += 1;
-      console.log(`${tryNumb}-st check`);
+      // tryNumb += 1;
+      // console.log(`${tryNumb}-st check`);
 
       array$.patch((arr) => {
         arr.push('Four');
@@ -291,10 +291,10 @@ describe('custom components', () => {
       lifecycleChanged: onLifecycleChange.emitter,
     }).mount('#app');
 
-    let tryNumb = 0;
+    // let tryNumb = 0;
     const addRemoveTest = async () => {
-      tryNumb += 1;
-      console.log(`${tryNumb}-st check`);
+      // tryNumb += 1;
+      // console.log(`${tryNumb}-st check`);
 
       array$.patch((arr) => {
         arr.push('Four');
