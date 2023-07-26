@@ -42,7 +42,6 @@ export const into = (id: string) => {
       transformer.append((c: Component<IElementComponentProps>) => {
         const builder = new ConditionBuilder(condition$, c);
         config(builder);
-        c.preventTransformation = true;
         return builder.build();
       });
     });
@@ -106,7 +105,6 @@ export const into = (id: string) => {
 
           if (c.getProp('name') !== HtmlElementNames.Slot) {
             c.bindProp('children', [newComponent]);
-            c.preventTransformation = true;
             return c;
           }
           return newComponent;

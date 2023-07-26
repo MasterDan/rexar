@@ -19,8 +19,6 @@ export class Component<TProps extends TData = TData> {
 
   type: ComponentType;
 
-  preventTransformation = false;
-
   protected props$: Ref<TProps>;
 
   constructor({ props, type, id }: IComponentDefinitionArgs<TProps>) {

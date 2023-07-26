@@ -1,12 +1,13 @@
 import { list } from '@core/components/builtIn/list.component';
 import { HtmlRendererBase } from '@core/render/html/base/html-renderer-base';
-import { filter, from, of, pairwise, switchMap } from 'rxjs';
+import { filter, from, map, of, pairwise, switchMap } from 'rxjs';
 import { container } from '@rexar/di';
 import { IElementComponentProps } from '@core/components/builtIn/element.component';
 import { Component } from '@core/components/component';
 import { ComponentType } from '@core/components/component-type';
 import { HtmlElementNames } from '@core/parsers/html/tags/html-names';
 import { ScopedLogger } from '@rexar/logger';
+import { ref$ } from '@rexar/reactivity';
 import { BindingTargetRole, IBinding } from '../@types/binding-target';
 import { RefStore } from '../ref-store/ref-store';
 import { resolveRenderer } from '../tools';
@@ -43,6 +44,14 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     return this.component;
   }
 
+  private references$ = ref$(
+    this.component$.pipe(
+      map((c) => c.id),
+      filter((id): id is string => id != null),
+      map((id) => this.refStore.getReferences(id)),
+    ),
+  );
+
   async unmount(): Promise<void> {
     this.logger.debug('Unmounting');
     if (this.transformedElementRenderer) {
@@ -73,67 +82,86 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       }`,
     );
 
-    const beforeUnmount$ = this.lifecycle$.pipe(
-      pairwise(),
-      filter(
-        ([prev, curr]) =>
-          prev === ComponentLifecycle.Mounted &&
-          curr === ComponentLifecycle.BeforeUnmount,
-      ),
-    );
-    beforeUnmount$.subscribe(() => {
-      this.component.preventTransformation = false;
-      this.logger.debug('Not preventing transformation anymore');
-    });
+    // const beforeUnmount$ = this.lifecycle$.pipe(
+    //   pairwise(),
+    //   filter(
+    //     ([prev, curr]) =>
+    //       prev === ComponentLifecycle.Mounted &&
+    //       curr === ComponentLifecycle.BeforeUnmount,
+    //   ),
+    // );
+    // beforeUnmount$.subscribe(() => {
+    //   this.component.preventTransformation = false;
+    //   this.logger.debug('Not preventing transformation anymore');
+    // });
 
     if (this.elComponent.id == null && isSlot) {
       this.lifecycle$.value = ComponentLifecycle.Rendered;
       return of(binding);
     }
 
-    if (this.elComponent.preventTransformation) {
-      this.logger.debug('Transformation is prevented');
+    // if (this.elComponent.preventTransformation) {
+    //   this.logger.debug('Transformation is prevented');
+    // }
+
+    if (
+      this.references$.value != null &&
+      this.references$.value.transformer.isEmpty &&
+      isSlot
+    ) {
+      this.references$.value.transformer.append(
+        (c: Component<IElementComponentProps>) =>
+          list(c.getProp('children') ?? []),
+      );
     }
 
-    if (this.elComponent.id && !this.elComponent.preventTransformation) {
-      const { transformer } = this.refStore.getReferences(this.elComponent.id);
-      if (transformer.isEmpty && isSlot) {
-        transformer.append((c: Component<IElementComponentProps>) =>
-          list(c.getProp('children') ?? []),
-        );
-      }
+    if (
+      this.references$.value != null &&
+      !this.references$.value.transformer.isEmpty &&
+      !this.references$.value.transformer.isTrasformationDone
+    ) {
+      const { transformer } = this.references$.value;
 
-      if (!transformer.isEmpty) {
-        if (!transformer.isTrasformationDone) {
-          transformer.apply(this.elComponent);
-        }
-        this.transformedElementRenderer = resolveRenderer(
-          transformer.transformationResult,
-          binding,
-        );
-        this.transformedElementRenderer.subscribeParentLifecycle(
-          this.lifecycle$,
-        );
-        this.target$.subscribe((t) => {
-          if (this.transformedElementRenderer) {
-            this.transformedElementRenderer.target$.value = t;
-          }
+      transformer.apply(this.elComponent);
+
+      this.transformedElementRenderer = resolveRenderer(
+        transformer.transformationResult,
+        binding,
+      );
+      this.transformedElementRenderer.subscribeParentLifecycle(this.lifecycle$);
+
+      this.transformedElementRenderer.lifecycle$
+        .pipe(
+          pairwise(),
+          filter(
+            ([prev, curr]) =>
+              prev === ComponentLifecycle.Mounted &&
+              curr === ComponentLifecycle.BeforeUnmount,
+          ),
+        )
+        .subscribe(() => {
+          transformer.isTrasformationDone = false;
         });
-        ScopedLogger.createScope.child('Transformation', { captureNext: true });
-        const renderTransformedAsync = async () => {
-          if (!this.transformedElementRenderer) {
-            this.lifecycle$.value = ComponentLifecycle.Rendered;
-            return undefined;
-          }
-          await this.transformedElementRenderer.render();
+
+      this.target$.subscribe((t) => {
+        if (this.transformedElementRenderer) {
+          this.transformedElementRenderer.target$.value = t;
+        }
+      });
+      ScopedLogger.createScope.child('Transformation', { captureNext: true });
+      const renderTransformedAsync = async () => {
+        if (!this.transformedElementRenderer) {
           this.lifecycle$.value = ComponentLifecycle.Rendered;
-          ScopedLogger.endScope();
-          return this.transformedElementRenderer.nextTarget$;
-        };
-        return from(renderTransformedAsync()).pipe(
-          switchMap((x) => x ?? of(undefined)),
-        );
-      }
+          return undefined;
+        }
+        await this.transformedElementRenderer.render();
+        this.lifecycle$.value = ComponentLifecycle.Rendered;
+        ScopedLogger.endScope();
+        return this.transformedElementRenderer.nextTarget$;
+      };
+      return from(renderTransformedAsync()).pipe(
+        switchMap((x) => x ?? of(undefined)),
+      );
     }
     const name = this.elComponent.getProp('name');
     const attrs = this.elComponent.getProp('attrs') ?? {};
@@ -180,9 +208,9 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         default:
           break;
       }
-      // console.log(el.outerHTML);
-      if (this.elComponent.id) {
-        const { reference } = this.refStore.getReferences(this.elComponent.id);
+
+      if (this.references$.value != null) {
+        const { reference } = this.references$.value;
         // console.log(
         //   'element with id',
         //   this.elComponent.id,
@@ -192,6 +220,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         reference.el.value = el;
         reference.component.value = this.elComponent;
       }
+
       // console.log(binding.parentEl.outerHTML);
       this.lifecycle$.value = ComponentLifecycle.Rendered;
       ScopedLogger.endScope();

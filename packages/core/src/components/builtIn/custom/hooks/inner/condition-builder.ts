@@ -38,7 +38,6 @@ export function displaySelf(component: Component<IElementComponentProps>) {
     return list(component.getProp('children') ?? []);
   }
 
-  component.preventTransformation = true;
   return component;
 }
 
