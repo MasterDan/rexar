@@ -82,27 +82,10 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
       }`,
     );
 
-    // const beforeUnmount$ = this.lifecycle$.pipe(
-    //   pairwise(),
-    //   filter(
-    //     ([prev, curr]) =>
-    //       prev === ComponentLifecycle.Mounted &&
-    //       curr === ComponentLifecycle.BeforeUnmount,
-    //   ),
-    // );
-    // beforeUnmount$.subscribe(() => {
-    //   this.component.preventTransformation = false;
-    //   this.logger.debug('Not preventing transformation anymore');
-    // });
-
     if (this.elComponent.id == null && isSlot) {
       this.lifecycle$.value = ComponentLifecycle.Rendered;
       return of(binding);
     }
-
-    // if (this.elComponent.preventTransformation) {
-    //   this.logger.debug('Transformation is prevented');
-    // }
 
     if (
       this.references$.value != null &&
@@ -163,6 +146,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
         switchMap((x) => x ?? of(undefined)),
       );
     }
+
     const name = this.elComponent.getProp('name');
     const attrs = this.elComponent.getProp('attrs') ?? {};
     const children = this.elComponent.getProp('children') ?? [];
@@ -211,17 +195,10 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
 
       if (this.references$.value != null) {
         const { reference } = this.references$.value;
-        // console.log(
-        //   'element with id',
-        //   this.elComponent.id,
-        //   ' putting into refStore',
-        //   el,
-        // );
         reference.el.value = el;
         reference.component.value = this.elComponent;
       }
 
-      // console.log(binding.parentEl.outerHTML);
       this.lifecycle$.value = ComponentLifecycle.Rendered;
       ScopedLogger.endScope();
       return {
