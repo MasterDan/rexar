@@ -34,11 +34,11 @@ export function displaySelf(component: Component<IElementComponentProps>) {
     return component;
   }
 
-  const self =
-    component.getProp('name') === 'SLOT'
-      ? list(component.getProp('children') ?? [])
-      : component;
-  return self;
+  if (component.getProp('name') === 'SLOT') {
+    return list(component.getProp('children') ?? []);
+  }
+
+  return component;
 }
 
 export class ConditionBuilder {

@@ -7,16 +7,14 @@ export class ElementTransformer {
 
   public transformationResult: AnyComponent | undefined;
 
+  public isTrasformationDone = false;
+
   append(fn: ComponentTransformerFunc) {
     this.body.push(fn);
   }
 
   get isEmpty() {
     return this.body.length === 0;
-  }
-
-  get isTrasformationDone() {
-    return this.transformationResult != null;
   }
 
   apply(c: AnyComponent) {
@@ -30,5 +28,8 @@ export class ElementTransformer {
       (component, transformer) => transformer(component),
       c,
     );
+    if (this.transformationResult != null) {
+      this.isTrasformationDone = true;
+    }
   }
 }

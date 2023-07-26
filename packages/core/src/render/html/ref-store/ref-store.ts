@@ -70,8 +70,7 @@ export class RefStore {
         transformer: new ElementTransformer(),
       };
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return scope[id]!;
+    return scope[id] as INodeRefs;
   }
 
   public getTemplate(id: string) {

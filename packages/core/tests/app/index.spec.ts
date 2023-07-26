@@ -147,9 +147,12 @@ describe('custom components', () => {
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content.negative);
-    // toggler$.value = true;
-    // await lastValueFrom(timer(100));
-    // expect(root?.outerHTML).toBe(content.positive);
+    toggler$.value = true;
+    await lastValueFrom(timer(200));
+    expect(root?.outerHTML).toBe(content.positive);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content.negative);
   });
   test('if-else:slots:from-false', async () => {
     const toggler$ = ref$(false);
@@ -171,6 +174,9 @@ describe('custom components', () => {
     toggler$.value = true;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(positiveContent);
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(negativeContent);
   });
   test('if-else:slots:from-true', async () => {
     const toggler$ = ref$(true);
@@ -192,6 +198,9 @@ describe('custom components', () => {
     toggler$.value = false;
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(negativeContent);
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(positiveContent);
   });
   test('if-else:repeat:from-false', async () => {
     const toggler$ = ref$(false);
@@ -253,6 +262,12 @@ describe('custom components', () => {
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('mounted');
     await addRemoveTest();
+
+    toggler$.value = false;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('unmounted');
+    await addRemoveTest();
   });
   test('if-else:repeat:from-true', async () => {
     const toggler$ = ref$(true);
@@ -313,6 +328,12 @@ describe('custom components', () => {
     await lastValueFrom(timer(100));
     expect(root?.outerHTML).toBe(content$.value);
     expect(repeatLife$.value).toBe('unmounted');
+    await addRemoveTest();
+
+    toggler$.value = true;
+    await lastValueFrom(timer(100));
+    expect(root?.outerHTML).toBe(content$.value);
+    expect(repeatLife$.value).toBe('mounted');
     await addRemoveTest();
   });
   test('input-text-test', async () => {
