@@ -1,10 +1,4 @@
-import {
-  defineComponent,
-  pickElement,
-  pickTemplate,
-  Ref,
-  ref$,
-} from '@rexar/core';
+import { defineComponent, pickElement, pickTemplate, ref$ } from '@rexar/core';
 
 export const inputTextTest = defineComponent({
   id: 'Text inputs test',
@@ -23,7 +17,7 @@ export const inputTextTest = defineComponent({
         textTwo$.value = s ?? '';
       },
     );
-    pickElement('combine').bindValue.string(fullText$ as Ref<string>);
+    pickElement('combine').bindValue.string(fullText$);
     pickElement('text').bindContent.text(fullText$);
     const letters$ = ref$(() =>
       fullText$.value.split('').filter((v) => /\w/gm.exec(v)),
