@@ -26,6 +26,8 @@ export type ClassBinding =
   | string[]
   | Record<string, MaybeObservable<boolean>>;
 
+export type CssProperties = Partial<CSSStyleDeclaration>;
+
 export class ElementRef {
   nativeElement: ReadonlyRef<HTMLElement | undefined>;
 
@@ -229,5 +231,32 @@ export class ElementRef {
         );
       },
     );
+  }
+
+  bindStyle(style: MaybeObservable<CssProperties | string>) {
+    const validElement$ = this.nativeElement.pipe(
+      filter((v): v is HTMLElement => v != null),
+    );
+    const style$ = isObservable(style) ? style : ref$(style);
+    let templateStyle: string | null | undefined;
+    combineLatest([validElement$, style$]).subscribe(([elem, styleVal]) => {
+      if (typeof styleVal === 'string') {
+        if (templateStyle === undefined) {
+          templateStyle = elem.getAttribute('style');
+        }
+        elem.setAttribute(
+          'style',
+          [templateStyle, styleVal]
+            .filter((x) => x != null)
+            .join(' ')
+            .trim(),
+        );
+      } else {
+        Object.keys(styleVal).forEach((k) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion
+          elem.style[k as any] = styleVal[k as any]!;
+        });
+      }
+    });
   }
 }
