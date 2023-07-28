@@ -18,6 +18,7 @@ import { slotTest } from './components/slot-test/slot-test.component';
 import { testOne } from './components/test-one/test-one.component';
 import { testThree } from './components/test-three/test-three.component';
 import { testTwo } from './components/test-two/test-two.component';
+import { classBindingTest } from './components/class-binding-test/class-binding-test.component';
 
 describe('custom components', () => {
   beforeAll(() => {
@@ -358,5 +359,22 @@ describe('custom components', () => {
       `</div>`;
 
     expect(root?.outerHTML).toBe(expectedContent);
+  });
+  test('class binding', async () => {
+    const class$ = ref$<string | string[] | Record<string, boolean>>('foo');
+
+    const root = await createApp(classBindingTest, { class: class$ }).mount(
+      '#app',
+    );
+    expect(root?.outerHTML).toBe('<div id="app"><div class="foo"></div></div>');
+    class$.value = ['foo', 'bar'];
+    expect(root?.outerHTML).toBe(
+      '<div id="app"><div class="foo bar"></div></div>',
+    );
+    class$.value = { foo: true, bar: false, baz: true };
+
+    expect(root?.outerHTML).toBe(
+      '<div id="app"><div class="foo baz"></div></div>',
+    );
   });
 });

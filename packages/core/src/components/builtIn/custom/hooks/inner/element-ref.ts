@@ -14,11 +14,17 @@ import {
   isObservable,
   map,
   merge,
+  of,
   switchMap,
   takeUntil,
 } from 'rxjs';
 import { Subject } from 'rxjs/internal/Subject';
 import { onBeforeUnmount } from '../lifecycle.hook';
+
+export type ClassBinding =
+  | string
+  | string[]
+  | Record<string, MaybeObservable<boolean>>;
 
 export class ElementRef {
   nativeElement: ReadonlyRef<HTMLElement | undefined>;
@@ -183,5 +189,45 @@ export class ElementRef {
       number: bindNumber,
       boolean: bindBoolean,
     };
+  }
+
+  bindClass(value: MaybeObservable<ClassBinding>) {
+    const validElement$ = this.nativeElement.pipe(
+      filter((v): v is HTMLElement => v != null),
+    );
+    const value$ = isObservable(value) ? value : ref$(value);
+
+    const class$ = value$.pipe(
+      switchMap((v) => {
+        if (typeof v === 'string') {
+          return of(v);
+        }
+        if (Array.isArray(v)) {
+          return of(v.join(' '));
+        }
+        const checks = Object.keys(v).map((i) => {
+          const check = v[i];
+          const check$ = isObservable(check) ? check : of(check);
+          return check$.pipe(map((c) => (c ? i : null)));
+        });
+        return combineLatest(checks).pipe(
+          map((classes) => classes.filter((c) => c != null).join(' ')),
+        );
+      }),
+    );
+
+    let classesFromTemplate: string | undefined;
+
+    combineLatest([validElement$, class$]).subscribe(
+      ([element, classValue]) => {
+        if (classesFromTemplate == null) {
+          classesFromTemplate = element.getAttribute('class') ?? '';
+        }
+        element.setAttribute(
+          'class',
+          [classesFromTemplate, classValue].join(' ').trim(),
+        );
+      },
+    );
   }
 }
