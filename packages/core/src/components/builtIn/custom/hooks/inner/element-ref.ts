@@ -14,11 +14,19 @@ import {
   isObservable,
   map,
   merge,
+  of,
   switchMap,
   takeUntil,
 } from 'rxjs';
 import { Subject } from 'rxjs/internal/Subject';
 import { onBeforeUnmount } from '../lifecycle.hook';
+
+export type ClassBinding =
+  | string
+  | string[]
+  | Record<string, MaybeObservable<boolean>>;
+
+export type CssProperties = Partial<CSSStyleDeclaration>;
 
 export class ElementRef {
   nativeElement: ReadonlyRef<HTMLElement | undefined>;
@@ -183,5 +191,90 @@ export class ElementRef {
       number: bindNumber,
       boolean: bindBoolean,
     };
+  }
+
+  bindClass(value: MaybeObservable<ClassBinding>) {
+    const validElement$ = this.nativeElement.pipe(
+      filter((v): v is HTMLElement => v != null),
+    );
+    const value$ = isObservable(value) ? value : ref$(value);
+
+    const class$ = value$.pipe(
+      switchMap((v) => {
+        if (typeof v === 'string') {
+          return of(v);
+        }
+        if (Array.isArray(v)) {
+          return of(v.join(' '));
+        }
+        const checks = Object.keys(v).map((i) => {
+          const check = v[i];
+          const check$ = isObservable(check) ? check : of(check);
+          return check$.pipe(map((c) => (c ? i : null)));
+        });
+        return combineLatest(checks).pipe(
+          map((classes) => classes.filter((c) => c != null).join(' ')),
+        );
+      }),
+    );
+
+    let classesFromTemplate: string | undefined;
+
+    combineLatest([validElement$, class$]).subscribe(
+      ([element, classValue]) => {
+        if (classesFromTemplate == null) {
+          classesFromTemplate = element.getAttribute('class') ?? '';
+        }
+        element.setAttribute(
+          'class',
+          [classesFromTemplate, classValue].join(' ').trim(),
+        );
+      },
+    );
+  }
+
+  bindStyle(style: MaybeObservable<CssProperties | string>) {
+    const validElement$ = this.nativeElement.pipe(
+      filter((v): v is HTMLElement => v != null),
+    );
+    const style$ = isObservable(style) ? style : ref$(style);
+    let templateStyleStringified: string | null | undefined;
+    let templateStyle: CSSStyleDeclaration | undefined;
+    combineLatest([validElement$, style$]).subscribe(([elem, styleVal]) => {
+      if (templateStyleStringified === undefined) {
+        templateStyleStringified = elem.getAttribute('style');
+        if (
+          templateStyleStringified != null &&
+          templateStyleStringified.length > 0 &&
+          templateStyleStringified[templateStyleStringified.length - 1] !== ';'
+        ) {
+          templateStyleStringified += ';';
+        }
+      }
+      if (templateStyle === undefined) {
+        templateStyle = { ...elem.style };
+      }
+      if (typeof styleVal === 'string') {
+        elem.setAttribute(
+          'style',
+          [templateStyleStringified, styleVal]
+            .filter((x) => x != null)
+            .join(' ')
+            .trim(),
+        );
+      } else {
+        const styleMerged = { ...templateStyle, ...styleVal };
+
+        Object.keys(elem.style).forEach((sk) => {
+          if (styleMerged[sk as keyof typeof styleMerged] == null) {
+            (elem.style as unknown as Record<string, unknown>)[sk] = undefined;
+          }
+        });
+        Object.keys(styleMerged).forEach((k) => {
+          (elem.style as unknown as Record<string, unknown>)[k] =
+            styleMerged[k as keyof CssProperties];
+        });
+      }
+    });
   }
 }

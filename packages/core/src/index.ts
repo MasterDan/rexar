@@ -11,9 +11,12 @@ export {
 
 export { createEvent, triggerEvent } from './components/events';
 export { EventEmitter } from './components/events/event';
+export type {
+  ClassBinding,
+  CssProperties,
+} from './components/builtIn/custom/hooks/inner/element-ref';
 
 export type { MayBeReadonlyRef, MaybeObservable } from '@rexar/reactivity';
-
 export {
   ref$,
   readonly,

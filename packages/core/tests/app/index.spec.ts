@@ -6,6 +6,7 @@ import { describe, test, expect, beforeAll } from 'vitest';
 import { DocumentRefDev } from '@core/render/html/documentRef/document-ref.dev';
 import { documentRefToken, nodeResolverToken } from '@core/components/module';
 import { resolveNodes } from '@core/parsers/html/node-resolver/resolve-nodes.dev';
+import { ClassBinding, CssProperties } from '@core/index';
 import { ifElseRepeat } from './components/if-else.test/if-else-repeat.component';
 import { ifElseSotsTest } from './components/if-else.test/if-else-slots-test.component';
 import { ifElseTest } from './components/if-else.test/if-else-test.component';
@@ -18,6 +19,7 @@ import { slotTest } from './components/slot-test/slot-test.component';
 import { testOne } from './components/test-one/test-one.component';
 import { testThree } from './components/test-three/test-three.component';
 import { testTwo } from './components/test-two/test-two.component';
+import { classBindingTest } from './components/class-binding-test/class-binding-test.component';
 
 describe('custom components', () => {
   beforeAll(() => {
@@ -358,5 +360,37 @@ describe('custom components', () => {
       `</div>`;
 
     expect(root?.outerHTML).toBe(expectedContent);
+  });
+  test('class binding', async () => {
+    const class$ = ref$<ClassBinding>('foo');
+    const style$ = ref$<CssProperties | string>({
+      marginLeft: '1rem',
+    });
+
+    const root = await createApp(classBindingTest, {
+      class: class$,
+      style: style$,
+    }).mount('#app');
+    expect(root?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div class="target foo" style="padding: 1rem; margin-left: 1rem;"></div>' +
+        '</div>',
+    );
+    class$.value = ['foo', 'bar'];
+    style$.value = 'gap: 10px;';
+    expect(root?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div class="target foo bar" style="padding: 1rem; gap: 10px;"></div>' +
+        '</div>',
+    );
+    class$.value = { foo: true, bar: false, baz: true };
+    style$.value = {
+      marginRight: '2rem',
+    };
+    expect(root?.outerHTML).toBe(
+      '<div id="app">' +
+        '<div class="target foo baz" style="padding: 1rem; margin-right: 2rem;"></div>' +
+        '</div>',
+    );
   });
 });
