@@ -1,15 +1,25 @@
 import { defineComponent } from '@core/components';
-import { Ref, pickElement, ref$ } from '@core/index';
+import {
+  ClassBinding,
+  CssProperties,
+  Ref,
+  pickElement,
+  ref$,
+} from '@core/index';
 
 export const classBindingTest = defineComponent<{
-  class: Ref<string | string[] | Record<string, boolean>>;
+  class: Ref<ClassBinding>;
+  style: Ref<CssProperties | string>;
 }>({
   template: (c) =>
     c.fromModule(() => import('./class-binding-test.component.html?raw')),
   props: () => ({
-    class: ref$<string | string[] | Record<string, boolean>>(''),
+    class: ref$<ClassBinding>(''),
+    style: ref$<CssProperties | string>(''),
   }),
   setup({ props }) {
-    pickElement('target').bindClass(props.class);
+    const targetRef = pickElement('target');
+    targetRef.bindClass(props.class);
+    targetRef.bindStyle(props.style);
   },
 });

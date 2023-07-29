@@ -238,24 +238,47 @@ export class ElementRef {
       filter((v): v is HTMLElement => v != null),
     );
     const style$ = isObservable(style) ? style : ref$(style);
-    let templateStyle: string | null | undefined;
+    let templateStyleStringified: string | null | undefined;
+    let templateStyle: CSSStyleDeclaration | undefined;
     combineLatest([validElement$, style$]).subscribe(([elem, styleVal]) => {
-      if (typeof styleVal === 'string') {
-        if (templateStyle === undefined) {
-          templateStyle = elem.getAttribute('style');
+      if (templateStyleStringified === undefined) {
+        templateStyleStringified = elem.getAttribute('style');
+        if (
+          templateStyleStringified != null &&
+          templateStyleStringified.length > 0 &&
+          templateStyleStringified[templateStyleStringified.length - 1] !== ';'
+        ) {
+          templateStyleStringified += ';';
         }
+      }
+      if (templateStyle === undefined) {
+        templateStyle = { ...elem.style };
+      }
+      if (typeof styleVal === 'string') {
         elem.setAttribute(
           'style',
-          [templateStyle, styleVal]
+          [templateStyleStringified, styleVal]
             .filter((x) => x != null)
             .join(' ')
             .trim(),
         );
       } else {
-        Object.keys(styleVal).forEach((k) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-non-null-assertion
-          elem.style[k as any] = styleVal[k as any]!;
+        const styleMerged = { ...templateStyle, ...styleVal };
+
+        Object.keys(elem.style).forEach((sk) => {
+          if (styleMerged[sk as keyof typeof styleMerged] == null) {
+            (elem.style as unknown as Record<string, unknown>)[sk] = undefined;
+          } else {
+            (elem.style as unknown as Record<string, unknown>)[sk] =
+              styleMerged[sk as keyof typeof styleMerged];
+          }
         });
+
+        Object.keys(styleVal).forEach((k) => {
+          (elem.style as unknown as Record<string, unknown>)[k] =
+            styleVal[k as keyof CssProperties];
+        });
+        // console.log(styleVal, elem.outerHTML, elem.style);
       }
     });
   }
