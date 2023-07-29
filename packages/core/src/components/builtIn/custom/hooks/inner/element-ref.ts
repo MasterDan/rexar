@@ -268,17 +268,12 @@ export class ElementRef {
         Object.keys(elem.style).forEach((sk) => {
           if (styleMerged[sk as keyof typeof styleMerged] == null) {
             (elem.style as unknown as Record<string, unknown>)[sk] = undefined;
-          } else {
-            (elem.style as unknown as Record<string, unknown>)[sk] =
-              styleMerged[sk as keyof typeof styleMerged];
           }
         });
-
-        Object.keys(styleVal).forEach((k) => {
+        Object.keys(styleMerged).forEach((k) => {
           (elem.style as unknown as Record<string, unknown>)[k] =
-            styleVal[k as keyof CssProperties];
+            styleMerged[k as keyof CssProperties];
         });
-        // console.log(styleVal, elem.outerHTML, elem.style);
       }
     });
   }
