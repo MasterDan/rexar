@@ -7,7 +7,7 @@ export class ElementTransformer {
 
   public transformationResult: AnyComponent | undefined;
 
-  public isTrasformationDone = false;
+  public isTransformationDone = false;
 
   append(fn: ComponentTransformerFunc) {
     this.body.push(fn);
@@ -21,7 +21,7 @@ export class ElementTransformer {
     if (this.isEmpty) {
       throw new Error('Cannot apply non existing transformers');
     }
-    if (this.isTrasformationDone) {
+    if (this.isTransformationDone) {
       throw new Error('Transformation has already been applied');
     }
     this.transformationResult = this.body.reduce<AnyComponent>(
@@ -29,7 +29,7 @@ export class ElementTransformer {
       c,
     );
     if (this.transformationResult != null) {
-      this.isTrasformationDone = true;
+      this.isTransformationDone = true;
     }
   }
 }

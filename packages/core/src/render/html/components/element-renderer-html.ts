@@ -101,7 +101,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
     if (
       this.references$.value != null &&
       !this.references$.value.transformer.isEmpty &&
-      !this.references$.value.transformer.isTrasformationDone
+      !this.references$.value.transformer.isTransformationDone
     ) {
       const { transformer } = this.references$.value;
 
@@ -123,7 +123,7 @@ export class ElementRendererHtml extends HtmlRendererBase<IElementComponentProps
           ),
         )
         .subscribe(() => {
-          transformer.isTrasformationDone = false;
+          transformer.isTransformationDone = false;
         });
 
       this.target$.subscribe((t) => {
