@@ -4,10 +4,13 @@
       "path": "packages/tools",
     },
     {
-      "path": "packages/core",
+      "path": "packages/reactivity",
     },
     {
-      "path": "packages/reactivity",
+      "path": "packages/jsx",
+    },
+    {
+      "path": "packages/core",
     },
     {
       "path": ".",

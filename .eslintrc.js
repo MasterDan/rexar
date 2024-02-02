@@ -13,9 +13,11 @@ module.exports = {
     project: [
       './packages/tools/tsconfig.json',
       './packages/reactivity/tsconfig.json',
+      './packages/jsx/tsconfig.json',
       './packages/core/tsconfig.json',
-      './packages/example/tsconfig.json',
-      './packages/logger/tsconfig.json',
+      './packages/docs/tsconfig.json',
+      './examples/test-jsx/tsconfig.json',
+      './examples/ui-vite/tsconfig.json',
     ],
   },
   rules: {

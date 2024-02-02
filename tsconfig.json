@@ -21,14 +21,17 @@
         ],
         "baseUrl": ".",
         "paths": {
+            "@tools/*": [
+                "packages/tools/src/*"
+            ],
             "@reactivity/*": [
                 "packages/reactivity/src/*"
             ],
+            "@jsx/*": [
+                "packages/jsx/src/*"
+            ],
             "@core/*": [
                 "packages/core/src/*"
-            ],
-            "@di/*": [
-                "packages/di/src/*"
             ],
             "@logger/*": [
                 "packages/logger/src/*"
