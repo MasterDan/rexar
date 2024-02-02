@@ -12,8 +12,8 @@ module.exports = {
   parserOptions: {
     project: [
       './packages/tools/tsconfig.json',
-      './packages/core/tsconfig.json',
       './packages/reactivity/tsconfig.json',
+      './packages/core/tsconfig.json',
       './packages/example/tsconfig.json',
       './packages/logger/tsconfig.json',
     ],

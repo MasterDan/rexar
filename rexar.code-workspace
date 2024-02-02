@@ -18,5 +18,8 @@
     "vitest.disabledWorkspaceFolders": [
       "root"
     ],
+    "cSpell.words": [
+      "rexar"
+    ],
   }
 }

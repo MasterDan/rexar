@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "./*.ts",
+    "./src/**/*.ts",
+    "./src/**/*.html",
+    "./tests/**/*.ts",
+    "./tests/**/*.html",
+    "src/scope/index.ts",
+  ]
+}

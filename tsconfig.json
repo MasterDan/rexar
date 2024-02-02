@@ -21,11 +21,11 @@
         ],
         "baseUrl": ".",
         "paths": {
-            "@core/*": [
-                "packages/core/src/*"
-            ],
             "@reactivity/*": [
                 "packages/reactivity/src/*"
+            ],
+            "@core/*": [
+                "packages/core/src/*"
             ],
             "@di/*": [
                 "packages/di/src/*"
