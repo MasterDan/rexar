@@ -31,6 +31,7 @@ export const Input = defineComponent<{
         type={inputType}
         id={id}
         onInput={(e) => {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           model.value = toType.value!((e.target! as HTMLInputElement).value);
         }}
         value={model}
