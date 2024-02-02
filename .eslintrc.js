@@ -15,9 +15,7 @@ module.exports = {
       './packages/reactivity/tsconfig.json',
       './packages/jsx/tsconfig.json',
       './packages/core/tsconfig.json',
-      './packages/docs/tsconfig.json',
-      './examples/test-jsx/tsconfig.json',
-      './examples/ui-vite/tsconfig.json',
+      './packages/core-demo/tsconfig.json',
     ],
   },
   rules: {
