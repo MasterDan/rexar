@@ -19,9 +19,9 @@
     "test": "npx vitest"
   },
   "dependencies": {
-    "@rexar/reactivity": "workspace:^",
     "@rexar/jsx": "workspace:^",
-    "@sir/tools": "workspace:^",
+    "@rexar/reactivity": "workspace:^",
+    "@rexar/tools": "workspace:^",
     "fast-array-diff": "^1.1.0",
     "rxjs": "^7.8.1",
     "vite": "^5.0.4"
