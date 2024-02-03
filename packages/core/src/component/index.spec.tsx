@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { h, fragment } from '@rexar/jsx';
 import { onBeforeDestroy, onDestroyed, onMounted } from '@core/scope';
 import { ref } from '@rexar/reactivity';
-import { wait } from '@sir/tools';
+import { wait } from '@rexar/tools';
 import { Subject, map } from 'rxjs';
 import { useFor } from '@core/built-in-components/for-each';
 import { Comment } from '@core/built-in-components/comment';

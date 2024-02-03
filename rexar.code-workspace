@@ -16,6 +16,9 @@
       "path": "packages/core-demo",
     },
     {
+      "path": "packages/docs",
+    },
+    {
       "path": ".",
       "name": "root",
     },
