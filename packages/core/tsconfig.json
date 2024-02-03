@@ -1,10 +1,17 @@
 {
   "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "fragment"
+  },
   "include": [
     "./*.ts",
     "./src/**/*.ts",
+    "./src/**/*.tsx",
     "./src/**/*.html",
     "./tests/**/*.ts",
     "./tests/**/*.html",
+    "../core/src/scope/index.ts",
   ]
 }

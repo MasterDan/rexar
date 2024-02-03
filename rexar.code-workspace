@@ -1,19 +1,19 @@
 {
   "folders": [
     {
-      "path": "packages/core",
+      "path": "packages/tools",
     },
     {
       "path": "packages/reactivity",
     },
     {
-      "path": "packages/di",
+      "path": "packages/jsx",
     },
     {
-      "path": "packages/logger",
+      "path": "packages/core",
     },
     {
-      "path": "packages/example",
+      "path": "packages/core-demo",
     },
     {
       "path": ".",
@@ -23,6 +23,9 @@
   "settings": {
     "vitest.disabledWorkspaceFolders": [
       "root"
+    ],
+    "cSpell.words": [
+      "rexar"
     ],
   }
 }

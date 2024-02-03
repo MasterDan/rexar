@@ -4,6 +4,10 @@ import path from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig(() => ({
+  esbuild: {
+    jsxFactory: 'h',
+    jsxFragment: 'fragment',
+  },
   resolve: {
     alias: {
       '@core': path.resolve(__dirname, './src'),
@@ -17,10 +21,10 @@ export default defineConfig(() => ({
       fileName: 'main',
     },
     rollupOptions: {
-      external: ['rxjs', '@rexar/logger'],
+      external: ['rxjs'],
       output: {
         globals: {
-          rxjs: 'rx',
+          rxjs: 'rxjs',
         },
       },
     },

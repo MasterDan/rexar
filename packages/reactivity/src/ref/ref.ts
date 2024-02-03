@@ -1,16 +1,29 @@
-import { TrackableRef } from './trackable.ref';
+import { onTrack } from '@reactivity/computed';
+import { detectChanges } from './detect-changes';
+import { TrackableBehaviorSubject } from './trackable-bs';
 
-export class Ref<T> extends TrackableRef<T> {
-  set value(v: T) {
-    super.next(v);
-  }
-
+export class Ref<T> extends TrackableBehaviorSubject<T> {
   get value(): T {
-    return super.value;
+    const val = super.value;
+    if (!this.isTracked()) {
+      onTrack(this);
+    }
+
+    if (typeof val === 'object' && val != null) {
+      return detectChanges(val, () => {
+        this.next(super.value);
+      });
+    }
+    return val;
   }
 
-  patch(fn: (v: T) => T | void) {
-    const mayBeNewVal = fn(this.value);
-    super.next(mayBeNewVal ?? this.value);
+  set value(val: T) {
+    this.next(val);
   }
+}
+
+export function ref<T>(): Ref<T | undefined>;
+export function ref<T>(value: T): Ref<T>;
+export function ref<T>(value?: T): Ref<T | undefined> {
+  return new Ref(value);
 }

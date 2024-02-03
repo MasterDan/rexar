@@ -1,26 +1,9 @@
-export { createApp } from '@core/app';
-export { defineComponent } from '@core/components';
-export { pickElement } from '@core/components/builtIn/custom/hooks/element-reference.hook';
-export { into } from '@core/components/builtIn/custom/hooks/transform.hook';
-export { pickTemplate } from '@core/components/builtIn/custom/hooks/pick-template.hook';
-export {
-  onMounted,
-  onBeforeUnmount,
-  onUnmounted,
-} from '@core/components/builtIn/custom/hooks/lifecycle.hook';
-
-export { createEvent, triggerEvent } from './components/events';
-export { EventEmitter } from './components/events/event';
-export type {
-  ClassBinding,
-  CssProperties,
-} from './components/builtIn/custom/hooks/inner/element-ref';
-
-export type { MayBeReadonlyRef, MaybeObservable } from '@rexar/reactivity';
-export {
-  ref$,
-  readonly,
-  Ref,
-  ReadonlyRef,
-  WritableReadonlyRef,
-} from '@rexar/reactivity';
+export * from '@rexar/reactivity';
+export * from '@rexar/jsx';
+export { defineComponent, render } from './component';
+export { onMounted, onBeforeDestroy, onDestroyed } from './scope';
+export { Comment } from './built-in-components/comment';
+export { useDynamic } from './built-in-components/dynamic';
+export { useIf } from './built-in-components/if-else';
+export { useFor } from './built-in-components/for-each';
+export { useSwitch } from './built-in-components/switch-case';

@@ -1,12 +1,16 @@
-import { Observable } from 'rxjs';
-import { TrackableRef } from './trackable.ref';
+import { onTrack } from '@reactivity/computed';
+import { readonly } from './detect-changes';
+import { TrackableBehaviorSubject } from './trackable-bs';
 
-export class ReadonlyRef<T> extends TrackableRef<T> {
-  constructor(source$: Observable<T>, fallack: T) {
-    super(fallack);
-    super.next(fallack);
-    source$.subscribe((s) => {
-      super.next(s);
-    });
+export class ReadonlyRef<T> extends TrackableBehaviorSubject<T> {
+  get value() {
+    const val = super.value;
+    if (!this.isTracked()) {
+      onTrack(this);
+    }
+    if (val != null && typeof val === 'object') {
+      return readonly(val);
+    }
+    return val;
   }
 }
