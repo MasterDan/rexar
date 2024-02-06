@@ -1,5 +1,30 @@
 # Getting Started
 
+First you need to install RxJS
+
+:::tabs key:packages
+== npm
+```sh
+npm i rxjs
+```
+== yarn
+```sh
+yarn add rxjs
+```
+:::
+
+Then install Rexar
+
+:::tabs key:packages
+== npm
+```sh
+npm i @rexar/core
+```
+== yarn
+```sh
+yarn add @rexar/core
+```
+:::
 
 <script setup>
 import CounterApp from '../../components/en/getting-started/CounterApp.vue'
