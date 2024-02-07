@@ -28,6 +28,7 @@ yarn add @rexar/core
 
 <script setup>
 import CounterApp from '../../components/en/getting-started/CounterApp.vue'
+import CounterAppAlt from '../../components/en/getting-started/CounterAppAlt.vue'
 </script>
 
 Example
@@ -36,3 +37,11 @@ Example
 <<< @../../components/en/getting-started/CounterApp.setup.tsx{tsx:line-numbers}
 
 <CounterApp/>
+
+
+Example
+
+<<< @../../components/en/getting-started/CounterAppAlt.template.html{html:line-numbers}
+<<< @../../components/en/getting-started/CounterAppAlt.setup.tsx{tsx:line-numbers}
+
+<CounterAppAlt/>
