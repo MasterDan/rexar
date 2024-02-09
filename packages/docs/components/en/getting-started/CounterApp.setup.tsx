@@ -7,8 +7,7 @@ const Counter = defineComponent(() => {
   };
   return (
     <div>
-      <h2>Counter value is {counter}</h2>
-      <button onClick={increment}>Increment count</button>
+      <button onClick={increment}>Counter is {counter}</button>
     </div>
   );
 });
