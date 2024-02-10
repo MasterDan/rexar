@@ -1,7 +1,7 @@
-import { computed, defineComponent, h, ref, render } from '@rexar/core';
+import { computed, defineComponent, h, fragment, ref } from '@rexar/core';
 import { Subject, buffer, debounceTime, filter, map } from 'rxjs';
 
-const Counter = defineComponent(() => {
+export const Counter = defineComponent(() => {
   const counter = ref(0);
 
   const btnClick$ = new Subject<MouseEvent>();
@@ -18,11 +18,9 @@ const Counter = defineComponent(() => {
   const counterX2 = computed(() => counter.value * 2);
 
   return (
-    <div>
-      <h2>Counter * 2 is {counterX2}</h2>
-      <button onClick={btnClick$}>Increment count</button>
-    </div>
+    <>
+      <span>Counter * 2 is {counterX2}</span>
+      <button onClick={btnClick$}>Double click to increment</button>
+    </>
   );
 });
-
-render(Counter).into('#counter-app-2');

@@ -1,6 +1,8 @@
 # Getting Started
 
-First you need to install RxJS
+## Installing packages
+
+First you need to install RxJS.
 
 :::tabs key:packages
 == npm
@@ -13,7 +15,7 @@ yarn add rxjs
 ```
 :::
 
-Then install Rexar
+Then install Rexar.
 
 :::tabs key:packages
 == npm
@@ -27,24 +29,28 @@ yarn add @rexar/core
 :::
 
 <script setup>
-import Card from '../../components/tools/Card.vue'
-import CounterApp from '../../components/en/getting-started/CounterApp.vue'
-import CounterAppAlt from '../../components/en/getting-started/CounterAppAlt.vue'
+import Demo from '../../components/tools/Demo.vue'
+import { Counter } from '../../components/en/getting-started/Counter.tsx'
+import { Counter as CounterAlt } from '../../components/en/getting-started/CounterAlt.tsx'
 </script>
 
-Example
+## Creating First Component
 
-<<< @../../components/en/getting-started/CounterApp.template.html{html:line-numbers}
-<<< @../../components/en/getting-started/CounterApp.setup.tsx{tsx:line-numbers}
-<Card>
-    <CounterApp/>
-</Card>
+Add some container element to your html template.
+
+<<< @../../components/en/getting-started/Counter.template.html{html:line-numbers}  
+Then define Component by using defineComponent function.
+
+<<< @../../components/en/getting-started/Counter.tsx{tsx:line-numbers}  
+Then render it to your container element.
+
+<<< @../../components/en/getting-started/Counter.setup.tsx{tsx:line-numbers}
+
+And here is our counter!
+<Demo :is="Counter" />
 
 
-Example
+Alternative Example
 
-<<< @../../components/en/getting-started/CounterAppAlt.template.html{html:line-numbers}
-<<< @../../components/en/getting-started/CounterAppAlt.setup.tsx{tsx:line-numbers}
-<Card>
-    <CounterAppAlt/>
-</Card>
+<<< @../../components/en/getting-started/CounterAlt.tsx{tsx:line-numbers}
+<Demo :is="CounterAlt" />

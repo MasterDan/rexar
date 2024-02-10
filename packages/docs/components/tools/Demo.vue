@@ -1,31 +1,34 @@
 <template>
-  <div class="demo-container">
-    <slot v-if="showExample"></slot>
-    <div v-else>loading...</div>
-  </div>
+  <div ref="appRef" class="demo-container"></div>
 </template>
 <script lang="ts" setup>
-import { watch, ref } from 'vue';
+import { ref, PropType, onMounted } from 'vue';
+import { ComponentRenderFunc, render } from '@rexar/core';
 
-const showExample = ref(false);
-watch(
-  showExample,
-  (show) => {
-    if (!show) {
-      setTimeout(() => {
-        showExample.value = true;
-      }, 5000);
-    }
+const props = defineProps({
+  is: {
+    type: Function as PropType<ComponentRenderFunc>,
+    required: true,
   },
-  {
-    immediate: true,
-  },
-);
+});
+
+const appRef = ref();
+
+onMounted(() => {
+  if (appRef.value) {
+    render(props.is).into(appRef.value);
+  }
+});
 </script>
 <style lang="scss">
 .demo-container {
-  padding: 1rem 0;
+  padding: 1rem;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  background-color: var(--vp-c-bg-soft);
   button {
     border-color: var(--vp-button-alt-border);
     color: var(--vp-button-alt-text);
