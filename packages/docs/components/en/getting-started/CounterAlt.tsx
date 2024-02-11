@@ -7,7 +7,7 @@ export const Counter = defineComponent(() => {
   const btnClick$ = new Subject<MouseEvent>();
   btnClick$
     .pipe(
-      buffer(btnClick$.pipe(debounceTime(300))),
+      buffer(btnClick$.pipe(debounceTime(200))),
       map((list) => list.length),
       filter((len) => len === 2),
     )
