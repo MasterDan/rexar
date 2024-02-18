@@ -44,7 +44,7 @@ Then define Component by using defineComponent function.
 <<< @../../components/en/getting-started/Counter.tsx{tsx:line-numbers}  
 Then render it to your container element.
 
-<<< @../../components/en/getting-started/Counter.setup.tsx{tsx:line-numbers}
+<<< @../../components/en/getting-started/Counter.setup.ts{ts:line-numbers}
 
 And here is our counter!
 <Demo :is="Counter" />
