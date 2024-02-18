@@ -1,9 +1,14 @@
 <template>
-  <div ref="appRef" class="demo-container"></div>
+  <div class="demo-container">
+    <div class="app" ref="appRef"></div>
+    <button @click="reset" :disabled="appController == null" id="reset-button">
+      reset
+    </button>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref, PropType, onMounted } from 'vue';
-import { ComponentRenderFunc, render } from '@rexar/core';
+import { ComponentRenderFunc, render, RenderedController } from '@rexar/core';
 
 const props = defineProps({
   is: {
@@ -14,21 +19,47 @@ const props = defineProps({
 
 const appRef = ref();
 
-onMounted(() => {
+const appController = ref<RenderedController>();
+
+function renderDemo() {
   if (appRef.value) {
-    render(props.is).into(appRef.value);
+    appController.value = render(props.is).into(appRef.value);
   }
+}
+
+onMounted(() => {
+  renderDemo();
 });
+
+function reset() {
+  if (appController.value) {
+    appController.value.remove();
+    appController.value = undefined;
+    renderDemo();
+  }
+}
 </script>
 <style lang="scss">
 .demo-container {
   padding: 1rem;
   border-radius: 8px;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: space-between;
   align-items: center;
-  background-color: var(--vp-c-bg-soft);
+  .app {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  #reset-button {
+    align-self: flex-start;
+  }
+
+  background-color: var(--vp-code-block-bg) !important;
   button {
     border-color: var(--vp-button-alt-border);
     color: var(--vp-button-alt-text);
