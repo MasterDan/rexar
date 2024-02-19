@@ -1,13 +1,13 @@
 <template>
   <div class="demo-container">
-    <div class="app" ref="appRef"></div>
+    <div :style="appStyle" class="app" ref="appRef"></div>
     <button @click="reset" :disabled="appController == null" id="reset-button">
       reset
     </button>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, PropType, onMounted } from 'vue';
+import { ref, PropType, onMounted, computed, CSSProperties } from 'vue';
 import { ComponentRenderFunc, render, RenderedController } from '@rexar/core';
 
 const props = defineProps({
@@ -15,9 +15,16 @@ const props = defineProps({
     type: Function as PropType<ComponentRenderFunc>,
     required: true,
   },
+  appMinWidth: {
+    type: String,
+  },
 });
 
 const appRef = ref();
+
+const appStyle = computed<CSSProperties>(() => ({
+  minWidth: props.appMinWidth,
+}));
 
 const appController = ref<RenderedController>();
 

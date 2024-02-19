@@ -2,9 +2,16 @@
 
 <script setup >
 import Demo from '../../components/tools/Demo.vue'
-import { ifElseExample } from '../../components/en/conditional-rendering/if-else-example.tsx'
+import { ifElseExample } from '../../components/en/conditional-rendering/IfElseExample.tsx'
+import { IfElseExampleAdvanced } from '../../components/en/conditional-rendering/IfElseExampleAdvanced.tsx'
 </script>
 
-<<< ../../components/en/conditional-rendering/if-else-example.tsx{tsx:line-numbers}
+## Simple Example
 
+<<< ../../components/en/conditional-rendering/IfElseExample.tsx{8,12,13 tsx:line-numbers}
 <Demo :is="ifElseExample" />
+
+## Advanced Example
+
+<<< ../../components/en/conditional-rendering/IfElseExampleAdvanced.tsx{11,12,22-24 tsx:line-numbers}
+<Demo  :is="IfElseExampleAdvanced" />

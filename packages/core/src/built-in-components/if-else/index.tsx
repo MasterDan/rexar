@@ -1,13 +1,19 @@
 import { MaybeObservable, ref } from '@rexar/reactivity';
-import { defineComponent } from '@core/component';
+import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { h, fragment } from '@rexar/jsx';
 import { Observable, combineLatest, filter, isObservable, map } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
+export type UseIfResult = {
+  True: ComponentRenderFunc;
+  False: ComponentRenderFunc;
+  elseIf: (val: MaybeObservable<boolean>) => UseIfResult;
+};
+
 export function useIf(
   value: MaybeObservable<boolean>,
   not?: Observable<boolean>,
-) {
+): UseIfResult {
   const notRef = ref<boolean>();
   const valueRef = isObservable(value) ? value : ref(value);
 
