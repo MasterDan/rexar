@@ -38,6 +38,10 @@ export default defineConfig({
               text: 'Conditional rendering',
               link: '/guide/conditional-rendering',
             },
+            {
+              text: 'List rendering',
+              link: '/guide/list-rendering',
+            },
           ],
           '/reactivity/': [
             {

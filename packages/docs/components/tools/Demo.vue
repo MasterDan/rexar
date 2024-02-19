@@ -20,7 +20,7 @@ const props = defineProps({
   },
 });
 
-const appRef = ref();
+const appRef = ref<HTMLDivElement>();
 
 const appStyle = computed<CSSProperties>(() => ({
   minWidth: props.appMinWidth,
@@ -41,6 +41,9 @@ onMounted(() => {
 function reset() {
   if (appController.value) {
     appController.value.remove();
+    if (appRef.value) {
+      appRef.value.innerHTML = '';
+    }
     appController.value = undefined;
     renderDemo();
   }
