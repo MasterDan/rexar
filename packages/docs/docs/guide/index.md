@@ -39,13 +39,13 @@ import { Timer } from '../../components/en/getting-started/Timer.tsx'
 
 Add some container element to your html template.
 
-<<< @../../components/en/getting-started/Counter.template.html{html:line-numbers}  
+<<< ../../components/en/getting-started/Counter.template.html{html:line-numbers}  
 Then define Component by using defineComponent function.
 
-<<< @../../components/en/getting-started/Counter.tsx{tsx:line-numbers}  
+<<< ../../components/en/getting-started/Counter.tsx{tsx:line-numbers}  
 Then render it to your container element.
 
-<<< @../../components/en/getting-started/Counter.setup.ts{ts:line-numbers}
+<<< ../../components/en/getting-started/Counter.setup.ts{ts:line-numbers}
 
 And here is our counter!
 <Demo :is="Counter" />
@@ -62,10 +62,10 @@ And here is our counter!
 Here is example of using `RxJs observable` inside `jsx` markup.  
 For this example we are using [timer](https://rxjs.dev/api/index/function/timer) and a few operators to beautify output.
 
-<<< @../../components/en/getting-started/Timer.tsx{tsx:line-numbers}
+<<< ../../components/en/getting-started/Timer.tsx{tsx:line-numbers}
 <Demo :is="Timer" />
 
 Alternative Example
 
-<<< @../../components/en/getting-started/CounterAlt.tsx{tsx:line-numbers}
+<<< ../../components/en/getting-started/CounterAlt.tsx{tsx:line-numbers}
 <Demo :is="CounterAlt" />

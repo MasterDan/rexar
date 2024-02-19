@@ -34,6 +34,10 @@ export default defineConfig({
               text: 'Component syntax',
               link: '/guide/component-syntax',
             },
+            {
+              text: 'Conditional rendering',
+              link: '/guide/conditional-rendering',
+            },
           ],
           '/reactivity/': [
             {
