@@ -90,9 +90,15 @@ function reset() {
       background-color: var(--vp-button-alt-active-bg);
     }
     &:hover {
-      border-color: var(--vp-button-alt-hover-border);
-      color: var(--vp-button-alt-hover-text);
-      background-color: var(--vp-button-alt-hover-bg);
+      &:not(:disabled) {
+        border-color: var(--vp-button-alt-hover-border);
+        color: var(--vp-button-alt-hover-text);
+        background-color: var(--vp-button-alt-hover-bg);
+      }
+    }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }
