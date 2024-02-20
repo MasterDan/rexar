@@ -4,6 +4,7 @@
 import Demo from '../../components/tools/Demo.vue'
 import { ifElseExample } from '../../components/en/conditional-rendering/IfElseExample.tsx'
 import { IfElseExampleAdvanced } from '../../components/en/conditional-rendering/IfElseExampleAdvanced.tsx'
+import { SwitchCaseExample } from '../../components/en/conditional-rendering/SwitchCaseExample.tsx'
 </script>
 
 ## Simple Example
@@ -15,3 +16,8 @@ import { IfElseExampleAdvanced } from '../../components/en/conditional-rendering
 
 <<< ../../components/en/conditional-rendering/IfElseExampleAdvanced.tsx{11,12,22-24 tsx:line-numbers}
 <Demo  :is="IfElseExampleAdvanced" />
+
+## Switch/Case alternative
+
+<<< ../../components/en/conditional-rendering/SwitchCaseExample.tsx{tsx:line-numbers}
+<Demo  :is="SwitchCaseExample" />

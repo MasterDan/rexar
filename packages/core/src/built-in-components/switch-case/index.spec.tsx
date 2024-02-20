@@ -14,11 +14,11 @@ describe('switch-case rendering ', () => {
       flag.value = !flag.value;
     };
 
-    const [FlagSwitch, FlagCase, FlagDefault] = useSwitch<boolean>();
+    const [FlagSwitch, FlagCase, FlagDefault] = useSwitch<boolean>(flag);
 
     const root = (
       <div>
-        <FlagSwitch value={flag}>
+        <FlagSwitch>
           <FlagCase check={true}>
             <span>Value is true</span>
           </FlagCase>
@@ -32,7 +32,6 @@ describe('switch-case rendering ', () => {
         <div>
           <Comment text="dynamic-anchor"></Comment>
           <span>Value is true</span>
-          <Comment text="dynamic-anchor"></Comment>
         </div>
       ).outerHTML,
     );
@@ -40,7 +39,6 @@ describe('switch-case rendering ', () => {
     expect(root.outerHTML).toBe(
       (
         <div>
-          <Comment text="dynamic-anchor"></Comment>
           <Comment text="dynamic-anchor"></Comment>
           Value is false
         </div>
@@ -53,11 +51,11 @@ describe('switch-case rendering ', () => {
       number.value += 1;
     };
 
-    const [NumberSwitch, NumberCase, NumDefault] = useSwitch<number>();
+    const [NumberSwitch, NumberCase, NumDefault] = useSwitch<number>(number);
 
     const root = (
       <div>
-        <NumberSwitch value={number}>
+        <NumberSwitch>
           <NumberCase check={1}>One</NumberCase>
           <NumberCase check={2}>Two</NumberCase>
           <NumDefault>Default</NumDefault>
@@ -68,8 +66,6 @@ describe('switch-case rendering ', () => {
     expect(root.outerHTML).toBe(
       (
         <div>
-          <Comment text="dynamic-anchor"></Comment>
-          <Comment text="dynamic-anchor"></Comment>
           <Comment text="dynamic-anchor"></Comment>
           Default
         </div>
@@ -82,8 +78,6 @@ describe('switch-case rendering ', () => {
         <div>
           <Comment text="dynamic-anchor"></Comment>
           One
-          <Comment text="dynamic-anchor"></Comment>
-          <Comment text="dynamic-anchor"></Comment>
         </div>
       ).outerHTML,
     );
@@ -92,10 +86,8 @@ describe('switch-case rendering ', () => {
     expect(root.outerHTML).toBe(
       (
         <div>
-          <Comment text="dynamic-anchor"></Comment>
           <Comment text="dynamic-anchor"></Comment>
           Two
-          <Comment text="dynamic-anchor"></Comment>
         </div>
       ).outerHTML,
     );
@@ -104,8 +96,6 @@ describe('switch-case rendering ', () => {
     expect(root.outerHTML).toBe(
       (
         <div>
-          <Comment text="dynamic-anchor"></Comment>
-          <Comment text="dynamic-anchor"></Comment>
           <Comment text="dynamic-anchor"></Comment>
           Default
         </div>
