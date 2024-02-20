@@ -15,23 +15,23 @@ export const List = defineComponent(() => {
     .subscribe((i) => {
       array.value.push(i + 1);
     });
-  const removeItem = (index: number) => {
+  const remove = (index: number) => {
     array.value.splice(index, 1);
   };
   const reverse = () => {
     array.value.reverse();
   };
-  const moveUp = (index: number) => {
-    [array.value[index], array.value[index - 1]] = [
-      array.value[index - 1],
+  const swap = (index: number, index2: number) => {
+    [array.value[index], array.value[index2]] = [
+      array.value[index2],
       array.value[index],
     ];
   };
+  const moveUp = (index: number) => {
+    swap(index, index - 1);
+  };
   const moveDown = (index: number) => {
-    [array.value[index], array.value[index + 1]] = [
-      array.value[index + 1],
-      array.value[index],
-    ];
+    swap(index, index + 1);
   };
   const Numbers = useFor(array, (i) => i);
 
@@ -57,7 +57,7 @@ export const List = defineComponent(() => {
               <button disabled={end} onClick={() => moveDown(index.value)}>
                 ▼
               </button>
-              <button onClick={() => removeItem(index.value)}>✕</button>
+              <button onClick={() => remove(index.value)}>✕</button>
             </div>
           );
         }}
