@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
+import { wait } from '@rexar/tools';
 import { h, fragment } from './create-element';
 import { BaseProps } from './@types';
 
@@ -90,6 +91,21 @@ describe('create-element', () => {
         </div>
       ).outerHTML,
     );
+  });
+  test('second reactivity test', async () => {
+    const person = ref({ name: 'John', age: 20 });
+    const root = (
+      <div>
+        {() => person.value.name} {() => person.value.age}
+      </div>
+    );
+    expect(root.outerHTML).toBe((<div>John 20</div>).outerHTML);
+    person.value.name = 'Jane';
+    await wait(20);
+    expect(root.outerHTML).toBe((<div>Jane 20</div>).outerHTML);
+    person.value.age = 21;
+    await wait(20);
+    expect(root.outerHTML).toBe((<div>Jane 21</div>).outerHTML);
   });
   test('fragment', () => {
     const TestFragment = () => (

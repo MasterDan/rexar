@@ -26,8 +26,6 @@ const App = defineComponent(() => {
   const [[OddCounterExists, NoOddCounter]] = useIf(
     computed(() => oddCounter.value != null),
   );
-  const x2Counter = computed(() => counter.value * 2);
-
   const increment$ = new Subject<MouseEvent>();
   increment$.pipe(debounceTime(200)).subscribe(() => {
     counter.value += 1;
@@ -90,7 +88,7 @@ const App = defineComponent(() => {
         <NoOddCounter>
           <p>Counter never been odd</p>
         </NoOddCounter>
-        <p>Counter x2 is {x2Counter}</p>
+        <p>Counter x2 is {() => counter.value * 2}</p>
       </div>
 
       <p>{message}</p>
