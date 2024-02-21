@@ -1,20 +1,24 @@
-import { MaybeObservable, ref } from '@rexar/reactivity';
+import { Providable, ref, trySubscribe } from '@rexar/reactivity';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { h, fragment } from '@rexar/jsx';
-import { Observable, combineLatest, filter, isObservable, map } from 'rxjs';
+import { Observable, combineLatest, filter, map } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 export type UseIfResult = [
   [ComponentRenderFunc, ComponentRenderFunc],
-  (val: MaybeObservable<boolean>) => UseIfResult,
+  (val: Providable<boolean>) => UseIfResult,
 ];
 
 export function useIf(
-  value: MaybeObservable<boolean>,
+  value: Providable<boolean>,
   not?: Observable<boolean>,
 ): UseIfResult {
   const notRef = ref<boolean>();
-  const valueRef = isObservable(value) ? value : ref(value);
+  const valueRef = ref<boolean>();
+
+  trySubscribe(value, (v) => {
+    valueRef.value = v;
+  });
 
   not?.subscribe((n) => {
     notRef.value = n;
@@ -53,7 +57,7 @@ export function useIf(
     });
     return <Dynamic></Dynamic>;
   });
-  const elseIf = (val: MaybeObservable<boolean>) => {
+  const elseIf = (val: Providable<boolean>) => {
     const flagNot = combineLatest([
       valueRef.pipe(filter((v): v is boolean => v != null)),
       notRef,

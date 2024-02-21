@@ -1,12 +1,4 @@
-import {
-  defineComponent,
-  ref,
-  useFor,
-  h,
-  fragment,
-  computed,
-  useIf,
-} from '@rexar/core';
+import { defineComponent, ref, useFor, h, fragment, useIf } from '@rexar/core';
 import { take, timer } from 'rxjs';
 
 export const List = defineComponent(() => {
@@ -35,7 +27,7 @@ export const List = defineComponent(() => {
     swap(index, index + 1);
   };
   const Numbers = useFor(array, (i) => i);
-  const [[NotEmpty, Empty]] = useIf(computed(() => array.value.length > 0));
+  const [[NotEmpty, Empty]] = useIf(() => array.value.length > 0);
   return (
     <>
       <NotEmpty>
