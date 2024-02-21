@@ -18,8 +18,8 @@ describe('if-else-rendering', () => {
       secondFlag.value = !secondFlag.value;
     };
 
-    const { True: FirstFlagIsTrue, False: Else, elseIf } = useIf(firstFlag);
-    const { True: ElseIfTrue, False: OrElse } = elseIf(secondFlag);
+    const [[FirstFlagIsTrue, Else], elseIf] = useIf(firstFlag);
+    const [[ElseIfTrue, OrElse]] = elseIf(secondFlag);
 
     const root = (
       <div>

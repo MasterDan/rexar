@@ -4,11 +4,10 @@ import { h, fragment } from '@rexar/jsx';
 import { Observable, combineLatest, filter, isObservable, map } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
-export type UseIfResult = {
-  True: ComponentRenderFunc;
-  False: ComponentRenderFunc;
-  elseIf: (val: MaybeObservable<boolean>) => UseIfResult;
-};
+export type UseIfResult = [
+  [ComponentRenderFunc, ComponentRenderFunc],
+  (val: MaybeObservable<boolean>) => UseIfResult,
+];
 
 export function useIf(
   value: MaybeObservable<boolean>,
@@ -62,5 +61,5 @@ export function useIf(
     return useIf(val, flagNot);
   };
 
-  return { True, False, elseIf };
+  return [[True, False], elseIf];
 }
