@@ -5,8 +5,8 @@ import {
   h,
   fragment,
   computed,
-} from '@rexar/core';
-import { take, timer } from 'rxjs';
+} from "@rexar/core";
+import { take, timer } from "rxjs";
 
 export const List = defineComponent(() => {
   const array = ref<number[]>([]);
@@ -45,9 +45,9 @@ export const List = defineComponent(() => {
           return (
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '1rem',
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
               }}
             >
               Item at position {index} has value {item}
