@@ -46,15 +46,13 @@ export const CatsApp = defineComponent(() => {
 
   const cantCreate = computed(() => !canCreate.value);
 
-  const { True: CannotCreate, False: CanCreate } = useIf(cantCreate);
+  const [[CannotCreate, CanCreate]] = useIf(cantCreate);
 
   const removeCat = (index: number) => {
     cats.value = cats.value.filter((_, n) => n !== index);
   };
 
-  const { True: NoCats, False: CatsExists } = useIf(
-    computed(() => cats.value.length === 0),
-  );
+  const [[NoCats, CatsExists]] = useIf(computed(() => cats.value.length === 0));
 
   return (
     <>
@@ -76,7 +74,7 @@ export const CatsApp = defineComponent(() => {
           const order = computed(() => index.value + 1);
           const name = computed(() => cat.value.name);
           const age = computed(() => cat.value.age);
-          const { True: IfOld } = useIf(age.pipe(map((i) => i > 10)));
+          const [[IfOld]] = useIf(age.pipe(map((i) => i > 10)));
           return (
             <div class="bg-neutral-50 rounded-3xl bg-opacity-25 p-4 flex flex-col  gap-4 ">
               <h3 class="self-center text-xl">

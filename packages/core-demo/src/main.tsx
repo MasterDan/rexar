@@ -20,10 +20,10 @@ const App = defineComponent(() => {
   const counter = ref(1);
   const evenCounter = toRef(counter.pipe(filter((c) => c % 2 === 0)));
   const oddCounter = toRef(counter.pipe(filter((c) => c % 2 !== 0)));
-  const { True: EvenCounterExists, False: NoEventCounter } = useIf(
+  const [[EvenCounterExists, NoEvenCounter]] = useIf(
     computed(() => evenCounter.value != null),
   );
-  const { True: OddCounterExists, False: NoOddCounter } = useIf(
+  const [[OddCounterExists, NoOddCounter]] = useIf(
     computed(() => oddCounter.value != null),
   );
   const x2Counter = computed(() => counter.value * 2);
@@ -81,9 +81,9 @@ const App = defineComponent(() => {
         <EvenCounterExists>
           <p>Last even counter is {evenCounter} </p>
         </EvenCounterExists>
-        <NoEventCounter>
+        <NoEvenCounter>
           <p>Counter never been even</p>
-        </NoEventCounter>
+        </NoEvenCounter>
         <OddCounterExists>
           <p>Last odd counter is {oddCounter} </p>
         </OddCounterExists>
