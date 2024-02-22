@@ -18,12 +18,17 @@ const props = defineProps({
   appMinWidth: {
     type: String,
   },
+  alignStart: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const appRef = ref<HTMLDivElement>();
 
 const appStyle = computed<CSSProperties>(() => ({
   minWidth: props.appMinWidth,
+  alignItems: props.alignStart ? 'flex-start' : 'center',
 }));
 
 const appController = ref<RenderedController>();
@@ -62,7 +67,6 @@ function reset() {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    align-items: center;
   }
 
   #reset-button {
@@ -100,6 +104,11 @@ function reset() {
       opacity: 0.5;
       cursor: not-allowed;
     }
+  }
+  input {
+    background-color: var(--vp-c-gray-3);
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
   }
 }
 </style>

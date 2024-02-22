@@ -4,9 +4,14 @@
 <script setup>
 import Demo from '../../components/tools/Demo.vue'
 import { Timer } from '../../components/en/getting-started/Timer.tsx'
+import { SimpleDataExample } from '../../components/en/getting-started/DataExample.tsx'
 
 </script>
 
+## Simple Data
+
+<<< ../../components/en/getting-started/DataExample.tsx{tsx:line-numbers}
+<Demo align-start :is="SimpleDataExample" />
 
 
 ## RxJS Observable example
