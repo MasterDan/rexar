@@ -2,10 +2,12 @@
 
 <script setup>
 import Demo from '../../components/tools/Demo.vue'
-import { Counter as CounterAlt } from '../../components/en/getting-started/CounterAlt.tsx'
+import { Subscriber } from '../../components/en/event-handling/Subscriber.tsx'
+import { Emitter } from '../../components/en/event-handling/Emitter.tsx'
 </script>
 
-## Using Subjects
+## Using Function
 
-<<< ../../components/en/getting-started/CounterAlt.tsx{tsx:line-numbers}
-<Demo :is="CounterAlt" />
+<<< ../../components/en/event-handling/Emitter.tsx{tsx:line-numbers}
+<<< ../../components/en/event-handling/Subscriber.tsx{tsx:line-numbers}
+<Demo  align-start :is="Subscriber" />
