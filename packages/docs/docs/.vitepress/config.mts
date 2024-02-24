@@ -35,6 +35,10 @@ export default defineConfig({
               link: '/guide/component-syntax',
               items: [
                 {
+                  text: 'Nested components',
+                  link: '/guide/props-and-children',
+                },
+                {
                   text: 'Event handling',
                   link: '/guide/event-handling',
                 },
