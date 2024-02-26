@@ -1,4 +1,4 @@
-# Event Handling
+# Subscribing Events
 
 <script setup>
 import Demo from '../../components/tools/Demo.vue'

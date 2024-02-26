@@ -1,4 +1,4 @@
-# List rendering
+# List Rendering
 
 <script setup >
 import Demo from '../../components/tools/Demo.vue'

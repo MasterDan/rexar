@@ -35,19 +35,19 @@ export default defineConfig({
               link: '/guide/component-syntax',
               items: [
                 {
-                  text: 'Nested components',
+                  text: 'Passing Props',
                   link: '/guide/props-and-children',
                 },
                 {
-                  text: 'Event handling',
+                  text: 'Subscribing Events',
                   link: '/guide/event-handling',
                 },
                 {
-                  text: 'Conditional rendering',
+                  text: 'Conditional Rendering',
                   link: '/guide/conditional-rendering',
                 },
                 {
-                  text: 'List rendering',
+                  text: 'List Rendering',
                   link: '/guide/list-rendering',
                 },
               ],

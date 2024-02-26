@@ -4,24 +4,13 @@ import { Subject } from 'rxjs';
 export const Emitter = defineComponent<{ onEvent: Subject<string> }>(
   ({ onEvent }) => {
     let counter = 0;
+    const increment = () => {
+      counter += 1;
+      onEvent.next(`Event №${counter}`);
+    };
     return (
       <>
-        <button
-          onClick={() => {
-            counter += 1;
-            onEvent.next(`Foo (${counter})`);
-          }}
-        >
-          Emit "Foo"
-        </button>
-        <button
-          onClick={() => {
-            counter += 1;
-            onEvent.next(`Bar (${counter})`);
-          }}
-        >
-          Emit "Bar"
-        </button>
+        <button onClick={increment}>Emit event</button>
       </>
     );
   }

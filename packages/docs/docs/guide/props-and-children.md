@@ -1,4 +1,4 @@
-# Nested components
+# Passing Props
 
 <script setup>
 import Demo from '../../components/tools/Demo.vue'
