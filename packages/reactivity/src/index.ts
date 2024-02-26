@@ -15,7 +15,7 @@ export { WritableReadonlyRef } from './ref/writable-readonly.ref';
 export { computed } from './computed';
 // tools
 export { isRef } from './ref/tools';
-export { toRef } from './ref/tools';
+export { toRef, toRefs } from './ref/tools';
 export { trySubscribe } from './ref/tools.try-subscribe';
 export { readonly } from './ref/detect-changes';
 export { Scope } from './scope';

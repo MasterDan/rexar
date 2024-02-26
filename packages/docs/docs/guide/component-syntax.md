@@ -9,6 +9,7 @@ import { NumbersAlt } from '../../components/en/component-syntax/NumbersAlt.tsx'
 import { Strings } from '../../components/en/component-syntax/Strings.tsx' 
 import { Boolean } from '../../components/en/component-syntax/Boolean.tsx' 
 import { ObjectExample } from '../../components/en/component-syntax/Object.tsx' 
+import { ObjectExample as ObjectExample2 } from '../../components/en/component-syntax/Object2.tsx' 
 
 </script>
 
@@ -44,5 +45,8 @@ For this example we are using [timer](https://rxjs.dev/api/index/function/timer)
 
 <<< ../../components/en/component-syntax/Object.tsx{tsx:line-numbers}
 <Demo align-start :is="ObjectExample" />
+
+<<< ../../components/en/component-syntax/Object2.tsx{13,24,31,33,39,46,48,60 tsx:line-numbers}
+<Demo align-start :is="ObjectExample2" />
 
 
