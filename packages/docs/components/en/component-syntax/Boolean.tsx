@@ -5,7 +5,6 @@ export const Boolean = defineComponent(() => {
   return (
     <>
       <div>
-        <h3>Booleans</h3>
         <div>reactive: {bool}</div>
         <div>reactive: {() => (bool.value ? 'Yes' : 'No')}</div>
         <div>non reactive: {bool.value}</div>

@@ -6,7 +6,7 @@ export const Subscriber = defineComponent(() => {
   const event$ = new Subject<string>();
   // We can create observables from events
   const eventDebounced$ = event$.pipe(debounceTime(500));
-  // Or we can subscribe and do something custom
+  // Or we can subscribe in more traditional way
   const eventThrottled = ref<string>();
   event$.pipe(throttleTime(500)).subscribe((e) => {
     eventThrottled.value = e;
@@ -15,8 +15,8 @@ export const Subscriber = defineComponent(() => {
     <>
       <Emitter onEvent={event$}></Emitter>
       <span>Latest emitted value is: {event$}</span>
-      <span>Same debounced (500 ms): {eventDebounced$}</span>
-      <span>Same throttled (500 ms): {eventThrottled}</span>
+      <span>Same, but debounced (500 ms): {eventDebounced$}</span>
+      <span>Same, but throttled (500 ms): {eventThrottled}</span>
     </>
   );
 });
