@@ -39,14 +39,14 @@ You can also place arrow function directly in template, this will create `comput
 And we also achieving same effect, creating `observable` using [map](https://rxjs.dev/api/operators/map) operator. This is a little bit faster, because we don't need to track values.
 
 ::: info
-Placing `value` of `ref` (or `BehaviorSubject`) like this...
+Placing `value` property of `ref` (or `BehaviorSubject`) like this...
 ```tsx
- <div>non reactive: {number.value}</div>
+ <div>non reactive: {number$.value}</div>
 ```
- ...will loose reactivity. Instead just place full observable like this:
+ ...will loose reactivity. Instead just place `observable` itself like this:
 
 ```tsx
- <div>reactive: {number}</div>
+ <div>reactive: {number$}</div>
 ```
 :::
 
@@ -58,11 +58,11 @@ In example above we created same `computed` twice
 
 Here
 ```ts
- const numberX2 = computed(() => number.value * 2);
+ const numberX2 = computed(() => number$.value * 2);
 ```
 And Here
 ```tsx
-<div>reactive x2 (inPlace) : {() => number.value * 2}</div>
+<div>reactive x2 (inPlace) : {() => number$.value * 2}</div>
 ```
 This is only for demonstration. Pay attention on this in your code.  
 It's always recommended to create `computed` once and then reuse it as many times as you want.
@@ -70,7 +70,7 @@ It's always recommended to create `computed` once and then reuse it as many time
 
 ## Same example, using RxJs BehaviorSubject
 
-Here we using [BehaviorSubject](https://rxjs.dev/api/index/class/BehaviorSubject) again.
+Here we are using [BehaviorSubject](https://rxjs.dev/api/index/class/BehaviorSubject) again.
 Pay attention, that `computed` is not reactive with `BehaviorSubject`, because this is not trackable type.  
 Pure `observable`, that multiplies our number, still works.
 ::: warning

@@ -7,15 +7,11 @@ import {
 } from '@rexar/core';
 
 export const TextInput = defineComponent<{
-  value: Ref<string>;
+  value$: Ref<string>;
   label: string;
   id?: string;
 }>((props) => {
-  const {
-    value: valueRef,
-    label,
-    id,
-  } = useDefaultValues(props, {
+  const { value$, label, id } = useDefaultValues(props, {
     id: crypto.randomUUID(),
   });
   return (
@@ -26,9 +22,9 @@ export const TextInput = defineComponent<{
       <input
         id={id}
         type="text"
-        value={valueRef}
+        value={value$}
         onInput={(e) => {
-          valueRef.value = (e.target as HTMLInputElement).value;
+          value$.value = (e.target as HTMLInputElement).value;
         }}
       ></input>
     </>

@@ -2,15 +2,15 @@ import { defineComponent, h, fragment, ref } from '@rexar/core';
 import { Emitter } from './Emitter';
 
 export const Subscriber = defineComponent(() => {
-  const latestEmitted = ref<string>();
+  const latestEmitted$ = ref<string>();
   return (
     <>
       <Emitter
         onEvent={(e) => {
-          latestEmitted.value = e;
+          latestEmitted$.value = e;
         }}
       ></Emitter>
-      <span>Latest emitted vale is: {latestEmitted}</span>
+      <span>Latest emitted vale is: {latestEmitted$}</span>
     </>
   );
 });

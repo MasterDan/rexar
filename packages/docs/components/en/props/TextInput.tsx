@@ -1,9 +1,9 @@
 import { Ref, defineComponent, h, fragment } from '@rexar/core';
 
 export const TextInput = defineComponent<{
-  value: Ref<string>;
+  value$: Ref<string>;
   label: string;
-}>(({ value: valueRef, label }) => {
+}>(({ value$, label }) => {
   const id = crypto.randomUUID();
   return (
     <>
@@ -11,9 +11,9 @@ export const TextInput = defineComponent<{
       <input
         id={id}
         type="text"
-        value={valueRef}
+        value={value$}
         onInput={(e) => {
-          valueRef.value = (e.target as HTMLInputElement).value;
+          value$.value = (e.target as HTMLInputElement).value;
         }}
       ></input>
     </>

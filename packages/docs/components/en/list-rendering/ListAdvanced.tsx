@@ -2,22 +2,22 @@ import { defineComponent, ref, useFor, h, fragment, useIf } from '@rexar/core';
 import { take, timer } from 'rxjs';
 
 export const List = defineComponent(() => {
-  const array = ref<number[]>([]);
+  const array$ = ref<number[]>([]);
   timer(1000, 1000)
     .pipe(take(6))
     .subscribe((i) => {
-      array.value.push(i + 1);
+      array$.value.push(i + 1);
     });
   const remove = (index: number) => {
-    array.value.splice(index, 1);
+    array$.value.splice(index, 1);
   };
   const reverse = () => {
-    array.value.reverse();
+    array$.value.reverse();
   };
   const swap = (index: number, index2: number) => {
-    [array.value[index], array.value[index2]] = [
-      array.value[index2],
-      array.value[index],
+    [array$.value[index], array$.value[index2]] = [
+      array$.value[index2],
+      array$.value[index],
     ];
   };
   const moveUp = (index: number) => {
@@ -26,8 +26,8 @@ export const List = defineComponent(() => {
   const moveDown = (index: number) => {
     swap(index, index + 1);
   };
-  const Numbers = useFor(array, (i) => i);
-  const [[NotEmpty, Empty]] = useIf(() => array.value.length > 0);
+  const Numbers = useFor(array$, (i) => i);
+  const [[NotEmpty, Empty]] = useIf(() => array$.value.length > 0);
   return (
     <>
       <NotEmpty>
@@ -57,7 +57,7 @@ export const List = defineComponent(() => {
                   </td>
                   <td>
                     <button
-                      disabled={() => index.value === array.value.length - 1}
+                      disabled={() => index.value === array$.value.length - 1}
                       onClick={() => moveDown(index.value)}
                     >
                       ▼
@@ -71,7 +71,7 @@ export const List = defineComponent(() => {
             />
           </tbody>
         </table>
-        <button disabled={() => array.value.length < 2} onClick={reverse}>
+        <button disabled={() => array$.value.length < 2} onClick={reverse}>
           Reverse
         </button>
       </NotEmpty>
