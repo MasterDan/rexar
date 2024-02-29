@@ -11,15 +11,18 @@ import { Strings } from '../../components/en/component-syntax/Strings.tsx'
 import { Boolean } from '../../components/en/component-syntax/Boolean.tsx' 
 import { ObjectExample } from '../../components/en/component-syntax/Object.tsx' 
 import { ObjectExample as ObjectExample2 } from '../../components/en/component-syntax/Object2.tsx' 
+import { ArrayExample } from '../../components/en/component-syntax/Array.tsx' 
+import { MapExample } from '../../components/en/component-syntax/Map.tsx' 
+import { SetExample } from '../../components/en/component-syntax/Set.tsx' 
 
 </script>
 
-## RxJS Observable example
+## Using RxJS Observables
 
 Here is example of using `RxJs observable` inside `jsx` markup.  
 For this example we are using [timer](https://rxjs.dev/api/index/function/timer) and a few operators to beautify output.
 
-<<< ../../components/en/component-syntax/Timer.tsx{tsx:line-numbers}
+<<< ../../components/en/component-syntax/Timer.tsx{5,10 tsx:line-numbers}
 <Demo :is="Timer" />
 
 Or in example below we implemented counter component using  [BehaviorSubject](https://rxjs.dev/api/index/class/BehaviorSubject) from `RxJs`. We can put it in our template as any observable.
@@ -110,10 +113,33 @@ As you can see - all computed still reactive. And raw values are still not.
 <<< ../../components/en/component-syntax/Object.tsx{tsx:line-numbers}
 <Demo align-start :is="ObjectExample" />
 
+## Deconstructing Refs with objects
+
 We ca also use `toRefs` method to deconstruct `ref` with object inside. Here is the example.
-As you can see, changing value of `name` or `surname` also changes `person`.
+As you can see, changing value of `name$` or `surname$` also changes `person$`.
 
 <<< ../../components/en/component-syntax/Object2.tsx{13,24,31,33,39,46,48,60 tsx:line-numbers}
 <Demo align-start :is="ObjectExample2" />
 
 
+## Arrays
+
+Here is simple array example. As you can see, `push` method don't break reactivity.
+::: info
+More examples, see in [list rendering](./list-rendering.md) section.
+:::
+<<< ../../components/en/component-syntax/Array.tsx{4,10,15 tsx:line-numbers}
+<Demo align-start :is="ArrayExample" />
+
+## Maps and Sets
+
+Calling methods of `Map` inside `ref` also reactive.  
+See the example:
+
+<<< ../../components/en/component-syntax/Map.tsx{4,7,14 tsx:line-numbers}
+<Demo align-start :is="MapExample" />
+
+Same with `Set` inside `ref`:
+
+<<< ../../components/en/component-syntax/Set.tsx{4,10,15 tsx:line-numbers}
+<Demo align-start :is="SetExample" />

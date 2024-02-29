@@ -353,7 +353,7 @@ describe('components', () => {
   });
   test('use default values', () => {
     const Component = defineComponent<{ name?: string }>((props) => {
-      const { name } = useDefaultValues(props, { name: 'no name' });
+      const { name } = useDefaultValues(props, { name: () => 'no name' });
       return <>{name}</>;
     });
     const root = (

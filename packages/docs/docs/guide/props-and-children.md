@@ -28,7 +28,7 @@ Triggering `Ref` is just triggering `Ref`. Even in props.
 
 Let's use our input component:
 
-<<< ../../components/en/props/ParentComponent.tsx{tsx:line-numbers}
+<<< ../../components/en/props/ParentComponent.tsx{2,9,10 tsx:line-numbers}
 <Demo align-start :is="ParentComponent" />
 
 ## Using default values
@@ -36,7 +36,8 @@ Let's use our input component:
 Let's add in out `TextInput` component prop `id` and make it optional.  
 What if we want to use default value of `id` in case it's not being provided by parent component.
 
-For this purpose we are using `useDefaultValues` function. See the example.
+For this purpose we are using `useDefaultValues` function. Pay attention, that we are providing `function`, that creates default value (id in our case), not value itself.  
+See the example:
 
 <<< ../../components/en/props/TextInput2.tsx{12,14-16 tsx:line-numbers}
 

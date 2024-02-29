@@ -16,7 +16,7 @@ export const Numbers = defineComponent(() => {
         <div>reactive x2 (inPlace) : {() => number$.value * 2}</div>
         <div>reactive x2 (computed) : {numberX2Comp$}</div>
         <div>reactive x2 (observable) : {numberX2$}</div>
-        {/* Accessing value is not reactive */}
+        {/* Value itself is not reactive */}
         <div>non reactive: {number$.value}</div>
       </div>
       <button

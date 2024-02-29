@@ -12,7 +12,7 @@ export const TextInput = defineComponent<{
   id?: string;
 }>((props) => {
   const { value$, label, id } = useDefaultValues(props, {
-    id: crypto.randomUUID(),
+    id: () => crypto.randomUUID(),
   });
   return (
     <>

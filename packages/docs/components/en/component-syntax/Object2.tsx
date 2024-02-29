@@ -10,7 +10,7 @@ import { map } from 'rxjs';
 
 export const ObjectExample = defineComponent(() => {
   const person$ = ref({ name: 'John', surname: 'Doe' });
-  const { name, surname } = toRefs(person$);
+  const { name: name$, surname: surname$ } = toRefs(person$);
 
   const fullNameComputed$ = computed(
     () => `${person$.value.name} ${person$.value.surname}`
@@ -21,31 +21,31 @@ export const ObjectExample = defineComponent(() => {
     <>
       <div>
         <h3>Name</h3>
-        <div>reactive: {name}</div>
-        <div>reactive: {() => name.value}</div>
+        <div>reactive: {name$}</div>
+        <div>reactive: {() => name$.value}</div>
         <div>reactive: {() => person$.value.name}</div>
-        <div>non Reactive: {name.value}</div>
         <div>non Reactive: {person$.value.name}</div>
+        <div>non Reactive: {name$.value}</div>
         <input
           type="text"
-          value={name}
+          value={name$}
           onInput={(e) => {
-            name.value = (e.target as HTMLInputElement).value;
+            name$.value = (e.target as HTMLInputElement).value;
           }}
         />
       </div>
       <div>
         <h3>Surname</h3>
-        <div>reactive: {surname}</div>
-        <div>reactive: {() => surname.value}</div>
+        <div>reactive: {surname$}</div>
+        <div>reactive: {() => surname$.value}</div>
         <div>reactive: {() => person$.value.surname}</div>
         <div>non Reactive: {person$.value.surname}</div>
-        <div>reactive: {surname.value}</div>
+        <div>non reactive: {surname$.value}</div>
         <input
           type="text"
-          value={surname}
+          value={surname$}
           onInput={(e) => {
-            surname.value = (e.target as HTMLInputElement).value;
+            surname$.value = (e.target as HTMLInputElement).value;
           }}
         />
       </div>
@@ -57,7 +57,7 @@ export const ObjectExample = defineComponent(() => {
           inPlace: {() => person$.value.name} {() => person$.value.surname}
         </div>
         <div>
-          inPlace: {name} {surname}
+          inPlace: {name$} {surname$}
         </div>
       </div>
     </>

@@ -11,12 +11,15 @@ export const Subscriber = defineComponent(() => {
   event$.pipe(throttleTime(500)).subscribe((e) => {
     eventThrottled$.value = e;
   });
+  // This subject will trigger counter reset in child component
+  const reset$ = new Subject<void>();
   return (
     <>
-      <Emitter onEvent={event$}></Emitter>
+      <Emitter event$={event$} reset$={reset$}></Emitter>
       <span>Latest emitted value is: {event$}</span>
       <span>Same, but debounced (500 ms): {eventDebounced$}</span>
       <span>Same, but throttled (500 ms): {eventThrottled$}</span>
+      <button onClick={() => reset$.next()}>Reset Counter</button>
     </>
   );
 });
