@@ -36,6 +36,7 @@ export function useFor<T>(
       let anchor = anchorStart;
       newArray.forEach((item) => {
         const currentAnchor = anchor;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         anchor = item.render(each!).after(currentAnchor);
       });
       ComponentsArray = newArray;
@@ -63,6 +64,7 @@ export function useFor<T>(
                 throw new Error('Cannot find anchor to patch');
               }
               const currentAnchor = anchor;
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               anchor = item.render(each!).after(currentAnchor);
               ComponentsArray.splice(item.indexRef.value, 0, item);
               ComponentsArray.forEach((i, index) => {
