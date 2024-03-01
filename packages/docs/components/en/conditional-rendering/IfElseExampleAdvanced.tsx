@@ -10,6 +10,8 @@ export const IfElseExampleAdvanced = defineComponent(() => {
   const moreThanFive$ = computed(() => counter$.value > 5);
   const [[IsZero], elseIf] = useIf(isZero$);
   const [[MoreThanFive, LessThanFive]] = elseIf(moreThanFive$);
+  // This would also work
+  // const [[MoreThanFive, LessThanFive]] = elseIf(() => counter$.value > 5);
   return (
     <div
       style={{
