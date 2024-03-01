@@ -46,7 +46,7 @@ Subjects can be used in both directions. In this example `event$` is emitting cu
 <<< ../../components/en/event-handling/Emitter2.tsx{5-7,12,14,16 tsx:line-numbers}
 
 Here we are using multiple subscriptions on our `event$`: with debounce and with throttle.
-Also `Subject` can be placed in jsx directly.
+Also `Subject` as `observable` can be placed in jsx directly.
 
 <<< ../../components/en/event-handling/Subscriber2.tsx{6,15,18,22 tsx:line-numbers}
 <Demo  align-start :is="Subscriber2" />
