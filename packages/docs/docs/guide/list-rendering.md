@@ -31,5 +31,5 @@ Here's more useful example, that creates table rows one by one using `Timer` and
 <Demo  :is="ListAdvanced" />
 ---
 ::: info
-`useFor` function is tree-shakeable.
+`useFor` function is tree-shakeable. 
 :::
