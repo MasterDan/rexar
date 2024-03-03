@@ -10,6 +10,7 @@ export default defineConfig({
   },
   title: 'Simple Reactivity',
   lang: 'en',
+  description: 'A js library',
 
   locales: {
     root: {
@@ -78,33 +79,6 @@ export default defineConfig({
         ],
       },
     },
-    ru: {
-      label: 'Русский',
-      lang: 'ru',
-      themeConfig: {
-        // https://vitepress.dev/reference/default-theme-config
-        nav: [
-          { text: 'Home', link: '/ru/' },
-          { text: 'Examples', link: '/markdown-examples' },
-          { text: 'Реактивность', link: '/ru/observables' },
-        ],
-
-        sidebar: [
-          {
-            text: 'Примеры',
-            items: [
-              { text: 'Markdown Examples', link: '/markdown-examples' },
-              { text: 'Runtime API Examples', link: '/api-examples' },
-            ],
-          },
-        ],
-
-        socialLinks: [
-          { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
-        ],
-      },
-    },
   },
-  description: 'A js library',
 });
 
