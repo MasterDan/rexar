@@ -8,9 +8,9 @@ export default defineConfig({
       md.use(tabsMarkdownPlugin);
     },
   },
-  title: 'Simple Reactivity',
+  title: 'Rexar',
   lang: 'en',
-  description: 'A js library',
+  description: 'ReactiveX Advanced Renderer',
 
   locales: {
     root: {
@@ -18,12 +18,7 @@ export default defineConfig({
       lang: 'en',
       themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
-        nav: [
-          { text: 'Home', link: '/' },
-          { text: 'Examples', link: '/markdown-examples' },
-          { text: 'Guide', link: '/guide/' },
-          { text: 'Reactivity', link: '/reactivity/' },
-        ],
+        nav: [{ text: 'Guide', link: '/guide/' }],
 
         sidebar: {
           '/guide/': [

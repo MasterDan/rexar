@@ -3,23 +3,20 @@
 layout: home
 
 hero:
-  name: "Simple Reactivity"
-  text: "A js library"
-  tagline: My great project tagline
+  name: Rexar
+  text: ReactiveX Advanced Renderer
+  tagline: Yet another ui library
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Let's get started already
+      link: /guide/index
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: RxJs based Reactivity
+    details: Rexar uses all benefits of RxJs reactivity system
+  - title: No Virtual Dom
+    details: Rexar renders it's components only once and then updates what exactly needs to be updated.
+  - title: Native Jsx Support
+    details: You don't need any new specific LSP or extensions to work with Rexar.
 ---
 
