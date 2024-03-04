@@ -39,6 +39,10 @@ export default defineConfig({
                   link: '/guide/event-handling',
                 },
                 {
+                  text: 'Styling components',
+                  link: '/guide/classes-and-styles',
+                },
+                {
                   text: 'Conditional Rendering',
                   link: '/guide/conditional-rendering',
                 },

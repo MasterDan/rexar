@@ -21,12 +21,12 @@
   "dependencies": {
     "@rexar/reactivity": "workspace:^",
     "@rexar/tools": "workspace:^",
+    "tsx-dom-types": "^1.0.0",
     "rxjs": "^7.8.1",
     "vite": "^5.0.4"
   },
   "devDependencies": {
     "jsdom": "^23.0.1",
-    "tsx-dom-types": "^1.0.0",
     "vite-plugin-dts": "^3.6.4",
     "vitest": "^0.34.6"
   }
