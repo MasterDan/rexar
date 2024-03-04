@@ -4,8 +4,11 @@ layout: home
 
 hero:
   name: Rexar
-  text: ReactiveX Advanced Renderer
   tagline: Yet another ui library
+  image:
+    src: rexar.png
+    alt: rexar
+
   actions:
     - theme: brand
       text: Let's get started already
