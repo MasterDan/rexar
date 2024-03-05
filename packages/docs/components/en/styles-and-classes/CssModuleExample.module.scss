@@ -1,0 +1,13 @@
+.example {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  .example-card {
+    padding: 1rem;
+    background-color: rgba(235, 161, 52, 0.25);
+    transition: border-radius 0.3s;
+    &.rounded {
+      border-radius: 1.5rem;
+    }
+  }
+}

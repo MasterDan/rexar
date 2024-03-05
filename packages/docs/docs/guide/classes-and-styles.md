@@ -3,6 +3,8 @@
 <script setup>
 import Demo from '../../components/tools/Demo.vue'
 import { StylesExample } from '../../components/en/styles-and-classes/StylesExample.tsx'
+import { ClassExample } from '../../components/en/styles-and-classes/ClassExample.tsx'
+import { CssModuleExample } from '../../components/en/styles-and-classes/CssModuleExample.tsx'
 
 </script>
 
@@ -20,3 +22,9 @@ Remember, that only `Ref`s are trackable inside arrow functions.
 
 <<< ../../components/en/styles-and-classes/StylesExample.tsx{15-20,24-29,31 tsx:line-numbers}
 <Demo :is="StylesExample" />
+
+<<< ../../components/en/styles-and-classes/ClassExample.tsx{tsx:line-numbers}
+<Demo :is="ClassExample" />
+
+<<< ../../components/en/styles-and-classes/CssModuleExample.tsx{tsx:line-numbers}
+<Demo :is="CssModuleExample" />

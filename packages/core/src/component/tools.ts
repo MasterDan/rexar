@@ -1,4 +1,6 @@
 import { AnyRecord } from '@rexar/tools';
+import { Providable, toObservable } from '@rexar/reactivity';
+import { combineLatest, map, switchMap } from 'rxjs';
 
 export type NullableKeys<T> = {
   [Key in keyof T]-?: Extract<T[Key], null | undefined> extends never
@@ -27,4 +29,41 @@ export function useDefaultValues<
     }
   });
   return propsWithDefaults as T & TDefaults;
+}
+
+export type ClassName = Providable<string>;
+
+export type ClassesValue =
+  | ClassName
+  | ClassName[]
+  | Record<string, Providable<boolean>>;
+
+export function useClasses<T extends ClassesValue>(arg: Providable<T>) {
+  return toObservable(arg).pipe(
+    switchMap((value) => {
+      if (Array.isArray(value)) {
+        return combineLatest(value.map((i) => toObservable(i))).pipe(
+          map((classes) => classes.join(' ')),
+        );
+      }
+      if (typeof value === 'object') {
+        const valueRecord = value as Record<string, Providable<boolean>>;
+        return combineLatest(
+          Object.keys(valueRecord).map((key) =>
+            toObservable(valueRecord[key as keyof typeof valueRecord]).pipe(
+              map((apply) => ({ key, apply })),
+            ),
+          ),
+        ).pipe(
+          map((classes) =>
+            classes
+              .filter(({ apply }) => apply)
+              .map(({ key }) => key)
+              .join(' '),
+          ),
+        );
+      }
+      return toObservable(value);
+    }),
+  );
 }
