@@ -4,7 +4,8 @@ layout: home
 
 hero:
   name: Rexar
-  tagline: Yet another ui library
+  text: ReactiveX Advanced Renderer
+  tagline: RxJs + Jsx = 💖
   image:
     src: rexar.png
     alt: rexar
@@ -16,7 +17,7 @@ hero:
 
 features:
   - title: RxJs based Reactivity
-    details: Rexar uses all benefits of RxJs reactivity system
+    details: Rexar uses all benefits of RxJs reactivity system. And even adds something on top of it.
   - title: No Virtual Dom
     details: Rexar renders it's components only once and then updates what exactly needs to be updated.
   - title: Native Jsx Support

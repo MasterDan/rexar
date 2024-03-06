@@ -23,8 +23,14 @@ Remember, that only `Ref`s are trackable inside arrow functions.
 <<< ../../components/en/styles-and-classes/StylesExample.tsx{15-20,24-29,31 tsx:line-numbers}
 <Demo :is="StylesExample" />
 
+## Importing Files
+
+<<< ../../components/en/styles-and-classes/ClassExample.styles.css{css:line-numbers}
 <<< ../../components/en/styles-and-classes/ClassExample.tsx{tsx:line-numbers}
 <Demo :is="ClassExample" />
 
+## Using Css Modules
+
+<<< ../../components/en/styles-and-classes/CssModuleExample.module.css{css:line-numbers}
 <<< ../../components/en/styles-and-classes/CssModuleExample.tsx{tsx:line-numbers}
 <Demo :is="CssModuleExample" />

@@ -1,5 +1,5 @@
 import { defineComponent, ref, h, useClasses } from '@rexar/core';
-import styles from './CssModuleExample.module.scss';
+import styles from './CssModuleExample.module.css';
 
 export const CssModuleExample = defineComponent(() => {
   const classes = ref([styles['example-card'], styles.rounded]);
