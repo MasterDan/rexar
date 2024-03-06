@@ -25,11 +25,27 @@ Remember, that only `Ref`s are trackable inside arrow functions.
 
 ## Importing Files
 
+Here's example of defining css file and importing it into your component.
+
+We also using `useClasses` helper function to compose our classes.  
+Inside this function you may pass:
+ * `observable` with `Array<string>`
+ * `Array` with `Observable<string> | string | () => string`
+ * Object with:
+   * `key` - name of class
+   * `value` - `boolean | Observable<boolean> | () => boolean` (Apply class or not)
+ * `() => string[]`
+ * `() => { [Key:string]: boolean }`
+
+See the demo:
+
 <<< ../../components/en/styles-and-classes/ClassExample.styles.css{css:line-numbers}
 <<< ../../components/en/styles-and-classes/ClassExample.tsx{tsx:line-numbers}
 <Demo :is="ClassExample" />
 
 ## Using Css Modules
+
+Here's same example, but using css module.
 
 <<< ../../components/en/styles-and-classes/CssModuleExample.module.css{css:line-numbers}
 <<< ../../components/en/styles-and-classes/CssModuleExample.tsx{tsx:line-numbers}

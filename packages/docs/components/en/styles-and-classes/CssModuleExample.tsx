@@ -2,31 +2,35 @@ import { defineComponent, ref, h, useClasses } from '@rexar/core';
 import styles from './CssModuleExample.module.css';
 
 export const CssModuleExample = defineComponent(() => {
-  const classes = ref([styles['example-card'], styles.rounded]);
-  const isRounded = ref(false);
+  const classes$ = ref([styles['example-card'], styles.rounded]);
+  const rounded$ = ref(false);
   return (
     <div class={styles.example}>
-      <div class={() => classes.value.join(' ')}>Inline styles as string</div>
-      <div class={useClasses(classes)}>Using useClasses method</div>
+      <span>Static Classes</span>
+      <div class={() => classes$.value.join(' ')}>
+        Inline classes as string
+      </div>
+      <div class={useClasses(classes$)}>Using useClasses method</div>
+      <span>Dynamic classes ( rounded is: {rounded$} )</span>
       <div
         class={useClasses({
           [styles['example-card']]: true,
-          [styles.rounded]: isRounded,
+          [styles.rounded]: rounded$,
         })}
       >
-        Dynamic Classes (using object syntax)
+        Using object syntax
       </div>
       <div
         class={useClasses([
           styles['example-card'],
-          () => (isRounded.value ? styles.rounded : ''),
+          () => (rounded$.value ? styles.rounded : ''),
         ])}
       >
-        Dynamic Classes (using array syntax)
+        Using array syntax
       </div>
       <button
         onClick={() => {
-          isRounded.value = !isRounded.value;
+          rounded$.value = !rounded$.value;
         }}
       >
         Toggle rounded

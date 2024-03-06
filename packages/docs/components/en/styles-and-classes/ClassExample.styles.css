@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-width: 400px;
 }
 .example .example-card {
   padding: 1rem;
