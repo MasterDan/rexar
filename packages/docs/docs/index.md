@@ -4,10 +4,11 @@ layout: home
 
 hero:
   name: Rexar
-  text: ReactiveX Advanced Renderer
-  tagline: RxJs + Jsx = 💖
+  text: RxJs + Jsx = 💖
+  tagline: ReactiveX Advanced Renderer
   image:
-    src: rexar.png
+    dark: rexar-dark.png
+    light: rexar-light.png
     alt: rexar
 
   actions:
