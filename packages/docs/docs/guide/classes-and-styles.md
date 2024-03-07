@@ -40,13 +40,18 @@ Inside this function you may pass:
 See the demo:
 
 <<< ../../components/en/styles-and-classes/ClassExample.styles.css{css:line-numbers}
-<<< ../../components/en/styles-and-classes/ClassExample.tsx{tsx:line-numbers}
+<<< ../../components/en/styles-and-classes/ClassExample.tsx{5,10,13,16-19,24-27 tsx:line-numbers}
 <Demo :is="ClassExample" />
 
+::: warning
+Raw import of `.css` files enables your styles globally.  
+
+For scoped styles see next example with `css modules` syntax.
+:::
 ## Using Css Modules
 
-Here's same example, but using css module.
+Here's the same example, but using `css modules` syntax.
 
 <<< ../../components/en/styles-and-classes/CssModuleExample.module.css{css:line-numbers}
-<<< ../../components/en/styles-and-classes/CssModuleExample.tsx{tsx:line-numbers}
+<<< ../../components/en/styles-and-classes/CssModuleExample.tsx{5,10,13,16-19,24-27 tsx:line-numbers}
 <Demo :is="CssModuleExample" />

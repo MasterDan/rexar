@@ -11,7 +11,6 @@ export default defineConfig({
   title: 'Rexar',
   lang: 'en',
   description: 'ReactiveX Advanced Renderer',
-
   locales: {
     root: {
       label: 'English',
@@ -19,7 +18,6 @@ export default defineConfig({
       themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [{ text: 'Guide', link: '/guide/' }],
-
         sidebar: {
           '/guide/': [
             {
@@ -72,9 +70,8 @@ export default defineConfig({
             },
           ],
         },
-
         socialLinks: [
-          { icon: 'github', link: 'https://github.com/vuejs/vitepress' },
+          { icon: 'github', link: 'https://github.com/MasterDan/rexar' },
         ],
       },
     },

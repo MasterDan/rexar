@@ -48,9 +48,22 @@ Let's provide id in one of our `TextInput` components:
 
 ## Providing content
 
+For providing content inside component we are using special property `children`.  
+Every component has this property by default so you don't need to define it explicitly.
+
+Let's create simple `Card` component:
+
 <<< ../../components/en/props/Card.tsx{3,11 tsx:line-numbers}
+
+And let's use it:
+
 <<< ../../components/en/props/CardExample.tsx{tsx:line-numbers}
 <Demo :is="CardExample" />
+
+## Additional content
+
+For additional content you have to specify properties by yourself.  
+Let's create `Card` with `header` and `footer` props: 
 
 <<< ../../components/en/props/Card2.tsx{4-6,21,23,31 tsx:line-numbers}
 <<< ../../components/en/props/CardExample2.tsx{5 tsx:line-numbers}
