@@ -1,0 +1,39 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "kill: all",
+			"command": "echo ${input:terminate}",
+			"type": "shell",
+			"problemMatcher": []
+		},
+		{
+			"type": "npm",
+			"label": "npm: docs:dev",
+			"script": "docs:dev",
+			"problemMatcher": [
+				{
+					"owner": "npm",
+					"background": {
+						"endsPattern": "vitepress.",
+						"beginsPattern": ".",
+						"activeOnStart": true
+					},
+					"pattern": {
+						"regexp": "."
+					}
+				}
+			],
+			"isBackground": true,
+			"detail": "vitepress dev docs"
+		}
+	],
+	"inputs": [
+		{
+			"id": "terminate",
+			"type": "command",
+			"command": "workbench.action.tasks.terminate",
+			"args": "terminateAll"
+		}
+	]
+}

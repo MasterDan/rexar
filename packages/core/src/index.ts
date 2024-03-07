@@ -1,6 +1,12 @@
 export * from '@rexar/reactivity';
 export * from '@rexar/jsx';
-export { defineComponent, render } from './component';
+export {
+  defineComponent,
+  render,
+  type ComponentRenderFunc,
+  type RenderedController,
+} from './component';
+export { useDefaultValues, useClasses } from './component/tools';
 export { onMounted, onBeforeDestroy, onDestroyed } from './scope';
 export { Comment } from './built-in-components/comment';
 export { useDynamic } from './built-in-components/dynamic';

@@ -1,5 +1,5 @@
 import type { BaseProps } from '@rexar/jsx';
-import type { AnyRecord } from '@sir/tools';
+import type { AnyRecord } from '@rexar/tools';
 import { Subject } from 'rxjs';
 import { ComponentFactory } from './component-factory';
 import type { ComponentOptions, DestroyingStatus } from './component';

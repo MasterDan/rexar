@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, test } from 'vitest';
 import { initCycleDependencies } from '@reactivity/anti-cycle';
 import { map } from 'rxjs';
 import { ref } from './ref';
-import { toRef } from './tools';
+import { toRef, toRefs } from './tools';
 
 describe('refs', () => {
   beforeAll(() => {
@@ -85,5 +85,15 @@ describe('refs', () => {
     expect(counterCount.value).toBe(0);
     counterRef.value.increment();
     expect(counterCount.value).toBe(1);
+  });
+  test('ref deconstruction', () => {
+    const objRef = ref({ name: 'John', age: 20 });
+    const { name, age } = toRefs(objRef);
+    expect(name.value).toBe('John');
+    expect(age.value).toBe(20);
+    objRef.value.name = 'Jane';
+    expect(name.value).toBe('Jane');
+    age.value = 10;
+    expect(objRef.value.age).toBe(10);
   });
 });

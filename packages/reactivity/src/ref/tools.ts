@@ -1,5 +1,6 @@
 import { MaybeObservable } from '@reactivity/@types';
-import { BehaviorSubject, Observable, isObservable } from 'rxjs';
+import { BehaviorSubject, Observable, isObservable, map } from 'rxjs';
+import { AnyRecord } from '@rexar/tools';
 import { ReadonlyRef } from './readonly.ref';
 import { Ref } from './ref';
 import { WritableReadonlyRef } from './writable-readonly.ref';
@@ -62,4 +63,20 @@ export function toRef<T>(
     return result;
   }
   return new Ref(arg);
+}
+
+export type DeconstructedRef<T extends AnyRecord> = {
+  [Key in keyof T]: WritableReadonlyRef<T[Key]>;
+};
+
+export function toRefs<T extends AnyRecord>(
+  objRef: Ref<T>,
+): DeconstructedRef<T> {
+  const result: AnyRecord = {};
+  Object.keys(objRef.value).forEach((key) => {
+    result[key] = toRef(objRef.pipe(map((o) => o[key])), (v) => {
+      objRef.value[key as keyof T] = v;
+    });
+  });
+  return result as DeconstructedRef<T>;
 }

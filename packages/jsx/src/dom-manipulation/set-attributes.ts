@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 
 import { AnyRecord } from '@rexar/tools';
+import { trySubscribe } from '@rexar/reactivity';
 import { Subject, isObservable } from 'rxjs';
 import { ComponentAttributeValues, ComponentAttributes } from '../@types';
 
@@ -61,12 +62,10 @@ export function setAttributes(
     const value = attrs[name];
     if (name.startsWith('on')) {
       subscribeEvent(name, value);
-    } else if (isObservable(value)) {
-      value.subscribe((v) => {
-        setAttribute(name, v as ComponentAttributeValues);
-      });
     } else {
-      setAttribute(name, value as ComponentAttributeValues);
+      trySubscribe(value, (val) => {
+        setAttribute(name, val);
+      });
     }
   }
 }

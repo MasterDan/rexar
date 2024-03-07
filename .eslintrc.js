@@ -16,6 +16,7 @@ module.exports = {
       './packages/jsx/tsconfig.json',
       './packages/core/tsconfig.json',
       './packages/core-demo/tsconfig.json',
+      './packages/docs/tsconfig.json',
     ],
   },
   rules: {

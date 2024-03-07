@@ -2,11 +2,12 @@ import { describe, expect, test } from 'vitest';
 import { h, fragment } from '@rexar/jsx';
 import { onBeforeDestroy, onDestroyed, onMounted } from '@core/scope';
 import { ref } from '@rexar/reactivity';
-import { wait } from '@sir/tools';
+import { wait } from '@rexar/tools';
 import { Subject, map } from 'rxjs';
 import { useFor } from '@core/built-in-components/for-each';
 import { Comment } from '@core/built-in-components/comment';
 import { defineComponent, render } from '.';
+import { useDefaultValues } from './tools';
 
 /**
  * @vitest-environment jsdom
@@ -349,5 +350,23 @@ describe('components', () => {
         </div>
       ).outerHTML,
     );
+  });
+  test('use default values', () => {
+    const Component = defineComponent<{ name?: string }>((props) => {
+      const { name } = useDefaultValues(props, { name: () => 'no name' });
+      return <>{name}</>;
+    });
+    const root = (
+      <div>
+        <Component></Component>
+      </div>
+    );
+    expect(root.outerHTML).toBe((<div>no name</div>).outerHTML);
+    const root2 = (
+      <div>
+        <Component name="some name"></Component>
+      </div>
+    );
+    expect(root2.outerHTML).toBe((<div>some name</div>).outerHTML);
   });
 });

@@ -6,12 +6,12 @@ import type {
   EventHandler,
 } from 'tsx-dom-types';
 
-import type { AnyObservable, MaybeObservable } from '@rexar/reactivity';
+import type { MaybeObservable, Providable } from '@rexar/reactivity';
 import type { AnyRecord } from '@rexar/tools';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export type MaybeObservableRecord<T extends AnyRecord<string>> = {
-  [Key in keyof T]: T[Key] | Observable<T[Key] | null | undefined>;
+  [Key in keyof T]: T[Key] | Providable<T[Key] | null | undefined>;
 };
 
 export type EventAttributesExtended<T extends EventTarget> = {
@@ -25,7 +25,7 @@ export type EventAttributesExtended<T extends EventTarget> = {
 export type ComponentChild =
   | ComponentChild[]
   | JSX.Element
-  | MaybeObservable<string | number | boolean | undefined | null>;
+  | Providable<string | number | boolean | undefined | null>;
 export type ComponentChildren = ComponentChild | ComponentChild[];
 export interface BaseProps {
   children?: ComponentChildren;
@@ -39,7 +39,15 @@ export type ComponentAttributeValues =
   | null
   | StyleAttributes
   | EventListenerOrEventListenerObject
-  | AnyObservable;
+  | Providable<
+      | string
+      | number
+      | boolean
+      | undefined
+      | null
+      | StyleAttributes
+      | EventListenerOrEventListenerObject
+    >;
 
 export type ComponentAttributes = {
   [s: string]: ComponentAttributeValues;

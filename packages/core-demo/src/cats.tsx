@@ -7,7 +7,6 @@ import {
   ref,
   computed,
 } from '@rexar/core';
-import { map } from 'rxjs';
 import { Input } from './input';
 
 type Cat = { name: string; age: number };
@@ -46,15 +45,13 @@ export const CatsApp = defineComponent(() => {
 
   const cantCreate = computed(() => !canCreate.value);
 
-  const { True: CannotCreate, False: CanCreate } = useIf(cantCreate);
+  const [[CannotCreate, CanCreate]] = useIf(cantCreate);
 
   const removeCat = (index: number) => {
     cats.value = cats.value.filter((_, n) => n !== index);
   };
 
-  const { True: NoCats, False: CatsExists } = useIf(
-    computed(() => cats.value.length === 0),
-  );
+  const [[NoCats, CatsExists]] = useIf(computed(() => cats.value.length === 0));
 
   return (
     <>
@@ -73,17 +70,16 @@ export const CatsApp = defineComponent(() => {
       </CatsExists>
       <Cats
         each={({ item: cat, index }) => {
-          const order = computed(() => index.value + 1);
           const name = computed(() => cat.value.name);
-          const age = computed(() => cat.value.age);
-          const { True: IfOld } = useIf(age.pipe(map((i) => i > 10)));
+          const [[IfOld]] = useIf(computed(() => cat.value.age > 10));
           return (
             <div class="bg-neutral-50 rounded-3xl bg-opacity-25 p-4 flex flex-col  gap-4 ">
               <h3 class="self-center text-xl">
-                {order}: {name}
+                {() => index.value + 1}: {name}
               </h3>
               <p>
-                This is <IfOld>old</IfOld> {name}, who is {age} years old
+                This is <IfOld>old</IfOld> {name}, who is {() => cat.value.age}{' '}
+                years old
               </p>
               <button
                 class="self-center bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500

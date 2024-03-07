@@ -1,26 +1,30 @@
-import { Observable, filter } from 'rxjs';
-import { ComponentChild } from '../@types';
+import { trySubscribe } from '@rexar/reactivity';
+import { ComponentChild } from '@jsx/@types';
 
 export type JsxElementOrFragment = JSX.Element | DocumentFragment;
 
-function applyChild(target: JsxElementOrFragment, child: ComponentChild) {
+function applyChild(
+  target: JsxElementOrFragment,
+  child: Exclude<ComponentChild, ComponentChild[]>,
+) {
   if (
     child instanceof Element ||
     child instanceof DocumentFragment ||
     child instanceof Comment
   )
     target.appendChild(child);
-  else if (child instanceof Observable) {
-    const node = document.createTextNode('');
-    (child as Observable<string | number | boolean | null | undefined>)
-      .pipe(filter((x): x is string | number | boolean => x != null))
-      .subscribe((val) => {
-        node.textContent = val.toString();
-      });
-    target.appendChild(node);
-  } else if (typeof child === 'string' || typeof child === 'number') {
+  else if (typeof child === 'string' || typeof child === 'number') {
     target.appendChild(document.createTextNode(child.toString()));
-  } else console.warn('Unknown type to append: ', child);
+  } else {
+    const node = document.createTextNode('');
+    trySubscribe(child, (val) => {
+      if (val == null) {
+        return;
+      }
+      node.textContent = val.toString();
+    });
+    target.appendChild(node);
+  }
 }
 
 export function applyChildren(
