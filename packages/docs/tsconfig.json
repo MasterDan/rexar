@@ -9,6 +9,8 @@
     "./*.ts",
     "./components/**/*.ts",
     "./components/**/*.tsx",
+    "./docs/**/*.ts",
+    "./docs/**/*.tsx",
     "./components/**/*.html",
     "./tests/**/*.ts",
     "./tests/**/*.html",

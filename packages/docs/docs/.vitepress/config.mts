@@ -50,23 +50,18 @@ export default defineConfig({
                 },
               ],
             },
-          ],
-          '/reactivity/': [
             {
               text: 'Reactivity',
-              link: '/reactivity/',
-            },
-            {
-              text: 'Refs',
-              link: '/reactivity/refs',
-            },
-            {
-              text: 'Emitters',
-              link: '/reactivity/emitters',
-            },
-            {
-              text: 'Observables',
-              link: '/reactivity/observables',
+              items: [
+                {
+                  text: 'Ref',
+                  link: '/guide/ref',
+                },
+                {
+                  text: 'Computed',
+                  link: '/reactivity/emitters',
+                },
+              ],
             },
           ],
         },
