@@ -59,7 +59,7 @@ export default defineConfig({
                 },
                 {
                   text: 'Computed',
-                  link: '/reactivity/emitters',
+                  link: '/guide/computed',
                 },
               ],
             },
