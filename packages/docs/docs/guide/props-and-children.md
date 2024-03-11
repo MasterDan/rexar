@@ -24,7 +24,7 @@ Our components are rendering only once, as it's being said in the beginning of t
 Triggering `Ref` is just triggering `Ref`. Even in props.
 :::
 
-<<< ../../components/en/props/TextInput.tsx{4-6,14-17 tsx:line-numbers}
+<<< ../../components/en/props/TextInput.tsx{4-6,10,14-17 tsx:line-numbers}
 
 Let's use our input component:
 

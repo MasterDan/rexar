@@ -25,9 +25,13 @@ export default defineConfig({
               link: '/guide/',
             },
             {
-              text: 'Component syntax',
-              link: '/guide/component-syntax',
+              text: 'Components',
+
               items: [
+                {
+                  text: 'Basic syntax',
+                  link: '/guide/component-syntax',
+                },
                 {
                   text: 'Passing Props',
                   link: '/guide/props-and-children',
@@ -50,23 +54,18 @@ export default defineConfig({
                 },
               ],
             },
-          ],
-          '/reactivity/': [
             {
               text: 'Reactivity',
-              link: '/reactivity/',
-            },
-            {
-              text: 'Refs',
-              link: '/reactivity/refs',
-            },
-            {
-              text: 'Emitters',
-              link: '/reactivity/emitters',
-            },
-            {
-              text: 'Observables',
-              link: '/reactivity/observables',
+              items: [
+                {
+                  text: 'Ref',
+                  link: '/guide/ref',
+                },
+                {
+                  text: 'Computed',
+                  link: '/guide/computed',
+                },
+              ],
             },
           ],
         },
