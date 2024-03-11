@@ -14,6 +14,8 @@ Examples of `computed` usage are also available on [component syntax](../guide/c
 * where computed is [reactive](../guide/component-syntax.md#numbers)
 * and where is [not](../guide/component-syntax.md#same-example-using-rxjs-behaviorsubject)
 
+## Writable Computed
+
 Computed can also be writable. Just pass setter function as second argument.  
 See the example:
 

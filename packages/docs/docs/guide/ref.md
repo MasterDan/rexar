@@ -3,6 +3,7 @@
 <script setup>
 import Demo from '../../components/tools/Demo.vue'
 import { ToRefExample } from '../../components/en/reactivity/toRef/ToRefExample.tsx'
+import { ToRefsExample } from '../../components/en/reactivity/toRefs/ToRefsExample.tsx'
 </script>
 
 ## `Ref`
@@ -50,3 +51,12 @@ In example below we are using `toRef` to handle incremented counter:
 
 <<< ../../components/en/reactivity/toRef/ToRefExample.tsx{9-11,20,22 tsx:line-numbers}
 <Demo :is="ToRefExample" />
+
+## `toRefs`
+
+Helper function that deconstructs `Ref` with object value.
+
+See the example:
+
+<<< ../../components/en/reactivity/toRefs/ToRefsExample.tsx{tsx:line-numbers}
+<Demo align-start :is="ToRefsExample" />
