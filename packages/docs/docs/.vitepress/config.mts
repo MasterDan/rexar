@@ -25,9 +25,13 @@ export default defineConfig({
               link: '/guide/',
             },
             {
-              text: 'Component syntax',
-              link: '/guide/component-syntax',
+              text: 'Components',
+
               items: [
+                {
+                  text: 'Basic syntax',
+                  link: '/guide/component-syntax',
+                },
                 {
                   text: 'Passing Props',
                   link: '/guide/props-and-children',

@@ -1,5 +1,10 @@
 # Refs
 
+<script setup>
+import Demo from '../../components/tools/Demo.vue'
+import { ToRefExample } from '../../components/en/reactivity/toRef/ToRefExample.tsx'
+</script>
+
 ## `Ref`
 
 <<< ./ref-example.ts#snippet
@@ -40,3 +45,8 @@ Helper function that creates different refs from `RxJs Observables`.
 * `toRef<T>( arg: Observable<T>, setter: (value:T) => void  )` will create `WritableReadonlyRef`
   * `WritableReadonlyRef` is `Ref` that uses your setter function to apply changes.  
   There is only difference from classic `Ref`.
+
+In example below we are using `toRef` to handle incremented counter:
+
+<<< ../../components/en/reactivity/toRef/ToRefExample.tsx{9-11,20,22 tsx:line-numbers}
+<Demo :is="ToRefExample" />
