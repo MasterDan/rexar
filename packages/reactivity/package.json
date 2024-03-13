@@ -1,5 +1,11 @@
 {
   "name": "@rexar/reactivity",
+  "version": "1.0.4",
+  "author": "MasterDan <MihaylovDS@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MasterDan/rexar.git"
+  },
   "packageManager": "yarn@4.0.2",
   "type": "module",
   "files": [
