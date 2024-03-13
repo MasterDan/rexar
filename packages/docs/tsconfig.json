@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "fragment"
+  },
+  "include": [
+    "./*.ts",
+    "./components/**/*.ts",
+    "./components/**/*.tsx",
+    "./docs/**/*.ts",
+    "./docs/**/*.tsx",
+    "./components/**/*.html",
+    "./tests/**/*.ts",
+    "./tests/**/*.html",
+    "../core/src/scope/index.ts",
+  ]
+}

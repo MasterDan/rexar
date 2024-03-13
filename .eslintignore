@@ -1,3 +1,7 @@
 **/node_modules/
 **/dist/
+**/jest/
 **/.eslintrc.js
+**/jest.setup.js
+**/*.vue
+vitest.workspace.ts

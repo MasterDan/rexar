@@ -1,0 +1,11 @@
+{
+  "*.ts": { "alternate": "{}.spec.ts" },
+  "*.component.ts": { "alternate": "{}.component.html" },
+  "packages/core/src/components/builtIn/**/*.component.ts": {
+    "alternate": "packages/core/src/render/html/components/{dirname}/{basename}-renderer-html.ts"
+  },
+  "packages/core/src/components/builtIn/custom/hooks/*.hook.ts": {
+    "alternate": "packages/core/src/render/html/components/custom/hook-handlers/{}-hook-handler.ts"
+  }
+}
+

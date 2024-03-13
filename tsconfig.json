@@ -6,21 +6,40 @@
         "jsx": "preserve",
         "importHelpers": true,
         "moduleResolution": "node",
+        "isolatedModules": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "sourceMap": true,
-        "baseUrl": ".",
         "lib": [
             "esnext",
             "dom",
             "dom.iterable",
             "scripthost"
         ],
+        "baseUrl": ".",
+        "paths": {
+            "@tools/*": [
+                "packages/tools/src/*"
+            ],
+            "@reactivity/*": [
+                "packages/reactivity/src/*"
+            ],
+            "@jsx/*": [
+                "packages/jsx/src/*"
+            ],
+            "@core/*": [
+                "packages/core/src/*"
+            ],
+            "@logger/*": [
+                "packages/logger/src/*"
+            ]
+        }
     },
     "exclude": [
         "**/node_modules/**",
+        "**/dist/**"
     ]
 }

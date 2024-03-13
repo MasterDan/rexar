@@ -1,0 +1,28 @@
+{
+  "name": "@rexar/tools",
+  "packageManager": "yarn@4.0.2",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/main.umd.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.umd.cjs"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "npx vitest"
+  },
+  "dependencies": {
+    "vite": "^5.0.4"
+  },
+  "devDependencies": {
+    "vite-plugin-dts": "^3.6.4",
+    "vitest": "^0.34.6"
+  }
+}

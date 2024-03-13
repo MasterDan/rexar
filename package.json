@@ -2,13 +2,41 @@
   "private": true,
   "name": "rexar",
   "version": "1.0.0",
-  "main": "index.js",
   "author": "MasterDan <MihaylovDS@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MasterDan/rexar.git"
+  },
   "license": "MIT",
   "workspaces": [
     "packages/*"
   ],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "scripts": {
+    "build:tools": "yarn workspace @rexar/tools build",
+    "build:reactivity": "yarn workspace @rexar/reactivity build",
+    "build:jsx": "yarn workspace @rexar/jsx build",
+    "build:core": "yarn workspace @rexar/core build",
+    "build": "yarn run build:tools && yarn run build:reactivity && yarn run build:jsx && yarn run build:core",
+    "test:reactivity": "yarn workspace @rexar/reactivity test --run",
+    "test:jsx": "yarn workspace @rexar/jsx test --run",
+    "test:core": "yarn workspace @rexar/core test --run",
+    "test": "yarn run test:reactivity && yarn run test:jsx && yarn run test:core"
+  },
+  "dependencies": {
+    "@rexar/core": "link:./packages/core",
+    "@rexar/jsx": "link:./packages/jsx",
+    "@rexar/reactivity": "link:./packages/reactivity",
+    "@rexar/tools": "link:./packages/tools"
+  },
   "devDependencies": {
+    "@parcel/packager-ts": "2.8.3",
+    "@parcel/transformer-typescript-types": "2.8.3",
+    "@types/jsdom": "^21.1.1",
+    "@types/node": "^20.3.1",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "eslint": "^8.33.0",
@@ -16,7 +44,13 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
-    "prettier": "^2.8.3",
-    "typescript": "^4.9.5"
-  }
+    "prettier": "2.8.3",
+    "string-width": "^6.1.0",
+    "strip-ansi": "^7.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "4.9.4",
+    "vm-browserify": "^1.1.2"
+  },
+  "packageManager": "yarn@4.1.0"
 }
+
