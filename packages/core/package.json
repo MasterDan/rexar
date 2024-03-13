@@ -1,6 +1,6 @@
 {
   "name": "@rexar/core",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "author": "MasterDan <MihaylovDS@gmail.com>",
   "repository": {
     "type": "git",
@@ -18,7 +18,8 @@
   "exports": {
     ".": {
       "import": "./dist/main.js",
-      "require": "./dist/main.umd.cjs"
+      "require": "./dist/main.umd.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
