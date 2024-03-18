@@ -22,6 +22,7 @@ describe('components', () => {
         <Text value="some text"></Text>
       </div>
     );
+    document.body.appendChild(root);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -56,6 +57,7 @@ describe('components', () => {
       );
     });
     const root = <div></div>;
+    document.body.appendChild(root);
     render(Component).into(root);
     expect(root.innerHTML).toBe(
       (
@@ -90,6 +92,7 @@ describe('components', () => {
     ));
     const target = <div></div>;
     const root = <div>{target}</div>;
+    document.body.appendChild(root);
     const renderedComp = render(Component, { text: 'Some text' }).after(target);
     const renderedCompSecond = render(Component, {
       text: 'Some other text',
@@ -132,7 +135,9 @@ describe('components', () => {
       ),
     );
     const target = <div></div>;
+
     const root = <div>{target}</div>;
+    document.body.appendChild(root);
     const first = render(Component, {
       header: 'First',
       text: 'first text',
@@ -214,6 +219,7 @@ describe('components', () => {
     ));
 
     const rootDiv = <div></div>;
+    document.body.appendChild(rootDiv);
     render(RootComponent).into(rootDiv);
     expect(rootDiv.outerHTML).toBe(
       (
@@ -308,6 +314,7 @@ describe('components', () => {
       </>
     ));
     const root = <div></div>;
+    document.body.appendChild(root);
     render(App).into(root);
     expect(root.outerHTML).toBe(
       (
@@ -361,6 +368,7 @@ describe('components', () => {
         <Component></Component>
       </div>
     );
+    document.body.appendChild(root);
     expect(root.outerHTML).toBe((<div>no name</div>).outerHTML);
     const root2 = (
       <div>

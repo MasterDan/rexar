@@ -15,6 +15,7 @@ describe('dynamic renderer', () => {
         <Dynamic></Dynamic>
       </div>
     );
+    document.body.appendChild(root);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -44,6 +45,47 @@ describe('dynamic renderer', () => {
         <div>
           <Comment text="dynamic-anchor" />
           <div>Some text</div>
+        </div>
+      ).outerHTML,
+    );
+  });
+  test('dynamic with children', () => {
+    const [Dynamic, change] = useDynamic(({ children }) => (
+      <div>{children}</div>
+    ));
+    const root = (
+      <div>
+        <Dynamic>
+          <span>children</span>
+        </Dynamic>
+      </div>
+    );
+    document.body.appendChild(root);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+          <div>
+            <span>children</span>
+          </div>
+        </div>
+      ).outerHTML,
+    );
+    change(() => <div>Some text</div>);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+          <div>Some text</div>
+        </div>
+      ).outerHTML,
+    );
+    change(({ children }) => <>{children}</>);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+          <span>children</span>
         </div>
       ).outerHTML,
     );

@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
 import { h, fragment } from '@rexar/jsx';
+import { defineComponent, render } from '@core/component';
 import { useFor } from '.';
 import { Comment } from '../comment';
 
@@ -95,6 +96,7 @@ describe('for-each rendering', () => {
         ></Strings>
       </div>
     );
+    document.body.appendChild(root);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -161,5 +163,30 @@ describe('for-each rendering', () => {
         </div>
       ).outerHTML,
     );
+  });
+  test('remove-array', () => {
+    const arr$ = ref(['foo', 'bar', 'baz']);
+    const List = useFor(arr$, (item) => item);
+    const root = <div></div>;
+    document.body.appendChild(root);
+    const TestList = defineComponent(() => (
+      <List each={({ item }) => <span>{item}</span>}></List>
+    ));
+    const { remove } = render(TestList).into(root);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="foreach-anchor"></Comment>
+          <span>foo</span>
+          <Comment text="end-of-element"></Comment>
+          <span>bar</span>
+          <Comment text="end-of-element"></Comment>
+          <span>baz</span>
+          <Comment text="end-of-element"></Comment>
+        </div>
+      ).outerHTML,
+    );
+    remove();
+    expect(root.outerHTML).toBe((<div></div>).outerHTML);
   });
 });

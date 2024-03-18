@@ -1,7 +1,7 @@
 import { BaseProps } from '@rexar/jsx';
 import { ref, toRef } from '@rexar/reactivity';
 import { ComponentHookName, renderingScope } from '@core/scope';
-import { Subject, filter } from 'rxjs';
+import { Subject, combineLatestWith, filter, take, timer } from 'rxjs';
 import { RenderingScopeValue } from '@core/scope/scope-value';
 
 enum Lifecycle {
@@ -12,11 +12,9 @@ enum Lifecycle {
   Destroyed,
 }
 
-export type DestroyingStatus = 'before' | 'after';
-
 export type ComponentOptions = {
   root: boolean;
-  destroyer?: Subject<DestroyingStatus>;
+  destroyer?: Subject<void>;
 };
 
 export class Component<TProps extends BaseProps> {
@@ -46,16 +44,19 @@ export class Component<TProps extends BaseProps> {
     const parentLifecycle = renderingScope.current?.value?.component.lifecycle$;
     if (parentLifecycle != null) {
       this.parentLifecycle
-        .pipe(filter((lc): lc is Lifecycle => lc != null))
-        .subscribe((lc) => {
+        .pipe(
+          filter((lc): lc is Lifecycle => lc != null),
+          combineLatestWith(this.lifecycle$),
+        )
+        .subscribe(([parentLc, currentLc]) => {
           if (
-            lc === Lifecycle.Mounted &&
-            this.$lifecycle.value === Lifecycle.Rendered
+            parentLc === Lifecycle.Mounted &&
+            currentLc === Lifecycle.Rendered
           ) {
             this.$lifecycle.value = Lifecycle.Mounted;
-          } else if (lc === Lifecycle.BeforeDestroy) {
+          } else if (parentLc === Lifecycle.BeforeDestroy) {
             this.$lifecycle.value = Lifecycle.BeforeDestroy;
-          } else if (lc === Lifecycle.Destroyed) {
+          } else if (parentLc === Lifecycle.Destroyed) {
             this.$lifecycle.value = Lifecycle.Destroyed;
           }
         });
@@ -91,16 +92,27 @@ export class Component<TProps extends BaseProps> {
       this.setHook(hook.name as ComponentHookName, hook.body);
     });
     const result = this.renderFunc(props);
-    destroyer?.subscribe((value) => {
-      if (value === 'before') {
-        this.$lifecycle.value = Lifecycle.BeforeDestroy;
-      } else if (value === 'after') {
-        this.$lifecycle.value = Lifecycle.Destroyed;
-      }
+
+    const renderedNodes: ChildNode[] =
+      result instanceof DocumentFragment ? [...result.childNodes] : [result];
+
+    timer(0, 50)
+      .pipe(
+        filter(() => renderedNodes.every((n) => n.isConnected)),
+        take(1),
+      )
+      .subscribe(() => {
+        this.$lifecycle.value = root ? Lifecycle.Mounted : Lifecycle.Rendered;
+      });
+
+    destroyer?.subscribe(() => {
+      this.$lifecycle.value = Lifecycle.BeforeDestroy;
+      renderedNodes.forEach((n) => {
+        n.remove();
+      });
+      this.$lifecycle.value = Lifecycle.Destroyed;
     });
-    setTimeout(() => {
-      this.$lifecycle.value = root ? Lifecycle.Mounted : Lifecycle.Rendered;
-    }, 0);
+
     renderingScope.end();
     return result;
   }
