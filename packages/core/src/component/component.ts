@@ -96,15 +96,21 @@ export class Component<TProps extends BaseProps> {
     const renderedNodes: ChildNode[] =
       result instanceof DocumentFragment ? [...result.childNodes] : [result];
 
-    timer(10, 50)
-      .pipe(
-        take(10),
-        filter(() => renderedNodes.every((n) => n.isConnected)),
-        take(1),
-      )
-      .subscribe(() => {
-        this.$lifecycle.value = root ? Lifecycle.Mounted : Lifecycle.Rendered;
-      });
+    if (root) {
+      timer(10, 50)
+        .pipe(
+          take(10),
+          filter(() => renderedNodes.every((n) => n.isConnected)),
+          take(1),
+        )
+        .subscribe(() => {
+          this.$lifecycle.value = Lifecycle.Mounted;
+        });
+    }
+
+    setTimeout(() => {
+      this.$lifecycle.value = Lifecycle.Rendered;
+    }, 0);
 
     destroyer?.subscribe(() => {
       this.$lifecycle.value = Lifecycle.BeforeDestroy;
