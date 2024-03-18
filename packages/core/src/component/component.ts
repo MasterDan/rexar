@@ -96,8 +96,9 @@ export class Component<TProps extends BaseProps> {
     const renderedNodes: ChildNode[] =
       result instanceof DocumentFragment ? [...result.childNodes] : [result];
 
-    timer(0, 50)
+    timer(10, 50)
       .pipe(
+        take(10),
         filter(() => renderedNodes.every((n) => n.isConnected)),
         take(1),
       )

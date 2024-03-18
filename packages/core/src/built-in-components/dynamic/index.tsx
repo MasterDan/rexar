@@ -1,11 +1,22 @@
 import { h, fragment, RenderFunction } from '@rexar/jsx';
-import { RenderedController, defineComponent, render } from '@core/component';
+import {
+  ComponentRenderFunc,
+  RenderedController,
+  defineComponent,
+  render,
+} from '@core/component';
 import { Ref } from '@rexar/reactivity';
 import { onBeforeDestroy } from '@core/scope';
 import { Comment } from '../comment';
 
 export function useDynamic(initial: RenderFunction | null = null) {
-  const componentRef = new Ref<RenderFunction | null>(initial);
+  const componentRef = new Ref<ComponentRenderFunc | null>(null);
+
+  const setComponent = (fn: RenderFunction | null) => {
+    componentRef.value = fn ? defineComponent(fn) : null;
+  };
+
+  setComponent(initial);
 
   const component = defineComponent(({ children }) => {
     const comment = <Comment text="dynamic-anchor"></Comment>;
@@ -27,9 +38,5 @@ export function useDynamic(initial: RenderFunction | null = null) {
     return result;
   });
 
-  const update = (fn: RenderFunction | null) => {
-    componentRef.value = fn;
-  };
-
-  return [component, update] as const;
+  return [component, setComponent] as const;
 }

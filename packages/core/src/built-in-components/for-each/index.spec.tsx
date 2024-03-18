@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
 import { h, fragment } from '@rexar/jsx';
 import { defineComponent, render } from '@core/component';
+import { wait } from '@rexar/tools';
 import { useFor } from '.';
 import { Comment } from '../comment';
 
@@ -81,7 +82,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
   });
-  test('array of strings in fragment', () => {
+  test('array-of-strings-in-fragment', () => {
     const array = ref(['foo', 'bar']);
     const Strings = useFor(array, (i) => i);
     const root = (
@@ -164,7 +165,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
   });
-  test('remove-array', () => {
+  test('remove-array', async () => {
     const arr$ = ref(['foo', 'bar', 'baz']);
     const List = useFor(arr$, (item) => item);
     const root = <div></div>;
@@ -186,6 +187,7 @@ describe('for-each rendering', () => {
         </div>
       ).outerHTML,
     );
+    await wait(200);
     remove();
     expect(root.outerHTML).toBe((<div></div>).outerHTML);
   });

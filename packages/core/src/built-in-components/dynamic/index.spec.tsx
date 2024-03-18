@@ -1,5 +1,6 @@
 import { h, fragment } from '@rexar/jsx';
 import { describe, expect, test } from 'vitest';
+import { defineComponent, render } from '@core/component';
 import { useDynamic } from '.';
 import { Comment } from '../comment';
 
@@ -53,14 +54,14 @@ describe('dynamic renderer', () => {
     const [Dynamic, change] = useDynamic(({ children }) => (
       <div>{children}</div>
     ));
-    const root = (
-      <div>
-        <Dynamic>
-          <span>children</span>
-        </Dynamic>
-      </div>
-    );
+    const root = <div></div>;
+    const AppRoot = defineComponent(() => (
+      <Dynamic>
+        <span>children</span>
+      </Dynamic>
+    ));
     document.body.appendChild(root);
+    render(AppRoot).into(root);
     expect(root.outerHTML).toBe(
       (
         <div>
