@@ -21,10 +21,7 @@ export const List = defineComponent(() => {
     ];
   };
   const moveUp = (index: number) => {
-    console.log('moving up');
-
     swap(index, index - 1);
-    console.log(array$.value);
   };
   const moveDown = (index: number) => {
     swap(index, index + 1);
@@ -33,7 +30,6 @@ export const List = defineComponent(() => {
   const [[NotEmpty, Empty]] = useIf(() => array$.value.length > 0);
   return (
     <>
-      <pre>{() => JSON.stringify(array$.value, null, 2)}</pre>
       <NotEmpty>
         <table>
           <thead>
@@ -47,40 +43,31 @@ export const List = defineComponent(() => {
           </thead>
           <tbody>
             <Numbers
-              each={({ item, index }) => {
-                console.log('rendering', item.value, index.value);
-
-                return (
-                  <tr>
-                    <td style={{ textAlign: 'right' }}>{index}</td>
-                    <td style={{ textAlign: 'right' }}>{item}</td>
-                    <td>
-                      <button
-                        disabled={() => index.value === 0}
-                        onClick={() => {
-                          moveUp(index.value);
-                        }}
-                      >
-                        ▲
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        disabled={() => index.value === array$.value.length - 1}
-                        onClick={() => {
-                          console.log('clicked');
-                          moveDown(index.value);
-                        }}
-                      >
-                        ▼
-                      </button>
-                    </td>
-                    <td>
-                      <button onClick={() => remove(index.value)}>✕</button>
-                    </td>
-                  </tr>
-                );
-              }}
+              each={({ item, index }) => (
+                <tr>
+                  <td style={{ textAlign: 'right' }}>{index}</td>
+                  <td style={{ textAlign: 'right' }}>{item}</td>
+                  <td>
+                    <button
+                      disabled={() => index.value === 0}
+                      onClick={() => moveUp(index.value)}
+                    >
+                      ▲
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      disabled={() => index.value === array$.value.length - 1}
+                      onClick={() => moveDown(index.value)}
+                    >
+                      ▼
+                    </button>
+                  </td>
+                  <td>
+                    <button onClick={() => remove(index.value)}>✕</button>
+                  </td>
+                </tr>
+              )}
             />
           </tbody>
         </table>

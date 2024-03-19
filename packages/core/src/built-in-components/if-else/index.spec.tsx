@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { h } from '@rexar/jsx';
 import { ref } from '@rexar/reactivity';
+import { wait } from '@rexar/tools';
 import { useIf } from '.';
 import { Comment } from '../comment';
 
@@ -8,7 +9,7 @@ import { Comment } from '../comment';
  * @vitest-environment jsdom
  */
 describe('if-else-rendering', () => {
-  test('simple if', () => {
+  test('simple if', async () => {
     const firstFlag = ref(true);
     const secondFlag = ref(false);
     const toggleFirst = () => {
