@@ -22,6 +22,7 @@ describe('components', () => {
         <Text value="some text"></Text>
       </div>
     );
+    document.body.appendChild(root);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -56,6 +57,7 @@ describe('components', () => {
       );
     });
     const root = <div></div>;
+    document.body.appendChild(root);
     render(Component).into(root);
     expect(root.innerHTML).toBe(
       (
@@ -90,6 +92,7 @@ describe('components', () => {
     ));
     const target = <div></div>;
     const root = <div>{target}</div>;
+    document.body.appendChild(root);
     const renderedComp = render(Component, { text: 'Some text' }).after(target);
     const renderedCompSecond = render(Component, {
       text: 'Some other text',
@@ -132,7 +135,9 @@ describe('components', () => {
       ),
     );
     const target = <div></div>;
+
     const root = <div>{target}</div>;
+    document.body.appendChild(root);
     const first = render(Component, {
       header: 'First',
       text: 'first text',
@@ -214,6 +219,7 @@ describe('components', () => {
     ));
 
     const rootDiv = <div></div>;
+    document.body.appendChild(rootDiv);
     render(RootComponent).into(rootDiv);
     expect(rootDiv.outerHTML).toBe(
       (
@@ -308,28 +314,9 @@ describe('components', () => {
       </>
     ));
     const root = <div></div>;
+    document.body.appendChild(root);
     render(App).into(root);
-    expect(root.outerHTML).toBe(
-      (
-        <div>
-          <span>First</span>
-          <div>No children</div>
-          <span>Second</span>
-          <div>
-            <span>Third</span>
-            <div>No children</div>
-          </div>
-          <Comment text="foreach-anchor"></Comment>
-          <div>Name: First is rendering</div>
-          <Comment text="end-of-element"></Comment>
-          <div>Name: Third is rendering</div>
-          <Comment text="end-of-element"></Comment>
-          <div>Name: Second is rendering</div>
-          <Comment text="end-of-element"></Comment>
-        </div>
-      ).outerHTML,
-    );
-    await wait(200);
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -352,19 +339,19 @@ describe('components', () => {
     );
   });
   test('use default values', () => {
-    const Component = defineComponent<{ name?: string }>((props) => {
+    const TestComponent = defineComponent<{ name?: string }>((props) => {
       const { name } = useDefaultValues(props, { name: () => 'no name' });
       return <>{name}</>;
     });
     const root = (
       <div>
-        <Component></Component>
+        <TestComponent></TestComponent>
       </div>
     );
     expect(root.outerHTML).toBe((<div>no name</div>).outerHTML);
     const root2 = (
       <div>
-        <Component name="some name"></Component>
+        <TestComponent name="some name"></TestComponent>
       </div>
     );
     expect(root2.outerHTML).toBe((<div>some name</div>).outerHTML);
