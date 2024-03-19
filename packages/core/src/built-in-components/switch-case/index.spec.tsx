@@ -26,6 +26,7 @@ describe('switch-case rendering ', () => {
         </FlagSwitch>
       </div>
     );
+    document.body.appendChild(root);
 
     expect(root.outerHTML).toBe(
       (

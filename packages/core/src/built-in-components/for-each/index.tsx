@@ -3,6 +3,7 @@ import { defineComponent } from '@core/component';
 import { h, fragment } from '@rexar/jsx';
 import { getPatch } from 'fast-array-diff';
 import { isObservable } from 'rxjs';
+import { onBeforeDestroy, onRendered } from '@core/scope';
 import { Comment } from '../comment';
 import { ArrayItem } from './array-item';
 import { EachComponent, KeyFactory } from './@types';
@@ -84,13 +85,20 @@ export function useFor<T>(
     anchorStart = anchorStartComponent;
     each = eachComponent;
     const result = <>{anchorStartComponent}</>;
-    if (isObservable(array)) {
-      array.subscribe((a) => {
-        setArray(a);
+    onRendered().subscribe(() => {
+      if (isObservable(array)) {
+        array.subscribe((a) => {
+          setArray(a);
+        });
+      } else {
+        setArray(array);
+      }
+    });
+    onBeforeDestroy().subscribe(() => {
+      ComponentsArray.forEach((item) => {
+        item.remove();
       });
-    } else {
-      setArray(array);
-    }
+    });
     return result;
   });
 

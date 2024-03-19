@@ -1,6 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
 import { h, fragment } from '@rexar/jsx';
+import { defineComponent, render } from '@core/component';
+import { wait } from '@rexar/tools';
 import { useFor } from '.';
 import { Comment } from '../comment';
 
@@ -8,7 +10,7 @@ import { Comment } from '../comment';
  * @vitest-environment jsdom
  */
 describe('for-each rendering', () => {
-  test('array of strings', () => {
+  test('array of strings', async () => {
     const array = ref(['foo', 'bar']);
     const Strings = useFor<string>(array, (i) => i);
     const root = (
@@ -22,6 +24,7 @@ describe('for-each rendering', () => {
         ></Strings>
       </div>
     );
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -80,7 +83,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
   });
-  test('array of strings in fragment', () => {
+  test('array-of-strings-in-fragment', async () => {
     const array = ref(['foo', 'bar']);
     const Strings = useFor(array, (i) => i);
     const root = (
@@ -95,6 +98,8 @@ describe('for-each rendering', () => {
         ></Strings>
       </div>
     );
+    document.body.appendChild(root);
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -161,5 +166,47 @@ describe('for-each rendering', () => {
         </div>
       ).outerHTML,
     );
+  });
+  test('remove-array', async () => {
+    const arr$ = ref(['foo', 'bar', 'baz']);
+    const List = useFor(arr$, (item) => item);
+    const root = <div></div>;
+    document.body.appendChild(root);
+    const TestList = defineComponent(() => (
+      <List each={({ item }) => <span>{item}</span>}></List>
+    ));
+    const { remove } = render(TestList).into(root);
+    await wait(50);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="foreach-anchor"></Comment>
+          <span>foo</span>
+          <Comment text="end-of-element"></Comment>
+          <span>bar</span>
+          <Comment text="end-of-element"></Comment>
+          <span>baz</span>
+          <Comment text="end-of-element"></Comment>
+        </div>
+      ).outerHTML,
+    );
+    arr$.value.push('xyz');
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="foreach-anchor"></Comment>
+          <span>foo</span>
+          <Comment text="end-of-element"></Comment>
+          <span>bar</span>
+          <Comment text="end-of-element"></Comment>
+          <span>baz</span>
+          <Comment text="end-of-element"></Comment>
+          <span>xyz</span>
+          <Comment text="end-of-element"></Comment>
+        </div>
+      ).outerHTML,
+    );
+    remove();
+    expect(root.outerHTML).toBe((<div></div>).outerHTML);
   });
 });

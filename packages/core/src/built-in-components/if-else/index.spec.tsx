@@ -37,6 +37,7 @@ describe('if-else-rendering', () => {
         </OrElse>
       </div>
     );
+    document.body.appendChild(root);
     expect(root.outerHTML).toBe(
       (
         <div>

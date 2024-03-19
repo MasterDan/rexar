@@ -24,7 +24,8 @@
     "test:reactivity": "yarn workspace @rexar/reactivity test --run",
     "test:jsx": "yarn workspace @rexar/jsx test --run",
     "test:core": "yarn workspace @rexar/core test --run",
-    "test": "yarn run test:reactivity && yarn run test:jsx && yarn run test:core"
+    "test": "yarn run test:reactivity && yarn run test:jsx && yarn run test:core",
+    "build+test": "yarn run build && yarn run test"
   },
   "dependencies": {
     "@rexar/core": "link:./packages/core",
