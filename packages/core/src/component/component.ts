@@ -1,7 +1,7 @@
 import { BaseProps } from '@rexar/jsx';
 import { ref, toRef } from '@rexar/reactivity';
 import { ComponentHookName, renderingScope } from '@core/scope';
-import { Subject, filter, take, takeUntil, timer } from 'rxjs';
+import { Subject, distinct, filter, take, takeUntil, timer } from 'rxjs';
 import { RenderingScopeValue } from '@core/scope/scope-value';
 
 enum Lifecycle {
@@ -69,7 +69,7 @@ export class Component<TProps extends BaseProps> {
       });
     }
 
-    this.lifecycle$.subscribe((value) => {
+    this.lifecycle$.pipe(takeUntil(destroy$), distinct()).subscribe((value) => {
       let hookToTrigger: ComponentHookName | undefined;
       if (value === Lifecycle.Rendered) {
         hookToTrigger = 'onRendered';
@@ -83,7 +83,9 @@ export class Component<TProps extends BaseProps> {
       if (hookToTrigger) {
         this.hooks.get(hookToTrigger)?.forEach((hook) => {
           hook.next();
+          hook.complete();
         });
+        this.hooks.delete(hookToTrigger);
       }
     });
   }
