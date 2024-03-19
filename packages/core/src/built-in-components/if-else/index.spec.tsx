@@ -8,7 +8,7 @@ import { Comment } from '../comment';
  * @vitest-environment jsdom
  */
 describe('if-else-rendering', () => {
-  test('simple if', () => {
+  test('simple if', async () => {
     const firstFlag = ref(true);
     const secondFlag = ref(false);
     const toggleFirst = () => {

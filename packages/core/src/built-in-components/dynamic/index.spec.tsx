@@ -49,6 +49,14 @@ describe('dynamic renderer', () => {
         </div>
       ).outerHTML,
     );
+    change(null);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+        </div>
+      ).outerHTML,
+    );
   });
   test('dynamic with children', () => {
     const [Dynamic, change] = useDynamic(({ children }) => (

@@ -1,5 +1,5 @@
 import { Ref, ref } from '@rexar/reactivity';
-import { defineComponent, render } from '@core/component';
+import { ComponentRenderFunc, defineComponent, render } from '@core/component';
 import { h, fragment } from '@rexar/jsx';
 import { Comment } from '../comment';
 import { EachComponent, Key } from './@types';
@@ -12,6 +12,8 @@ export class ArrayItem<T> {
   itemRef: Ref<T>;
 
   indexRef: Ref<number>;
+
+  private component?: ComponentRenderFunc;
 
   constructor(item: T, public key: Key, index: number) {
     this.itemRef = ref(item);
@@ -27,17 +29,16 @@ export class ArrayItem<T> {
 
   render(Elem: EachComponent<T>) {
     const after = (elem: JSX.Element) => {
-      const endAnchor = <Comment text="end-of-element"></Comment>;
-      const Body = defineComponent(() => (
+      this.endAnchor ??= <Comment text="end-of-element"></Comment>;
+      this.component ??= defineComponent(() => (
         <>
           <Elem item={this.itemRef} index={this.indexRef}></Elem>
-          {endAnchor}
+          {this.endAnchor}
         </>
       ));
-      const { remove } = render(Body, {}, { root: false }).after(elem);
+      const { remove } = render(this.component).after(elem);
       this.$remove = remove;
-      this.endAnchor = endAnchor;
-      return endAnchor;
+      return this.endAnchor;
     };
     return { after };
   }

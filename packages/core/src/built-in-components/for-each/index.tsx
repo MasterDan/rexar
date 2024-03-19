@@ -41,6 +41,15 @@ export function useFor<T>(
         anchor = item.render(each!).after(currentAnchor);
       });
       ComponentsArray = newArray;
+    } else if (ComponentsArray.length === newArray.length) {
+      for (let i = 0; i < ComponentsArray.length; i += 1) {
+        const oldItem = ComponentsArray[i];
+        const newItem = newArray[i];
+        if (oldItem.key !== newItem.key) {
+          oldItem.key = newItem.key;
+          oldItem.itemRef.value = newItem.itemRef.value;
+        }
+      }
     } else {
       getPatch(ComponentsArray, newArray, (a, b) => a.key === b.key).forEach(
         (p) => {
