@@ -46,7 +46,7 @@ export function useFor<T>(
         const oldItem = ComponentsArray[i];
         const newItem = newArray[i];
         if (oldItem.key !== newItem.key) {
-          oldItem.indexRef.value = newItem.indexRef.value;
+          oldItem.key = newItem.key;
           oldItem.itemRef.value = newItem.itemRef.value;
         }
       }

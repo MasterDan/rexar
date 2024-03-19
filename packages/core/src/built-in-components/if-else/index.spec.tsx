@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { h } from '@rexar/jsx';
 import { ref } from '@rexar/reactivity';
-import { wait } from '@rexar/tools';
 import { useIf } from '.';
 import { Comment } from '../comment';
 

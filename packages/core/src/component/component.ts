@@ -1,7 +1,14 @@
 import { BaseProps } from '@rexar/jsx';
 import { ref, toRef } from '@rexar/reactivity';
 import { ComponentHookName, renderingScope } from '@core/scope';
-import { Subject, distinct, filter, take, takeUntil, timer } from 'rxjs';
+import {
+  Subject,
+  distinctUntilChanged,
+  filter,
+  take,
+  takeUntil,
+  timer,
+} from 'rxjs';
 import { RenderingScopeValue } from '@core/scope/scope-value';
 
 enum Lifecycle {
@@ -69,25 +76,27 @@ export class Component<TProps extends BaseProps> {
       });
     }
 
-    this.lifecycle$.pipe(takeUntil(destroy$), distinct()).subscribe((value) => {
-      let hookToTrigger: ComponentHookName | undefined;
-      if (value === Lifecycle.Rendered) {
-        hookToTrigger = 'onRendered';
-      } else if (value === Lifecycle.Mounted) {
-        hookToTrigger = 'onMounted';
-      } else if (value === Lifecycle.BeforeDestroy) {
-        hookToTrigger = 'onBeforeDestroy';
-      } else if (value === Lifecycle.Destroyed) {
-        hookToTrigger = 'onDestroyed';
-      }
-      if (hookToTrigger) {
-        this.hooks.get(hookToTrigger)?.forEach((hook) => {
-          hook.next();
-          hook.complete();
-        });
-        this.hooks.delete(hookToTrigger);
-      }
-    });
+    this.lifecycle$
+      .pipe(takeUntil(destroy$), distinctUntilChanged())
+      .subscribe((value) => {
+        let hookToTrigger: ComponentHookName | undefined;
+        if (value === Lifecycle.Rendered) {
+          hookToTrigger = 'onRendered';
+        } else if (value === Lifecycle.Mounted) {
+          hookToTrigger = 'onMounted';
+        } else if (value === Lifecycle.BeforeDestroy) {
+          hookToTrigger = 'onBeforeDestroy';
+        } else if (value === Lifecycle.Destroyed) {
+          hookToTrigger = 'onDestroyed';
+        }
+        if (hookToTrigger) {
+          this.hooks.get(hookToTrigger)?.forEach((hook) => {
+            hook.next();
+            hook.complete();
+          });
+          this.hooks.delete(hookToTrigger);
+        }
+      });
   }
 
   render(props: TProps, { root, destroyer }: ComponentOptions) {

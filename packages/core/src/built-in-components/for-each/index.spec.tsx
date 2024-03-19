@@ -209,18 +209,4 @@ describe('for-each rendering', () => {
     remove();
     expect(root.outerHTML).toBe((<div></div>).outerHTML);
   });
-  test('swap-elements', async () => {
-    const root = <div></div>;
-    document.body.appendChild(root);
-    const arr$ = ref(['foo', 'bar', 'baz', 'x']);
-    const List = useFor(arr$, (i) => i);
-    const TestComp = defineComponent(() => (
-      <List each={({ item }) => <span>{item}</span>}></List>
-    ));
-    render(TestComp).into(root);
-    await wait(50);
-    console.log(root.outerHTML);
-    arr$.value = ['foo', 'baz', 'bar', 'x'];
-    console.log(root.outerHTML);
-  });
 });

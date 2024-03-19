@@ -1,7 +1,13 @@
 import { Providable, ref, trySubscribe } from '@rexar/reactivity';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { h, fragment } from '@rexar/jsx';
-import { Observable, combineLatest, distinct, filter, map } from 'rxjs';
+import {
+  Observable,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  map,
+} from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 export type UseIfResult = [
@@ -36,9 +42,7 @@ export function useIf(
   const True = defineComponent(({ children }) => {
     const [Dynamic, SetDynamic] = useDynamic();
 
-    truth$.pipe(distinct()).subscribe((truth) => {
-      console.log('Truth is', truth);
-
+    truth$.pipe(distinctUntilChanged()).subscribe((truth) => {
       if (truth == null || truth === false) {
         SetDynamic(null);
       } else {
@@ -50,9 +54,7 @@ export function useIf(
   const False = defineComponent(({ children }) => {
     const [Dynamic, SetDynamic] = useDynamic();
 
-    truth$.pipe(distinct()).subscribe((truth) => {
-      console.log('False is', truth);
-
+    truth$.pipe(distinctUntilChanged()).subscribe((truth) => {
       if (truth == null || truth === true) {
         SetDynamic(null);
       } else {
