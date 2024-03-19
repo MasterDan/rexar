@@ -131,9 +131,7 @@ export class Component<TProps extends BaseProps> {
           this.$lifecycle.value = Lifecycle.Mounted;
         });
     } else {
-      setTimeout(() => {
-        this.$lifecycle.value = Lifecycle.Rendered;
-      }, 0);
+      this.$lifecycle.value = Lifecycle.Rendered;
     }
     renderingScope.end();
     return result;
