@@ -10,7 +10,7 @@ import { Comment } from '../comment';
  * @vitest-environment jsdom
  */
 describe('for-each rendering', () => {
-  test('array of strings', () => {
+  test('array of strings', async () => {
     const array = ref(['foo', 'bar']);
     const Strings = useFor<string>(array, (i) => i);
     const root = (
@@ -24,6 +24,7 @@ describe('for-each rendering', () => {
         ></Strings>
       </div>
     );
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -82,7 +83,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
   });
-  test('array-of-strings-in-fragment', () => {
+  test('array-of-strings-in-fragment', async () => {
     const array = ref(['foo', 'bar']);
     const Strings = useFor(array, (i) => i);
     const root = (
@@ -98,6 +99,7 @@ describe('for-each rendering', () => {
       </div>
     );
     document.body.appendChild(root);
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -174,6 +176,7 @@ describe('for-each rendering', () => {
       <List each={({ item }) => <span>{item}</span>}></List>
     ));
     const { remove } = render(TestList).into(root);
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -187,7 +190,22 @@ describe('for-each rendering', () => {
         </div>
       ).outerHTML,
     );
-    await wait(200);
+    arr$.value.push('xyz');
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="foreach-anchor"></Comment>
+          <span>foo</span>
+          <Comment text="end-of-element"></Comment>
+          <span>bar</span>
+          <Comment text="end-of-element"></Comment>
+          <span>baz</span>
+          <Comment text="end-of-element"></Comment>
+          <span>xyz</span>
+          <Comment text="end-of-element"></Comment>
+        </div>
+      ).outerHTML,
+    );
     remove();
     expect(root.outerHTML).toBe((<div></div>).outerHTML);
   });
