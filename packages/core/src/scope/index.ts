@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { RenderingScopeValue } from './scope-value';
 
 export type ComponentHooks = {
+  onRendered: Subject<void>;
   onMounted: Subject<void>;
   onBeforeDestroy: Subject<void>;
   onDestroyed: Subject<void>;
@@ -18,6 +19,9 @@ const createHookWrapper = (hookRaw: (body: Subject<void>) => void) => () => {
   return subject;
 };
 
+export const onRendered = createHookWrapper(
+  renderingScope.createHook('onRendered'),
+);
 export const onMounted = createHookWrapper(
   renderingScope.createHook('onMounted'),
 );

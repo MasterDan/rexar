@@ -1,7 +1,7 @@
 import { BaseProps } from '@rexar/jsx';
 import { ref, toRef } from '@rexar/reactivity';
 import { ComponentHookName, renderingScope } from '@core/scope';
-import { Subject, combineLatestWith, filter, take, timer } from 'rxjs';
+import { Subject, filter, take, takeUntil, timer } from 'rxjs';
 import { RenderingScopeValue } from '@core/scope/scope-value';
 
 enum Lifecycle {
@@ -42,16 +42,19 @@ export class Component<TProps extends BaseProps> {
 
   constructor(private renderFunc: (props: TProps) => JSX.Element) {
     const parentLifecycle = renderingScope.current?.value?.component.lifecycle$;
+    const destroy$ = this.$lifecycle.pipe(
+      filter((l) => l === Lifecycle.Destroyed),
+    );
     if (parentLifecycle != null) {
       this.parentLifecycle
         .pipe(
           filter((lc): lc is Lifecycle => lc != null),
-          combineLatestWith(this.lifecycle$),
+          takeUntil(destroy$),
         )
-        .subscribe(([parentLc, currentLc]) => {
+        .subscribe((parentLc) => {
           if (
             parentLc === Lifecycle.Mounted &&
-            currentLc === Lifecycle.Rendered
+            this.lifecycle$.value === Lifecycle.Rendered
           ) {
             this.$lifecycle.value = Lifecycle.Mounted;
           } else if (parentLc === Lifecycle.BeforeDestroy) {
@@ -68,7 +71,9 @@ export class Component<TProps extends BaseProps> {
 
     this.lifecycle$.subscribe((value) => {
       let hookToTrigger: ComponentHookName | undefined;
-      if (value === Lifecycle.Mounted) {
+      if (value === Lifecycle.Rendered) {
+        hookToTrigger = 'onRendered';
+      } else if (value === Lifecycle.Mounted) {
         hookToTrigger = 'onMounted';
       } else if (value === Lifecycle.BeforeDestroy) {
         hookToTrigger = 'onBeforeDestroy';
@@ -96,6 +101,14 @@ export class Component<TProps extends BaseProps> {
     const renderedNodes: ChildNode[] =
       result instanceof DocumentFragment ? [...result.childNodes] : [result];
 
+    destroyer?.subscribe(() => {
+      this.$lifecycle.value = Lifecycle.BeforeDestroy;
+      renderedNodes.forEach((n) => {
+        n.remove();
+      });
+      this.$lifecycle.value = Lifecycle.Destroyed;
+    });
+
     if (root) {
       timer(10, 50)
         .pipe(
@@ -106,20 +119,11 @@ export class Component<TProps extends BaseProps> {
         .subscribe(() => {
           this.$lifecycle.value = Lifecycle.Mounted;
         });
+    } else {
+      setTimeout(() => {
+        this.$lifecycle.value = Lifecycle.Rendered;
+      }, 0);
     }
-
-    setTimeout(() => {
-      this.$lifecycle.value = Lifecycle.Rendered;
-    }, 0);
-
-    destroyer?.subscribe(() => {
-      this.$lifecycle.value = Lifecycle.BeforeDestroy;
-      renderedNodes.forEach((n) => {
-        n.remove();
-      });
-      this.$lifecycle.value = Lifecycle.Destroyed;
-    });
-
     renderingScope.end();
     return result;
   }
