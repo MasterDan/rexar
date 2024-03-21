@@ -1,4 +1,4 @@
-import { defineComponent, fragment, h, ref, useFor, useIf } from '@rexar/core';
+import { Show, defineComponent, fragment, h, ref, useFor } from '@rexar/core';
 import { Lifecycle } from './lifecycle';
 
 export const LifecycleLog = defineComponent(() => {
@@ -10,16 +10,19 @@ export const LifecycleLog = defineComponent(() => {
   const toggle = () => {
     switcher$.value = !switcher$.value;
   };
-  const [[True, False]] = useIf(switcher$);
+
   const StatusLog = useFor(log$, (i) => i);
   return (
     <>
-      <True>
-        <Lifecycle name="First" onStatusChange={logStatus}></Lifecycle>
-      </True>
-      <False>
-        <Lifecycle name="Second" onStatusChange={logStatus}></Lifecycle>
-      </False>
+      <Show
+        when={switcher$}
+        content={() => (
+          <Lifecycle name="First" onStatusChange={logStatus}></Lifecycle>
+        )}
+        fallback={() => (
+          <Lifecycle name="Second" onStatusChange={logStatus}></Lifecycle>
+        )}
+      ></Show>
       <button onClick={toggle}>Toggle Components</button>
       <div>
         <StatusLog

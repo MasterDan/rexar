@@ -1,4 +1,4 @@
-import { h } from '@rexar/jsx';
+import { h, fragment } from '@rexar/jsx';
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
 import { useSwitch } from '.';
@@ -14,16 +14,16 @@ describe('switch-case rendering ', () => {
       flag.value = !flag.value;
     };
 
-    const [FlagSwitch, FlagCase, FlagDefault] = useSwitch<boolean>(flag);
+    const FlagSwitch = useSwitch(flag);
 
     const root = (
       <div>
-        <FlagSwitch>
-          <FlagCase check={true}>
-            <span>Value is true</span>
-          </FlagCase>
-          <FlagDefault>Value is false</FlagDefault>
-        </FlagSwitch>
+        <FlagSwitch
+          setup={(setCase) => {
+            setCase(true, () => <span>Value is true</span>);
+          }}
+          default={() => <>Value is false</>}
+        ></FlagSwitch>
       </div>
     );
     document.body.appendChild(root);
@@ -52,15 +52,20 @@ describe('switch-case rendering ', () => {
       number.value += 1;
     };
 
-    const [NumberSwitch, NumberCase, NumDefault] = useSwitch<number>(number);
+    const NumberSwitch = useSwitch(number);
 
     const root = (
       <div>
-        <NumberSwitch>
-          <NumberCase check={1}>One</NumberCase>
-          <NumberCase check={2}>Two</NumberCase>
-          <NumDefault>Default</NumDefault>
-        </NumberSwitch>
+        <NumberSwitch
+          setup={(setCase) => {
+            setCase(1, () => <>One</>);
+            setCase(
+              (i) => i === 2,
+              () => <>Two</>,
+            );
+          }}
+          default={() => <>Default</>}
+        ></NumberSwitch>
       </div>
     );
 

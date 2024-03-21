@@ -14,7 +14,9 @@ export type UseIfResult = [
   [ComponentRenderFunc, ComponentRenderFunc],
   (val: Providable<boolean>) => UseIfResult,
 ];
-
+/**
+ * @deprecated
+ */
 export function useIf(
   value: Providable<boolean>,
   not?: Observable<boolean>,
@@ -73,3 +75,31 @@ export function useIf(
 
   return [[True, False], elseIf];
 }
+
+export const Show = defineComponent<{
+  when: Providable<boolean>;
+  content?: () => JSX.Element;
+  fallback?: () => JSX.Element;
+}>(({ when, content, fallback }) => {
+  const valueRef = ref<boolean>();
+  trySubscribe(when, (v) => {
+    valueRef.value = v;
+  });
+
+  const [Dynamic, update] = useDynamic();
+
+  valueRef
+    .pipe(
+      filter((v): v is boolean => v != null),
+      distinctUntilChanged(),
+    )
+    .subscribe((val) => {
+      if (val) {
+        update(content ?? null);
+      } else {
+        update(fallback ?? null);
+      }
+    });
+
+  return <Dynamic />;
+});

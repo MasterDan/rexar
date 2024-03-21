@@ -1,11 +1,11 @@
-import { defineComponent, ref, useSwitch, h } from '@rexar/core';
+import { defineComponent, ref, useSwitch, h, fragment } from '@rexar/core';
 
 export const SwitchCaseExample = defineComponent(() => {
   const counter$ = ref(0);
   const increment = () => {
     counter$.value += 1;
   };
-  const [Switch, Case, Default] = useSwitch(counter$);
+  const SwitchCounter = useSwitch(counter$);
   return (
     <div
       style={{
@@ -15,14 +15,22 @@ export const SwitchCaseExample = defineComponent(() => {
       }}
     >
       <button onClick={increment}>Counter is {counter$}</button>
-      <Switch>
-        <Case check={0}>Counter equals zero</Case>
-        <Case check={1}>Counter equals one</Case>
-        <Case check={3}>Counter equals three</Case>
-        <Case check={(c) => c > 10}>Counter is greater than 10</Case>
-        <Case check={(c) => c > 5}>Counter is greater than 5</Case>
-        <Default>Counter is {counter$}</Default>
-      </Switch>
+      <SwitchCounter
+        setup={(setCase) => {
+          setCase(0, () => <>Counter equals zero</>);
+          setCase(1, () => <>Counter equals one</>);
+          setCase(3, () => <>Counter equals three</>);
+          setCase(
+            (c) => c > 10,
+            () => <>Counter is greater than 10</>
+          );
+          setCase(
+            (c) => c > 5,
+            () => <>Counter is greater than 5</>
+          );
+        }}
+        default={() => <>Counter is {counter$}</>}
+      ></SwitchCounter>
     </div>
   );
 });

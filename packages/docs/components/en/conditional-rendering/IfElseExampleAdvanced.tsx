@@ -1,4 +1,4 @@
-import { defineComponent, ref, useIf, h, computed } from '@rexar/core';
+import { defineComponent, ref, fragment, h, computed, Show } from '@rexar/core';
 import { map } from 'rxjs';
 
 export const IfElseExampleAdvanced = defineComponent(() => {
@@ -8,10 +8,6 @@ export const IfElseExampleAdvanced = defineComponent(() => {
   };
   const isZero$ = counter$.pipe(map((c) => c === 0));
   const moreThanFive$ = computed(() => counter$.value > 5);
-  const [[IsZero], elseIf] = useIf(isZero$);
-  const [[MoreThanFive, LessThanFive]] = elseIf(moreThanFive$);
-  // This would also work
-  // const [[MoreThanFive, LessThanFive]] = elseIf(() => counter$.value > 5);
   return (
     <div
       style={{
@@ -21,9 +17,17 @@ export const IfElseExampleAdvanced = defineComponent(() => {
       }}
     >
       <button onClick={increment}>Counter is {counter$}</button>
-      <IsZero>Counter is zero</IsZero>
-      <LessThanFive>Counter is less or equals 5</LessThanFive>
-      <MoreThanFive>Counter is more than 5</MoreThanFive>
+      <Show
+        when={isZero$}
+        content={() => <>Counter is zero</>}
+        fallback={() => (
+          <Show
+            when={moreThanFive$}
+            content={() => <>Counter is more than 5</>}
+            fallback={() => <>Counter is less or equals 5</>}
+          />
+        )}
+      />
     </div>
   );
 });
