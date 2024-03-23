@@ -2,15 +2,13 @@ import { defineComponent, ref, h, useClasses } from '@rexar/core';
 import './ClassExample.styles.css';
 
 export const ClassExample = defineComponent(() => {
-  const classes$ = ref(['example-card', 'rounded']);
+  const classes = ['example-card', 'rounded'];
   const rounded$ = ref(false);
   return (
     <div class="example">
       <span>Static Classes</span>
-      <div class={() => classes$.value.join(' ')}>
-        Inline classes as string
-      </div>
-      <div class={useClasses(classes$)}>Using useClasses method</div>
+      <div class={() => classes.join(' ')}>Inline classes as string</div>
+      <div class={useClasses(classes)}>Using useClasses method</div>
       <span>Dynamic classes ( rounded is: {rounded$} )</span>
       <div
         class={useClasses({

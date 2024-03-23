@@ -1,13 +1,19 @@
 import { Show, defineComponent, fragment, h, ref, useFor } from '@rexar/core';
+import { Subject, concatMap, delay, of } from 'rxjs';
 import { Lifecycle } from './lifecycle';
 
 export const LifecycleLog = defineComponent(() => {
   const log$ = ref<string[]>([]);
-  const logStatus = (message: string) => {
-    log$.value.push(message);
-  };
+  const logStatus$ = new Subject<string>();
+  logStatus$
+    .pipe(concatMap((i) => of(i).pipe(delay(400))))
+    .subscribe((status) => {
+      log$.value.push(status);
+    });
+
   const switcher$ = ref(true);
   const toggle = () => {
+    log$.value = [];
     switcher$.value = !switcher$.value;
   };
 
@@ -17,12 +23,14 @@ export const LifecycleLog = defineComponent(() => {
       <Show
         when={switcher$}
         content={() => (
-          <Lifecycle name="First" onStatusChange={logStatus}></Lifecycle>
+          <Lifecycle name="First" statusChanged$={logStatus$}></Lifecycle>
         )}
         fallback={() => (
-          <Lifecycle name="Second" onStatusChange={logStatus}></Lifecycle>
+          <Lifecycle name="Second" statusChanged$={logStatus$}>
+            <Lifecycle name="Nested" statusChanged$={logStatus$} />
+          </Lifecycle>
         )}
-      ></Show>
+      />
       <button onClick={toggle}>Toggle Components</button>
       <div>
         <StatusLog
@@ -31,7 +39,7 @@ export const LifecycleLog = defineComponent(() => {
               {() => index.value + 1}: {item}
             </div>
           )}
-        ></StatusLog>
+        />
       </div>
     </>
   );
