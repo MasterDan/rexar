@@ -29,7 +29,7 @@ export default defineConfig({
 
               items: [
                 {
-                  text: 'Basic syntax',
+                  text: 'Component syntax',
                   link: '/guide/component-syntax',
                 },
                 {
