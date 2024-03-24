@@ -1,6 +1,6 @@
 import { AnyRecord } from '@rexar/tools';
 import { Providable, toObservable } from '@rexar/reactivity';
-import { Subject, combineLatest, map, switchMap } from 'rxjs';
+import { Observable, Subject, combineLatest, map, switchMap } from 'rxjs';
 
 export type NullableKeys<T> = {
   [Key in keyof T]-?: Extract<T[Key], null | undefined> extends never
@@ -68,11 +68,13 @@ export function useClasses<T extends ClassesValue>(arg: Providable<T>) {
   );
 }
 
-export function useEvent<T = void>() {
+export type EventTrigger<T> = (e: T) => void;
+
+export function useEvent<T = void>(): [Observable<T>, EventTrigger<T>] {
   const event$ = new Subject<T>();
   const listener$ = event$.asObservable();
-  const emit = (value: T) => {
+  const trigger = (value: T) => {
     event$.next(value);
   };
-  return [listener$, emit] as const;
+  return [listener$, trigger] as const;
 }

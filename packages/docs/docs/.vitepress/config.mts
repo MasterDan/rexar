@@ -57,7 +57,7 @@ export default defineConfig({
                   link: '/guide/dynamic',
                 },
                 {
-                  text: 'Lifecycle',
+                  text: 'Lifecycle Hooks',
                   link: '/guide/lifecycle',
                 },
               ],

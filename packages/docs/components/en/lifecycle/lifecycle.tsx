@@ -7,16 +7,17 @@ import {
   onMounted,
   onRendered,
   ref,
+  EventTrigger,
 } from '@rexar/core';
-import { Subject, filter } from 'rxjs';
+import { filter } from 'rxjs';
 
 export const Lifecycle = defineComponent<{
   name: string;
-  statusChanged$: Subject<string>;
-}>(({ name, statusChanged$, children }) => {
+  onStatusChange: EventTrigger<string>;
+}>(({ name, onStatusChange, children }) => {
   const status$ = ref<string>();
   status$.pipe(filter((x): x is string => x != null)).subscribe((status) => {
-    statusChanged$.next(`${name} is ${status}`);
+    onStatusChange(`${name} is ${status}`);
   });
   onRendered().subscribe(() => {
     status$.value = 'Rendered';

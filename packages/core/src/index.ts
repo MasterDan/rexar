@@ -6,7 +6,12 @@ export {
   type ComponentRenderFunc,
   type RenderedController,
 } from './component';
-export { useDefaultValues, useClasses, useEvent } from './component/tools';
+export {
+  useDefaultValues,
+  useClasses,
+  useEvent,
+  type EventTrigger,
+} from './component/tools';
 export { onRendered, onMounted, onBeforeDestroy, onDestroyed } from './scope';
 export { Comment } from './built-in-components/comment';
 export { useDynamic } from './built-in-components/dynamic';
