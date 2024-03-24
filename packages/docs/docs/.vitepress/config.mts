@@ -29,7 +29,7 @@ export default defineConfig({
 
               items: [
                 {
-                  text: 'Basic syntax',
+                  text: 'Component syntax',
                   link: '/guide/component-syntax',
                 },
                 {
@@ -57,7 +57,7 @@ export default defineConfig({
                   link: '/guide/dynamic',
                 },
                 {
-                  text: 'Lifecycle',
+                  text: 'Lifecycle Hooks',
                   link: '/guide/lifecycle',
                 },
               ],

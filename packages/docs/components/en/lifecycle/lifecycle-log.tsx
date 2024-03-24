@@ -1,12 +1,27 @@
-import { Show, defineComponent, fragment, h, ref, useFor } from '@rexar/core';
-import { Subject, concatMap, delay, of } from 'rxjs';
+import {
+  Show,
+  defineComponent,
+  fragment,
+  h,
+  ref,
+  useEvent,
+  useFor,
+} from '@rexar/core';
+import { concatMap, delay, of } from 'rxjs';
 import { Lifecycle } from './lifecycle';
 
+/**
+ * Defines a React component that demonstrates lifecycle and logging.
+ *
+ * Creates two Lifecycle components that toggle on a button click.
+ * Logs the status changes of Lifecycle components to show nesting.
+ * Renders the log with numbered, delayed entries for readability.
+ */
 export const LifecycleLog = defineComponent(() => {
   const log$ = ref<string[]>([]);
-  const logStatus$ = new Subject<string>();
-  logStatus$
-    .pipe(concatMap((i) => of(i).pipe(delay(400))))
+  const [statusChanged$, changeStatus] = useEvent<string>();
+  statusChanged$
+    .pipe(concatMap((i) => of(i).pipe(delay(200))))
     .subscribe((status) => {
       log$.value.push(status);
     });
@@ -23,11 +38,11 @@ export const LifecycleLog = defineComponent(() => {
       <Show
         when={switcher$}
         content={() => (
-          <Lifecycle name="First" statusChanged$={logStatus$}></Lifecycle>
+          <Lifecycle name="First" onStatusChange={changeStatus}></Lifecycle>
         )}
         fallback={() => (
-          <Lifecycle name="Second" statusChanged$={logStatus$}>
-            <Lifecycle name="Nested" statusChanged$={logStatus$} />
+          <Lifecycle name="Second" onStatusChange={changeStatus}>
+            <Lifecycle name="Nested" onStatusChange={changeStatus} />
           </Lifecycle>
         )}
       />
