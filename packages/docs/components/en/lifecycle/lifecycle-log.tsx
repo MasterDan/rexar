@@ -10,13 +10,6 @@ import {
 import { concatMap, delay, of } from 'rxjs';
 import { Lifecycle } from './lifecycle';
 
-/**
- * Defines a React component that demonstrates lifecycle and logging.
- *
- * Creates two Lifecycle components that toggle on a button click.
- * Logs the status changes of Lifecycle components to show nesting.
- * Renders the log with numbered, delayed entries for readability.
- */
 export const LifecycleLog = defineComponent(() => {
   const log$ = ref<string[]>([]);
   const [statusChanged$, changeStatus] = useEvent<string>();
