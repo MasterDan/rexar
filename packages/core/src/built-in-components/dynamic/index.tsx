@@ -27,7 +27,7 @@ export function useDynamic(initial: RenderFunction | null = null) {
         previous.remove();
       }
       if (rfVal) {
-        previous = render(rfVal, { children }, { root: false }).after(comment);
+        previous = render(rfVal, { children }).after(comment);
       }
     });
     onBeforeDestroy().subscribe(() => {

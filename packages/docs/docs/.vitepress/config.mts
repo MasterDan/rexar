@@ -52,6 +52,14 @@ export default defineConfig({
                   text: 'List Rendering',
                   link: '/guide/list-rendering',
                 },
+                {
+                  text: 'Dynamic Components',
+                  link: '/guide/dynamic',
+                },
+                {
+                  text: 'Lifecycle',
+                  link: '/guide/lifecycle',
+                },
               ],
             },
             {
