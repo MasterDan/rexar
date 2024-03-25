@@ -110,7 +110,7 @@ Here is example of using object inside `ref`.
 Pay attention that we are not changing `value` of our `person` directly, only it's inner props. This is how `ref`'s tracking works. As being said above - `ref` using [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) for tracking changes.  
 As you can see - all computed still reactive. And raw values are still not.
 
-<<< ../../components/en/component-syntax/Object.tsx{tsx:line-numbers}
+<<< ../../components/en/component-syntax/Object.tsx{22,34 tsx:line-numbers}
 <Demo align-start :is="ObjectExample" />
 
 ## Deconstructing Refs with objects
