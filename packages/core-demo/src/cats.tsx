@@ -6,6 +6,7 @@ import {
   ref,
   computed,
   Show,
+  toRefs,
 } from '@rexar/core';
 import { Input } from './input';
 
@@ -68,7 +69,7 @@ export const CatsApp = defineComponent(() => {
 
       <Cats
         each={({ item: cat, index }) => {
-          const name = computed(() => cat.value.name);
+          const { name, age } = toRefs(cat);
 
           return (
             <div class="bg-neutral-50 rounded-3xl bg-opacity-25 p-4 flex flex-col  gap-4 ">
@@ -78,10 +79,10 @@ export const CatsApp = defineComponent(() => {
               <p>
                 This is{' '}
                 <Show
-                  when={() => cat.value.age > 10}
+                  when={() => age.value > 10}
                   content={() => <>old</>}
                 ></Show>{' '}
-                {name}, who is {() => cat.value.age} years old
+                {name}, who is {age} years old
               </p>
               <button
                 class="self-center bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500
