@@ -2,15 +2,13 @@ import { defineComponent, ref, h, useClasses } from '@rexar/core';
 import styles from './CssModuleExample.module.css';
 
 export const CssModuleExample = defineComponent(() => {
-  const classes$ = ref([styles['example-card'], styles.rounded]);
+  const classes = [styles['example-card'], styles.rounded];
   const rounded$ = ref(false);
   return (
     <div class={styles.example}>
       <span>Static Classes</span>
-      <div class={() => classes$.value.join(' ')}>
-        Inline classes as string
-      </div>
-      <div class={useClasses(classes$)}>Using useClasses method</div>
+      <div class={() => classes.join(' ')}>Inline classes as string</div>
+      <div class={useClasses(classes)}>Using useClasses method</div>
       <span>Dynamic classes ( rounded is: {rounded$} )</span>
       <div
         class={useClasses({

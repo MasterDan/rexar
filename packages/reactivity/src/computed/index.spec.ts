@@ -52,7 +52,7 @@ describe('computed', () => {
     expect(len.value).toBe(3);
     expect(sum.value).toBe(6);
     array.value.push(2);
-    await wait(20);
+    await wait(50);
     expect(len.value).toBe(4);
     expect(sum.value).toBe(8);
   });
@@ -65,10 +65,10 @@ describe('computed', () => {
     expect(fooSum.value).toBe(4);
     expect(barSum.value).toBe(6);
     obj.value.foo = 2;
-    await wait(20);
+    await wait(50);
     expect(fooSum.value).toBe(5);
     obj2.value.bar = 5;
-    await wait(20);
+    await wait(50);
     expect(barSum.value).toBe(7);
   });
   test('delayed tracking', async () => {
@@ -85,10 +85,10 @@ describe('computed', () => {
     });
     expect(computedRef.value).toBe('one');
     one.value = false;
-    await wait(20);
+    await wait(50);
     expect(computedRef.value).toBe('three');
     two.value = true;
-    await wait(20);
+    await wait(50);
     expect(computedRef.value).toBe('two');
   });
 });

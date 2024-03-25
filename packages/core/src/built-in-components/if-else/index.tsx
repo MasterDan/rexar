@@ -1,14 +1,22 @@
 import { Providable, ref, trySubscribe } from '@rexar/reactivity';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { h, fragment } from '@rexar/jsx';
-import { Observable, combineLatest, filter, map } from 'rxjs';
+import {
+  Observable,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  map,
+} from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 export type UseIfResult = [
   [ComponentRenderFunc, ComponentRenderFunc],
   (val: Providable<boolean>) => UseIfResult,
 ];
-
+/**
+ * @deprecated
+ */
 export function useIf(
   value: Providable<boolean>,
   not?: Observable<boolean>,
@@ -36,7 +44,7 @@ export function useIf(
   const True = defineComponent(({ children }) => {
     const [Dynamic, SetDynamic] = useDynamic();
 
-    truth$.subscribe((truth) => {
+    truth$.pipe(distinctUntilChanged()).subscribe((truth) => {
       if (truth == null || truth === false) {
         SetDynamic(null);
       } else {
@@ -48,7 +56,7 @@ export function useIf(
   const False = defineComponent(({ children }) => {
     const [Dynamic, SetDynamic] = useDynamic();
 
-    truth$.subscribe((truth) => {
+    truth$.pipe(distinctUntilChanged()).subscribe((truth) => {
       if (truth == null || truth === true) {
         SetDynamic(null);
       } else {
@@ -67,3 +75,31 @@ export function useIf(
 
   return [[True, False], elseIf];
 }
+
+export const Show = defineComponent<{
+  when: Providable<boolean>;
+  content?: () => JSX.Element;
+  fallback?: () => JSX.Element;
+}>(({ when, content, fallback }) => {
+  const valueRef = ref<boolean>();
+  trySubscribe(when, (v) => {
+    valueRef.value = v;
+  });
+
+  const [Dynamic, update] = useDynamic();
+
+  valueRef
+    .pipe(
+      filter((v): v is boolean => v != null),
+      distinctUntilChanged(),
+    )
+    .subscribe((val) => {
+      if (val) {
+        update(content ?? null);
+      } else {
+        update(fallback ?? null);
+      }
+    });
+
+  return <Dynamic />;
+});

@@ -29,7 +29,6 @@ export type RenderOptions = Omit<ComponentOptions, 'destroyer'>;
 export function render<TProps extends AnyRecord = AnyRecord>(
   renderFn: ComponentRenderFunc<TProps>,
   props: TProps = {} as TProps,
-  options: Partial<RenderOptions> = {},
 ) {
   const pick = (target: RenderTarget) => {
     const el =
@@ -46,7 +45,6 @@ export function render<TProps extends AnyRecord = AnyRecord>(
     const destroyer = new Subject<void>();
     const renderedComponent = renderFn(props, {
       root: true,
-      ...options,
       destroyer,
     });
     const remove = () => {
