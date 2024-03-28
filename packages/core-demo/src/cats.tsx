@@ -3,9 +3,10 @@ import {
   fragment,
   defineComponent,
   useFor,
-  useIf,
   ref,
   computed,
+  Show,
+  toRefs,
 } from '@rexar/core';
 import { Input } from './input';
 
@@ -45,41 +46,43 @@ export const CatsApp = defineComponent(() => {
 
   const cantCreate = computed(() => !canCreate.value);
 
-  const [[CannotCreate, CanCreate]] = useIf(cantCreate);
-
   const removeCat = (index: number) => {
     cats.value = cats.value.filter((_, n) => n !== index);
   };
 
-  const [[NoCats, CatsExists]] = useIf(computed(() => cats.value.length === 0));
-
   return (
     <>
-      <NoCats>
-        <h2 class="text-4xl">No cats in list</h2>
-      </NoCats>
-      <CatsExists>
-        <h2
-          class="text-4xl 
+      <Show
+        when={() => cats.value.length === 0}
+        content={() => <h2 class="text-4xl">No cats in list</h2>}
+        fallback={() => (
+          <h2
+            class="text-4xl 
         text-transparent 
         bg-gradient-to-r from-purple-800 to-indigo-700 
         bg-clip-text"
-        >
-          Cats
-        </h2>
-      </CatsExists>
+          >
+            Cats
+          </h2>
+        )}
+      />
+
       <Cats
         each={({ item: cat, index }) => {
-          const name = computed(() => cat.value.name);
-          const [[IfOld]] = useIf(computed(() => cat.value.age > 10));
+          const { name, age } = toRefs(cat);
+
           return (
             <div class="bg-neutral-50 rounded-3xl bg-opacity-25 p-4 flex flex-col  gap-4 ">
               <h3 class="self-center text-xl">
                 {() => index.value + 1}: {name}
               </h3>
               <p>
-                This is <IfOld>old</IfOld> {name}, who is {() => cat.value.age}{' '}
-                years old
+                This is{' '}
+                <Show
+                  when={() => age.value > 10}
+                  content={() => <>old</>}
+                ></Show>{' '}
+                {name}, who is {age} years old
               </p>
               <button
                 class="self-center bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500
@@ -110,8 +113,11 @@ export const CatsApp = defineComponent(() => {
             disabled={cantCreate}
             onClick={createCat}
           >
-            <CanCreate>Create {newCatName}</CanCreate>
-            <CannotCreate>Enter Name and Age</CannotCreate>
+            <Show
+              when={cantCreate}
+              content={() => <>Enter Name and Age</>}
+              fallback={() => <>Create {newCatName}</>}
+            ></Show>
           </button>
           <button
             class="bg-sky-500 hover:bg-sky-700 active:bg-sky-600
