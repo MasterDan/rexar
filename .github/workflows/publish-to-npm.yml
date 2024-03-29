@@ -18,7 +18,6 @@ jobs:
         with:
           node-version: '20.x'
           registry-url: 'https://registry.npmjs.org'
-          cache: yarn
       - name: Set yarn version
         run: yarn set version 4.1.1
       - name: Install dependencies
@@ -27,21 +26,21 @@ jobs:
         run: yarn build
       - name: Publish @rexar/tools
         working-directory: packages/tools
-        run: yarn npm publish
+        run: yarn npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/reactivity
         working-directory: packages/reactivity
-        run: yarn npm publish
+        run: yarn npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/jsx
         working-directory: packages/jsx
-        run: yarn npm publish
+        run: yarn npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/core
         working-directory: packages/core
-        run: yarn npm publish
+        run: yarn npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
