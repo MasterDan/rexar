@@ -31,16 +31,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Not needed if lastUpdated is not enabled
-      # - uses: pnpm/action-setup@v3 # Uncomment this if you're using pnpm
-      # - uses: oven-sh/setup-bun@v1 # Uncomment this if you're using Bun
+          fetch-depth: 0
       - name: Enable Corepack
         run: corepack enable
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: yarn # or pnpm / yarn
+          node-version: '20.x'
+          cache: yarn
       - name: Set yarn version
         run: yarn set version 4.1.1
       - name: Setup Pages
