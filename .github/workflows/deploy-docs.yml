@@ -39,10 +39,10 @@ jobs:
         with:
           node-version: 20
           cache: yarn # or pnpm / yarn
+      - name: Set yarn version
+        run: yarn set version 4.1.1
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      - name: Set yarn version
-        run: yarn set version stable
       - name: Install dependencies
         run: yarn install # or pnpm install / yarn install / bun install
       - name: Build library
