@@ -50,12 +50,12 @@ jobs:
       - name: Build library
         run: yarn build
       - name: Build with VitePress
-        working-directory: ./packages/docs
+        working-directory: packages/docs
         run: yarn docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/.vitepress/dist
+          path: packages/doccs/docs/.vitepress/dist
 
   # Deployment job
   deploy:
