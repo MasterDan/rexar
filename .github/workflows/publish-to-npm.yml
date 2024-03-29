@@ -28,24 +28,24 @@ jobs:
       - name: Login
         run: yarn npm login
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/tools
         working-directory: packages/tools
         run: yarn npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/reactivity
         working-directory: packages/reactivity
         run: yarn npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/jsx
         working-directory: packages/jsx
         run: yarn npm publish --access public
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/core
         working-directory: packages/core
         run: yarn npm publish 
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
