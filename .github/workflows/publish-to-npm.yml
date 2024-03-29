@@ -25,27 +25,23 @@ jobs:
         run: yarn install
       - name: Build library
         run: yarn build
-      - name: Login
-        run: yarn npm login
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/tools
         working-directory: packages/tools
-        run: yarn npm publish --access public
+        run: npm publish --workspace
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/reactivity
         working-directory: packages/reactivity
-        run: yarn npm publish --access public
+        run: npm publish --workspace
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/jsx
         working-directory: packages/jsx
-        run: yarn npm publish --access public
+        run: npm publish --workspace
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/core
         working-directory: packages/core
-        run: yarn npm publish 
+        run: npm publish --workspace
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
