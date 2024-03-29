@@ -8,6 +8,7 @@ export default defineConfig({
       md.use(tabsMarkdownPlugin);
     },
   },
+  base: '/rexar/',
   title: 'Rexar',
   lang: 'en',
   description: 'ReactiveX Advanced Renderer',
