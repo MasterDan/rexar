@@ -26,7 +26,7 @@ jobs:
       - name: Build library
         run: yarn build
       - name: Login
-        run: yarn login
+        run: yarn npm login
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/tools
