@@ -27,7 +27,7 @@ jobs:
         run: yarn build
       - name: Publish @rexar/tools
         working-directory: packages/docs
-        run: yarn npm publish
+        run: yarn npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Publish @rexar/reactivity
