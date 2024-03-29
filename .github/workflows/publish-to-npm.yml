@@ -23,8 +23,6 @@ jobs:
         run: yarn set version 4.1.1
       - name: Install dependencies
         run: yarn install
-      - name: Config Yarn Registry
-        run: yarn config set registry https://registry.npmjs.org
       - name: Config Yarn Token
         run: yarn config set npmAuthToken ${{ secrets.NPM_ACCESS_TOKEN }}
       - name: Build library
