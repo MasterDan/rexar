@@ -13,6 +13,10 @@ npm i rxjs
 ```sh
 yarn add rxjs
 ```
+== pnpm
+```sh
+pnpm add rxjs
+```
 :::
 
 Then install Rexar.
@@ -25,6 +29,10 @@ npm i @rexar/core
 == yarn
 ```sh
 yarn add @rexar/core
+```
+== pnpm
+```sh
+pnpm add @rexar/core
 ```
 :::
 
