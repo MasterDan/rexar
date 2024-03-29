@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "rexar",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "author": "MasterDan <MihaylovDS@gmail.com>",
   "repository": {
     "type": "git",
@@ -24,7 +24,8 @@
     "test:reactivity": "yarn workspace @rexar/reactivity test --run",
     "test:jsx": "yarn workspace @rexar/jsx test --run",
     "test:core": "yarn workspace @rexar/core test --run",
-    "test": "yarn run test:reactivity && yarn run test:jsx && yarn run test:core"
+    "test": "yarn run test:reactivity && yarn run test:jsx && yarn run test:core",
+    "build+test": "yarn run build && yarn run test"
   },
   "dependencies": {
     "@rexar/core": "link:./packages/core",
@@ -51,6 +52,6 @@
     "typescript": "4.9.4",
     "vm-browserify": "^1.1.2"
   },
-  "packageManager": "yarn@4.1.0"
+  "packageManager": "yarn@4.1.1"
 }
 

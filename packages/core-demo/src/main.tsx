@@ -1,13 +1,5 @@
 import './style.css';
-import {
-  h,
-  defineComponent,
-  render,
-  ref,
-  toRef,
-  computed,
-  useIf,
-} from '@rexar/core';
+import { h, defineComponent, render, ref, toRef, Show } from '@rexar/core';
 import { Subject, debounceTime, filter } from 'rxjs';
 import typescriptLogo from './typescript.svg';
 // eslint-disable-next-line import/no-absolute-path
@@ -20,12 +12,7 @@ const App = defineComponent(() => {
   const counter = ref(1);
   const evenCounter = toRef(counter.pipe(filter((c) => c % 2 === 0)));
   const oddCounter = toRef(counter.pipe(filter((c) => c % 2 !== 0)));
-  const [[EvenCounterExists, NoEvenCounter]] = useIf(
-    computed(() => evenCounter.value != null),
-  );
-  const [[OddCounterExists, NoOddCounter]] = useIf(
-    computed(() => oddCounter.value != null),
-  );
+
   const increment$ = new Subject<MouseEvent>();
   increment$.pipe(debounceTime(200)).subscribe(() => {
     counter.value += 1;
@@ -76,18 +63,17 @@ const App = defineComponent(() => {
             Increment
           </button>
         </div>
-        <EvenCounterExists>
-          <p>Last even counter is {evenCounter} </p>
-        </EvenCounterExists>
-        <NoEvenCounter>
-          <p>Counter never been even</p>
-        </NoEvenCounter>
-        <OddCounterExists>
-          <p>Last odd counter is {oddCounter} </p>
-        </OddCounterExists>
-        <NoOddCounter>
-          <p>Counter never been odd</p>
-        </NoOddCounter>
+        <Show
+          when={() => evenCounter.value != null}
+          content={() => <p>Last even counter is {evenCounter} </p>}
+          fallback={() => <p>Counter never been even</p>}
+        />
+        <Show
+          when={() => oddCounter.value != null}
+          content={() => <p>Last odd counter is {oddCounter} </p>}
+          fallback={() => <p>Counter never been odd</p>}
+        />
+
         <p>Counter x2 is {() => counter.value * 2}</p>
       </div>
 

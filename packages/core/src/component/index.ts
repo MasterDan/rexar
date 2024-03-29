@@ -2,7 +2,7 @@ import type { BaseProps } from '@rexar/jsx';
 import type { AnyRecord } from '@rexar/tools';
 import { Subject } from 'rxjs';
 import { ComponentFactory } from './component-factory';
-import type { ComponentOptions, DestroyingStatus } from './component';
+import type { ComponentOptions } from './component';
 
 export type ComponentRenderFunc<TProps extends AnyRecord = AnyRecord> = (
   props: TProps & BaseProps,
@@ -24,6 +24,8 @@ export type RenderedController = { remove: () => void };
 
 export type RenderTarget = string | Element | Comment;
 
+export type RenderOptions = Omit<ComponentOptions, 'destroyer'>;
+
 export function render<TProps extends AnyRecord = AnyRecord>(
   renderFn: ComponentRenderFunc<TProps>,
   props: TProps = {} as TProps,
@@ -40,19 +42,13 @@ export function render<TProps extends AnyRecord = AnyRecord>(
   };
 
   const renderComponent = () => {
-    const destroyer = new Subject<DestroyingStatus>();
-    const renderedComponent = renderFn(props, { root: true, destroyer });
-    const nodesToRemove: ChildNode[] =
-      renderedComponent instanceof DocumentFragment
-        ? [...renderedComponent.childNodes]
-        : [renderedComponent];
-
+    const destroyer = new Subject<void>();
+    const renderedComponent = renderFn(props, {
+      root: true,
+      destroyer,
+    });
     const remove = () => {
-      destroyer.next('before');
-      nodesToRemove.forEach((n) => {
-        n.remove();
-      });
-      destroyer.next('after');
+      destroyer.next();
     };
     return { renderedComponent, remove };
   };

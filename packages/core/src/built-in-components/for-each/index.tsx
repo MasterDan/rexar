@@ -3,6 +3,7 @@ import { defineComponent } from '@core/component';
 import { h, fragment } from '@rexar/jsx';
 import { getPatch } from 'fast-array-diff';
 import { isObservable } from 'rxjs';
+import { onBeforeDestroy, onRendered } from '@core/scope';
 import { Comment } from '../comment';
 import { ArrayItem } from './array-item';
 import { EachComponent, KeyFactory } from './@types';
@@ -40,6 +41,15 @@ export function useFor<T>(
         anchor = item.render(each!).after(currentAnchor);
       });
       ComponentsArray = newArray;
+    } else if (ComponentsArray.length === newArray.length) {
+      for (let i = 0; i < ComponentsArray.length; i += 1) {
+        const oldItem = ComponentsArray[i];
+        const newItem = newArray[i];
+        if (oldItem.key !== newItem.key) {
+          oldItem.key = newItem.key;
+          oldItem.itemRef.value = newItem.itemRef.value;
+        }
+      }
     } else {
       getPatch(ComponentsArray, newArray, (a, b) => a.key === b.key).forEach(
         (p) => {
@@ -84,13 +94,20 @@ export function useFor<T>(
     anchorStart = anchorStartComponent;
     each = eachComponent;
     const result = <>{anchorStartComponent}</>;
-    if (isObservable(array)) {
-      array.subscribe((a) => {
-        setArray(a);
+    onRendered().subscribe(() => {
+      if (isObservable(array)) {
+        array.subscribe((a) => {
+          setArray(a);
+        });
+      } else {
+        setArray(array);
+      }
+    });
+    onBeforeDestroy().subscribe(() => {
+      ComponentsArray.forEach((item) => {
+        item.remove();
       });
-    } else {
-      setArray(array);
-    }
+    });
     return result;
   });
 
