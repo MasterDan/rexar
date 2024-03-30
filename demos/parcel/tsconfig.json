@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "target": "ES2020",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+        "lib": [
+            "ES2020",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "isolatedModules": true,
+        "skipLibCheck": true,
+        "moduleResolution": "Bundler",
+        "jsx": "react",
+        "jsxFactory": "h",
+        "jsxFragmentFactory": "fragment"
+    },
+    "include": [
+        "src"
+    ]
+}

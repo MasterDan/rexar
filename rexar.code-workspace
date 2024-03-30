@@ -13,7 +13,12 @@
       "path": "packages/core",
     },
     {
-      "path": "packages/core-demo",
+      "name": "demo:vite",
+      "path": "demos/vite",
+    },
+    {
+      "name": "demo:parcel",
+      "path": "demos/parcel",
     },
     {
       "path": "packages/docs",

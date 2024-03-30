@@ -1,6 +1,4 @@
 import {
-  h,
-  fragment,
   defineComponent,
   useFor,
   ref,
