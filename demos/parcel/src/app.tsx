@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, render } from '@rexar/core';
+import { defineComponent, ref, h, render } from '@rexar/core';
 
 console.log('Hello world!');
 

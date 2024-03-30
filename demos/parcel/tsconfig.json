@@ -3,20 +3,26 @@
     "compilerOptions": {
         "target": "ES2020",
         "useDefineForClassFields": true,
-        "module": "ESNext",
+        "module": "NodeNext",
         "lib": [
             "ES2020",
             "DOM",
             "DOM.Iterable"
         ],
-        "isolatedModules": true,
         "skipLibCheck": true,
-        "moduleResolution": "Bundler",
-        "jsx": "react",
-        "jsxFactory": "h",
-        "jsxFragmentFactory": "fragment"
+        /* Bundler mode */
+        "moduleResolution": "NodeNext",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "preserve",
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true
     },
     "include": [
-        "src"
+        "src",
     ]
 }

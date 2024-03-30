@@ -2,6 +2,7 @@
   "name": "@rexar/demo-parcel",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "source": "src/index.html",
   "scripts": {
     "dev": "parcel",
@@ -20,3 +21,4 @@
     "rxjs": "^7.8.1"
   }
 }
+

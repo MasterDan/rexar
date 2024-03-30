@@ -16,9 +16,12 @@ export default defineConfig(() => ({
   build: {
     sourcemap: true,
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: {
+        'main': path.resolve(__dirname, 'src/index.ts'),
+        'jsx-runtime': path.resolve(__dirname, 'src/jsx-runtime.ts'),
+      },
       name: '@rexar/core',
-      fileName: 'main',
+      fileName: (fmt, name) => `${name}.${fmt}.js`,
     },
     rollupOptions: {
       external: ['rxjs'],
