@@ -4,6 +4,9 @@
   "description": "",
   "type": "module",
   "source": "src/index.html",
+  "@parcel/resolver-default": {
+    "packageExports": true
+  },
   "scripts": {
     "dev": "parcel",
     "build": "parcel build",
@@ -21,4 +24,3 @@
     "rxjs": "^7.8.1"
   }
 }
-

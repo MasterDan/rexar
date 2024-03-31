@@ -22,7 +22,20 @@ export default defineConfig(() => ({
         'jsx-runtime': path.resolve(__dirname, 'src/jsx-runtime.ts'),
       },
       name: '@rexar/core',
-      fileName: (fmt, name) => `${name}.${fmt}.js`,
+      fileName: (fmt, name) => {
+        let ext: string | undefined;
+        switch (fmt) {
+          case 'es':
+            ext = '.js';
+            break;
+          case 'cjs':
+            ext = '.umd.cjs';
+            break;
+          default:
+            ext = '.js';
+        }
+        return `${name}${ext}`;
+      },
     },
     rollupOptions: {
       external: ['rxjs'],

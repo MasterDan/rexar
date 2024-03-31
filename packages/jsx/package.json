@@ -1,6 +1,6 @@
 {
   "name": "@rexar/jsx",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": "MasterDan <MihaylovDS@gmail.com>",
   "repository": {
     "type": "git",
@@ -32,8 +32,8 @@
     "tsx-dom-types": "^1.0.0"
   },
   "devDependencies": {
-    "vite": "^5.0.4",
     "jsdom": "^23.0.1",
+    "vite": "^5.0.4",
     "vite-plugin-dts": "^3.6.4",
     "vitest": "^0.34.6"
   }
