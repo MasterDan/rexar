@@ -1,4 +1,4 @@
-import { defineComponent, h, ref } from '@rexar/core';
+import { defineComponent, ref } from '@rexar/core';
 
 export const Counter = defineComponent(() => {
   const counter$ = ref(0);

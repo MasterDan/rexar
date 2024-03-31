@@ -1,4 +1,4 @@
-import { defineComponent, fragment, h, computed, toRef } from '@rexar/core';
+import { defineComponent, computed, toRef } from '@rexar/core';
 import { BehaviorSubject, map } from 'rxjs';
 
 export const NumbersAlt = defineComponent(() => {

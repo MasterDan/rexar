@@ -1,12 +1,4 @@
-import {
-  Show,
-  defineComponent,
-  fragment,
-  h,
-  ref,
-  useEvent,
-  useFor,
-} from '@rexar/core';
+import { Show, defineComponent, ref, useEvent, useFor } from '@rexar/core';
 import { concatMap, delay, of } from 'rxjs';
 import { Lifecycle } from './lifecycle';
 

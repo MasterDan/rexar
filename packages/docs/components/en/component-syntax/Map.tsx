@@ -1,4 +1,4 @@
-import { defineComponent, h, fragment, ref, computed } from '@rexar/core';
+import { defineComponent, ref, computed } from '@rexar/core';
 
 export const MapExample = defineComponent(() => {
   const map$ = ref(new Map<number, string>([[1, 'value-1']]));

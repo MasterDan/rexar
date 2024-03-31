@@ -1,8 +1,6 @@
 import {
   defineComponent,
   ref,
-  fragment,
-  h,
   StyleAttributes,
   computed,
 } from '@rexar/core';

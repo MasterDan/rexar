@@ -1,10 +1,4 @@
-import {
-  Ref,
-  defineComponent,
-  h,
-  fragment,
-  useDefaultValues,
-} from '@rexar/core';
+import { Ref, defineComponent, useDefaultValues } from '@rexar/core';
 
 export const TextInput = defineComponent<{
   value$: Ref<string>;

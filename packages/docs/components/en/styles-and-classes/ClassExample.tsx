@@ -1,4 +1,4 @@
-import { defineComponent, ref, h, useClasses } from '@rexar/core';
+import { defineComponent, ref, useClasses } from '@rexar/core';
 import './ClassExample.styles.css';
 
 export const ClassExample = defineComponent(() => {

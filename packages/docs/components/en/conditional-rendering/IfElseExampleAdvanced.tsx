@@ -1,4 +1,4 @@
-import { defineComponent, ref, fragment, h, computed, Show } from '@rexar/core';
+import { defineComponent, ref, computed, Show } from '@rexar/core';
 import { map } from 'rxjs';
 
 export const IfElseExampleAdvanced = defineComponent(() => {

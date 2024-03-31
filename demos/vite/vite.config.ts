@@ -3,8 +3,8 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   esbuild: {
-    jsxInject: `import { h, fragment } from '@rexar/core'`,
+    jsxInject: `import { h, Fragment } from '@rexar/core'`,
     jsxFactory: 'h',
-    jsxFragment: 'fragment',
+    jsxFragment: 'Fragment',
   },
 });
