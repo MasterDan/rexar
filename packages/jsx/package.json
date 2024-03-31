@@ -19,6 +19,16 @@
       "import": "./dist/main.js",
       "require": "./dist/main.umd.cjs",
       "types": "./dist/index.d.ts"
+    },
+    "./jsx-runtime": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.umd.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.umd.cjs",
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {

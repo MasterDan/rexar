@@ -8,6 +8,7 @@
         "importHelpers": true,
         "isolatedModules": true,
         "experimentalDecorators": true,
+        "moduleResolution": "Node",
         "emitDecoratorMetadata": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
