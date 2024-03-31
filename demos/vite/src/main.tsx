@@ -1,5 +1,5 @@
 import './style.css';
-import { h, defineComponent, render, ref, toRef, Show } from '@rexar/core';
+import { defineComponent, render, ref, toRef, Show } from '@rexar/core';
 import { Subject, debounceTime, filter } from 'rxjs';
 import typescriptLogo from './typescript.svg';
 // eslint-disable-next-line import/no-absolute-path

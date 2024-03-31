@@ -1,6 +1,5 @@
 import { Ref, ref } from '@rexar/reactivity';
 import { ComponentRenderFunc, defineComponent, render } from '@core/component';
-import { h, fragment } from '@rexar/jsx';
 import { Comment } from '../comment';
 import { EachComponent, Key } from './@types';
 

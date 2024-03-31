@@ -1,4 +1,4 @@
-import { defineComponent, ref, useFor, h, fragment, Show } from '@rexar/core';
+import { defineComponent, ref, useFor, Show } from '@rexar/core';
 import { take, timer } from 'rxjs';
 
 export const List = defineComponent(() => {

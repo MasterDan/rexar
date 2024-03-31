@@ -1,7 +1,5 @@
 import {
   defineComponent,
-  h,
-  fragment,
   onBeforeDestroy,
   onDestroyed,
   onMounted,

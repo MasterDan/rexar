@@ -1,7 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
 import { wait } from '@rexar/tools';
-import { h, fragment } from './create-element';
 import { BaseProps } from './@types';
 
 /**

@@ -18,7 +18,7 @@ These hooks are:
 
 To illustrate this behavior let's create component, thad displays and emits it's own status:
 
-<<< ../../components/en/lifecycle/lifecycle.tsx{22-33 tsx:line-numbers}
+<<< ../../components/en/lifecycle/lifecycle.tsx{20-31 tsx:line-numbers}
 
 Then let's create component, that will catch status changes and write it inside log with little delay.  
 See the example. Press the button and see the updates in log.

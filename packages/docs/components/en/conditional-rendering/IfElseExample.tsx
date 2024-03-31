@@ -1,4 +1,4 @@
-import { defineComponent, ref, fragment, h, Show } from '@rexar/core';
+import { defineComponent, ref, Show } from '@rexar/core';
 
 export const ifElseExample = defineComponent(() => {
   const flag$ = ref(true);

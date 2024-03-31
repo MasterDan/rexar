@@ -1,6 +1,6 @@
 {
   "name": "@rexar/tools",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "MasterDan <MihaylovDS@gmail.com>",
   "repository": {
     "type": "git",
@@ -26,10 +26,8 @@
     "build": "vite build",
     "test": "npx vitest"
   },
-  "dependencies": {
-    "vite": "^5.0.4"
-  },
   "devDependencies": {
+    "vite": "^5.0.4",
     "vite-plugin-dts": "^3.6.4",
     "vitest": "^0.34.6"
   }

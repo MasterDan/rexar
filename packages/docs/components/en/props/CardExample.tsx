@@ -1,4 +1,4 @@
-import { defineComponent, h } from '@rexar/core';
+import { defineComponent } from '@rexar/core';
 import { Card } from './Card';
 
 export const CardExample = defineComponent(() => (

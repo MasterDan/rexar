@@ -1,4 +1,4 @@
-import { defineComponent, ref, useFor, h } from '@rexar/core';
+import { defineComponent, ref, useFor } from '@rexar/core';
 
 export const List = defineComponent(() => {
   const array$ = ref<number[]>([1, 2, 3, 4, 5]);

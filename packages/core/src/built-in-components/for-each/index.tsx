@@ -1,6 +1,5 @@
 import { MaybeObservable } from '@rexar/reactivity';
 import { defineComponent } from '@core/component';
-import { h, fragment } from '@rexar/jsx';
 import { getPatch } from 'fast-array-diff';
 import { isObservable } from 'rxjs';
 import { onBeforeDestroy, onRendered } from '@core/scope';

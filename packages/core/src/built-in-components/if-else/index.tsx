@@ -1,6 +1,5 @@
 import { Providable, ref, trySubscribe } from '@rexar/reactivity';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
-import { h, fragment } from '@rexar/jsx';
 import {
   Observable,
   combineLatest,

@@ -1,4 +1,4 @@
-import { computed, defineComponent, fragment, h, ref } from '@rexar/core';
+import { computed, defineComponent, ref } from '@rexar/core';
 
 export const ArrayExample = defineComponent(() => {
   const array$ = ref([1, 2, 3]);

@@ -1,4 +1,4 @@
-import { defineComponent, ref, useSwitch, h, fragment } from '@rexar/core';
+import { defineComponent, ref, useSwitch } from '@rexar/core';
 
 export const SwitchCaseExample = defineComponent(() => {
   const counter$ = ref(0);

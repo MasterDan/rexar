@@ -1,4 +1,4 @@
-import { defineComponent, h, useDynamic, fragment } from '@rexar/core';
+import { defineComponent, useDynamic } from '@rexar/core';
 
 export const DynamicExample = defineComponent(() => {
   const [DynamicContent, setContent] = useDynamic(() => <>Initial Content</>);

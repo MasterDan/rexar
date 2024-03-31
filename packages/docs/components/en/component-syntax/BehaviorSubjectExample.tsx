@@ -1,4 +1,4 @@
-import { defineComponent, h } from '@rexar/core';
+import { defineComponent } from '@rexar/core';
 import { BehaviorSubject } from 'rxjs';
 
 export const BehaviorSubjectExample = defineComponent(() => {

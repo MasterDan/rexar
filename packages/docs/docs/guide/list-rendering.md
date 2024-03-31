@@ -18,7 +18,7 @@ For rendering arrays we are using `useFor` function. This function takes two arg
 
 Let's see how it works in simple array:
 
-<<< ../../components/en/list-rendering/List.tsx{tsx:line-numbers}
+<<< ../../components/en/list-rendering/List.tsx{5,7-13 tsx:line-numbers}
 
 <Demo  :is="List" />
 

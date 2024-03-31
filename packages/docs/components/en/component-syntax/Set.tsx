@@ -1,4 +1,4 @@
-import { computed, defineComponent, fragment, h, ref } from '@rexar/core';
+import { computed, defineComponent, ref } from '@rexar/core';
 
 export const SetExample = defineComponent(() => {
   const set$ = ref(new Set([1, 2, 3]));

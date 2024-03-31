@@ -1,4 +1,4 @@
-import { h, fragment, RenderFunction } from '@rexar/jsx';
+import { RenderFunction } from '@rexar/jsx';
 import {
   ComponentRenderFunc,
   RenderedController,
