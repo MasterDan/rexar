@@ -25,6 +25,11 @@
       "import": "./dist/jsx-runtime.es.js",
       "require": "./dist/jsx-runtime.cjs.js",
       "types": "./dist/jsx-runtime.d.ts"
+    },
+    "./jsx-dev-runtime": {
+      "import": "./dist/jsx-runtime.es.js",
+      "require": "./dist/jsx-runtime.cjs.js",
+      "types": "./dist/jsx-runtime.d.ts"
     }
   },
   "scripts": {
