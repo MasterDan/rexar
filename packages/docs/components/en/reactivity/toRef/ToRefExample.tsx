@@ -1,4 +1,4 @@
-import { defineComponent, ref, toRef, fragment, h } from '@rexar/core';
+import { defineComponent, ref, toRef } from '@rexar/core';
 import { map } from 'rxjs';
 
 export const ToRefExample = defineComponent(() => {

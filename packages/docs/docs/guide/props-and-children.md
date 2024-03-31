@@ -39,7 +39,7 @@ What if we want to use default value of `id` in case it's not being provided by 
 For this purpose we are using `useDefaultValues` function. Pay attention, that we are providing `function`, that creates default value (id in our case), not value itself.  
 See the example:
 
-<<< ../../components/en/props/TextInput2.tsx{12,14-16 tsx:line-numbers}
+<<< ../../components/en/props/TextInput2.tsx{6,8-10 tsx:line-numbers}
 
 Let's provide id in one of our `TextInput` components:
 

@@ -1,5 +1,5 @@
 {
-  "name": "@rexar/core-demo",
+  "name": "@rexar/demo-vite",
   "private": true,
   "version": "0.0.0",
   "type": "module",

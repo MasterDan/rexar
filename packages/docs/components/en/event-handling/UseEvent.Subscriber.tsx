@@ -1,4 +1,4 @@
-import { defineComponent, h, fragment, ref, useEvent } from '@rexar/core';
+import { defineComponent, ref, useEvent } from '@rexar/core';
 import { debounceTime, throttleTime } from 'rxjs';
 import { Emitter } from './UseEvent.Emitter';
 

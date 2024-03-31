@@ -1,8 +1,6 @@
 import {
   WritableRef,
   defineComponent,
-  h,
-  fragment,
   toRef,
   MaybeObservable,
 } from '@rexar/core';

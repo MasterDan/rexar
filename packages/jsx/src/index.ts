@@ -7,4 +7,4 @@ export type {
 } from 'tsx-dom-types';
 export * from './@types';
 export * from './jsx-runtime';
-export { h, fragment } from './create-element';
+export { h } from './create-element';

@@ -1,4 +1,4 @@
-import { defineComponent, fragment, h } from '@rexar/core';
+import { defineComponent } from '@rexar/core';
 
 export const Emitter = defineComponent<{
   onEvent: (e: string) => void;

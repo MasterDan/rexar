@@ -8,6 +8,13 @@ export default defineConfig({
       md.use(tabsMarkdownPlugin);
     },
   },
+  vite: {
+    esbuild: {
+      jsxInject: `import { h, Fragment } from '@rexar/core'`,
+      jsxFactory: 'h',
+      jsxFragment: 'Fragment',
+    },
+  },
   base: '/rexar/',
   title: 'Rexar',
   lang: 'en',

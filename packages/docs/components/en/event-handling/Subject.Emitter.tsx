@@ -1,4 +1,4 @@
-import { defineComponent, fragment, h } from '@rexar/core';
+import { defineComponent } from '@rexar/core';
 import { Subject } from 'rxjs';
 
 export const Emitter = defineComponent<{

@@ -1,4 +1,4 @@
-import { defineComponent, h, fragment, ref } from '@rexar/core';
+import { defineComponent, ref } from '@rexar/core';
 import { Subject, buffer, debounceTime, filter, map } from 'rxjs';
 
 export const Counter = defineComponent(() => {

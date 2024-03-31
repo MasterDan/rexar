@@ -1,4 +1,4 @@
-import { defineComponent, ref, fragment, h } from '@rexar/core';
+import { defineComponent, ref } from '@rexar/core';
 
 export const Strings = defineComponent(() => {
   const string$ = ref('Hello, World');

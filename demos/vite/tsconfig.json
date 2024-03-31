@@ -15,9 +15,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "fragment",
+    "jsx": "preserve",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

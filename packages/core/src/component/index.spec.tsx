@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'vitest';
-import { h, fragment } from '@rexar/jsx';
 import { onBeforeDestroy, onDestroyed, onMounted } from '@core/scope';
 import { ref } from '@rexar/reactivity';
 import { wait } from '@rexar/tools';

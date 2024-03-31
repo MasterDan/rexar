@@ -1,4 +1,4 @@
-import { EventTrigger, defineComponent, fragment, h } from '@rexar/core';
+import { EventTrigger, defineComponent } from '@rexar/core';
 import { Observable, Subject } from 'rxjs';
 
 export const Emitter = defineComponent<{

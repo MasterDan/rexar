@@ -118,7 +118,7 @@ As you can see - all computed still reactive. And raw values are still not.
 We ca also use `toRefs` method to deconstruct `ref` with object inside. Here is the example.
 As you can see, changing value of `name$` or `surname$` also changes `person$`.
 
-<<< ../../components/en/component-syntax/Object2.tsx{13,24,31,33,39,46,48,60 tsx:line-numbers}
+<<< ../../components/en/component-syntax/Object2.tsx{6,17,24,26,32,39,41,53 tsx:line-numbers}
 <Demo align-start :is="ObjectExample2" />
 
 
