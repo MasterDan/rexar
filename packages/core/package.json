@@ -12,23 +12,23 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/main.es.js",
-  "module": "./dist/main.cjs.js",
+  "main": "./dist/main.js",
+  "module": "./dist/main.umd.cjs",
   "types": "./dist/main.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/main.es.js",
-      "require": "./dist/main.cjs.js",
+      "import": "./dist/main.js",
+      "require": "./dist/main..umd.cjs",
       "types": "./dist/main.d.ts"
     },
     "./jsx-runtime": {
-      "import": "./dist/jsx-runtime.es.js",
-      "require": "./dist/jsx-runtime.cjs.js",
+      "import": "./dist/jsx-runtime.js",
+      "require": "./dist/jsx-runtime.umd.cjs",
       "types": "./dist/jsx-runtime.d.ts"
     },
     "./jsx-dev-runtime": {
-      "import": "./dist/jsx-runtime.es.js",
-      "require": "./dist/jsx-runtime.cjs.js",
+      "import": "./dist/jsx-runtime.js",
+      "require": "./dist/jsx-runtime.umd.cjs",
       "types": "./dist/jsx-runtime.d.ts"
     }
   },
