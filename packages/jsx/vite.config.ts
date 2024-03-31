@@ -4,10 +4,6 @@ import path from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig(() => ({
-  esbuild: {
-    jsxFactory: 'h',
-    jsxFragment: 'fragment',
-  },
   resolve: {
     alias: {
       '@jsx': path.resolve(__dirname, './src'),

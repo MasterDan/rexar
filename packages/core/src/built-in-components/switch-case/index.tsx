@@ -1,5 +1,5 @@
 import { defineComponent } from '@core/component';
-import { h, RenderFunction } from '@rexar/jsx';
+import { RenderFunction } from '@rexar/jsx';
 import { MaybeObservable, ref } from '@rexar/reactivity';
 import { combineLatest, isObservable, map } from 'rxjs';
 import { useDynamic } from '../dynamic';

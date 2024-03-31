@@ -5,8 +5,9 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig(() => ({
   esbuild: {
+    jsxInject: 'import { h , Fragment } from "@rexar/jsx"',
     jsxFactory: 'h',
-    jsxFragment: 'fragment',
+    jsxFragment: 'Fragment',
   },
   resolve: {
     alias: {

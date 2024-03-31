@@ -1,4 +1,3 @@
-import { h, fragment } from '@rexar/jsx';
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
 import { useSwitch } from '.';

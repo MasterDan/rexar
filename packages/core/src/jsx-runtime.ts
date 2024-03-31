@@ -1,1 +1,2 @@
-export * from '@rexar/jsx';
+export { jsx, jsxDEV, Fragment, h } from '@rexar/jsx';
+

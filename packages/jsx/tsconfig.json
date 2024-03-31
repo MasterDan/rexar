@@ -12,6 +12,5 @@
     "./src/**/*.html",
     "./tests/**/*.ts",
     "./tests/**/*.html",
-    "src/create-element.spec.tsx",
   ]
 }
