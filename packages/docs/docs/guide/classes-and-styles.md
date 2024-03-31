@@ -20,7 +20,7 @@ Both are shown in example below:
 Remember, that only `Ref`s are trackable inside arrow functions.
 :::
 
-<<< ../../components/en/styles-and-classes/StylesExample.tsx{15-20,24-29,31 tsx:line-numbers}
+<<< ../../components/en/styles-and-classes/StylesExample.tsx{13-18,22-27,29 tsx:line-numbers}
 <Demo :is="StylesExample" />
 
 ## Importing Files
