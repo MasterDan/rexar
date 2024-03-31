@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "rexar",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "author": "MasterDan <MihaylovDS@gmail.com>",
   "repository": {
     "type": "git",
@@ -55,3 +55,4 @@
   },
   "packageManager": "yarn@4.1.1"
 }
+
