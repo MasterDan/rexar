@@ -9,8 +9,7 @@
   },
   "license": "MIT",
   "workspaces": [
-    "packages/*",
-    "demos/*"
+    "packages/*"
   ],
   "ts-node": {
     "esm": true,

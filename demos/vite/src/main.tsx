@@ -1,25 +1,21 @@
 import './style.css';
-import { defineComponent, render, ref, toRef, Show } from '@rexar/core';
-import { Subject, debounceTime, filter } from 'rxjs';
+import { defineComponent, render, ref } from '@rexar/core';
+import { Subject } from 'rxjs';
 import typescriptLogo from './typescript.svg';
 // eslint-disable-next-line import/no-absolute-path
 import viteLogo from '/vite.svg';
-import { CatsApp } from './cats';
 import { Input } from './input';
 
 const App = defineComponent(() => {
-  const message = ref('Hello from Ref');
-  const counter = ref(1);
-  const evenCounter = toRef(counter.pipe(filter((c) => c % 2 === 0)));
-  const oddCounter = toRef(counter.pipe(filter((c) => c % 2 !== 0)));
+  const counter = ref(0);
 
   const increment$ = new Subject<MouseEvent>();
-  increment$.pipe(debounceTime(200)).subscribe(() => {
+  increment$.subscribe(() => {
     counter.value += 1;
   });
 
   return (
-    <div class="flex flex-col items-center pt-8 gap-8">
+    <div class="flex flex-col h-full items-center pt-8 gap-8">
       <div
         class="text-4xl p-4
         text-transparent 
@@ -63,25 +59,12 @@ const App = defineComponent(() => {
             Increment
           </button>
         </div>
-        <Show
-          when={() => evenCounter.value != null}
-          content={() => <p>Last even counter is {evenCounter} </p>}
-          fallback={() => <p>Counter never been even</p>}
-        />
-        <Show
-          when={() => oddCounter.value != null}
-          content={() => <p>Last odd counter is {oddCounter} </p>}
-          fallback={() => <p>Counter never been odd</p>}
-        />
 
         <p>Counter x2 is {() => counter.value * 2}</p>
       </div>
-
-      <p>{message}</p>
     </div>
   );
 });
 
 render(App).into('#app');
-render(CatsApp).into('#cats');
 
