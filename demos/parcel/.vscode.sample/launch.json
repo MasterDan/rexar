@@ -7,11 +7,11 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "chrome:example",
-            "preLaunchTask": "npm: dev - packages/example",
-            "postDebugTask": "terminate: all",
-            "url": "http://localhost:5173",
-            "webRoot": "${workspaceFolder}/packages/example/src"
+            "name": "demo-parcel:chrome",
+            "url": "http://localhost:1234",
+            "webRoot": "${workspaceFolder}",
+            "preLaunchTask": "npm: dev",
+            "postDebugTask": "kill: all"
         }
     ]
 }
