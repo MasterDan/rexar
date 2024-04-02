@@ -1,7 +1,7 @@
 import './assets/styles/style.css';
 import { defineComponent, render } from '@rexar/core';
 import typescriptLogo from './assets/icons/typescript.svg';
-import viteLogo from './assets/icons/vite.svg';
+import parcelLogo from './assets/icons/parcel-logo.png';
 import rexarLogo from './assets/icons/rexar-light.png';
 import tailwindLogo from './assets/icons/tailwind-css-logo.webp';
 import { Counter } from './counter';
@@ -14,17 +14,17 @@ const App = defineComponent(() => (
         bg-gradient-to-r from-purple-800 to-indigo-700 
         bg-clip-text"
     >
-      Vite + TypeScript + Tailwind CSS + Rexar
+      Parcel + TypeScript + Tailwind CSS + Rexar
     </div>
 
     <div class="bg-neutral-50 rounded-3xl bg-opacity-25">
-      <div class="flex p-8 gap-20 justify-around">
+      <div class="flex p-8 gap-20 justify-around ">
         <a
-          href="https://vitejs.dev"
-          class="transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_1.5rem_rgb(169,78,254)]"
+          href="https://parceljs.org/"
+          class="transition-all duration-300 hover:scale-110 hover:drop-shadow-[0_0_1.5rem_rgb(228,175,118)]"
           target="_blank"
         >
-          <img src={viteLogo} class="logo h-28 " alt="Vite logo" />
+          <img src={parcelLogo} class="logo h-28 " alt="Parcel logo" />
         </a>
         <a
           href="https://www.typescriptlang.org/"

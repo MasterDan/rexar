@@ -1,10 +1,45 @@
 # Getting Started
 
+## Try Rexar
+
+To try Rexar, choose your bundler and execute commands below
+
+::: tabs key:bundlers
+
+== Vite
+```sh
+npx degit MasterDan/rexar/demos/vite my-rexar-app
+```
+```sh
+cd my-rexar-app
+```
+```sh
+npm i
+```
+```sh
+npm run dev
+```
+
+== Parcel
+```sh
+npx degit MasterDan/rexar/demos/parcel my-rexar-app
+```
+```sh
+cd my-rexar-app
+```
+```sh
+npm i
+```
+```sh
+npm run dev
+```
+:::
+
 ## Installing packages
 
 First you need to install RxJS.
 
-:::tabs key:packages
+:::tabs key:pm
 == npm
 ```sh
 npm i rxjs
@@ -21,7 +56,7 @@ pnpm add rxjs
 
 Then install Rexar.
 
-:::tabs key:packages
+:::tabs key:pm
 == npm
 ```sh
 npm i @rexar/core
@@ -41,22 +76,57 @@ import Demo from '../../components/tools/Demo.vue'
 import { Counter } from '../../components/en/getting-started/Counter.tsx'
 </script>
 
-## Typescript settings
+## Configuring JSX/TSX
 
-Add this `jsx options` in your `tsconfig.json` if you're using typescript.
+This depends on what bundler you prefer:
 
-```jsonc
+::: tabs key:bundlers
+
+== Vite
+
+Add this to your `vite.config.ts` file.
+
+```ts
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  esbuild: {
+    jsxInject: `import { h, Fragment } from '@rexar/core'`,
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment',
+  },
+});
+```
+Add this to your `tsconfig.json` if you're using typescript:
+```json
 {
-  // ...
-    "compilerOptions": {
-    // other options
-    "jsx": "react",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "fragment"
-  }
-  // ...
+  "compilerOptions": {
+    "jsx": "preserve",
+  },
 }
 ```
+== Parcel
+
+Add this to your `package.json`
+```json
+{
+  "@parcel/resolver-default": {
+    "packageExports": true
+  }
+}
+```
+Add this to your `tsconfig.json` if you're using typescript:
+```json
+{
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "jsxImportSource": "@rexar/core"
+    }
+}
+```
+
+:::
+
 
 ## Creating First Component
 

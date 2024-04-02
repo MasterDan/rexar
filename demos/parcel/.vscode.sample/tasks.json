@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "terminate: all",
+			"label": "kill: all",
 			"command": "echo ${input:terminate}",
 			"type": "shell",
 			"problemMatcher": []
@@ -10,13 +10,11 @@
 		{
 			"type": "npm",
 			"script": "dev",
-			"path": "packages/example",
-			"isBackground": true,
 			"problemMatcher": [
 				{
 					"owner": "npm",
 					"background": {
-						"endsPattern": "VITE",
+						"endsPattern": "Server running at.",
 						"beginsPattern": ".",
 						"activeOnStart": true
 					},
@@ -25,17 +23,9 @@
 					}
 				}
 			],
-			"label": "npm: dev - packages/example",
+			"isBackground": true,
+			"label": "npm: dev",
 			"detail": "vite"
-		},
-		{
-			"type": "npm",
-			"script": "test",
-			"path": "packages/core",
-			"group": "test",
-			"problemMatcher": [],
-			"label": "npm: test - packages/core",
-			"detail": "jest"
 		}
 	],
 	"inputs": [

@@ -35,7 +35,7 @@ export const Input = defineComponent<{
         type={inputType}
         id={id}
         onInput={(e) => {
-          model.value = toType.value!((e.target! as HTMLInputElement).value);
+          model.value = toType.value!((e.target as HTMLInputElement).value);
         }}
         value={model}
       ></input>
