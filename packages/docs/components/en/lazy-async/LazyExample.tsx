@@ -15,7 +15,7 @@ const MessageLazyWithTimeoutAndLoader = defineLazyComponent(
 
 export const LazyExample = defineComponent(() => {
   const message$ = ref('Hello, World');
-  const interval$ = timer(0, 1000).pipe(take(4));
+  const secondsPassed$ = timer(0, 1000).pipe(take(4));
   return (
     <>
       <input
@@ -26,7 +26,7 @@ export const LazyExample = defineComponent(() => {
         }}
       />
       <MessageLazy message$={message$} />
-      <div>Seconds passed: {interval$}</div>
+      <div>Seconds passed: {secondsPassed$}</div>
       <MessageLazyWithTimeoutAndLoader message$={message$} />
     </>
   );
