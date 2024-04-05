@@ -10,7 +10,7 @@ describe('lazy-components', () => {
   test('simple-lazy', async () => {
     const root = <div></div>;
     const TestLazy = defineLazyComponent(
-      () => import('./TestComponent').then((x) => x.default),
+      () => import('./TestComponent').then((m) => m.TestComponent),
       {
         timeout: 500,
         fallback: () => <>Loading...</>,

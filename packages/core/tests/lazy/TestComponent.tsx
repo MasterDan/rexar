@@ -1,7 +1,7 @@
 import { defineComponent } from '@core/component';
 import { Ref } from '@rexar/reactivity';
 
-export default defineComponent<{
+export const TestComponent = defineComponent<{
   prop: string;
   prop$: Ref<string>;
 }>(({ prop, prop$ }) => (
