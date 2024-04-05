@@ -3,12 +3,14 @@ import { AnyRecord } from '@rexar/tools';
 import { useDynamic } from '@core/built-in-components/dynamic';
 import { combineLatestWith, from, timer } from 'rxjs';
 
+export type LazyComponentOptions = {
+  fallback?: () => JSX.Element;
+  timeout?: number;
+};
+
 export function defineLazyComponent<T extends AnyRecord = AnyRecord>(
   arg: () => Promise<ComponentRenderFunc<T>>,
-  {
-    fallback,
-    timeout,
-  }: { fallback?: () => JSX.Element; timeout?: number } = {},
+  { fallback, timeout }: LazyComponentOptions = {},
 ) {
   return defineComponent<T>((props) => {
     const [Content, setContent] = useDynamic(fallback);

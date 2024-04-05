@@ -6,7 +6,10 @@ export {
   type ComponentRenderFunc,
   type RenderedController,
 } from './component';
-export { defineLazyComponent } from './component/lazy';
+export {
+  defineLazyComponent,
+  type LazyComponentOptions,
+} from './component/lazy';
 export {
   useDefaultValues,
   useClasses,
