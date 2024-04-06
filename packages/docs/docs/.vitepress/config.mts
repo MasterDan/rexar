@@ -65,6 +65,10 @@ export default defineConfig({
                   link: '/guide/dynamic',
                 },
                 {
+                  text: 'Lazy Rendering',
+                  link: '/guide/lazy-async',
+                },
+                {
                   text: 'Lifecycle Hooks',
                   link: '/guide/lifecycle',
                 },

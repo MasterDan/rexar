@@ -9,6 +9,7 @@
     "./src/**/*.tsx",
     "./src/**/*.html",
     "./tests/**/*.ts",
+    "./tests/**/*.tsx",
     "./tests/**/*.html",
     "../core/src/scope/index.ts",
   ]
