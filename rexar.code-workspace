@@ -24,6 +24,10 @@
       "path": "demos/parcel",
     },
     {
+      "name": "demo:webpack",
+      "path": "demos/webpack",
+    },
+    {
       "path": ".",
       "name": "root",
     },
