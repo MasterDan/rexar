@@ -7,8 +7,6 @@ import 'webpack-dev-server';
 
 const config: webpack.Configuration = {
   mode: 'production',
-
-  devtool: 'inline-source-map',
   entry: path.resolve(__dirname, 'src', 'main.tsx'),
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -60,15 +58,6 @@ const config: webpack.Configuration = {
       template: 'index.html',
     }),
   ],
-  optimization: {
-    splitChunks: {
-      maxSize: 1048576,
-    },
-  },
-  performance: {
-    maxEntrypointSize: 1048576,
-    maxAssetSize: 1048576,
-  },
 };
 
 export default config;
