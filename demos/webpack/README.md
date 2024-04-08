@@ -1,4 +1,4 @@
-# Vite + TS + Tailwind + Rexar Demo
+# Webpack + TS + Tailwind + Rexar Demo
 
 ```sh
 npm i

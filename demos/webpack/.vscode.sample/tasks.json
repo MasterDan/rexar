@@ -1,0 +1,39 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "kill: all",
+			"command": "echo ${input:terminate}",
+			"type": "shell",
+			"problemMatcher": []
+		},
+		{
+			"type": "npm",
+			"script": "dev",
+			"problemMatcher": [
+				{
+					"owner": "npm",
+					"background": {
+						"endsPattern": "[webpack-dev-server] Project is running at.",
+						"beginsPattern": ".",
+						"activeOnStart": true
+					},
+					"pattern": {
+						"regexp": "."
+					}
+				}
+			],
+			"isBackground": true,
+			"label": "npm: dev",
+			"detail": "vite"
+		}
+	],
+	"inputs": [
+		{
+			"id": "terminate",
+			"type": "command",
+			"command": "workbench.action.tasks.terminate",
+			"args": "terminateAll"
+		}
+	]
+}

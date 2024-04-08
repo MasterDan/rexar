@@ -33,6 +33,19 @@ npm i
 ```sh
 npm run dev
 ```
+== Webpack
+```sh
+npx degit MasterDan/rexar/demos/webpack my-rexar-app
+```
+```sh
+cd my-rexar-app
+```
+```sh
+npm i
+```
+```sh
+npm run dev
+```
 :::
 
 ## Installing packages
