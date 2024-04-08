@@ -18,6 +18,7 @@ module.exports = {
       './packages/docs/tsconfig.json',
       './demos/vite/tsconfig.json',
       './demos/parcel/tsconfig.json',
+      './demos/webpack/tsconfig.json',
     ],
   },
   rules: {
