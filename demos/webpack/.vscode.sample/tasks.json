@@ -14,7 +14,7 @@
 				{
 					"owner": "npm",
 					"background": {
-						"endsPattern": "[webpack-dev-server] Project is running at.",
+						"endsPattern": "Project is running at.",
 						"beginsPattern": ".",
 						"activeOnStart": true
 					},
