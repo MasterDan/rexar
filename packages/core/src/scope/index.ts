@@ -31,3 +31,32 @@ export const onBeforeDestroy = createHookWrapper(
 export const onDestroyed = createHookWrapper(
   renderingScope.createHook('onDestroyed'),
 );
+
+export function createProvider<T>(): {
+  provide: (value: T) => void;
+  inject: () => T | undefined;
+};
+export function createProvider<T>(defaultVal: T): {
+  provide: (value: T) => void;
+  inject: () => T;
+};
+export function createProvider<T>(defaultVal?: T): {
+  provide: (value: T) => void;
+  inject: () => T | undefined;
+} {
+  const key = Symbol('provided-value');
+  const getScope = () => {
+    const scope = renderingScope.current;
+    if (scope == null) {
+      throw new Error('Scope is not defined');
+    }
+    return scope;
+  };
+  const provide = (value: T) => {
+    getScope().value.context.provide(key, value);
+  };
+  const inject = (): T | undefined =>
+    getScope().value.context.inject(key, defaultVal);
+
+  return { provide, inject };
+}

@@ -10,6 +10,7 @@ import {
   timer,
 } from 'rxjs';
 import { RenderingScopeValue } from '@core/scope/scope-value';
+import { RenderContext } from '@core/scope/context';
 
 enum Lifecycle {
   Created,
@@ -22,12 +23,15 @@ enum Lifecycle {
 export type ComponentOptions = {
   root: boolean;
   destroyer?: Subject<void>;
+  context?: RenderContext;
 };
 
 export class Component<TProps extends BaseProps> {
   key = Symbol('component');
 
   private hooks = new Map<ComponentHookName, Subject<void>[]>();
+
+  private parentContext: RenderContext | undefined;
 
   private setHook(name: ComponentHookName, body: Subject<void>) {
     let hooks = this.hooks.get(name);
@@ -48,6 +52,7 @@ export class Component<TProps extends BaseProps> {
   }
 
   constructor(private renderFunc: (props: TProps) => JSX.Element) {
+    this.parentContext = renderingScope.current?.value.context;
     const parentLifecycle = renderingScope.current?.value.component.lifecycle$;
     const destroy$ = this.$lifecycle.pipe(
       filter((l) => l === Lifecycle.Destroyed),
@@ -102,7 +107,10 @@ export class Component<TProps extends BaseProps> {
   render(props: TProps, { root, destroyer }: ComponentOptions) {
     const catchHooks = renderingScope.begin(
       this.key,
-      new RenderingScopeValue(this),
+      new RenderingScopeValue(
+        this,
+        this.parentContext?.createChildContext() ?? new RenderContext(),
+      ),
     );
     catchHooks.subscribe((hook) => {
       this.setHook(hook.name as ComponentHookName, hook.body);
