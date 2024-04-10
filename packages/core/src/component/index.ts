@@ -1,6 +1,7 @@
 import type { BaseProps, RenderFunction } from '@rexar/jsx';
 import type { AnyRecord } from '@rexar/tools';
 import { Subject } from 'rxjs';
+import { RenderContext } from '@core/scope/context';
 import { ComponentFactory } from './component-factory';
 import type { ComponentOptions } from './component';
 
@@ -26,7 +27,7 @@ export type RenderTarget = string | Element | Comment;
 
 export type RenderOptions = Omit<ComponentOptions, 'destroyer'>;
 
-export function render(renderFn: RenderFunction) {
+export function render(renderFn: RenderFunction, context?: RenderContext) {
   const pick = (target: RenderTarget) => {
     const el =
       target instanceof Element || target instanceof Comment
@@ -46,6 +47,7 @@ export function render(renderFn: RenderFunction) {
       {
         root: true,
         destroyer,
+        context,
       },
     );
     const remove = () => {
