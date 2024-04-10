@@ -1,4 +1,4 @@
-import type { BaseProps } from '@rexar/jsx';
+import type { BaseProps, RenderFunction } from '@rexar/jsx';
 import type { AnyRecord } from '@rexar/tools';
 import { Subject } from 'rxjs';
 import { ComponentFactory } from './component-factory';
@@ -12,7 +12,7 @@ export type ComponentRenderFunc<TProps extends AnyRecord = AnyRecord> = (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyComponentRenderFunc = ComponentRenderFunc<any>;
 
-export function defineComponent<TProps extends AnyRecord = AnyRecord>(
+export function defineComponent<TProps extends AnyRecord>(
   renderFn: (props: TProps & BaseProps) => JSX.Element,
 ): ComponentRenderFunc<TProps> {
   const factory = new ComponentFactory<TProps & BaseProps>(renderFn);
@@ -26,10 +26,7 @@ export type RenderTarget = string | Element | Comment;
 
 export type RenderOptions = Omit<ComponentOptions, 'destroyer'>;
 
-export function render<TProps extends AnyRecord = AnyRecord>(
-  renderFn: ComponentRenderFunc<TProps>,
-  props: TProps = {} as TProps,
-) {
+export function render(renderFn: RenderFunction) {
   const pick = (target: RenderTarget) => {
     const el =
       target instanceof Element || target instanceof Comment
@@ -43,10 +40,14 @@ export function render<TProps extends AnyRecord = AnyRecord>(
 
   const renderComponent = () => {
     const destroyer = new Subject<void>();
-    const renderedComponent = renderFn(props, {
-      root: true,
-      destroyer,
-    });
+    const component = defineComponent(renderFn);
+    const renderedComponent = component(
+      {},
+      {
+        root: true,
+        destroyer,
+      },
+    );
     const remove = () => {
       destroyer.next();
     };

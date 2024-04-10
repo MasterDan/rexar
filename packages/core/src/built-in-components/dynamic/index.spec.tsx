@@ -1,4 +1,3 @@
-import { h, fragment } from '@rexar/jsx';
 import { describe, expect, test } from 'vitest';
 import { defineComponent, render } from '@core/component';
 import { onBeforeDestroy, onMounted } from '@core/scope';

@@ -22,12 +22,14 @@ export function useDynamic(initial: RenderFunction | null = null) {
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
-    componentRef.subscribe((rfVal) => {
+    componentRef.subscribe((DynamicBody) => {
       if (previous) {
         previous.remove();
       }
-      if (rfVal) {
-        previous = render(rfVal, { children }).after(comment);
+      if (DynamicBody) {
+        previous = render(() => <DynamicBody>{children}</DynamicBody>).after(
+          comment,
+        );
       }
     });
     onBeforeDestroy().subscribe(() => {

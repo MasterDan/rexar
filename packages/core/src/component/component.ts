@@ -48,7 +48,7 @@ export class Component<TProps extends BaseProps> {
   }
 
   constructor(private renderFunc: (props: TProps) => JSX.Element) {
-    const parentLifecycle = renderingScope.current?.value?.component.lifecycle$;
+    const parentLifecycle = renderingScope.current?.value.component.lifecycle$;
     const destroy$ = this.$lifecycle.pipe(
       filter((l) => l === Lifecycle.Destroyed),
     );
