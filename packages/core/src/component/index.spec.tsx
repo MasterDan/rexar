@@ -30,6 +30,18 @@ describe('components', () => {
       ).outerHTML,
     );
   });
+  test('render-with-and-without-propss', () => {
+    const ComponentWithoutProps = defineComponent(() => <>First</>);
+    const ComponentWithProp = defineComponent<{ text: string }>(({ text }) => (
+      <>{text}</>
+    ));
+    const root = <div></div>;
+    const root2 = <div></div>;
+    render(ComponentWithoutProps).into(root);
+    render(() => <ComponentWithProp text="Second" />).into(root2);
+    expect(root.outerHTML).toBe((<div>First</div>).outerHTML);
+    expect(root2.outerHTML).toBe((<div>Second</div>).outerHTML);
+  });
   test('onMounted hook', async () => {
     const InnerComponent = defineComponent(() => {
       const number = new Subject<number>();
@@ -92,10 +104,12 @@ describe('components', () => {
     const target = <div></div>;
     const root = <div>{target}</div>;
     document.body.appendChild(root);
-    const renderedComp = render(Component, { text: 'Some text' }).after(target);
-    const renderedCompSecond = render(Component, {
-      text: 'Some other text',
-    }).after(target);
+    const renderedComp = render(() => <Component text="Some text" />).after(
+      target,
+    );
+    const renderedCompSecond = render(() => (
+      <Component text="Some other text" />
+    )).after(target);
 
     expect(root.outerHTML).toBe(
       (
@@ -137,14 +151,14 @@ describe('components', () => {
 
     const root = <div>{target}</div>;
     document.body.appendChild(root);
-    const first = render(Component, {
-      header: 'First',
-      text: 'first text',
-    }).after(target);
-    const second = render(Component, {
-      header: 'Second',
-      text: 'second text',
-    }).after(target);
+
+    const first = render(() => (
+      <Component header="First" text="first text" />
+    )).after(target);
+    const second = render(() => (
+      <Component header="Second" text="second text" />
+    )).after(target);
+
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -205,8 +219,8 @@ describe('components', () => {
     });
 
     const subRoot = <div></div>;
-    const first = render(Component, { name: 'First' }).into(subRoot);
-    const second = render(Component, { name: 'Second' }).into(subRoot);
+    const first = render(() => <Component name="First" />).into(subRoot);
+    const second = render(() => <Component name="Second" />).into(subRoot);
     const RootComponent = defineComponent(() => (
       <>
         <div>

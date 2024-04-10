@@ -16,7 +16,13 @@ export {
   useEvent,
   type EventTrigger,
 } from './component/tools';
-export { onRendered, onMounted, onBeforeDestroy, onDestroyed } from './scope';
+export {
+  onRendered,
+  onMounted,
+  onBeforeDestroy,
+  onDestroyed,
+  createProvider,
+} from './scope';
 export { Comment } from './built-in-components/comment';
 export { useDynamic } from './built-in-components/dynamic';
 export { useIf, Show } from './built-in-components/if-else';

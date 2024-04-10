@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
-import { h, fragment } from '@rexar/jsx';
 import { defineComponent, render } from '@core/component';
 import { wait } from '@rexar/tools';
 import { useFor } from '.';
