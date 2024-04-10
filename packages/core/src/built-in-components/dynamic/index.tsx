@@ -6,7 +6,8 @@ import {
   render,
 } from '@core/component';
 import { Ref } from '@rexar/reactivity';
-import { onBeforeDestroy } from '@core/scope';
+import { onBeforeDestroy, renderingScope } from '@core/scope';
+import { RenderContext } from '@core/scope/context';
 import { Comment } from '../comment';
 
 export function useDynamic(initial: RenderFunction | null = null) {
@@ -18,16 +19,22 @@ export function useDynamic(initial: RenderFunction | null = null) {
 
   setComponent(initial);
 
+  const context =
+    renderingScope.current?.value.context.createChildContext() ??
+    new RenderContext();
   const component = defineComponent(({ children }) => {
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
-    componentRef.subscribe((rfVal) => {
+    componentRef.subscribe((DynamicBody) => {
       if (previous) {
         previous.remove();
       }
-      if (rfVal) {
-        previous = render(rfVal, { children }).after(comment);
+      if (DynamicBody) {
+        previous = render(
+          () => <DynamicBody>{children}</DynamicBody>,
+          context,
+        ).after(comment);
       }
     });
     onBeforeDestroy().subscribe(() => {
