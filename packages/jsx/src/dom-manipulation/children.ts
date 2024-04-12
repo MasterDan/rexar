@@ -1,4 +1,4 @@
-import { trySubscribe } from '@rexar/reactivity';
+import { toObservable } from '@rexar/reactivity';
 import { ComponentChild } from '@jsx/@types';
 
 export type JsxElementOrFragment = JSX.Element | DocumentFragment;
@@ -17,7 +17,7 @@ function applyChild(
     target.appendChild(document.createTextNode(child.toString()));
   } else {
     const node = document.createTextNode('');
-    trySubscribe(child, (val) => {
+    toObservable(child).subscribe((val) => {
       if (val == null) {
         return;
       }
