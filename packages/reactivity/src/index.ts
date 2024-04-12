@@ -4,7 +4,7 @@ import { initCycleDependencies } from './anti-cycle';
 export type { MaybeRef } from './ref/tools';
 export type { MaybeObservable, AnyObservable } from './@types';
 export type { WritableRef } from './ref/tools';
-export type { Providable } from './ref/tools.try-subscribe';
+export type { ValueOrObservableOrGetter } from './ref/tools.to-observable';
 export type { Hook } from './scope';
 // init
 initCycleDependencies();
@@ -16,6 +16,6 @@ export { computed } from './computed';
 // tools
 export { isRef } from './ref/tools';
 export { toRef, toRefs } from './ref/tools';
-export { trySubscribe, toObservable } from './ref/tools.try-subscribe';
+export { toObservable } from './ref/tools.to-observable';
 export { readonly } from './ref/detect-changes';
 export { Scope } from './scope';
