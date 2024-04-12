@@ -1,7 +1,7 @@
 import type { trackingScope } from '@reactivity/computed';
 import type { toRef } from '../ref/tools';
 
-export class Provider<T> {
+export class Token<T> {
   private $value: T | undefined;
 
   get value(): T {
@@ -16,6 +16,6 @@ export class Provider<T> {
   }
 }
 
-export const toRefProvider = new Provider<typeof toRef>();
+export const toRefToken = new Token<typeof toRef>();
 
-export const trackingScopeProvider = new Provider<typeof trackingScope>();
+export const trackingScopeToken = new Token<typeof trackingScope>();

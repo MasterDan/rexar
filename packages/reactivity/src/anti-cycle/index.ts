@@ -1,8 +1,8 @@
 import { toRef } from '@reactivity/ref/tools';
 import { trackingScope } from '@reactivity/computed';
-import { toRefProvider, trackingScopeProvider } from './tokens';
+import { toRefToken, trackingScopeToken } from './tokens';
 
 export function initCycleDependencies() {
-  toRefProvider.value = toRef;
-  trackingScopeProvider.value = trackingScope;
+  toRefToken.value = toRef;
+  trackingScopeToken.value = trackingScope;
 }

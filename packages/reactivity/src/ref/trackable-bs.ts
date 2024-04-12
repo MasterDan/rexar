@@ -1,4 +1,4 @@
-import { trackingScopeProvider } from '@reactivity/anti-cycle/tokens';
+import { trackingScopeToken } from '@reactivity/anti-cycle/tokens';
 import { BehaviorSubject } from 'rxjs';
 
 export class TrackableBehaviorSubject<T> extends BehaviorSubject<T> {
@@ -9,7 +9,7 @@ export class TrackableBehaviorSubject<T> extends BehaviorSubject<T> {
   }
 
   isTracked() {
-    const scope = trackingScopeProvider.value.current;
+    const scope = trackingScopeToken.value.current;
     if (scope) {
       return this.trackedBy.has(scope.key);
     }
