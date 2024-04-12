@@ -26,11 +26,9 @@ describe('computed', () => {
     const fullName = computed(
       () => `${name.value} ${surname.value}`,
       (value) => {
-        if (value) {
-          const [n, s] = value.split(' ');
-          name.value = n;
-          surname.value = s;
-        }
+        const [n, s] = value.split(' ');
+        name.value = n;
+        surname.value = s;
       },
     );
 

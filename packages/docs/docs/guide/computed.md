@@ -19,5 +19,5 @@ Examples of `computed` usage are also available on [component syntax](../guide/c
 Computed can also be writable. Just pass setter function as second argument.  
 See the example:
 
-<<< ../../components/en/reactivity/computed/ComputedExample.tsx{7,9-16 tsx:line-numbers}
+<<< ../../components/en/reactivity/computed/ComputedExample.tsx{7,9-14 tsx:line-numbers}
 <Demo :is="ComputedExample" />

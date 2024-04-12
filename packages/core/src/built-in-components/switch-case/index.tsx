@@ -1,13 +1,17 @@
 import { defineComponent } from '@core/component';
 import { RenderFunction } from '@rexar/jsx';
-import { MaybeObservable, ref } from '@rexar/reactivity';
-import { combineLatest, isObservable, map } from 'rxjs';
+import {
+  ValueOrObservableOrGetter,
+  ref,
+  toObservable,
+} from '@rexar/reactivity';
+import { combineLatest, map } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 type CheckFn<TValue> = (value: TValue) => boolean;
 
-export function useSwitch<TValue>(value: MaybeObservable<TValue>) {
-  const Switch = defineComponent<{
+export function useSwitch<TValue>(value: ValueOrObservableOrGetter<TValue>) {
+  return defineComponent<{
     setup: (
       setCase: (
         check: TValue | CheckFn<TValue>,
@@ -18,14 +22,7 @@ export function useSwitch<TValue>(value: MaybeObservable<TValue>) {
   }>(({ setup, default: defaultContent }) => {
     const [Dynamic, setDynamic] = useDynamic();
 
-    const valueRef = ref<TValue>();
-    if (isObservable(value)) {
-      value.subscribe((v) => {
-        valueRef.value = v;
-      });
-    } else {
-      valueRef.value = value as TValue;
-    }
+    const valueRef = ref<TValue>().fromObservable(toObservable(value));
 
     const cases = ref<[CheckFn<TValue>, RenderFunction][]>([]);
     const defaultCase = ref<RenderFunction | undefined>(defaultContent);
@@ -57,6 +54,4 @@ export function useSwitch<TValue>(value: MaybeObservable<TValue>) {
 
     return <Dynamic></Dynamic>;
   });
-
-  return Switch;
 }
