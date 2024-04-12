@@ -25,6 +25,6 @@ export {
 } from './scope';
 export { Comment } from './built-in-components/comment';
 export { useDynamic } from './built-in-components/dynamic';
-export { useIf, Show } from './built-in-components/if-else';
+export { Show } from './built-in-components/if-else';
 export { useFor } from './built-in-components/for-each';
 export { useSwitch } from './built-in-components/switch-case';
