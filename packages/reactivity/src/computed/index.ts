@@ -1,6 +1,6 @@
 import type { SomeRef } from '@reactivity/ref/tools';
 import { Hook, Scope } from '@reactivity/scope';
-import { toRefProvider } from '@reactivity/anti-cycle/anti-cycle';
+import { toRefProvider } from '@reactivity/anti-cycle/tokens';
 import type { WritableReadonlyRef } from '@reactivity/ref/writable-readonly.ref';
 import type { ReadonlyRef } from '@reactivity/ref/readonly.ref';
 import { AnyObservable } from '@reactivity/@types';

@@ -3,10 +3,7 @@ import { detectChanges } from './detect-changes';
 import { TrackableBehaviorSubject } from './trackable-bs';
 
 export class WritableReadonlyRef<T> extends TrackableBehaviorSubject<T> {
-  constructor(
-    value: T,
-    private setter: (value?: T) => void,
-  ) {
+  constructor(value: T, private setter: (value: T) => void) {
     super(value);
   }
 

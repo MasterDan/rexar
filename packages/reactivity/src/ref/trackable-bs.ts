@@ -1,4 +1,4 @@
-import { trackingScopeProvider } from '@reactivity/anti-cycle/anti-cycle';
+import { trackingScopeProvider } from '@reactivity/anti-cycle/tokens';
 import { BehaviorSubject } from 'rxjs';
 
 export class TrackableBehaviorSubject<T> extends BehaviorSubject<T> {
