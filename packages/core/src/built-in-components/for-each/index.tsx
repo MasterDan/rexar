@@ -1,7 +1,7 @@
-import { MaybeObservable } from '@rexar/reactivity';
+import { ValueOrObservableOrGetter, toObservable } from '@rexar/reactivity';
 import { defineComponent } from '@core/component';
 import { getPatch } from 'fast-array-diff';
-import { isObservable } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { onBeforeDestroy, onRendered } from '@core/scope';
 import { Comment } from '../comment';
 import { ArrayItem } from './array-item';
@@ -14,7 +14,7 @@ export type ForEachState<T> = {
 };
 
 export function useFor<T>(
-  array: MaybeObservable<T[]>,
+  array: ValueOrObservableOrGetter<T[]>,
   keyFactory: KeyFactory<T>,
 ) {
   let ComponentsArray: ArrayItem<T>[] = [];
@@ -93,15 +93,10 @@ export function useFor<T>(
     anchorStart = anchorStartComponent;
     each = eachComponent;
     const result = <>{anchorStartComponent}</>;
-    onRendered().subscribe(() => {
-      if (isObservable(array)) {
-        array.subscribe((a) => {
-          setArray(a);
-        });
-      } else {
-        setArray(array);
-      }
-    });
+    onRendered()
+      .pipe(switchMap(() => toObservable(array)))
+      .subscribe((a) => setArray(a));
+
     onBeforeDestroy().subscribe(() => {
       ComponentsArray.forEach((item) => {
         item.remove();

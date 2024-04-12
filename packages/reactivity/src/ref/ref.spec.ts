@@ -95,5 +95,8 @@ describe('refs', () => {
     expect(name.value).toBe('Jane');
     age.value = 10;
     expect(objRef.value.age).toBe(10);
+    objRef.valueUntracked.age = 1;
+    expect(objRef.value.age).toBe(1);
+    expect(age.value).toBe(10);
   });
 });

@@ -1,6 +1,6 @@
 import type { SomeRef } from '@reactivity/ref/tools';
 import { Hook, Scope } from '@reactivity/scope';
-import { toRefProvider } from '@reactivity/anti-cycle/anti-cycle';
+import { toRefToken } from '@reactivity/anti-cycle/tokens';
 import type { WritableReadonlyRef } from '@reactivity/ref/writable-readonly.ref';
 import type { ReadonlyRef } from '@reactivity/ref/readonly.ref';
 import { AnyObservable } from '@reactivity/@types';
@@ -27,11 +27,11 @@ export const onTrack = trackingScope.createHook('onTrack');
 export function computed<T>(getter: () => T): ReadonlyRef<T>;
 export function computed<T>(
   getter: () => T,
-  setter: (value?: T) => void,
+  setter: (value: T) => void,
 ): WritableReadonlyRef<T>;
 export function computed<T>(
   getter: () => T,
-  setter?: (value?: T) => void,
+  setter?: (value: T) => void,
 ): WritableReadonlyRef<T> | ReadonlyRef<T> {
   const emitter = new BehaviorSubject<T | undefined>(
     undefined,
@@ -60,7 +60,5 @@ export function computed<T>(
   });
   emitter.next(getter());
   trackingScope.end();
-  return setter
-    ? toRefProvider.value(emitter, setter)
-    : toRefProvider.value(emitter);
+  return setter ? toRefToken.value(emitter, setter) : toRefToken.value(emitter);
 }

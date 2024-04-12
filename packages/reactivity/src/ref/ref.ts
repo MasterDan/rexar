@@ -1,4 +1,5 @@
 import { onTrack } from '@reactivity/computed';
+import { Observable } from 'rxjs';
 import { detectChanges } from './detect-changes';
 import { TrackableBehaviorSubject } from './trackable-bs';
 
@@ -19,6 +20,17 @@ export class Ref<T> extends TrackableBehaviorSubject<T> {
 
   set value(val: T) {
     this.next(val);
+  }
+
+  get valueUntracked() {
+    return super.value;
+  }
+
+  fromObservable(obs$: Observable<T>) {
+    obs$.subscribe((val) => {
+      this.value = val;
+    });
+    return this;
   }
 }
 

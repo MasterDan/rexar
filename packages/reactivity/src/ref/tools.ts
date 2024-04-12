@@ -16,38 +16,34 @@ export type WritableRef<T> = Ref<T> | WritableReadonlyRef<T>;
 export type SomeRef<T> = WritableRef<T> | ReadonlyRef<T>;
 
 export function toRef<T>(
-  arg: WritableReadonlyRef<T>,
-  setter: (value?: T) => void,
-): WritableReadonlyRef<T>;
-export function toRef<T>(
-  arg: ReadonlyRef<T>,
-  setter: (value?: T) => void,
-): WritableReadonlyRef<T>;
-export function toRef<T>(
-  arg: Ref<T>,
-  setter: (value?: T) => void,
-): WritableReadonlyRef<T>;
-export function toRef<T>(
   arg: BehaviorSubject<T>,
-  setter: (value?: T) => void,
+  setter: (value: T) => void,
+): WritableReadonlyRef<T>;
+export function toRef<T>(
+  arg: Observable<T>,
+  setter: (value: T) => void,
+  initialValue: T,
 ): WritableReadonlyRef<T>;
 export function toRef<T>(
   arg: Observable<T>,
   setter: (value?: T) => void,
 ): WritableReadonlyRef<T | undefined>;
-export function toRef<T>(arg: WritableReadonlyRef<T>): ReadonlyRef<T>;
-export function toRef<T>(arg: ReadonlyRef<T>): ReadonlyRef<T>;
-export function toRef<T>(arg: Ref<T>): ReadonlyRef<T>;
 export function toRef<T>(arg: BehaviorSubject<T>): ReadonlyRef<T>;
+export function toRef<T>(
+  arg: Observable<T>,
+  setter: undefined,
+  initialValue: T,
+): ReadonlyRef<T>;
 export function toRef<T>(arg: Observable<T>): ReadonlyRef<T | undefined>;
 export function toRef<T>(arg: T): Ref<T>;
 export function toRef<T>(
   arg: MaybeObservable<T>,
   setter?: (value?: T) => void,
+  initialValue?: T,
 ): ReadonlyRef<T | undefined> | Ref<T> {
   if (isObservable(arg)) {
     const value: T | undefined =
-      arg instanceof BehaviorSubject ? arg.value : undefined;
+      arg instanceof BehaviorSubject ? arg.value : initialValue;
     if (setter) {
       const result = new WritableReadonlyRef<T | undefined>(value, setter);
       arg.subscribe((v) => {

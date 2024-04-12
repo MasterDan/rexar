@@ -9,9 +9,7 @@ export const ComputedExample = defineComponent(() => {
   const fullNameWritable$ = computed(
     () => `${name$.value} ${surname$.value}`,
     (val) => {
-      if (val) {
-        [name$.value, surname$.value] = val.split(' ');
-      }
+      [name$.value, surname$.value] = val.split(' ');
     }
   );
   return (

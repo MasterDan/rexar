@@ -13,4 +13,8 @@ export class ReadonlyRef<T> extends TrackableBehaviorSubject<T> {
     }
     return val;
   }
+
+  get valueUntracked() {
+    return super.value;
+  }
 }
