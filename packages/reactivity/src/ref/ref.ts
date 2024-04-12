@@ -20,6 +20,10 @@ export class Ref<T> extends TrackableBehaviorSubject<T> {
   set value(val: T) {
     this.next(val);
   }
+
+  get valueUntracked() {
+    return super.value;
+  }
 }
 
 export function ref<T>(): Ref<T | undefined>;
