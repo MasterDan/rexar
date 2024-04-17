@@ -2,8 +2,10 @@ import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
 import { defineComponent, render } from '@core/component';
 import { wait } from '@rexar/tools';
+import { map } from 'rxjs';
 import { useFor } from '.';
 import { Comment } from '../comment';
+import { useDynamic } from '../dynamic';
 
 /**
  * @vitest-environment jsdom
@@ -207,5 +209,87 @@ describe('for-each rendering', () => {
     );
     remove();
     expect(root.outerHTML).toBe((<div></div>).outerHTML);
+  });
+  test('array-of-dynamics', () => {
+    const itemsMap$ = ref(
+      new Map([
+        [
+          'first',
+          {
+            order: 0,
+            name: 'default',
+            content: () => {
+              itemsMap$.value.set('x', {
+                order: 2,
+                name: 'x',
+                content: () => <div>Overlay</div>,
+              });
+              return <div>Default</div>;
+            },
+          },
+        ],
+      ]),
+    );
+    const Items = useFor(
+      itemsMap$.pipe(
+        map((i) => Array.from(i.values()).sort((a, b) => a.order - b.order)),
+      ),
+      (i) => i.name,
+    );
+    const root = <div></div>;
+    document.body.appendChild(root);
+    render(() => (
+      <Items
+        each={({ item }) => {
+          const [Content, setContent] = useDynamic();
+          item.subscribe(({ content }) => {
+            setContent(content);
+          });
+          return <Content></Content>;
+        }}
+      />
+    )).into(root);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="foreach-anchor"></Comment>
+          <Comment text="dynamic-anchor"></Comment>
+          <div>Default</div>
+          <Comment text="end-of-element"></Comment>
+          <Comment text="dynamic-anchor"></Comment>
+          <div>Overlay</div>
+          <Comment text="end-of-element"></Comment>
+        </div>
+      ).outerHTML,
+    );
+    itemsMap$.next(
+      new Map([
+        [
+          'before-first',
+          {
+            order: -1,
+            name: 'before-first',
+            content: () => <div>Before-first</div>,
+          },
+        ],
+        [
+          'first',
+          { order: 0, name: 'default', content: () => <div>Default</div> },
+        ],
+      ]),
+    );
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="foreach-anchor"></Comment>
+          <Comment text="dynamic-anchor"></Comment>
+          <div>Before-first</div>
+          <Comment text="end-of-element"></Comment>
+          <Comment text="dynamic-anchor"></Comment>
+          <div>Default</div>
+          <Comment text="end-of-element"></Comment>
+        </div>
+      ).outerHTML,
+    );
   });
 });
