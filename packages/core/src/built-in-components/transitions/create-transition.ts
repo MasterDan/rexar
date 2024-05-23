@@ -16,7 +16,7 @@ export type TransitionState =
       style: StyleAttributes;
     };
 
-export class Transition<TStates extends string> {
+class Transition<TStates extends string> {
   states$ = ref(new Map<TransitionStateKeys<TStates>, TransitionState>());
 
   transitions$ = ref(new Map<string, TransitionState>());
@@ -41,8 +41,8 @@ export class Transition<TStates extends string> {
   }
 
   get setTransition() {
-    const from = (fromKey: TransitionStateKeys<TStates>) => {
-      const to = (toKey: TransitionStateKeys<TStates>) => {
+    const from = (fromKey: TransitionStateKeys<TStates> | '*') => {
+      const to = (toKey: TransitionStateKeys<TStates> | '*') => {
         const transitionKey = `${fromKey}=>${toKey}`;
         const withClass = (className: string): Transition<TStates> => {
           this.transitions$.value.set(transitionKey, {
@@ -66,5 +66,9 @@ export class Transition<TStates extends string> {
     this.currentState$.value = state;
     return this;
   }
+}
+
+export function createTransition() {
+  return new Transition();
 }
 
