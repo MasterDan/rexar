@@ -28,3 +28,4 @@ export { useDynamic } from './built-in-components/dynamic';
 export { Show } from './built-in-components/if-else';
 export { useFor } from './built-in-components/for-each';
 export { useSwitch } from './built-in-components/switch-case';
+export { Tag } from './built-in-components/custom-tag/Tag';
