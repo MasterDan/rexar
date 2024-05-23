@@ -1,6 +1,6 @@
 import { defineComponent } from '@core/component';
 import { onMounted } from '@core/scope';
-import { ComponentAttributes, h } from '@rexar/jsx';
+import { ComponentAttributes, type h } from '@rexar/jsx';
 import {
   Ref,
   ValueOrObservableOrGetter,
@@ -37,6 +37,7 @@ export const Tag = defineComponent<{
     )
     .subscribe(([tagName, attributes]) => {
       setContent(() => {
+        // @ts-expect-error h will be imported
         const element = h(tagName, attributes ?? {}, children);
 
         element$.value = element;
