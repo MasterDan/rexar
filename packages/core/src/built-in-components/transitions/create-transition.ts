@@ -15,12 +15,12 @@ import {
 } from 'rxjs';
 import { AnyRecord } from '@rexar/tools';
 
-export type TransitionStateKeys<TAdditionalKeys = 'default' | 'void'> =
+export type AnimationStateKeys<TAdditionalKeys = 'default' | 'void'> =
   | 'default'
   | 'void'
   | TAdditionalKeys;
 
-export type TransitionState =
+export type AnimationState =
   | {
       type: 'class';
       class: string;
@@ -30,7 +30,7 @@ export type TransitionState =
       style: StyleAttributes;
     };
 
-function applyState(state: TransitionState, el: HTMLElement) {
+function applyState(state: AnimationState, el: HTMLElement) {
   if (state.type === 'class') {
     el.classList.add(state.class);
   } else if (state.type === 'style') {
@@ -41,7 +41,7 @@ function applyState(state: TransitionState, el: HTMLElement) {
     });
   }
 }
-function removeState(state: TransitionState, el: HTMLElement) {
+function removeState(state: AnimationState, el: HTMLElement) {
   if (state.type === 'class') {
     el.classList.remove(state.class);
   } else if (state.type === 'style') {
@@ -53,19 +53,19 @@ function removeState(state: TransitionState, el: HTMLElement) {
   }
 }
 
-class Transition<TStates extends string> {
-  states = new Map<TransitionStateKeys<TStates>, TransitionState>();
+class Animation<TStates extends string> {
+  states = new Map<AnimationStateKeys<TStates>, AnimationState>();
 
-  transitions = new Map<string, TransitionState>();
+  transitions = new Map<string, AnimationState>();
 
-  defaultState: TransitionStateKeys<TStates> = 'default';
+  defaultState: AnimationStateKeys<TStates> = 'default';
 
-  setState<T extends TransitionStateKeys<TStates>>(state: T) {
-    const withClass = (className: string): Transition<TStates> => {
+  setState<T extends AnimationStateKeys<TStates>>(state: T) {
+    const withClass = (className: string): Animation<TStates> => {
       this.states.set(state, { type: 'class', class: className });
       return this;
     };
-    const withStyle = (style: StyleAttributes): Transition<TStates> => {
+    const withStyle = (style: StyleAttributes): Animation<TStates> => {
       this.states.set(state, { type: 'style', style });
       return this;
     };
@@ -73,22 +73,22 @@ class Transition<TStates extends string> {
   }
 
   addState<T extends string>(state: T) {
-    const self = this as Transition<TStates | T>;
+    const self = this as Animation<TStates | T>;
     return self.setState(state);
   }
 
   get setTransition() {
-    const from = (fromKey: TransitionStateKeys<TStates> | '*') => {
-      const to = (toKey: TransitionStateKeys<TStates> | '*') => {
+    const from = (fromKey: AnimationStateKeys<TStates> | '*') => {
+      const to = (toKey: AnimationStateKeys<TStates> | '*') => {
         const transitionKey = `${fromKey}=>${toKey}`;
-        const withClass = (className: string): Transition<TStates> => {
+        const withClass = (className: string): Animation<TStates> => {
           this.transitions.set(transitionKey, {
             type: 'class',
             class: className,
           });
           return this;
         };
-        const withStyle = (style: StyleAttributes): Transition<TStates> => {
+        const withStyle = (style: StyleAttributes): Animation<TStates> => {
           this.transitions.set(transitionKey, { type: 'style', style });
           return this;
         };
@@ -99,7 +99,7 @@ class Transition<TStates extends string> {
     return { from };
   }
 
-  withInitialSate(state: TransitionStateKeys<TStates>) {
+  withInitialSate(state: AnimationStateKeys<TStates>) {
     this.defaultState = state;
     return this;
   }
@@ -107,17 +107,23 @@ class Transition<TStates extends string> {
   attachTo(el: ValueOrObservableOrGetter<HTMLElement | undefined>) {
     const el$ = toObservable(el).pipe(filter((v) => v != null));
     const processing$ = ref(false);
-    const state$ = ref<TransitionStateKeys<TStates>>(this.defaultState);
+    const state$ = ref<AnimationStateKeys<TStates>>(this.defaultState);
 
-    const setState = (state: TransitionStateKeys<TStates>) => {
+    const setState = (state: AnimationStateKeys<TStates>) => {
       state$.value = state;
+    };
+
+    const bindState = (
+      stateToBind$: ValueOrObservableOrGetter<AnimationStateKeys<TStates>>,
+    ) => {
+      toObservable(stateToBind$).subscribe(setState);
     };
 
     const statePairwise$ = state$.pipe(
       startWith('*'),
       pairwise(),
     ) as unknown as Observable<
-      [TransitionStateKeys<TStates> | '*', TransitionStateKeys<TStates> | '*']
+      [AnimationStateKeys<TStates> | '*', AnimationStateKeys<TStates> | '*']
     >;
 
     processing$
@@ -141,11 +147,11 @@ class Transition<TStates extends string> {
         }
 
         const removeFromState = () => {
-          if (fromState != null) {
-            removeState(fromState, element);
-          }
           if (transition != null) {
             removeState(transition, element);
+          }
+          if (fromState != null) {
+            removeState(fromState, element);
           }
           element.removeEventListener('transitionend', removeFromState);
           processing$.value = false;
@@ -155,11 +161,12 @@ class Transition<TStates extends string> {
 
     return {
       setState,
+      bindState,
     };
   }
 }
 
-export function createTransition() {
-  return new Transition();
+export function createAnimation() {
+  return new Animation();
 }
 
