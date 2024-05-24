@@ -14,11 +14,15 @@ import {
   switchMap,
 } from 'rxjs';
 import { AnyRecord } from '@rexar/tools';
+import { defineComponent } from '@core/component';
+import { onMounted } from '@core/scope';
+import { Capture } from '../capture/Capture';
 
-export type AnimationStateKeys<TAdditionalKeys = 'default' | 'void'> =
-  | 'default'
-  | 'void'
-  | TAdditionalKeys;
+export type AnimationSatesDefault = 'default' | 'void';
+
+export type AnimationStateKeys<
+  TAdditionalKeys extends string = AnimationSatesDefault,
+> = AnimationSatesDefault | TAdditionalKeys;
 
 export type AnimationState =
   | {
@@ -53,7 +57,7 @@ function removeState(state: AnimationState, el: HTMLElement) {
   }
 }
 
-class Animation<TStates extends string> {
+class Transition<TStates extends string = AnimationSatesDefault> {
   states = new Map<AnimationStateKeys<TStates>, AnimationState>();
 
   transitions = new Map<string, AnimationState>();
@@ -61,11 +65,11 @@ class Animation<TStates extends string> {
   defaultState: AnimationStateKeys<TStates> = 'default';
 
   setState<T extends AnimationStateKeys<TStates>>(state: T) {
-    const withClass = (className: string): Animation<TStates> => {
+    const withClass = (className: string): Transition<TStates> => {
       this.states.set(state, { type: 'class', class: className });
       return this;
     };
-    const withStyle = (style: StyleAttributes): Animation<TStates> => {
+    const withStyle = (style: StyleAttributes): Transition<TStates> => {
       this.states.set(state, { type: 'style', style });
       return this;
     };
@@ -73,7 +77,7 @@ class Animation<TStates extends string> {
   }
 
   addState<T extends string>(state: T) {
-    const self = this as Animation<TStates | T>;
+    const self = this as Transition<TStates | T>;
     return self.setState(state);
   }
 
@@ -81,14 +85,14 @@ class Animation<TStates extends string> {
     const from = (fromKey: AnimationStateKeys<TStates> | '*') => {
       const to = (toKey: AnimationStateKeys<TStates> | '*') => {
         const transitionKey = `${fromKey}=>${toKey}`;
-        const withClass = (className: string): Animation<TStates> => {
+        const withClass = (className: string): Transition<TStates> => {
           this.transitions.set(transitionKey, {
             type: 'class',
             class: className,
           });
           return this;
         };
-        const withStyle = (style: StyleAttributes): Animation<TStates> => {
+        const withStyle = (style: StyleAttributes): Transition<TStates> => {
           this.transitions.set(transitionKey, { type: 'style', style });
           return this;
         };
@@ -164,9 +168,22 @@ class Animation<TStates extends string> {
       bindState,
     };
   }
+
+  createComponent() {
+    return defineComponent<{
+      state: ValueOrObservableOrGetter<AnimationStateKeys<TStates>>;
+    }>(({ children, state }) => {
+      const el$ = ref<HTMLElement>();
+      onMounted().subscribe(() => {
+        const { bindState } = this.attachTo(el$);
+        bindState(state);
+      });
+      return <Capture el$={el$}>{children}</Capture>;
+    });
+  }
 }
 
-export function createAnimation() {
-  return new Animation();
+export function createTransition() {
+  return new Transition();
 }
 

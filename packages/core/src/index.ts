@@ -30,3 +30,4 @@ export { useFor } from './built-in-components/for-each';
 export { useSwitch } from './built-in-components/switch-case';
 export { Tag } from './built-in-components/custom-tag/Tag';
 export { Capture } from './built-in-components/capture/Capture';
+export { createTransition } from './built-in-components/transition';
