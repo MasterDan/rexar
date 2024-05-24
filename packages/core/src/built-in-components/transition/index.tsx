@@ -7,20 +7,21 @@ import { StyleAttributes } from '@rexar/jsx';
 import {
   Observable,
   combineLatestWith,
+  distinctUntilChanged,
   filter,
   map,
   pairwise,
   startWith,
   switchMap,
+  take,
 } from 'rxjs';
-import { AnyRecord } from '@rexar/tools';
 import { defineComponent } from '@core/component';
 import { onMounted } from '@core/scope';
 import { Capture } from '../capture/Capture';
 
 export type AnimationSatesDefault = 'default' | 'void';
 
-export type AnimationStateKeys<
+export type AnimationKeys<
   TAdditionalKeys extends string = AnimationSatesDefault,
 > = AnimationSatesDefault | TAdditionalKeys;
 
@@ -35,36 +36,54 @@ export type AnimationState =
     };
 
 function applyState(state: AnimationState, el: HTMLElement) {
+  console.groupCollapsed('applying', state);
+  console.log('element', el);
+
   if (state.type === 'class') {
     el.classList.add(state.class);
   } else if (state.type === 'style') {
     Object.entries(state.style).forEach(([key, value]) => {
       if (key in el.style) {
-        (el.style as AnyRecord)[key] = value;
+        if (value == null) {
+          el.style.removeProperty(key);
+        } else {
+          el.style.setProperty(key, value as string | null);
+        }
       }
     });
   }
+
+  console.groupEnd();
 }
 function removeState(state: AnimationState, el: HTMLElement) {
+  console.groupCollapsed('removing', state);
+  console.log('element', el);
+
   if (state.type === 'class') {
     el.classList.remove(state.class);
   } else if (state.type === 'style') {
     Object.keys(state.style).forEach((key) => {
-      if (key in el.style) {
-        (el.style as AnyRecord)[key] = undefined;
+      if (
+        key in el.style &&
+        el.style.getPropertyValue(key) ===
+          state.style[key as keyof StyleAttributes]
+      ) {
+        el.style.removeProperty(key);
       }
     });
   }
+
+  console.groupEnd();
 }
 
 class Transition<TStates extends string = AnimationSatesDefault> {
-  states = new Map<AnimationStateKeys<TStates>, AnimationState>();
+  states = new Map<AnimationKeys<TStates>, AnimationState>();
 
   transitions = new Map<string, AnimationState>();
 
-  defaultState: AnimationStateKeys<TStates> = 'default';
+  defaultState: AnimationKeys<TStates> = 'default';
 
-  setState<T extends AnimationStateKeys<TStates>>(state: T) {
+  setState<T extends AnimationKeys<TStates>>(state: T) {
     const withClass = (className: string): Transition<TStates> => {
       this.states.set(state, { type: 'class', class: className });
       return this;
@@ -82,8 +101,8 @@ class Transition<TStates extends string = AnimationSatesDefault> {
   }
 
   get setTransition() {
-    const from = (fromKey: AnimationStateKeys<TStates> | '*') => {
-      const to = (toKey: AnimationStateKeys<TStates> | '*') => {
+    const from = (fromKey: AnimationKeys<TStates> | '*') => {
+      const to = (toKey: AnimationKeys<TStates> | '*') => {
         const transitionKey = `${fromKey}=>${toKey}`;
         const withClass = (className: string): Transition<TStates> => {
           this.transitions.set(transitionKey, {
@@ -103,57 +122,95 @@ class Transition<TStates extends string = AnimationSatesDefault> {
     return { from };
   }
 
-  withInitialSate(state: AnimationStateKeys<TStates>) {
+  withInitialSate(state: AnimationKeys<TStates>) {
     this.defaultState = state;
     return this;
   }
 
   attachTo(el: ValueOrObservableOrGetter<HTMLElement | undefined>) {
-    const el$ = toObservable(el).pipe(filter((v) => v != null));
+    const el$ = toObservable(el).pipe(
+      filter((v): v is HTMLElement => v != null),
+    );
+    // el$.subscribe((v) => {
+    //   console.log('el is', v);
+    // });
     const processing$ = ref(false);
-    const state$ = ref<AnimationStateKeys<TStates>>(this.defaultState);
+    const state$ = ref<AnimationKeys<TStates>>(this.defaultState);
+    processing$.subscribe((v) => {
+      console.log('processing is', v);
+    });
+    // state$.subscribe((v) => {
+    //   console.log('state is', v);
+    // });
 
-    const setState = (state: AnimationStateKeys<TStates>) => {
+    const setState = (state: AnimationKeys<TStates>) => {
       state$.value = state;
     };
 
     const bindState = (
-      stateToBind$: ValueOrObservableOrGetter<AnimationStateKeys<TStates>>,
+      stateToBind$: ValueOrObservableOrGetter<AnimationKeys<TStates>>,
     ) => {
-      toObservable(stateToBind$).subscribe(setState);
+      toObservable(stateToBind$)
+        .pipe(
+          switchMap((state) =>
+            // wait until processing ends
+            processing$.pipe(
+              filter((p) => !p),
+              take(1),
+              map(() => state),
+            ),
+          ),
+        )
+        .subscribe(setState);
     };
 
     const statePairwise$ = state$.pipe(
       startWith('*'),
+      distinctUntilChanged(),
       pairwise(),
     ) as unknown as Observable<
-      [AnimationStateKeys<TStates> | '*', AnimationStateKeys<TStates> | '*']
+      [AnimationKeys<TStates> | '*', AnimationKeys<TStates> | '*']
     >;
 
-    processing$
+    statePairwise$
       .pipe(
-        filter((v) => !v),
-        switchMap(() => statePairwise$),
         map(([from, to]) => ({ from, to })),
-        combineLatestWith(el$.pipe(filter((v): v is HTMLElement => v != null))),
+        combineLatestWith(el$),
       )
       .subscribe(([{ from, to }, element]) => {
+        console.log('Transition from', from, 'to', to, 'on', element);
+
         processing$.value = true;
         const fromState = from === '*' ? undefined : this.states.get(from);
         const toState = to === '*' ? undefined : this.states.get(to);
-        const transition = this.transitions.get(`${from}=>${to}`);
+        const transitions = [
+          this.transitions.get(`${from}=>${to}`),
+          this.transitions.get(`${from}=>*`),
+          this.transitions.get(`*=>${to}`),
+          this.transitions.get('*=>*'),
+        ].filter((i): i is AnimationState => i != null);
 
-        if (transition != null) {
-          applyState(transition, element);
+        if (transitions.length > 0) {
+          transitions.forEach((transition) => {
+            applyState(transition, element);
+          });
         }
         if (toState != null) {
           applyState(toState, element);
         }
+        if (transitions.length === 0) {
+          if (fromState != null) {
+            removeState(fromState, element);
+          }
+          processing$.value = false;
+          return;
+        }
 
         const removeFromState = () => {
-          if (transition != null) {
+          console.log('Transition ended');
+          transitions.forEach((transition) => {
             removeState(transition, element);
-          }
+          });
           if (fromState != null) {
             removeState(fromState, element);
           }
@@ -164,16 +221,16 @@ class Transition<TStates extends string = AnimationSatesDefault> {
       });
 
     return {
-      setState,
       bindState,
     };
   }
 
   createComponent() {
     return defineComponent<{
-      state: ValueOrObservableOrGetter<AnimationStateKeys<TStates>>;
+      state: ValueOrObservableOrGetter<AnimationKeys<TStates>>;
     }>(({ children, state }) => {
       const el$ = ref<HTMLElement>();
+
       onMounted().subscribe(() => {
         const { bindState } = this.attachTo(el$);
         bindState(state);
@@ -183,7 +240,16 @@ class Transition<TStates extends string = AnimationSatesDefault> {
   }
 }
 
-export function createTransition() {
-  return new Transition();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnimationKeysOf<T extends Transition<any>> = T extends Transition<
+  infer TStates
+>
+  ? AnimationKeys<TStates>
+  : never;
+
+export function createTransition<
+  TStates extends string = AnimationSatesDefault,
+>() {
+  return new Transition<TStates>();
 }
 
