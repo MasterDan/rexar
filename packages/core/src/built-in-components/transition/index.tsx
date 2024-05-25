@@ -191,20 +191,6 @@ class Transition<TStates extends string = AnimationSatesDefault> {
       bindState,
     };
   }
-
-  createComponent() {
-    return defineComponent<{
-      state: ValueOrObservableOrGetter<AnimationKeys<TStates>>;
-    }>(({ children, state }) => {
-      const el$ = ref<HTMLElement>();
-
-      onMounted().subscribe(() => {
-        const { bindState } = this.attachTo(el$);
-        bindState(state);
-      });
-      return <Capture el$={el$}>{children}</Capture>;
-    });
-  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -220,5 +206,49 @@ export function createTransition<
   TStates extends string = AnimationSatesDefault,
 >() {
   return new Transition<TStates>();
+}
+
+export type AnyTransitionRecord = Record<string, AnyTransition>;
+
+export type TransitionRecordStates<T extends AnyTransitionRecord> = {
+  [K in keyof T]: AnimationKeysOf<T[K]>;
+};
+
+export function useTransitionComponent<
+  T extends AnyTransition | AnyTransitionRecord,
+>(transitionOrMap: T) {
+  if (transitionOrMap instanceof Transition) {
+    return defineComponent<{
+      state$: ValueOrObservableOrGetter<
+        AnimationKeysOf<Exclude<T, AnyTransitionRecord>>
+      >;
+    }>(({ children, state$ }) => {
+      const el$ = ref<HTMLElement>();
+
+      onMounted().subscribe(() => {
+        const { bindState } = transitionOrMap.attachTo(el$);
+        bindState(state$);
+      });
+      return <Capture el$={el$}>{children}</Capture>;
+    });
+    // eslint-disable-next-line no-else-return
+  }
+  return defineComponent<{
+    states$: ValueOrObservableOrGetter<
+      TransitionRecordStates<Exclude<T, AnyTransition>>
+    >;
+  }>(({ children, states$ }) => {
+    const el$ = ref<HTMLElement>();
+    onMounted()
+      .pipe(switchMap(() => toObservable(states$)))
+      .subscribe((states) => {
+        Object.keys(transitionOrMap).forEach((key) => {
+          const transition = transitionOrMap[key];
+          const { bindState } = transition.attachTo(el$);
+          bindState(states[key as keyof typeof states]);
+        });
+      });
+    return <Capture el$={el$}>{children}</Capture>;
+  });
 }
 
