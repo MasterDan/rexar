@@ -1,10 +1,18 @@
 import { BaseProps } from '@rexar/jsx';
 import { ref, toRef } from '@rexar/reactivity';
-import { ComponentHookName, renderingScope } from '@core/scope';
+import {
+  ComponentHookName,
+  ComponentHookValue,
+  renderingScope,
+} from '@core/scope';
 import {
   Subject,
+  combineLatestWith,
+  debounceTime,
   distinctUntilChanged,
   filter,
+  map,
+  switchMap,
   take,
   takeUntil,
   timer,
@@ -29,14 +37,27 @@ export type ComponentOptions = {
 export class Component<TProps extends BaseProps> {
   key = Symbol('component');
 
-  private hooks = new Map<ComponentHookName, Subject<void>[]>();
+  private hooks = new Map<ComponentHookName, ComponentHookValue[]>();
 
   private parentContext: RenderContext | undefined;
 
-  private setHook(name: ComponentHookName, body: Subject<void>) {
+  private hookIsProcessing$ = ref(false);
+
+  private childComponentHooksAreProcessing = ref(new Map<symbol, boolean>());
+
+  private anyHookIsProcessing$ = this.hookIsProcessing$.pipe(
+    combineLatestWith(this.childComponentHooksAreProcessing),
+    map(
+      ([processing, childrenProcessing]) =>
+        !processing && !Array.from(childrenProcessing.values()).includes(true),
+    ),
+    debounceTime(16),
+  );
+
+  private setHook(name: ComponentHookName, body: ComponentHookValue) {
     let hooks = this.hooks.get(name);
     if (hooks == null) {
-      const nh: Subject<void>[] = [];
+      const nh: ComponentHookValue[] = [];
       this.hooks.set(name, nh);
       hooks = nh;
     }
@@ -52,15 +73,34 @@ export class Component<TProps extends BaseProps> {
   }
 
   constructor(private renderFunc: (props: TProps) => JSX.Element) {
-    this.parentContext = renderingScope.current?.value.context;
-    const parentLifecycle = renderingScope.current?.value.component.lifecycle$;
+    const currentScope = renderingScope.current;
+    this.parentContext = currentScope?.value.context;
+    const parentLifecycle = currentScope?.value.component.lifecycle$;
+    const parentHookIsProcessing =
+      renderingScope.current?.value.component.hookIsProcessing$;
     const destroy$ = this.$lifecycle.pipe(
       filter((l) => l === Lifecycle.Destroyed),
     );
-    if (parentLifecycle != null) {
+    if (currentScope != null) {
+      this.anyHookIsProcessing$.subscribe((processing) => {
+        currentScope.value.component.childComponentHooksAreProcessing.value.set(
+          this.key,
+          processing,
+        );
+      });
+    }
+    if (parentLifecycle != null && parentHookIsProcessing != null) {
       this.parentLifecycle
         .pipe(
           filter((lc): lc is Lifecycle => lc != null),
+          switchMap((lc) =>
+            parentHookIsProcessing.pipe(
+              debounceTime(16),
+              filter((p) => !p),
+              take(1),
+              map(() => lc),
+            ),
+          ),
           takeUntil(destroy$),
         )
         .subscribe((parentLc) => {
@@ -96,7 +136,9 @@ export class Component<TProps extends BaseProps> {
         }
         if (hookToTrigger) {
           this.hooks.get(hookToTrigger)?.forEach((hook) => {
-            hook.next();
+            hook.next((pause) => {
+              this.hookIsProcessing$.value = pause;
+            });
             hook.complete();
           });
           this.hooks.delete(hookToTrigger);
@@ -122,10 +164,17 @@ export class Component<TProps extends BaseProps> {
 
     destroyer?.subscribe(() => {
       this.$lifecycle.value = Lifecycle.BeforeDestroy;
-      renderedNodes.forEach((n) => {
-        n.remove();
-      });
-      this.$lifecycle.value = Lifecycle.Destroyed;
+      this.anyHookIsProcessing$
+        .pipe(
+          filter((processing) => !processing),
+          take(1),
+        )
+        .subscribe(() => {
+          renderedNodes.forEach((n) => {
+            n.remove();
+          });
+          this.$lifecycle.value = Lifecycle.Destroyed;
+        });
     });
 
     if (root) {

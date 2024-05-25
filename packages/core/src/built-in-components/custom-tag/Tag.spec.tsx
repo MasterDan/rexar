@@ -38,6 +38,7 @@ describe('custom tag', () => {
       ).outerHTML,
     );
     name$.value = 'section';
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
