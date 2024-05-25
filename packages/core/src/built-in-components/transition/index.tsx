@@ -14,7 +14,7 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { defineComponent } from '@core/component';
+import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { onMounted } from '@core/scope';
 import { Capture } from '../capture/Capture';
 
@@ -27,20 +27,10 @@ export type AnimationKeys<
 export type AnimationClasses = string[];
 
 function applyState(state: AnimationClasses, el: HTMLElement) {
-  console.groupCollapsed('applying', state);
-  console.log('element', el);
-
   el.classList.add(...state);
-
-  console.groupEnd();
 }
 function removeState(state: AnimationClasses, el: HTMLElement) {
-  console.groupCollapsed('removing', state);
-  console.log('element', el);
-
   el.classList.remove(...state);
-
-  console.groupEnd();
 }
 
 class Transition<TStates extends string = AnimationSatesDefault> {
@@ -67,8 +57,16 @@ class Transition<TStates extends string = AnimationSatesDefault> {
     return self;
   }
 
-  defineTransition<T extends AnimationKeys<TStates>>(
-    { from, to, reverse }: { from: T | '*'; to: T | '*'; reverse?: boolean },
+  defineTransition(
+    {
+      from,
+      to,
+      reverse,
+    }: {
+      from: AnimationKeys<TStates> | '*';
+      to: AnimationKeys<TStates> | '*';
+      reverse?: boolean;
+    },
     ...classes: string[]
   ): Transition<TStates> {
     const transitionKey = `${from}=>${to}`;
@@ -148,7 +146,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
         combineLatestWith(el$),
       )
       .subscribe(([{ from, to }, element]) => {
-        console.log('Transition from', from, 'to', to, 'on', element);
+        // console.log('Transition from', from, 'to', to, 'on', element);
 
         processing$.value = true;
         const fromState = from === '*' ? undefined : this.states.get(from);
@@ -177,7 +175,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
         }
 
         const removeFromState = () => {
-          console.log('Transition ended');
+          // console.log('Transition ended');
           transitions.forEach((transition) => {
             removeState(transition, element);
           });
@@ -214,15 +212,35 @@ export type TransitionRecordStates<T extends AnyTransitionRecord> = {
   [K in keyof T]: AnimationKeysOf<T[K]>;
 };
 
+export type TransitionComponentProps<T extends AnyTransition> = {
+  state$: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+};
+
+export type TransitionMapComponentProps<T extends AnyTransitionRecord> = {
+  states$: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
+};
+
+export function useTransitionComponent<T extends AnyTransition>(
+  transitionOrMap: T,
+): ComponentRenderFunc<TransitionComponentProps<T>>;
+export function useTransitionComponent<T extends AnyTransitionRecord>(
+  transitionOrMap: T,
+): ComponentRenderFunc<TransitionMapComponentProps<T>>;
 export function useTransitionComponent<
   T extends AnyTransition | AnyTransitionRecord,
->(transitionOrMap: T) {
+>(
+  transitionOrMap: T,
+):
+  | ComponentRenderFunc<
+      TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
+    >
+  | ComponentRenderFunc<
+      TransitionMapComponentProps<Exclude<T, AnyTransition>>
+    > {
   if (transitionOrMap instanceof Transition) {
-    return defineComponent<{
-      state$: ValueOrObservableOrGetter<
-        AnimationKeysOf<Exclude<T, AnyTransitionRecord>>
-      >;
-    }>(({ children, state$ }) => {
+    return defineComponent<
+      TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
+    >(({ children, state$ }) => {
       const el$ = ref<HTMLElement>();
 
       onMounted().subscribe(() => {
@@ -231,7 +249,6 @@ export function useTransitionComponent<
       });
       return <Capture el$={el$}>{children}</Capture>;
     });
-    // eslint-disable-next-line no-else-return
   }
   return defineComponent<{
     states$: ValueOrObservableOrGetter<
@@ -239,15 +256,20 @@ export function useTransitionComponent<
     >;
   }>(({ children, states$ }) => {
     const el$ = ref<HTMLElement>();
-    onMounted()
-      .pipe(switchMap(() => toObservable(states$)))
-      .subscribe((states) => {
-        Object.keys(transitionOrMap).forEach((key) => {
-          const transition = transitionOrMap[key];
-          const { bindState } = transition.attachTo(el$);
-          bindState(states[key as keyof typeof states]);
-        });
+    const statesObject$ = toObservable(states$);
+
+    onMounted().subscribe(() => {
+      Object.keys(transitionOrMap).forEach((key) => {
+        const transition = transitionOrMap[key];
+        const { bindState } = transition.attachTo(el$);
+        bindState(
+          statesObject$.pipe(
+            map((s) => s[key]),
+            distinctUntilChanged(),
+          ),
+        );
       });
+    });
     return <Capture el$={el$}>{children}</Capture>;
   });
 }

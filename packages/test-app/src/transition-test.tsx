@@ -4,60 +4,56 @@ import {
   createTransition,
   defineComponent,
   ref,
+  useTransitionComponent,
 } from '@rexar/core';
+import transitions from './assets/styles/transitions.module.css';
 
-const fade = createTransition()
-  .setState('default')
-  .withStyle({
-    opacity: '1',
-    transform: undefined,
-  })
-  .setState('void')
-  .withStyle({ opacity: '0' })
-  .addState('rotated')
-  .withStyle({ transform: 'rotate(45deg)' })
-  .setTransition.from('*')
-  .to('rotated')
-  .withStyle({
-    transition: 'transform 0.5s ease-in-out',
-  })
-  .setTransition.from('rotated')
-  .to('*')
-  .withStyle({
-    transition: 'transform 0.5s ease-in-out',
-  })
-  .setTransition.from('void')
-  .to('*')
-  .withStyle({
-    transition: 'opacity 0.2s ease-in-out',
-  })
-  .setTransition.from('*')
-  .to('void')
-  .withStyle({
-    transition: 'opacity 0.3s ease-in-out',
-  })
-  .withInitialSate('void');
+const transitionFade = createTransition()
+  .defineState('default', transitions['opacity-one'])
+  .defineState('void', transitions['opacity-zero'])
+  .defineTransition(
+    { from: 'void', to: 'default' },
+    transitions['transition-opacity-in'],
+  )
+  .defineTransition(
+    { from: 'default', to: 'void' },
+    transitions['transition-opacity-out'],
+  )
+  .withDefault('void');
 
-const TransitionFade = fade.createComponent();
+const transitionRotate = createTransition()
+  .defineState('rotated', transitions.rotated)
+  .defineTransition(
+    { from: 'rotated', to: '*', reverse: true },
+    transitions['transition-rotate'],
+  );
+
+const TransitionFade = useTransitionComponent(transitionFade);
+
+const TransitionRotate = useTransitionComponent(transitionRotate);
+
+const TransitionFadeAndRotate = useTransitionComponent({
+  fade: transitionFade,
+  rotate: transitionRotate,
+});
 
 export const TransitionTest = defineComponent(() => {
   const visible$ = ref(false);
   const rotated$ = ref(false);
-  const state$ = computed<AnimationKeysOf<typeof fade>>(() => {
+  const fadeState$ = computed<AnimationKeysOf<typeof transitionFade>>(() => {
     if (visible$.value) {
-      if (rotated$.value) {
-        return 'rotated';
-      }
       return 'default';
     }
     return 'void';
   });
-  rotated$.subscribe((rotated) => {
-    console.log('rotated', rotated);
-  });
-  state$.subscribe((state) => {
-    console.log('state', state);
-  });
+  const rotateState$ = computed<AnimationKeysOf<typeof transitionRotate>>(
+    () => {
+      if (rotated$.value) {
+        return 'rotated';
+      }
+      return 'default';
+    },
+  );
   return (
     <div class="bg-neutral-50 p-8 rounded-3xl bg-opacity-30 flex flex-col gap-8 items-center">
       <div class="flex gap-8 justify-between items-center">
@@ -71,19 +67,31 @@ export const TransitionTest = defineComponent(() => {
           Toggle opacity
         </button>
         <button
-          class="bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-500 
+          class="bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500 
         text-white p-2 px-4 rounded-full transition-colors duration-200"
           onClick={() => {
             rotated$.value = !rotated$.value;
           }}
-          disabled={() => !visible$.value}
         >
           Toggle rotated
         </button>
       </div>
-      <TransitionFade state={state$}>
-        <div>Hello World</div>
-      </TransitionFade>
+      <div class="flex gap-8 justify-between items-center">
+        <TransitionFade state$={fadeState$}>
+          <div>I will fade</div>
+        </TransitionFade>
+        <TransitionRotate state$={rotateState$}>
+          <div>I will rotate</div>
+        </TransitionRotate>
+        <TransitionFadeAndRotate
+          states$={() => ({
+            fade: fadeState$.value,
+            rotate: rotateState$.value,
+          })}
+        >
+          <div>I will fade and rotate</div>
+        </TransitionFadeAndRotate>
+      </div>
     </div>
   );
 });
