@@ -3,7 +3,7 @@ import {
   ref,
   toObservable,
 } from '@rexar/reactivity';
-import { StyleAttributes } from '@rexar/jsx';
+
 import {
   Observable,
   combineLatestWith,
@@ -11,7 +11,6 @@ import {
   filter,
   map,
   pairwise,
-  startWith,
   switchMap,
   take,
 } from 'rxjs';
@@ -25,104 +24,63 @@ export type AnimationKeys<
   TAdditionalKeys extends string = AnimationSatesDefault,
 > = AnimationSatesDefault | TAdditionalKeys;
 
-export type AnimationState =
-  | {
-      type: 'class';
-      class: string;
-    }
-  | {
-      type: 'style';
-      style: StyleAttributes;
-    };
+export type AnimationClasses = string[];
 
-function applyState(state: AnimationState, el: HTMLElement) {
+function applyState(state: AnimationClasses, el: HTMLElement) {
   console.groupCollapsed('applying', state);
   console.log('element', el);
 
-  if (state.type === 'class') {
-    el.classList.add(state.class);
-  } else if (state.type === 'style') {
-    Object.entries(state.style).forEach(([key, value]) => {
-      if (key in el.style) {
-        if (value == null) {
-          el.style.removeProperty(key);
-        } else {
-          el.style.setProperty(key, value as string | null);
-        }
-      }
-    });
-  }
+  el.classList.add(...state);
 
   console.groupEnd();
 }
-function removeState(state: AnimationState, el: HTMLElement) {
+function removeState(state: AnimationClasses, el: HTMLElement) {
   console.groupCollapsed('removing', state);
   console.log('element', el);
 
-  if (state.type === 'class') {
-    el.classList.remove(state.class);
-  } else if (state.type === 'style') {
-    Object.keys(state.style).forEach((key) => {
-      if (
-        key in el.style &&
-        el.style.getPropertyValue(key) ===
-          state.style[key as keyof StyleAttributes]
-      ) {
-        el.style.removeProperty(key);
-      }
-    });
-  }
+  el.classList.remove(...state);
 
   console.groupEnd();
 }
 
 class Transition<TStates extends string = AnimationSatesDefault> {
-  states = new Map<AnimationKeys<TStates>, AnimationState>();
+  states = new Map<AnimationKeys<TStates>, AnimationClasses>();
 
-  transitions = new Map<string, AnimationState>();
+  transitions = new Map<string, AnimationClasses>();
 
   defaultState: AnimationKeys<TStates> = 'default';
 
-  setState<T extends AnimationKeys<TStates>>(state: T) {
-    const withClass = (className: string): Transition<TStates> => {
-      this.states.set(state, { type: 'class', class: className });
-      return this;
-    };
-    const withStyle = (style: StyleAttributes): Transition<TStates> => {
-      this.states.set(state, { type: 'style', style });
-      return this;
-    };
-    return { withClass, withStyle };
-  }
-
-  addState<T extends string>(state: T) {
+  defineState<T extends AnimationKeys<TStates>>(
+    state: T,
+    ...classes: string[]
+  ): Transition<TStates>;
+  defineState<T extends string>(
+    state: T,
+    ...classes: string[]
+  ): Transition<TStates | T>;
+  defineState<T extends AnimationKeys<TStates> | string>(
+    state: T,
+    ...classes: string[]
+  ): Transition<TStates | T> {
     const self = this as Transition<TStates | T>;
-    return self.setState(state);
+    self.states.set(state, classes);
+    return self;
   }
 
-  get setTransition() {
-    const from = (fromKey: AnimationKeys<TStates> | '*') => {
-      const to = (toKey: AnimationKeys<TStates> | '*') => {
-        const transitionKey = `${fromKey}=>${toKey}`;
-        const withClass = (className: string): Transition<TStates> => {
-          this.transitions.set(transitionKey, {
-            type: 'class',
-            class: className,
-          });
-          return this;
-        };
-        const withStyle = (style: StyleAttributes): Transition<TStates> => {
-          this.transitions.set(transitionKey, { type: 'style', style });
-          return this;
-        };
-        return { withClass, withStyle };
-      };
-      return { to };
-    };
-    return { from };
+  defineTransition<T extends AnimationKeys<TStates>>(
+    { from, to, reverse }: { from: T | '*'; to: T | '*'; reverse?: boolean },
+    ...classes: string[]
+  ): Transition<TStates> {
+    const transitionKey = `${from}=>${to}`;
+    this.transitions.set(transitionKey, classes);
+    if (reverse ?? false) {
+      const reverseTransitionKey = `${to}=>${from}`;
+      this.transitions.set(reverseTransitionKey, classes);
+    }
+    return this;
   }
 
-  withInitialSate(state: AnimationKeys<TStates>) {
+  beginWith(state: AnimationKeys<TStates>) {
     this.defaultState = state;
     return this;
   }
@@ -136,12 +94,22 @@ class Transition<TStates extends string = AnimationSatesDefault> {
     // });
     const processing$ = ref(false);
     const state$ = ref<AnimationKeys<TStates>>(this.defaultState);
-    processing$.subscribe((v) => {
-      console.log('processing is', v);
-    });
+    // processing$.subscribe((v) => {
+    //   console.log('processing is', v);
+    // });
     // state$.subscribe((v) => {
     //   console.log('state is', v);
     // });
+
+    state$
+      .pipe(combineLatestWith(el$), take(1))
+      .subscribe(([stateKey, element]) => {
+        const initState =
+          stateKey === '*' ? undefined : this.states.get(stateKey);
+        if (initState) {
+          applyState(initState, element);
+        }
+      });
 
     const setState = (state: AnimationKeys<TStates>) => {
       state$.value = state;
@@ -165,7 +133,6 @@ class Transition<TStates extends string = AnimationSatesDefault> {
     };
 
     const statePairwise$ = state$.pipe(
-      startWith('*'),
       distinctUntilChanged(),
       pairwise(),
     ) as unknown as Observable<
@@ -188,7 +155,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
           this.transitions.get(`${from}=>*`),
           this.transitions.get(`*=>${to}`),
           this.transitions.get('*=>*'),
-        ].filter((i): i is AnimationState => i != null);
+        ].filter((i): i is AnimationClasses => i != null);
 
         if (transitions.length > 0) {
           transitions.forEach((transition) => {
@@ -198,10 +165,10 @@ class Transition<TStates extends string = AnimationSatesDefault> {
         if (toState != null) {
           applyState(toState, element);
         }
+        if (fromState != null) {
+          removeState(fromState, element);
+        }
         if (transitions.length === 0) {
-          if (fromState != null) {
-            removeState(fromState, element);
-          }
           processing$.value = false;
           return;
         }
@@ -211,9 +178,6 @@ class Transition<TStates extends string = AnimationSatesDefault> {
           transitions.forEach((transition) => {
             removeState(transition, element);
           });
-          if (fromState != null) {
-            removeState(fromState, element);
-          }
           element.removeEventListener('transitionend', removeFromState);
           processing$.value = false;
         };
@@ -241,7 +205,9 @@ class Transition<TStates extends string = AnimationSatesDefault> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnimationKeysOf<T extends Transition<any>> = T extends Transition<
+export type AnyTransition = Transition<any>;
+
+export type AnimationKeysOf<T extends AnyTransition> = T extends Transition<
   infer TStates
 >
   ? AnimationKeys<TStates>
