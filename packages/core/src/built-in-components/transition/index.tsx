@@ -80,9 +80,12 @@ class Transition<TStates extends string = AnimationSatesDefault> {
     return this;
   }
 
-  beginWith(state: AnimationKeys<TStates>) {
-    this.defaultState = state;
-    return this;
+  withDefault(state: AnimationKeys<TStates>) {
+    const newTransition = new Transition<TStates>();
+    newTransition.states = new Map(this.states);
+    newTransition.transitions = new Map(this.transitions);
+    newTransition.defaultState = state;
+    return newTransition;
   }
 
   attachTo(el: ValueOrObservableOrGetter<HTMLElement | undefined>) {
