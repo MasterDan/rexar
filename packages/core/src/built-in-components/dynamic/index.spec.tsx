@@ -121,12 +121,9 @@ describe('dynamic renderer', () => {
     let status: string | undefined;
     const DynamicBody = defineComponent(() => {
       onMounted().subscribe(() => {
-        console.log('1');
         status = 'mounted';
       });
       onBeforeDestroy().subscribe(() => {
-        console.log('2');
-
         status = 'before destroy';
       });
       return <>dynamic</>;
@@ -153,7 +150,7 @@ describe('dynamic renderer', () => {
     );
     expect(status).toBe('before destroy');
     change(DynamicBody);
-    await wait(200);
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -163,8 +160,15 @@ describe('dynamic renderer', () => {
       ).outerHTML,
     );
     expect(status).toBe('mounted');
-    // change(null);
-    // await wait(100);
-    // expect(status).toBe('before destroy');
+    change(null);
+    await wait(100);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+        </div>
+      ).outerHTML,
+    );
+    expect(status).toBe('before destroy');
   });
 });
