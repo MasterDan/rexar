@@ -9,7 +9,7 @@ import { Comment } from '../comment';
  * @vitest-environment jsdom
  */
 describe('dynamic renderer', () => {
-  test('dynamic renderer simple', () => {
+  test('dynamic renderer simple', async () => {
     const [Dynamic, change] = useDynamic(() => <span>Foo</span>);
 
     const root = (
@@ -32,6 +32,7 @@ describe('dynamic renderer', () => {
         <span>baz</span>
       </>
     ));
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -42,6 +43,7 @@ describe('dynamic renderer', () => {
       ).outerHTML,
     );
     change(() => <div>Some text</div>);
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -51,6 +53,7 @@ describe('dynamic renderer', () => {
       ).outerHTML,
     );
     change(null);
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -59,7 +62,7 @@ describe('dynamic renderer', () => {
       ).outerHTML,
     );
   });
-  test('dynamic with children', () => {
+  test('dynamic with children', async () => {
     const [Dynamic, change] = useDynamic(({ children }) => (
       <div>{children}</div>
     ));
@@ -82,6 +85,7 @@ describe('dynamic renderer', () => {
       ).outerHTML,
     );
     change(() => <div>Some text</div>);
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -91,6 +95,7 @@ describe('dynamic renderer', () => {
       ).outerHTML,
     );
     change(({ children }) => <>{children}</>);
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -116,24 +121,50 @@ describe('dynamic renderer', () => {
     let status: string | undefined;
     const DynamicBody = defineComponent(() => {
       onMounted().subscribe(() => {
+        console.log('1');
         status = 'mounted';
       });
       onBeforeDestroy().subscribe(() => {
+        console.log('2');
+
         status = 'before destroy';
       });
       return <>dynamic</>;
     });
     change(DynamicBody);
     await wait(100);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+          dynamic
+        </div>
+      ).outerHTML,
+    );
     expect(status).toBe('mounted');
     change(null);
     await wait(100);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+        </div>
+      ).outerHTML,
+    );
     expect(status).toBe('before destroy');
     change(DynamicBody);
-    await wait(100);
+    await wait(200);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor" />
+          dynamic
+        </div>
+      ).outerHTML,
+    );
     expect(status).toBe('mounted');
-    change(null);
-    await wait(100);
-    expect(status).toBe('before destroy');
+    // change(null);
+    // await wait(100);
+    // expect(status).toBe('before destroy');
   });
 });

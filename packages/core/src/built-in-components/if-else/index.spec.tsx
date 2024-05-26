@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
+import { wait } from '@rexar/tools';
 import { Show } from '.';
 import { Comment } from '../comment';
 
@@ -45,6 +46,7 @@ describe('if-else-rendering', () => {
       ).outerHTML,
     );
     toggleFirst();
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -56,6 +58,7 @@ describe('if-else-rendering', () => {
       ).outerHTML,
     );
     toggleSecond();
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -67,6 +70,7 @@ describe('if-else-rendering', () => {
       ).outerHTML,
     );
     toggleFirst();
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>

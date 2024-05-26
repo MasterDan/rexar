@@ -8,9 +8,11 @@ import {
 import { Ref } from '@rexar/reactivity';
 import { onBeforeDestroy, renderingScope } from '@core/scope';
 import { RenderContext } from '@core/scope/context';
+import { type Subject } from 'rxjs';
 import { Comment } from '../comment';
 
 export function useDynamic(initial: RenderFunction | null = null) {
+  /** @todo change constructor and maybe default val */
   const componentRef = new Ref<ComponentRenderFunc | null>(null);
 
   const setComponent = (fn: RenderFunction | null) => {
@@ -27,14 +29,25 @@ export function useDynamic(initial: RenderFunction | null = null) {
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
     componentRef.subscribe((DynamicBody) => {
+      let done$: Subject<void> | undefined;
       if (previous) {
-        previous.remove();
+        done$ = previous.remove();
       }
       if (DynamicBody) {
-        previous = render(
-          () => <DynamicBody>{children}</DynamicBody>,
-          context,
-        ).after(comment);
+        const renderNew = () => {
+          previous = render(
+            () => <DynamicBody>{children}</DynamicBody>,
+            context,
+          ).after(comment);
+        };
+        if (done$) {
+          done$.subscribe(() => {
+            done$ = undefined;
+            renderNew();
+          });
+        } else {
+          renderNew();
+        }
       }
     });
     onBeforeDestroy().subscribe(() => {
