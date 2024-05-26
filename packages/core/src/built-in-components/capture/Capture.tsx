@@ -1,5 +1,4 @@
 import { defineComponent } from '@core/component';
-import { onRendered } from '@core/scope';
 import { Ref } from '@rexar/reactivity';
 import { ComponentChildren } from '@rexar/jsx';
 
@@ -24,9 +23,7 @@ export const Capture = defineComponent<{
       }
     };
 
-    onRendered().subscribe(() => {
-      processChildren(children);
-    });
+    processChildren(children);
   }
   return <>{children}</>;
 });

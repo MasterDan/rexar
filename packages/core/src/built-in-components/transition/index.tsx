@@ -1,4 +1,5 @@
 import {
+  Ref,
   ValueOrObservableOrGetter,
   ref,
   toObservable,
@@ -7,6 +8,7 @@ import {
 import {
   Observable,
   combineLatestWith,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -15,7 +17,7 @@ import {
   take,
 } from 'rxjs';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
-import { onMounted } from '@core/scope';
+import { onBeforeDestroy, onMounted } from '@core/scope';
 import { Capture } from '../capture/Capture';
 
 export type AnimationSatesDefault = 'default' | 'void';
@@ -146,7 +148,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
         combineLatestWith(el$),
       )
       .subscribe(([{ from, to }, element]) => {
-        // console.log('Transition from', from, 'to', to, 'on', element);
+        console.log('Transition from', from, 'to', to, 'on', element);
 
         processing$.value = true;
         const fromState = from === '*' ? undefined : this.states.get(from);
@@ -180,13 +182,16 @@ class Transition<TStates extends string = AnimationSatesDefault> {
             removeState(transition, element);
           });
           element.removeEventListener('transitionend', removeFromState);
-          processing$.value = false;
+          setTimeout(() => {
+            processing$.value = false;
+          }, 16);
         };
         element.addEventListener('transitionend', removeFromState);
       });
 
     return {
       bindState,
+      processing$,
     };
   }
 }
@@ -213,11 +218,13 @@ export type TransitionRecordStates<T extends AnyTransitionRecord> = {
 };
 
 export type TransitionComponentProps<T extends AnyTransition> = {
-  state$: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+  state?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+  initialState?: AnimationKeysOf<T>;
 };
 
 export type TransitionMapComponentProps<T extends AnyTransitionRecord> = {
-  states$: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
+  states?: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
+  initialStates?: Partial<TransitionRecordStates<T>>;
 };
 
 export function useTransitionComponent<T extends AnyTransition>(
@@ -240,36 +247,101 @@ export function useTransitionComponent<
   if (transitionOrMap instanceof Transition) {
     return defineComponent<
       TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
-    >(({ children, state$ }) => {
-      const el$ = ref<HTMLElement>();
+    >(({ children, initialState, state }) => {
+      const transition = initialState
+        ? transitionOrMap.withDefault(initialState)
+        : transitionOrMap;
 
-      onMounted().subscribe(() => {
-        const { bindState } = transitionOrMap.attachTo(el$);
+      const state$ = ref<string>(transition.defaultState);
+
+      state$.subscribe((st) => {
+        console.log('component-state is', st);
+      });
+      const el$ = ref<HTMLElement>();
+      const destroy$ = onBeforeDestroy();
+      el$.pipe(filter((el) => el != null)).subscribe(() => {
+        const { bindState, processing$ } = transition.attachTo(el$);
         bindState(state$);
+        if (state) {
+          setTimeout(() => {
+            state$.fromObservable(toObservable(state));
+          }, 16);
+        }
+        processing$.subscribe((p) => {
+          console.log('processing is', p);
+        });
+        destroy$.subscribe((pause) => {
+          pause(true);
+          state$.value = 'void';
+          processing$
+            .pipe(
+              filter((p) => !p),
+              debounceTime(16),
+            )
+            .subscribe(() => {
+              pause(false);
+            });
+        });
       });
       return <Capture el$={el$}>{children}</Capture>;
     });
   }
-  return defineComponent<{
-    states$: ValueOrObservableOrGetter<
-      TransitionRecordStates<Exclude<T, AnyTransition>>
-    >;
-  }>(({ children, states$ }) => {
+  return defineComponent<
+    TransitionMapComponentProps<Exclude<T, AnyTransition>>
+  >(({ children, states, initialStates }) => {
     const el$ = ref<HTMLElement>();
-    const statesObject$ = toObservable(states$);
 
-    onMounted().subscribe(() => {
+    const stateRefs = (() => {
+      const agg: Record<string, Ref<string>> = {};
       Object.keys(transitionOrMap).forEach((key) => {
-        const transition = transitionOrMap[key];
-        const { bindState } = transition.attachTo(el$);
-        bindState(
-          statesObject$.pipe(
-            map((s) => s[key]),
-            distinctUntilChanged(),
-          ),
-        );
+        const defaultState = initialStates
+          ? initialStates[key]
+          : transitionOrMap[key].defaultState;
+        agg[key] = ref(defaultState);
+      });
+      return agg;
+    })();
+
+    const processingFlags = ref(new Map<string, boolean>());
+
+    el$.pipe(filter((el) => el != null)).subscribe(() => {
+      Object.keys(transitionOrMap).forEach((key) => {
+        const defaultState = initialStates ? initialStates[key] : undefined;
+        const transition = defaultState
+          ? transitionOrMap[key].withDefault(defaultState)
+          : transitionOrMap[key];
+        const { bindState, processing$ } = transition.attachTo(el$);
+        processing$.subscribe((p) => {
+          processingFlags.value.set(key, p);
+        });
+        bindState(stateRefs[key]);
+        if (states) {
+          setTimeout(() => {
+            toObservable(states).subscribe((so) => {
+              Object.keys(so).forEach((stateKey) => {
+                stateRefs[stateKey].value = so[stateKey];
+              });
+            });
+          }, 16);
+        }
       });
     });
+
+    onBeforeDestroy().subscribe((pause) => {
+      pause(true);
+      Object.keys(stateRefs).forEach((key) => {
+        stateRefs[key].value = 'void';
+      });
+      processingFlags
+        .pipe(
+          filter((flags) => !Array.from(flags.values()).includes(true)),
+          debounceTime(16),
+        )
+        .subscribe(() => {
+          pause(false);
+        });
+    });
+
     return <Capture el$={el$}>{children}</Capture>;
   });
 }
