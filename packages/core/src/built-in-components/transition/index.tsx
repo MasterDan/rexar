@@ -15,7 +15,7 @@ import {
   take,
 } from 'rxjs';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
-import { onMounted } from '@core/scope';
+import { onBeforeDestroy, onMounted } from '@core/scope';
 import { Capture } from '../capture/Capture';
 
 export type AnimationSatesDefault = 'default' | 'void';
@@ -187,6 +187,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
 
     return {
       bindState,
+      processing$,
     };
   }
 }
@@ -213,7 +214,7 @@ export type TransitionRecordStates<T extends AnyTransitionRecord> = {
 };
 
 export type TransitionComponentProps<T extends AnyTransition> = {
-  state$: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+  state$?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
 };
 
 export type TransitionMapComponentProps<T extends AnyTransitionRecord> = {
@@ -242,19 +243,20 @@ export function useTransitionComponent<
       TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
     >(({ children, state$ }) => {
       const el$ = ref<HTMLElement>();
-
+      const destroy$ = onBeforeDestroy();
       onMounted().subscribe(() => {
-        const { bindState } = transitionOrMap.attachTo(el$);
+        const { bindState, processing$ } = transitionOrMap.attachTo(el$);
         bindState(state$);
+        destroy$.subscribe((pause) => {
+          state$.value = 'void';
+        });
       });
       return <Capture el$={el$}>{children}</Capture>;
     });
   }
-  return defineComponent<{
-    states$: ValueOrObservableOrGetter<
-      TransitionRecordStates<Exclude<T, AnyTransition>>
-    >;
-  }>(({ children, states$ }) => {
+  return defineComponent<
+    TransitionMapComponentProps<Exclude<T, AnyTransition>>
+  >(({ children, states$ }) => {
     const el$ = ref<HTMLElement>();
     const statesObject$ = toObservable(states$);
 
