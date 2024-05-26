@@ -25,7 +25,7 @@ describe('for-each rendering', () => {
         ></Strings>
       </div>
     );
-    await wait(50);
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -38,6 +38,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = ['foo', 'new', 'bar'];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -52,6 +53,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = ['foo', 'bar', 'baz'];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -66,6 +68,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = ['baz'];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -76,6 +79,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = [];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -115,6 +119,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = ['foo', 'new', 'bar'];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -132,6 +137,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = ['foo', 'bar', 'baz'];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -149,6 +155,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = ['baz'];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -160,6 +167,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     array.value = [];
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -192,6 +200,7 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     arr$.value.push('xyz');
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -208,9 +217,10 @@ describe('for-each rendering', () => {
       ).outerHTML,
     );
     remove();
+    await wait(100);
     expect(root.outerHTML).toBe((<div></div>).outerHTML);
   });
-  test('array-of-dynamics', () => {
+  test('array-of-dynamics', async () => {
     const itemsMap$ = ref(
       new Map([
         [
@@ -249,6 +259,7 @@ describe('for-each rendering', () => {
         }}
       />
     )).into(root);
+
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -262,6 +273,7 @@ describe('for-each rendering', () => {
         </div>
       ).outerHTML,
     );
+
     itemsMap$.next(
       new Map([
         [
@@ -278,6 +290,7 @@ describe('for-each rendering', () => {
         ],
       ]),
     );
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
