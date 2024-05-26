@@ -30,7 +30,7 @@ enum Lifecycle {
 
 export type ComponentOptions = {
   root: boolean;
-  destroyer?: Subject<void>;
+  destroyer?: Subject<Subject<void>>;
   context?: RenderContext;
 };
 
@@ -162,7 +162,7 @@ export class Component<TProps extends BaseProps> {
     const renderedNodes: ChildNode[] =
       result instanceof DocumentFragment ? [...result.childNodes] : [result];
 
-    destroyer?.subscribe(() => {
+    destroyer?.subscribe((done$) => {
       this.$lifecycle.value = Lifecycle.BeforeDestroy;
       this.anyHookIsProcessing$
         .pipe(
@@ -174,6 +174,8 @@ export class Component<TProps extends BaseProps> {
             n.remove();
           });
           this.$lifecycle.value = Lifecycle.Destroyed;
+          done$.next();
+          done$.complete();
         });
     });
 

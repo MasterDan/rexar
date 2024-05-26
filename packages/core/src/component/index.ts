@@ -21,7 +21,7 @@ export function defineComponent<TProps extends AnyRecord>(
     factory.createComponent().render(props, { root: false, ...options });
 }
 
-export type RenderedController = { remove: () => void };
+export type RenderedController = { remove: () => Subject<void> };
 
 export type RenderTarget = string | Element | Comment;
 
@@ -40,7 +40,7 @@ export function render(renderFn: RenderFunction, context?: RenderContext) {
   };
 
   const renderComponent = () => {
-    const destroyer = new Subject<void>();
+    const destroyer = new Subject<Subject<void>>();
     const component = defineComponent(renderFn);
     const renderedComponent = component(
       {},
@@ -50,8 +50,10 @@ export function render(renderFn: RenderFunction, context?: RenderContext) {
         context,
       },
     );
-    const remove = () => {
-      destroyer.next();
+    const remove: () => Subject<void> = () => {
+      const done$ = new Subject<void>();
+      destroyer.next(done$);
+      return done$;
     };
     return { renderedComponent, remove };
   };
