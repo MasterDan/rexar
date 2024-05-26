@@ -15,6 +15,7 @@ import {
   switchMap,
   take,
   takeUntil,
+  tap,
   timer,
 } from 'rxjs';
 import { RenderingScopeValue } from '@core/scope/scope-value';
@@ -47,10 +48,13 @@ export class Component<TProps extends BaseProps> {
 
   private anyHookIsProcessing$ = this.hookIsProcessing$.pipe(
     combineLatestWith(this.childComponentHooksAreProcessing),
-    map(
-      ([processing, childrenProcessing]) =>
-        !processing && !Array.from(childrenProcessing.values()).includes(true),
-    ),
+    map(([processing, childrenProcessing]) => {
+      console.log({ processing, childrenProcessing });
+
+      return (
+        processing || Array.from(childrenProcessing.values()).includes(true)
+      );
+    }),
     debounceTime(16),
   );
 
@@ -164,8 +168,13 @@ export class Component<TProps extends BaseProps> {
 
     destroyer?.subscribe((done$) => {
       this.$lifecycle.value = Lifecycle.BeforeDestroy;
+      console.log('Waiting for remove');
+
       this.anyHookIsProcessing$
         .pipe(
+          tap((p) => {
+            console.log('anyHookIsProcessing', p);
+          }),
           filter((processing) => !processing),
           take(1),
         )
@@ -173,6 +182,7 @@ export class Component<TProps extends BaseProps> {
           renderedNodes.forEach((n) => {
             n.remove();
           });
+          console.log('removed');
           this.$lifecycle.value = Lifecycle.Destroyed;
           done$.next();
           done$.complete();
