@@ -148,7 +148,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
         combineLatestWith(el$),
       )
       .subscribe(([{ from, to }, element]) => {
-        console.log('Transition from', from, 'to', to, 'on', element);
+        // console.log('Transition from', from, 'to', to, 'on', element);
 
         processing$.value = true;
         const fromState = from === '*' ? undefined : this.states.get(from);
@@ -182,9 +182,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
             removeState(transition, element);
           });
           element.removeEventListener('transitionend', removeFromState);
-          setTimeout(() => {
-            processing$.value = false;
-          }, 16);
+          processing$.value = false;
         };
         element.addEventListener('transitionend', removeFromState);
       });
@@ -257,9 +255,9 @@ export function useTransitionComponent<
 
       const state$ = ref<string>(transition.defaultState);
 
-      state$.subscribe((st) => {
-        console.log('component-state is', st);
-      });
+      // state$.subscribe((st) => {
+      //   console.log('component-state is', st);
+      // });
       const el$ = ref<HTMLElement>();
       const destroy$ = onBeforeDestroy();
       el$.pipe(filter((el) => el != null)).subscribe(() => {
@@ -270,19 +268,22 @@ export function useTransitionComponent<
             state$.fromObservable(toObservable(state));
           }, 16);
         }
-        processing$.subscribe((p) => {
-          console.log('processing is', p);
-        });
+        // processing$.subscribe((p) => {
+        //   console.log('processing is', p);
+        // });
         destroy$.subscribe((pause) => {
           pause(true);
+          console.log('transitioning to void:begin');
+
           state$.value = 'void';
           processing$
             .pipe(
-              filter((p) => !p),
               debounceTime(16),
+              filter((p) => !p),
             )
             .subscribe(() => {
               pause(false);
+              console.log('transitioning to void:end');
             });
         });
       });
@@ -337,8 +338,8 @@ export function useTransitionComponent<
       });
       processingFlags
         .pipe(
-          filter((flags) => !Array.from(flags.values()).includes(true)),
           debounceTime(16),
+          filter((flags) => !Array.from(flags.values()).includes(true)),
         )
         .subscribe(() => {
           pause(false);

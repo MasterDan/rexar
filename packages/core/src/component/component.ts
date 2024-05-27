@@ -51,7 +51,6 @@ export class Component<TProps extends BaseProps> {
       ([processing, childrenProcessing]) =>
         processing || Array.from(childrenProcessing.values()).includes(true),
     ),
-    debounceTime(16),
   );
 
   private setHook(name: ComponentHookName, body: ComponentHookValue) {
@@ -164,9 +163,10 @@ export class Component<TProps extends BaseProps> {
 
     destroyer?.subscribe((done$) => {
       this.$lifecycle.value = Lifecycle.BeforeDestroy;
-
       this.anyHookIsProcessing$
         .pipe(
+          debounceTime(32),
+          // tap((p) => console.log('processing-destroy is', p)),
           filter((processing) => !processing),
           take(1),
         )

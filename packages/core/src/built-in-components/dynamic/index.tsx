@@ -5,10 +5,10 @@ import {
   defineComponent,
   render,
 } from '@core/component';
-import { Ref } from '@rexar/reactivity';
+import { Ref, ref } from '@rexar/reactivity';
 import { onBeforeDestroy, renderingScope } from '@core/scope';
 import { RenderContext } from '@core/scope/context';
-import { type Subject } from 'rxjs';
+import { distinctUntilChanged, filter, switchMap, take, tap } from 'rxjs';
 import { Comment } from '../comment';
 
 export function useDynamic(initial: RenderFunction | null = null) {
@@ -28,28 +28,36 @@ export function useDynamic(initial: RenderFunction | null = null) {
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
-    componentRef.subscribe((DynamicBody) => {
-      let done$: Subject<void> | undefined;
-      if (previous) {
-        done$ = previous.remove();
-      }
-      if (DynamicBody) {
-        const renderNew = () => {
-          previous = render(
-            () => <DynamicBody>{children}</DynamicBody>,
-            context,
-          ).after(comment);
-        };
-        if (done$) {
-          done$.subscribe(() => {
-            done$ = undefined;
-            renderNew();
+    const removeInProcess = ref(false);
+    removeInProcess
+      .pipe(
+        tap((p) => console.log('dynamic-processing', p)),
+        filter((p) => !p),
+        switchMap(() => componentRef),
+        distinctUntilChanged(),
+      )
+      .subscribe((DynamicBody) => {
+        if (previous) {
+          removeInProcess.value = true;
+          previous.remove().subscribe(() => {
+            removeInProcess.value = false;
           });
-        } else {
-          renderNew();
         }
-      }
-    });
+        if (DynamicBody) {
+          removeInProcess
+            .pipe(
+              filter((p) => !p),
+              take(1),
+            )
+            .subscribe(() => {
+              console.log('dynamic rendering');
+              previous = render(
+                () => <DynamicBody>{children}</DynamicBody>,
+                context,
+              ).after(comment);
+            });
+        }
+      });
     onBeforeDestroy().subscribe(() => {
       if (previous) {
         previous.remove();
