@@ -102,7 +102,7 @@ export const TransitionTest = defineComponent(() => {
             flag$.value = !flag$.value;
           }}
         >
-          Toggle flag
+          Toggle flag {flag$}
         </button>
       </div>
       <div>
