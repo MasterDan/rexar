@@ -5,18 +5,16 @@ import {
   defineComponent,
   render,
 } from '@core/component';
-import { Ref, ref } from '@rexar/reactivity';
+import { ref } from '@rexar/reactivity';
 import { onBeforeDestroy, renderingScope } from '@core/scope';
 import { RenderContext } from '@core/scope/context';
-import { filter, of, switchMap, tap } from 'rxjs';
+import { filter, of, switchMap } from 'rxjs';
 import { Comment } from '../comment';
 
 export function useDynamic(initial: RenderFunction | null = null) {
-  /** @todo change constructor and maybe default val */
-  const componentRef = new Ref<ComponentRenderFunc | null>(null);
+  const componentRef = ref<ComponentRenderFunc | null>(null);
 
   const setComponent = (fn: RenderFunction | null) => {
-    console.log('changed to', fn);
     componentRef.value = fn ? defineComponent(fn) : null;
   };
 
@@ -32,22 +30,19 @@ export function useDynamic(initial: RenderFunction | null = null) {
     const removeInProcess = ref(false);
     removeInProcess
       .pipe(
-        tap((p) => console.log('dynamic-processing', p)),
-        switchMap((p) => (p ? of('wait') : componentRef)),
-        filter((i): i is Exclude<typeof i, string> => i !== 'wait'),
+        switchMap((p) => (p ? of(false) : componentRef)),
+        filter((i): i is Exclude<typeof i, boolean> => i !== false),
       )
       .subscribe((DynamicBody) => {
         if (previous) {
           removeInProcess.value = true;
           previous.remove().subscribe(() => {
-            console.log('removed');
             previous = undefined;
             removeInProcess.value = false;
           });
           return;
         }
         if (DynamicBody) {
-          console.log('dynamic rendering');
           previous = render(
             () => <DynamicBody>{children}</DynamicBody>,
             context,

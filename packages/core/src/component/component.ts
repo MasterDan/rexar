@@ -94,7 +94,6 @@ export class Component<TProps extends BaseProps> {
           filter((lc): lc is Lifecycle => lc != null),
           switchMap((lc) =>
             parentHookIsProcessing.pipe(
-              debounceTime(16),
               filter((p) => !p),
               take(1),
               map(() => lc),
@@ -165,7 +164,7 @@ export class Component<TProps extends BaseProps> {
       this.$lifecycle.value = Lifecycle.BeforeDestroy;
       this.anyHookIsProcessing$
         .pipe(
-          debounceTime(32),
+          debounceTime(16),
           // tap((p) => console.log('processing-destroy is', p)),
           filter((processing) => !processing),
           take(1),
