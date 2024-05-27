@@ -1,4 +1,5 @@
 import {
+  Ref,
   ValueOrObservableOrGetter,
   ref,
   toObservable,
@@ -7,6 +8,7 @@ import {
 import {
   Observable,
   combineLatestWith,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -212,13 +214,20 @@ export type AnyTransitionRecord = Record<string, AnyTransition>;
 export type TransitionRecordStates<T extends AnyTransitionRecord> = {
   [K in keyof T]: AnimationKeysOf<T[K]>;
 };
+export type TransitionRecordStatesOrFalse<T extends AnyTransitionRecord> = {
+  [K in keyof T]: AnimationKeysOf<T[K]> | false;
+};
 
 export type TransitionComponentProps<T extends AnyTransition> = {
-  state$?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+  state?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+  initialState?: AnimationKeysOf<T>;
+  appear?: AnimationKeysOf<T> | false;
 };
 
 export type TransitionMapComponentProps<T extends AnyTransitionRecord> = {
-  states$: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
+  states?: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
+  initialStates?: Partial<TransitionRecordStates<T>>;
+  appear?: Partial<TransitionRecordStatesOrFalse<T>>;
 };
 
 export function useTransitionComponent<T extends AnyTransition>(
@@ -241,14 +250,34 @@ export function useTransitionComponent<
   if (transitionOrMap instanceof Transition) {
     return defineComponent<
       TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
-    >(({ children, state$ }) => {
+    >(({ children, appear, initialState, state }) => {
+      const transition = initialState
+        ? transitionOrMap.withDefault(initialState)
+        : transitionOrMap;
+
+      const state$ = ref<string>(transition.defaultState);
+      if (state) {
+        state$.fromObservable(toObservable(state));
+      }
       const el$ = ref<HTMLElement>();
       const destroy$ = onBeforeDestroy();
       onMounted().subscribe(() => {
-        const { bindState, processing$ } = transitionOrMap.attachTo(el$);
+        const { bindState, processing$ } = transition.attachTo(el$);
         bindState(state$);
+        if (appear !== false) {
+          state$.value = appear ?? 'default';
+        }
         destroy$.subscribe((pause) => {
+          pause(true);
           state$.value = 'void';
+          processing$
+            .pipe(
+              filter((p) => !p),
+              debounceTime(16),
+            )
+            .subscribe(() => {
+              pause(false);
+            });
         });
       });
       return <Capture el$={el$}>{children}</Capture>;
@@ -256,22 +285,62 @@ export function useTransitionComponent<
   }
   return defineComponent<
     TransitionMapComponentProps<Exclude<T, AnyTransition>>
-  >(({ children, states$ }) => {
+  >(({ children, states, initialStates, appear }) => {
     const el$ = ref<HTMLElement>();
-    const statesObject$ = toObservable(states$);
+
+    const stateRefs = (() => {
+      const agg: Record<string, Ref<string>> = {};
+      Object.keys(transitionOrMap).forEach((key) => {
+        const defaultState = initialStates
+          ? initialStates[key]
+          : transitionOrMap[key].defaultState;
+        agg[key] = ref(defaultState);
+      });
+      return agg;
+    })();
+    if (states) {
+      toObservable(states).subscribe((so) => {
+        Object.keys(so).forEach((key) => {
+          stateRefs[key].value = so[key];
+        });
+      });
+    }
+
+    const processingFlags = ref(new Map<string, boolean>());
 
     onMounted().subscribe(() => {
       Object.keys(transitionOrMap).forEach((key) => {
-        const transition = transitionOrMap[key];
-        const { bindState } = transition.attachTo(el$);
-        bindState(
-          statesObject$.pipe(
-            map((s) => s[key]),
-            distinctUntilChanged(),
-          ),
-        );
+        const defaultState = initialStates ? initialStates[key] : undefined;
+        const transition = defaultState
+          ? transitionOrMap[key].withDefault(defaultState)
+          : transitionOrMap[key];
+        const { bindState, processing$ } = transition.attachTo(el$);
+        processing$.subscribe((p) => {
+          processingFlags.value.set(key, p);
+        });
+        bindState(stateRefs[key]);
+        if (appear && appear[key] !== false) {
+          stateRefs[key].value =
+            (appear[key] as string | undefined) ?? 'default';
+        }
       });
     });
+
+    onBeforeDestroy().subscribe((pause) => {
+      pause(true);
+      Object.keys(stateRefs).forEach((key) => {
+        stateRefs[key].value = 'void';
+      });
+      processingFlags
+        .pipe(
+          filter((flags) => !Array.from(flags.values()).includes(true)),
+          debounceTime(16),
+        )
+        .subscribe(() => {
+          pause(false);
+        });
+    });
+
     return <Capture el$={el$}>{children}</Capture>;
   });
 }
