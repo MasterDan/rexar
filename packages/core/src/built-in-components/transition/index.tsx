@@ -17,7 +17,7 @@ import {
   take,
 } from 'rxjs';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
-import { onBeforeDestroy, onMounted } from '@core/scope';
+import { onBeforeDestroy } from '@core/scope';
 import { Capture } from '../capture/Capture';
 
 export type AnimationSatesDefault = 'default' | 'void';
@@ -215,6 +215,9 @@ export type AnyTransitionRecord = Record<string, AnyTransition>;
 
 export type TransitionRecordStates<T extends AnyTransitionRecord> = {
   [K in keyof T]: AnimationKeysOf<T[K]>;
+};
+export type TransitionRecordStatesOrFalse<T extends AnyTransitionRecord> = {
+  [K in keyof T]: AnimationKeysOf<T[K]> | false;
 };
 
 export type TransitionComponentProps<T extends AnyTransition> = {
