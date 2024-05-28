@@ -149,7 +149,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
         combineLatestWith(el$),
       )
       .subscribe(([{ from, to }, element]) => {
-        // console.log('Transition from', from, 'to', to, 'on', element);
+        console.log('Transition from', from, 'to', to, 'on', element);
         processing$.value = true;
         const fromState = from === '*' ? undefined : this.states.get(from);
         const toState = to === '*' ? undefined : this.states.get(to);
@@ -177,7 +177,7 @@ class Transition<TStates extends string = AnimationSatesDefault> {
         }
 
         const removeFromState = () => {
-          // console.log('Transition ended');
+          console.log('Transition ended');
           transitions.forEach((transition) => {
             removeState(transition, element);
           });
