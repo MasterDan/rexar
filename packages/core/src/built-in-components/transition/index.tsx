@@ -214,9 +214,6 @@ export type AnyTransitionRecord = Record<string, AnyTransition>;
 export type TransitionRecordStates<T extends AnyTransitionRecord> = {
   [K in keyof T]: AnimationKeysOf<T[K]>;
 };
-export type TransitionRecordStatesOrFalse<T extends AnyTransitionRecord> = {
-  [K in keyof T]: AnimationKeysOf<T[K]> | false;
-};
 
 export type TransitionComponentProps<T extends AnyTransition> = {
   state?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
