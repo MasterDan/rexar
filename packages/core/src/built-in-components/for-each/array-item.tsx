@@ -1,5 +1,6 @@
 import { Ref, ref } from '@rexar/reactivity';
 import { ComponentRenderFunc, defineComponent, render } from '@core/component';
+import { RenderContext } from '@core/scope/context';
 import { Comment } from '../comment';
 import { EachComponent, Key } from './@types';
 
@@ -14,7 +15,12 @@ export class ArrayItem<T> {
 
   private component?: ComponentRenderFunc;
 
-  constructor(item: T, public key: Key, index: number) {
+  constructor(
+    item: T,
+    public key: Key,
+    index: number,
+    private context: RenderContext,
+  ) {
     this.itemRef = ref(item);
     this.indexRef = ref(index);
   }
@@ -35,7 +41,7 @@ export class ArrayItem<T> {
           {this.endAnchor}
         </>
       ));
-      const { remove } = render(this.component).after(elem);
+      const { remove } = render(this.component, this.context).after(elem);
       this.$remove = remove;
       return this.endAnchor;
     };
