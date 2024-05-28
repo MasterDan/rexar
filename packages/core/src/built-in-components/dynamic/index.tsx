@@ -6,10 +6,10 @@ import {
   render,
 } from '@core/component';
 import { ref } from '@rexar/reactivity';
-import { onBeforeDestroy, renderingScope } from '@core/scope';
-import { RenderContext } from '@core/scope/context';
-import { filter, of, switchMap } from 'rxjs';
+import { onBeforeDestroy, useContext } from '@core/scope';
+import { Subject, filter, of, switchMap, take } from 'rxjs';
 import { Comment } from '../comment';
+import { WaitContext, waitingProvider } from './waiting';
 
 export function useDynamic(initial: RenderFunction | null = null) {
   const componentRef = ref<ComponentRenderFunc | null>(null);
@@ -20,13 +20,18 @@ export function useDynamic(initial: RenderFunction | null = null) {
 
   setComponent(initial);
 
-  const context =
-    renderingScope.current?.value.context.createChildContext() ??
-    new RenderContext();
   const component = defineComponent(({ children }) => {
+    // This needs for correct work of provide/inject mechanic in dynamic content
+    const context = useContext();
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
+    const waitContext: WaitContext = {
+      done$: new Subject<void>(),
+      waitForMe$: ref(false),
+      imWaiting$: new Subject<void>(),
+    };
+    waitingProvider.provide(waitContext);
     const removeInProcess = ref(false);
     removeInProcess
       .pipe(
@@ -36,10 +41,18 @@ export function useDynamic(initial: RenderFunction | null = null) {
       .subscribe((DynamicBody) => {
         if (previous) {
           removeInProcess.value = true;
-          previous.remove().subscribe(() => {
+          const prev = previous;
+          const finalize = () => {
+            prev.remove();
             previous = undefined;
             removeInProcess.value = false;
-          });
+          };
+          if (waitContext.waitForMe$.value) {
+            waitContext.done$.pipe(take(1)).subscribe(finalize);
+            waitContext.imWaiting$.next();
+          } else {
+            finalize();
+          }
           return;
         }
         if (DynamicBody) {

@@ -17,8 +17,8 @@ import {
   take,
 } from 'rxjs';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
-import { onBeforeDestroy } from '@core/scope';
 import { Capture } from '../capture/Capture';
+import { onWaiting } from '../dynamic/waiting';
 
 export type AnimationSatesDefault = 'default' | 'void';
 
@@ -149,7 +149,6 @@ class Transition<TStates extends string = AnimationSatesDefault> {
       )
       .subscribe(([{ from, to }, element]) => {
         // console.log('Transition from', from, 'to', to, 'on', element);
-
         processing$.value = true;
         const fromState = from === '*' ? undefined : this.states.get(from);
         const toState = to === '*' ? undefined : this.states.get(to);
@@ -259,34 +258,33 @@ export function useTransitionComponent<
       //   console.log('component-state is', st);
       // });
       const el$ = ref<HTMLElement>();
-      const destroy$ = onBeforeDestroy();
+      const transitionProcessing$ = ref(false);
       el$.pipe(filter((el) => el != null)).subscribe(() => {
         const { bindState, processing$ } = transition.attachTo(el$);
+        processing$.subscribe((p) => {
+          transitionProcessing$.value = p;
+        });
         bindState(state$);
         if (state) {
           setTimeout(() => {
             state$.fromObservable(toObservable(state));
           }, 16);
         }
-        // processing$.subscribe((p) => {
-        //   console.log('processing is', p);
-        // });
-        destroy$.subscribe((pause) => {
-          pause(true);
-          console.log('transitioning to void:begin');
-
-          state$.value = 'void';
-          processing$
-            .pipe(
-              debounceTime(16),
-              filter((p) => !p),
-            )
-            .subscribe(() => {
-              pause(false);
-              console.log('transitioning to void:end');
-            });
-        });
       });
+      onWaiting((done) => {
+        state$.value = 'void';
+        transitionProcessing$
+          .pipe(
+            debounceTime(16),
+            filter((p) => !p),
+            take(1),
+          )
+          .subscribe(() => {
+            // console.log('transitioning to void:end');
+            done();
+          });
+      });
+
       return <Capture el$={el$}>{children}</Capture>;
     });
   }
@@ -330,9 +328,7 @@ export function useTransitionComponent<
         }
       });
     });
-
-    onBeforeDestroy().subscribe((pause) => {
-      pause(true);
+    onWaiting((done) => {
       Object.keys(stateRefs).forEach((key) => {
         stateRefs[key].value = 'void';
       });
@@ -340,9 +336,10 @@ export function useTransitionComponent<
         .pipe(
           debounceTime(16),
           filter((flags) => !Array.from(flags.values()).includes(true)),
+          take(1),
         )
         .subscribe(() => {
-          pause(false);
+          done();
         });
     });
 

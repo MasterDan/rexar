@@ -1,10 +1,11 @@
 import { Scope } from '@rexar/reactivity';
 import { Subject } from 'rxjs';
 import { RenderingScopeValue } from './scope-value';
+import { RenderContext } from './context';
 
 export type PauseFunc = (pause: boolean) => void;
 
-export type ComponentHookValue = Subject<PauseFunc>;
+export type ComponentHookValue = Subject<void>;
 
 export type ComponentHooks = {
   onRendered: ComponentHookValue;
@@ -19,7 +20,7 @@ export const renderingScope = new Scope<RenderingScopeValue, ComponentHooks>();
 
 const createHookWrapper =
   (hookRaw: (body: ComponentHookValue) => void) => () => {
-    const subject = new Subject<PauseFunc>();
+    const subject = new Subject<void>();
     hookRaw(subject);
     return subject;
   };
@@ -38,30 +39,37 @@ export const onDestroyed = createHookWrapper(
 );
 
 export function createProvider<T>(): {
-  provide: (value: T) => void;
+  provide: (value: T) => T;
   inject: () => T | undefined;
 };
 export function createProvider<T>(defaultVal: T): {
-  provide: (value: T) => void;
+  provide: (value: T) => T;
   inject: () => T;
 };
 export function createProvider<T>(defaultVal?: T): {
-  provide: (value: T) => void;
+  provide: (value: T) => T;
   inject: () => T | undefined;
 } {
   const key = Symbol('provided-value');
-  const getScope = () => {
+  const getContext = () => {
     const scope = renderingScope.current;
     if (scope == null) {
       throw new Error('Scope is not defined');
     }
-    return scope;
+    return scope.value.context;
   };
-  const provide = (value: T) => {
-    getScope().value.context.provide(key, value);
+  const provide = (value: T): T => {
+    getContext().provide(key, value);
+    return value;
   };
-  const inject = (): T | undefined =>
-    getScope().value.context.inject(key, defaultVal);
+  const inject = (): T | undefined => getContext().inject(key, defaultVal);
 
   return { provide, inject };
+}
+
+export function useContext() {
+  return (
+    renderingScope.current?.value.context.createChildContext() ??
+    new RenderContext()
+  );
 }

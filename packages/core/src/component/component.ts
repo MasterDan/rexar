@@ -7,12 +7,8 @@ import {
 } from '@core/scope';
 import {
   Subject,
-  combineLatestWith,
-  debounceTime,
   distinctUntilChanged,
   filter,
-  map,
-  switchMap,
   take,
   takeUntil,
   timer,
@@ -30,7 +26,7 @@ enum Lifecycle {
 
 export type ComponentOptions = {
   root: boolean;
-  destroyer?: Subject<Subject<void>>;
+  destroyer?: Subject<void>;
   context?: RenderContext;
 };
 
@@ -40,18 +36,6 @@ export class Component<TProps extends BaseProps> {
   private hooks = new Map<ComponentHookName, ComponentHookValue[]>();
 
   private parentContext: RenderContext | undefined;
-
-  private hookIsProcessing$ = ref(false);
-
-  private childComponentHooksAreProcessing = ref(new Map<symbol, boolean>());
-
-  private anyHookIsProcessing$ = this.hookIsProcessing$.pipe(
-    combineLatestWith(this.childComponentHooksAreProcessing),
-    map(
-      ([processing, childrenProcessing]) =>
-        processing || Array.from(childrenProcessing.values()).includes(true),
-    ),
-  );
 
   private setHook(name: ComponentHookName, body: ComponentHookValue) {
     let hooks = this.hooks.get(name);
@@ -75,30 +59,15 @@ export class Component<TProps extends BaseProps> {
     const currentScope = renderingScope.current;
     this.parentContext = currentScope?.value.context;
     const parentLifecycle = currentScope?.value.component.lifecycle$;
-    const parentHookIsProcessing =
-      renderingScope.current?.value.component.hookIsProcessing$;
+
     const destroy$ = this.$lifecycle.pipe(
       filter((l) => l === Lifecycle.Destroyed),
     );
-    if (currentScope != null) {
-      this.anyHookIsProcessing$.subscribe((processing) => {
-        currentScope.value.component.childComponentHooksAreProcessing.value.set(
-          this.key,
-          processing,
-        );
-      });
-    }
-    if (parentLifecycle != null && parentHookIsProcessing != null) {
+    if (parentLifecycle != null) {
       this.parentLifecycle
         .pipe(
           filter((lc): lc is Lifecycle => lc != null),
-          switchMap((lc) =>
-            parentHookIsProcessing.pipe(
-              filter((p) => !p),
-              take(1),
-              map(() => lc),
-            ),
-          ),
+
           takeUntil(destroy$),
         )
         .subscribe((parentLc) => {
@@ -134,9 +103,7 @@ export class Component<TProps extends BaseProps> {
         }
         if (hookToTrigger) {
           this.hooks.get(hookToTrigger)?.forEach((hook) => {
-            hook.next((pause) => {
-              this.hookIsProcessing$.value = pause;
-            });
+            hook.next();
             hook.complete();
           });
           this.hooks.delete(hookToTrigger);
@@ -144,12 +111,14 @@ export class Component<TProps extends BaseProps> {
       });
   }
 
-  render(props: TProps, { root, destroyer }: ComponentOptions) {
+  render(props: TProps, { root, destroyer, context }: ComponentOptions) {
     const catchHooks = renderingScope.begin(
       this.key,
       new RenderingScopeValue(
         this,
-        this.parentContext?.createChildContext() ?? new RenderContext(),
+        context ??
+          this.parentContext?.createChildContext() ??
+          new RenderContext(),
       ),
     );
     catchHooks.subscribe((hook) => {
@@ -160,23 +129,12 @@ export class Component<TProps extends BaseProps> {
     const renderedNodes: ChildNode[] =
       result instanceof DocumentFragment ? [...result.childNodes] : [result];
 
-    destroyer?.subscribe((done$) => {
+    destroyer?.subscribe(() => {
       this.$lifecycle.value = Lifecycle.BeforeDestroy;
-      this.anyHookIsProcessing$
-        .pipe(
-          debounceTime(16),
-          // tap((p) => console.log('processing-destroy is', p)),
-          filter((processing) => !processing),
-          take(1),
-        )
-        .subscribe(() => {
-          renderedNodes.forEach((n) => {
-            n.remove();
-          });
-          this.$lifecycle.value = Lifecycle.Destroyed;
-          done$.next();
-          done$.complete();
-        });
+      renderedNodes.forEach((n) => {
+        n.remove();
+      });
+      this.$lifecycle.value = Lifecycle.Destroyed;
     });
 
     if (root) {
