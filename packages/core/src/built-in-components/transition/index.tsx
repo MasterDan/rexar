@@ -15,6 +15,7 @@ import {
   pairwise,
   switchMap,
   take,
+  tap,
 } from 'rxjs';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { Capture } from '../capture/Capture';
@@ -329,16 +330,20 @@ export function useTransitionComponent<
       });
     });
     onWaiting((done) => {
+      console.log('waiting for transition');
+
       Object.keys(stateRefs).forEach((key) => {
         stateRefs[key].value = 'void';
       });
       processingFlags
         .pipe(
+          tap((v) => console.log(v)),
           debounceTime(16),
           filter((flags) => !Array.from(flags.values()).includes(true)),
           take(1),
         )
         .subscribe(() => {
+          console.log('done');
           done();
         });
     });

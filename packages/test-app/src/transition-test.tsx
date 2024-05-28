@@ -114,9 +114,18 @@ export const TransitionTest = defineComponent(() => {
             </TransitionFade>
           )}
           fallback={() => (
-            <TransitionFade state="default">
+            <TransitionFadeAndRotate
+              states={{
+                fade: 'default',
+                rotate: 'rotated',
+              }}
+              initialStates={{
+                fade: 'void',
+                rotate: 'default',
+              }}
+            >
               <div>Flag is false</div>
-            </TransitionFade>
+            </TransitionFadeAndRotate>
           )}
         />
       </div>
