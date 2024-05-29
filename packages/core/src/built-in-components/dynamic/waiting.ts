@@ -1,6 +1,6 @@
-import { createProvider } from '@core/scope';
+import { createProvider, onBeforeDestroy } from '@core/scope';
 import { Ref } from '@rexar/reactivity';
-import { Subject, take } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 
 export type WaitContext = {
   waitForMe$: Ref<boolean>;
@@ -12,6 +12,7 @@ export const waitingProvider = createProvider<WaitContext | null>();
 
 export function onWaiting(handler: (done: () => void) => void) {
   const context = waitingProvider.inject();
+  const beforeDestroy$ = onBeforeDestroy();
 
   if (context != null) {
     waitingProvider.provide(null);
@@ -20,9 +21,11 @@ export function onWaiting(handler: (done: () => void) => void) {
       context.waitForMe$.value = false;
       context.done$.next();
     };
-    context.imWaiting$.pipe(take(1)).subscribe(() => {
-      handler(done);
-    });
+    context.imWaiting$
+      .pipe(takeUntil(beforeDestroy$), take(1))
+      .subscribe(() => {
+        handler(done);
+      });
   }
 }
 

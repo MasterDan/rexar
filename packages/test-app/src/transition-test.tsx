@@ -55,7 +55,7 @@ export const TransitionTest = defineComponent(() => {
     },
   );
   const flag$ = ref(true);
-  const nestedFlag1$ = ref(false);
+  const nestedFlag1$ = ref(true);
   const nestedFlag2$ = ref(false);
   return (
     <div class="bg-neutral-50 p-8 rounded-3xl bg-opacity-30 flex flex-col gap-8 items-center">
@@ -111,7 +111,7 @@ export const TransitionTest = defineComponent(() => {
         <Show
           when={flag$}
           content={() => (
-            <TransitionFade state="default" initialState="void">
+            <TransitionFade initialState="void">
               <div> Flag is true </div>
             </TransitionFade>
           )}
@@ -156,7 +156,7 @@ export const TransitionTest = defineComponent(() => {
         <Show
           when={nestedFlag1$}
           content={() => (
-            <TransitionFade state="default" initialState="void">
+            <TransitionFade initialState="void">
               <div> Flag 1 is true </div>
             </TransitionFade>
           )}
@@ -164,12 +164,12 @@ export const TransitionTest = defineComponent(() => {
             <Show
               when={nestedFlag2$}
               content={() => (
-                <TransitionFade state="default" initialState="void">
+                <TransitionFade initialState="void">
                   <div> Flag 2 is true </div>
                 </TransitionFade>
               )}
               fallback={() => (
-                <TransitionFade state="default" initialState="void">
+                <TransitionFade initialState="void">
                   <div> Flag 2 is false </div>
                 </TransitionFade>
               )}

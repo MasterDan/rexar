@@ -9,7 +9,7 @@ import { ref } from '@rexar/reactivity';
 import { onBeforeDestroy, useContext } from '@core/scope';
 import { Subject, filter, of, switchMap, take } from 'rxjs';
 import { Comment } from '../comment';
-import { WaitContext, waitingProvider } from './waiting';
+import { WaitContext, onWaiting, waitingProvider } from './waiting';
 
 export function useDynamic(initial: RenderFunction | null = null) {
   const componentRef = ref<ComponentRenderFunc | null>(null);
@@ -26,11 +26,19 @@ export function useDynamic(initial: RenderFunction | null = null) {
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
-    const waitContext: WaitContext = waitingProvider.inject() ?? {
+    const waitContext: WaitContext = {
       done$: new Subject<void>(),
       waitForMe$: ref(false),
       imWaiting$: new Subject<void>(),
     };
+    onWaiting((done) => {
+      if (waitContext.waitForMe$.value) {
+        waitContext.done$.pipe(take(1)).subscribe(done);
+        waitContext.imWaiting$.next();
+      } else {
+        done();
+      }
+    });
     waitingProvider.provide(waitContext);
     const removeInProcess = ref(false);
     removeInProcess

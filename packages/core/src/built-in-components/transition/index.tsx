@@ -247,6 +247,7 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
           switchMap((state) =>
             // wait until processing ends
             onProcessingEnd$.pipe(
+              filter((p) => !p),
               take(1),
               map(() => state),
             ),
@@ -311,6 +312,8 @@ export function createTransitionComponent<
       onMounted().subscribe(() => {
         if (state) {
           state$.fromObservable(toObservable(state));
+        } else {
+          state$.value = 'default';
         }
       });
       onWaiting((done) => {
@@ -357,6 +360,12 @@ export function createTransitionComponent<
     onMounted().subscribe(() => {
       if (states) {
         states$.fromObservable(toObservable(states));
+      } else {
+        const defaultState: Record<string, string> = {};
+        Object.keys(transitionOrMap).forEach((key) => {
+          defaultState[key] = 'default';
+        });
+        states$.value = defaultState;
       }
     });
 
