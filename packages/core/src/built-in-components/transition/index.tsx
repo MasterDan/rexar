@@ -267,11 +267,13 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
 export type TransitionComponentProps<T extends AnyTransition> = {
   state?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
   initialState?: AnimationKeysOf<T>;
+  automaticDisappear?: boolean;
 };
 
 export type TransitionMapComponentProps<T extends AnyTransitionRecord> = {
   states?: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
   initialStates?: Partial<TransitionRecordStates<T>>;
+  automaticDisappear?: boolean;
 };
 
 export function createTransitionComponent<T extends AnyTransition>(
@@ -294,7 +296,7 @@ export function createTransitionComponent<
   if (transitionOrMap instanceof Transition) {
     return defineComponent<
       TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
-    >(({ children, initialState, state }) => {
+    >(({ children, initialState, state, automaticDisappear }) => {
       const transition = initialState
         ? transitionOrMap.withDefault(initialState)
         : transitionOrMap;
@@ -316,23 +318,25 @@ export function createTransitionComponent<
           state$.value = 'default';
         }
       });
-      onWaiting((done) => {
-        state$.value = 'void';
-        processing$
-          .pipe(
-            debounceTime(16),
-            filter((p) => !p),
-            take(1),
-          )
-          .subscribe(done);
-      });
+      if (automaticDisappear ?? true) {
+        onWaiting((done) => {
+          state$.value = 'void';
+          processing$
+            .pipe(
+              debounceTime(16),
+              filter((p) => !p),
+              take(1),
+            )
+            .subscribe(done);
+        });
+      }
 
       return <Capture el$={el$}>{children}</Capture>;
     });
   }
   return defineComponent<
     TransitionMapComponentProps<Exclude<T, AnyTransition>>
-  >(({ children, states, initialStates }) => {
+  >(({ children, states, initialStates, automaticDisappear }) => {
     const el$ = ref<HTMLElement>();
 
     const transitionsMap = (() => {
@@ -368,21 +372,22 @@ export function createTransitionComponent<
         states$.value = defaultState;
       }
     });
-
-    onWaiting((done) => {
-      const voidState: Record<string, string> = {};
-      Object.keys(transitionOrMap).forEach((key) => {
-        voidState[key] = 'void';
+    if (automaticDisappear ?? true) {
+      onWaiting((done) => {
+        const voidState: Record<string, string> = {};
+        Object.keys(transitionOrMap).forEach((key) => {
+          voidState[key] = 'void';
+        });
+        states$.value = voidState;
+        processing$
+          .pipe(
+            debounceTime(16),
+            filter((p) => !p),
+            take(1),
+          )
+          .subscribe(done);
       });
-      states$.value = voidState;
-      processing$
-        .pipe(
-          debounceTime(16),
-          filter((p) => !p),
-          take(1),
-        )
-        .subscribe(done);
-    });
+    }
 
     return <Capture el$={el$}>{children}</Capture>;
   });
