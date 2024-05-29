@@ -5,35 +5,35 @@ import {
   createTransition,
   defineComponent,
   ref,
-  useTransitionComponent,
+  createTransitionComponent,
 } from '@rexar/core';
 import transitions from './assets/styles/transitions.module.css';
 
 const transitionFade = createTransition()
-  .defineState('default', transitions['opacity-one'])
-  .defineState('void', transitions['opacity-zero'])
-  .defineTransition(
+  .withState('default', transitions['opacity-one'])
+  .withState('void', transitions['opacity-zero'])
+  .withTransition(
     { from: 'void', to: 'default' },
     transitions['transition-opacity-in'],
   )
-  .defineTransition(
+  .withTransition(
     { from: 'default', to: 'void' },
     transitions['transition-opacity-out'],
   )
   .withDefault('void');
 
 const transitionRotate = createTransition()
-  .defineState('rotated', transitions.rotated)
-  .defineTransition(
+  .withState('rotated', transitions.rotated)
+  .withTransition(
     { from: 'rotated', to: '*', reverse: true },
     transitions['transition-rotate'],
   );
 
-const TransitionFade = useTransitionComponent(transitionFade);
+const TransitionFade = createTransitionComponent(transitionFade);
 
-const TransitionRotate = useTransitionComponent(transitionRotate);
+const TransitionRotate = createTransitionComponent(transitionRotate);
 
-const TransitionFadeAndRotate = useTransitionComponent({
+const TransitionFadeAndRotate = createTransitionComponent({
   fade: transitionFade,
   rotate: transitionRotate,
 });
@@ -114,18 +114,9 @@ export const TransitionTest = defineComponent(() => {
             </TransitionFade>
           )}
           fallback={() => (
-            <TransitionFadeAndRotate
-              states={{
-                fade: 'default',
-                rotate: 'rotated',
-              }}
-              initialStates={{
-                fade: 'void',
-                rotate: 'default',
-              }}
-            >
-              <div>Flag is false</div>
-            </TransitionFadeAndRotate>
+            <TransitionFade state="default">
+              <div> Flag is false </div>
+            </TransitionFade>
           )}
         />
       </div>

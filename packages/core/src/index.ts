@@ -32,7 +32,8 @@ export { Tag } from './built-in-components/custom-tag/Tag';
 export { Capture } from './built-in-components/capture/Capture';
 export {
   createTransition,
-  useTransitionComponent,
+  createTransitionComponent,
+  attachTransitions,
   type AnimationKeys,
   type AnimationKeysOf,
 } from './built-in-components/transition';
