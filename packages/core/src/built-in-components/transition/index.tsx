@@ -9,10 +9,14 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  fromEvent,
   map,
+  merge,
   pairwise,
+  skip,
   switchMap,
   take,
+  takeUntil,
 } from 'rxjs';
 import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { onMounted } from '@core/scope';
@@ -29,10 +33,13 @@ export type AnimationClasses = string[];
 
 function applyState(state: AnimationClasses, el: HTMLElement) {
   if (state.length === 0) return;
+  // console.log('applying', state, 'to', el);
+
   el.classList.add(...state);
 }
 function removeState(state: AnimationClasses, el: HTMLElement) {
   if (state.length === 0) return;
+  // console.log('removing', state, 'from', el);
   el.classList.remove(...state);
 }
 
@@ -126,6 +133,7 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
       ),
     );
     const processing$ = ref(true);
+    const onProcessingEnd$ = processing$.pipe(filter((p) => !p));
 
     // applying initial state classes to element
     states$
@@ -157,16 +165,21 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
         combineLatestWith(element$),
       )
       .subscribe(([{ fromStates, toStates }, element]) => {
+        const changedTransitionNames = transitionNames.filter(
+          (name) => fromStates.get(name) !== toStates.get(name),
+        );
+
         processing$.value = true;
-        const fromClasses = [...fromStates]
-          .map(([name, state]) => transitions[name].states.get(state))
+
+        const fromClasses = changedTransitionNames
+          .map((name) => transitions[name].states.get(fromStates.get(name)))
           .filter((i): i is AnimationClasses => i != null)
           .reduce((a, b) => a.concat(b), []);
-        const toClasses = [...toStates]
-          .map(([name, state]) => transitions[name].states.get(state))
+        const toClasses = changedTransitionNames
+          .map((name) => transitions[name].states.get(toStates.get(name)))
           .filter((i): i is AnimationClasses => i != null)
           .reduce((a, b) => a.concat(b), []);
-        const transitionClasses = transitionNames
+        const transitionClasses = changedTransitionNames
           .map((name) => {
             const transition = transitions[name];
             const fromKey = fromStates.get(name);
@@ -186,6 +199,16 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
           })
           .reduce((a, b) => a.concat(b), []);
 
+        const transitionsCounter$ = ref(0);
+        merge(
+          fromEvent(element, 'transitionstart'),
+          fromEvent(element, 'animationstart'),
+        )
+          .pipe(takeUntil(onProcessingEnd$))
+          .subscribe(() => {
+            transitionsCounter$.value += 1;
+          });
+
         applyState([...transitionClasses, ...toClasses], element);
         removeState(fromClasses, element);
 
@@ -194,12 +217,24 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
           return;
         }
 
-        const removeFromState = () => {
-          removeState(transitionClasses, element);
-          element.removeEventListener('transitionend', removeFromState);
-          processing$.value = false;
-        };
-        element.addEventListener('transitionend', removeFromState);
+        merge(
+          fromEvent(element, 'transitionend'),
+          fromEvent(element, 'animationend'),
+        )
+          .pipe(takeUntil(onProcessingEnd$))
+          .subscribe(() => {
+            transitionsCounter$.value -= 1;
+          });
+        transitionsCounter$
+          .pipe(
+            skip(1),
+            filter((c) => c === 0),
+            take(1),
+          )
+          .subscribe(() => {
+            removeState(transitionClasses, element);
+            processing$.value = false;
+          });
       });
 
     const bindStates = (
@@ -211,8 +246,7 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
         .pipe(
           switchMap((state) =>
             // wait until processing ends
-            processing$.pipe(
-              filter((p) => !p),
+            onProcessingEnd$.pipe(
               take(1),
               map(() => state),
             ),
@@ -287,10 +321,7 @@ export function createTransitionComponent<
             filter((p) => !p),
             take(1),
           )
-          .subscribe(() => {
-            // console.log('transitioning to void:end');
-            done();
-          });
+          .subscribe(done);
       });
 
       return <Capture el$={el$}>{children}</Capture>;
@@ -301,19 +332,26 @@ export function createTransitionComponent<
   >(({ children, states, initialStates }) => {
     const el$ = ref<HTMLElement>();
 
+    const transitionsMap = (() => {
+      const resultMap: Record<string, AnyTransition> = {};
+      Object.keys(transitionOrMap).forEach((key) => {
+        resultMap[key] = initialStates
+          ? transitionOrMap[key].withDefault(initialStates[key])
+          : transitionOrMap[key];
+      });
+      return resultMap;
+    })();
+
     const states$ = (() => {
       const agg = ref<Record<string, string>>({});
-      Object.keys(transitionOrMap).forEach((key) => {
-        const defaultState = initialStates
-          ? initialStates[key]
-          : transitionOrMap[key].defaultState;
-        agg.value[key] = defaultState;
+      Object.keys(transitionsMap).forEach((key) => {
+        agg.value[key] = transitionsMap[key].defaultState;
       });
       return agg;
     })();
 
     const { bindStates, processing$ } =
-      attachTransitions(transitionOrMap).to(el$);
+      attachTransitions(transitionsMap).to(el$);
     bindStates(states$);
 
     onMounted().subscribe(() => {
@@ -323,7 +361,6 @@ export function createTransitionComponent<
     });
 
     onWaiting((done) => {
-      console.log('waiting for transition');
       const voidState: Record<string, string> = {};
       Object.keys(transitionOrMap).forEach((key) => {
         voidState[key] = 'void';
@@ -335,10 +372,7 @@ export function createTransitionComponent<
           filter((p) => !p),
           take(1),
         )
-        .subscribe(() => {
-          done();
-          console.log('done');
-        });
+        .subscribe(done);
     });
 
     return <Capture el$={el$}>{children}</Capture>;

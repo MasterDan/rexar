@@ -19,8 +19,7 @@ const transitionFade = createTransition()
   .withTransition(
     { from: 'default', to: 'void' },
     transitions['transition-opacity-out'],
-  )
-  .withDefault('void');
+  );
 
 const transitionRotate = createTransition()
   .withState('rotated', transitions.rotated)
@@ -56,6 +55,8 @@ export const TransitionTest = defineComponent(() => {
     },
   );
   const flag$ = ref(true);
+  const nestedFlag1$ = ref(false);
+  const nestedFlag2$ = ref(false);
   return (
     <div class="bg-neutral-50 p-8 rounded-3xl bg-opacity-30 flex flex-col gap-8 items-center">
       <div class="flex gap-8 justify-between items-center">
@@ -94,7 +95,8 @@ export const TransitionTest = defineComponent(() => {
           <div>I will fade and rotate</div>
         </TransitionFadeAndRotate>
       </div>
-      <div>
+      <div class="flex gap-8 items-center">
+        <h2 class="text-lg">Transitions inside show component</h2>
         <button
           class="bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500 
         text-white p-2 px-4 rounded-full transition-colors duration-200"
@@ -102,23 +104,78 @@ export const TransitionTest = defineComponent(() => {
             flag$.value = !flag$.value;
           }}
         >
-          Toggle flag {flag$}
+          Toggle
         </button>
       </div>
       <div>
         <Show
           when={flag$}
           content={() => (
-            <TransitionFade state="default">
+            <TransitionFade state="default" initialState="void">
               <div> Flag is true </div>
             </TransitionFade>
           )}
           fallback={() => (
-            <TransitionFade state="default">
+            <TransitionFadeAndRotate
+              states={{
+                fade: 'default',
+                rotate: 'rotated',
+              }}
+              initialStates={{
+                fade: 'void',
+                rotate: 'void',
+              }}
+            >
               <div> Flag is false </div>
-            </TransitionFade>
+            </TransitionFadeAndRotate>
           )}
         />
+      </div>
+      <div class="flex gap-8 items-center">
+        <h2 class="text-lg">Transitions inside Nested show component</h2>
+        <button
+          class="bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500 
+        text-white p-2 px-4 rounded-full transition-colors duration-200"
+          onClick={() => {
+            nestedFlag1$.value = !nestedFlag1$.value;
+          }}
+        >
+          Toggle First Flag
+        </button>
+        <button
+          class="bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500 
+        text-white p-2 px-4 rounded-full transition-colors duration-200"
+          onClick={() => {
+            nestedFlag2$.value = !nestedFlag2$.value;
+          }}
+        >
+          Toggle Second Flag
+        </button>
+      </div>
+      <div>
+        <Show
+          when={nestedFlag1$}
+          content={() => (
+            <TransitionFade state="default" initialState="void">
+              <div> Flag 1 is true </div>
+            </TransitionFade>
+          )}
+          fallback={() => (
+            <Show
+              when={nestedFlag2$}
+              content={() => (
+                <TransitionFade state="default" initialState="void">
+                  <div> Flag 2 is true </div>
+                </TransitionFade>
+              )}
+              fallback={() => (
+                <TransitionFade state="default" initialState="void">
+                  <div> Flag 2 is false </div>
+                </TransitionFade>
+              )}
+            />
+          )}
+        ></Show>
       </div>
     </div>
   );

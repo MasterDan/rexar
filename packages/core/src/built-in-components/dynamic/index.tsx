@@ -26,7 +26,7 @@ export function useDynamic(initial: RenderFunction | null = null) {
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
-    const waitContext: WaitContext = {
+    const waitContext: WaitContext = waitingProvider.inject() ?? {
       done$: new Subject<void>(),
       waitForMe$: ref(false),
       imWaiting$: new Subject<void>(),
