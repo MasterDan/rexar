@@ -5,7 +5,7 @@ import {
   ref,
   toObservable,
 } from '@rexar/reactivity';
-import { combineLatest, map } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 type CheckFn<TValue> = (value: TValue) => boolean;
@@ -47,6 +47,7 @@ export function useSwitch<TValue>(value: ValueOrObservableOrGetter<TValue>) {
           }
           return d;
         }),
+        distinctUntilChanged(),
       )
       .subscribe((renderFn) => {
         setDynamic(renderFn ?? null);
