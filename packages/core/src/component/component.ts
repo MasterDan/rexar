@@ -1,6 +1,10 @@
 import { BaseProps } from '@rexar/jsx';
 import { ref, toRef } from '@rexar/reactivity';
-import { ComponentHookName, renderingScope } from '@core/scope';
+import {
+  ComponentHookName,
+  ComponentHookValue,
+  renderingScope,
+} from '@core/scope';
 import {
   Subject,
   distinctUntilChanged,
@@ -29,14 +33,14 @@ export type ComponentOptions = {
 export class Component<TProps extends BaseProps> {
   key = Symbol('component');
 
-  private hooks = new Map<ComponentHookName, Subject<void>[]>();
+  private hooks = new Map<ComponentHookName, ComponentHookValue[]>();
 
   private parentContext: RenderContext | undefined;
 
-  private setHook(name: ComponentHookName, body: Subject<void>) {
+  private setHook(name: ComponentHookName, body: ComponentHookValue) {
     let hooks = this.hooks.get(name);
     if (hooks == null) {
-      const nh: Subject<void>[] = [];
+      const nh: ComponentHookValue[] = [];
       this.hooks.set(name, nh);
       hooks = nh;
     }
@@ -52,8 +56,10 @@ export class Component<TProps extends BaseProps> {
   }
 
   constructor(private renderFunc: (props: TProps) => JSX.Element) {
-    this.parentContext = renderingScope.current?.value.context;
-    const parentLifecycle = renderingScope.current?.value.component.lifecycle$;
+    const currentScope = renderingScope.current;
+    this.parentContext = currentScope?.value.context;
+    const parentLifecycle = currentScope?.value.component.lifecycle$;
+
     const destroy$ = this.$lifecycle.pipe(
       filter((l) => l === Lifecycle.Destroyed),
     );
@@ -61,6 +67,7 @@ export class Component<TProps extends BaseProps> {
       this.parentLifecycle
         .pipe(
           filter((lc): lc is Lifecycle => lc != null),
+
           takeUntil(destroy$),
         )
         .subscribe((parentLc) => {
@@ -104,12 +111,14 @@ export class Component<TProps extends BaseProps> {
       });
   }
 
-  render(props: TProps, { root, destroyer }: ComponentOptions) {
+  render(props: TProps, { root, destroyer, context }: ComponentOptions) {
     const catchHooks = renderingScope.begin(
       this.key,
       new RenderingScopeValue(
         this,
-        this.parentContext?.createChildContext() ?? new RenderContext(),
+        context ??
+          this.parentContext?.createChildContext() ??
+          new RenderContext(),
       ),
     );
     catchHooks.subscribe((hook) => {

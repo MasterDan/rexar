@@ -15,6 +15,7 @@ module.exports = {
       './packages/reactivity/tsconfig.json',
       './packages/jsx/tsconfig.json',
       './packages/core/tsconfig.json',
+      './packages/test-app/tsconfig.json',
       './packages/docs/tsconfig.json',
       './demos/vite/tsconfig.json',
       './demos/parcel/tsconfig.json',

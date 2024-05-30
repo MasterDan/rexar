@@ -97,7 +97,7 @@ describe('components', () => {
       ).outerHTML,
     );
   });
-  test('render after', () => {
+  test('render after', async () => {
     const Component = defineComponent<{ text: string }>(({ text }) => (
       <span>{text}</span>
     ));
@@ -121,6 +121,7 @@ describe('components', () => {
       ).outerHTML,
     );
     renderedComp.remove();
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -130,6 +131,7 @@ describe('components', () => {
       ).outerHTML,
     );
     renderedCompSecond.remove();
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -138,7 +140,7 @@ describe('components', () => {
       ).outerHTML,
     );
   });
-  test('render fragment after', () => {
+  test('render fragment after', async () => {
     const Component = defineComponent<{ text: string; header: string }>(
       ({ text, header }) => (
         <>
@@ -171,6 +173,7 @@ describe('components', () => {
       ).outerHTML,
     );
     first.remove();
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -181,6 +184,7 @@ describe('components', () => {
       ).outerHTML,
     );
     second.remove();
+    await wait(50);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -264,6 +268,7 @@ describe('components', () => {
       ).outerHTML,
     );
     first.remove();
+    await wait(50);
     expect(rootDiv.outerHTML).toBe(
       (
         <div>
@@ -278,6 +283,7 @@ describe('components', () => {
       ).outerHTML,
     );
     second.remove();
+    await wait(50);
     expect(rootDiv.outerHTML).toBe(
       (
         <div>

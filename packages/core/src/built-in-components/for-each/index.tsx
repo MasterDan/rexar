@@ -6,7 +6,7 @@ import {
 import { defineComponent } from '@core/component';
 import { getPatch } from 'fast-array-diff';
 import { filter, switchMap, take } from 'rxjs';
-import { onBeforeDestroy, onRendered } from '@core/scope';
+import { onBeforeDestroy, onRendered, useContext } from '@core/scope';
 import { Comment } from '../comment';
 import { ArrayItem } from './array-item';
 import { EachComponent, KeyFactory } from './@types';
@@ -27,11 +27,13 @@ export function useFor<T>(
     const anchorStart = <Comment text="foreach-anchor"></Comment>;
     let ComponentsArray: ArrayItem<T>[] = [];
     const isRendering$ = ref(false);
+    const context = useContext();
 
     const setArray = (value: T[]) => {
       isRendering$.value = true;
       const newArray = value.map(
-        (item, index) => new ArrayItem(item, keyFactory(item, index), index),
+        (item, index) =>
+          new ArrayItem(item, keyFactory(item, index), index, context),
       );
 
       if (ComponentsArray.length === 0) {

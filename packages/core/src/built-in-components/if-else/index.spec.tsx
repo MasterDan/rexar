@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { ref } from '@rexar/reactivity';
+import { wait } from '@rexar/tools';
+import { render } from '@core/component';
 import { Show } from '.';
 import { Comment } from '../comment';
 
@@ -17,25 +19,24 @@ describe('if-else-rendering', () => {
       secondFlag.value = !secondFlag.value;
     };
 
-    const root = (
-      <div>
-        <Show
-          when={firstFlag}
-          content={() => <div>Value is True</div>}
-          fallback={() => (
-            <>
-              <div>Value is False</div>
-              <Show
-                when={secondFlag}
-                content={() => <div>Second Is True</div>}
-                fallback={() => <div>Second is False</div>}
-              />
-            </>
-          )}
-        />
-      </div>
-    );
+    const root = <div></div>;
     document.body.appendChild(root);
+    render(() => (
+      <Show
+        when={firstFlag}
+        content={() => <div>Value is True</div>}
+        fallback={() => (
+          <>
+            <div>Value is False</div>
+            <Show
+              when={secondFlag}
+              content={() => <div>Second Is True</div>}
+              fallback={() => <div>Second is False</div>}
+            />
+          </>
+        )}
+      />
+    )).into(root);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -45,6 +46,7 @@ describe('if-else-rendering', () => {
       ).outerHTML,
     );
     toggleFirst();
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -56,6 +58,7 @@ describe('if-else-rendering', () => {
       ).outerHTML,
     );
     toggleSecond();
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
@@ -67,6 +70,7 @@ describe('if-else-rendering', () => {
       ).outerHTML,
     );
     toggleFirst();
+    await wait(100);
     expect(root.outerHTML).toBe(
       (
         <div>
