@@ -34,7 +34,7 @@ const TransitionFade = createTransitionComponent(transitionFade);
 
 const TransitionRotate = createTransitionComponent(transitionRotate);
 
-const TransitionFadeAndRotate = createTransitionComponent({
+const TransitionMixed = createTransitionComponent({
   fade: transitionFade,
   rotate: transitionRotate,
 });
@@ -91,14 +91,14 @@ export const TransitionTest = defineComponent(() => {
         <TransitionRotate state={rotateState$}>
           <div>I will rotate</div>
         </TransitionRotate>
-        <TransitionFadeAndRotate
+        <TransitionMixed
           states={() => ({
             fade: fadeState$.value,
             rotate: rotateState$.value,
           })}
         >
           <div>I will fade and rotate</div>
-        </TransitionFadeAndRotate>
+        </TransitionMixed>
       </div>
       <div class="flex gap-8 items-center">
         <h2 class="text-lg">Transitions inside show component</h2>
@@ -121,7 +121,7 @@ export const TransitionTest = defineComponent(() => {
             </TransitionFade>
           )}
           fallback={() => (
-            <TransitionFadeAndRotate
+            <TransitionMixed
               states={{
                 fade: 'default',
                 rotate: 'rotated',
@@ -132,7 +132,7 @@ export const TransitionTest = defineComponent(() => {
               }}
             >
               <div> Flag is false </div>
-            </TransitionFadeAndRotate>
+            </TransitionMixed>
           )}
         />
       </div>
