@@ -6,8 +6,10 @@ import {
   defineComponent,
   ref,
   createTransitionComponent,
+  useSwitch,
 } from '@rexar/core';
 import transitions from './assets/styles/transitions.module.css';
+import { Input } from './input';
 
 const transitionFade = createTransition()
   .withState('default', transitions['opacity-one'])
@@ -57,6 +59,9 @@ export const TransitionTest = defineComponent(() => {
   const flag$ = ref(true);
   const nestedFlag1$ = ref(true);
   const nestedFlag2$ = ref(false);
+
+  const switcher$ = ref(0);
+  const Switch = useSwitch(switcher$);
   return (
     <div class="bg-neutral-50 p-8 rounded-3xl bg-opacity-30 flex flex-col gap-8 items-center">
       <div class="flex gap-8 justify-between items-center">
@@ -176,6 +181,41 @@ export const TransitionTest = defineComponent(() => {
             />
           )}
         ></Show>
+      </div>
+      <div class="flex gap-8 items-center">
+        <Input model={switcher$} label="Переключатель"></Input>
+      </div>
+      <div>
+        <Switch
+          setup={(setCase) => {
+            setCase(0, () => (
+              <TransitionFade initialState="void">
+                <div> Switcher equals Zero </div>
+              </TransitionFade>
+            ));
+            setCase(1, () => (
+              <TransitionFade initialState="void">
+                <div> Switcher equals One </div>
+              </TransitionFade>
+            ));
+            setCase(
+              (v) => v > 1,
+              () => (
+                <TransitionFade initialState="void">
+                  <div> Switcher is more than One </div>
+                </TransitionFade>
+              ),
+            );
+            setCase(
+              (v) => v < 0,
+              () => (
+                <TransitionFade initialState="void">
+                  <div> Switcher is less than Zero </div>
+                </TransitionFade>
+              ),
+            );
+          }}
+        ></Switch>
       </div>
     </div>
   );
