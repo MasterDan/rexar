@@ -3,11 +3,12 @@ import { ComponentRenderFunc, defineComponent, render } from '@core/component';
 import { RenderContext } from '@core/scope/context';
 import { Comment } from '../comment';
 import { EachComponent, Key } from './@types';
+import { Waiter } from '../dynamic/waiter';
 
 export class ArrayItem<T> {
   endAnchor?: JSX.Element;
 
-  private $remove?: () => void;
+  private $remove?: () => Promise<void>;
 
   itemRef: Ref<T>;
 
@@ -20,16 +21,17 @@ export class ArrayItem<T> {
     public key: Key,
     index: number,
     private context: RenderContext,
+    private waiter: Waiter,
   ) {
     this.itemRef = ref(item);
     this.indexRef = ref(index);
   }
 
-  remove() {
+  async remove() {
     if (this.$remove == null) {
       throw new Error('Cannot remove element that not been rendered');
     }
-    this.$remove();
+    return this.$remove();
   }
 
   render(Elem: EachComponent<T>) {
@@ -37,12 +39,19 @@ export class ArrayItem<T> {
       this.endAnchor ??= <Comment text="end-of-element"></Comment>;
       this.component ??= defineComponent(() => (
         <>
-          <Elem item={this.itemRef} index={this.indexRef}></Elem>
+          <Elem
+            item={this.itemRef}
+            index={this.indexRef}
+            waiter={this.waiter}
+          ></Elem>
           {this.endAnchor}
         </>
       ));
       const { remove } = render(this.component, this.context).after(elem);
-      this.$remove = remove;
+      this.$remove = async () => {
+        await this.waiter.waitEveryone();
+        remove();
+      };
       return this.endAnchor;
     };
     return { after };
