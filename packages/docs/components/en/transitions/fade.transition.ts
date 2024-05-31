@@ -3,7 +3,7 @@ import {
   createTransition,
   createTransitionComponent,
 } from '@rexar/core';
-import transitions from './transitions.module.css';
+import transitions from './fade.transition.module.css';
 
 export const transitionFade = createTransition()
   .withState('default', transitions['opacity-one'])

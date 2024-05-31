@@ -3,9 +3,11 @@
 <script setup>
 import Demo from '../../components/tools/Demo.vue'
 import { TransitionFadeExample } from '../../components/en/transitions/TransitionFadeExample.tsx'
-import { TransitionFadeAppearExample } from '../../components/en/transitions/TransitionFadeAppearExample.tsx'
+import { TransitionFadeInShow } from '../../components/en/transitions/TransitionFadeInShow.tsx'
 
 </script>
+
+## Fade Transition Example
 
 ::: tabs
 
@@ -13,8 +15,8 @@ import { TransitionFadeAppearExample } from '../../components/en/transitions/Tra
 
 <<< ../../components/en/transitions/fade.transition.ts{ts:line-numbers}
 
-== transitions.module.css
-<<< ../../components/en/transitions/transitions.module.css{css:line-numbers}
+== fade.transition.module.css
+<<< ../../components/en/transitions/fade.transition.module.css{css:line-numbers}
 
 :::
 
@@ -22,3 +24,8 @@ import { TransitionFadeAppearExample } from '../../components/en/transitions/Tra
 
 <Demo align-start :is="TransitionFadeExample" />
 
+## Transitions inside Show Component
+
+<<< ../../components/en/transitions/TransitionFadeInShow.tsx{tsx:line-numbers}
+
+<Demo align-start :is="TransitionFadeInShow" />

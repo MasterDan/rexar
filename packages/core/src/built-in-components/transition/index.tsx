@@ -264,17 +264,22 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
   return { to };
 }
 
-export type TransitionComponentProps<T extends AnyTransition> = {
-  state?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
-  initialState?: AnimationKeysOf<T>;
+export type TransitionComponentBaseProps = {
   automaticDisappear?: boolean;
+  content: () => JSX.Element;
 };
 
-export type TransitionMapComponentProps<T extends AnyTransitionRecord> = {
-  states?: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
-  initialStates?: Partial<TransitionRecordStates<T>>;
-  automaticDisappear?: boolean;
-};
+export type TransitionComponentProps<T extends AnyTransition> =
+  TransitionComponentBaseProps & {
+    state?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+    initialState?: AnimationKeysOf<T>;
+  };
+
+export type TransitionMapComponentProps<T extends AnyTransitionRecord> =
+  TransitionComponentBaseProps & {
+    states?: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
+    initialStates?: Partial<TransitionRecordStates<T>>;
+  };
 
 export function createTransitionComponent<T extends AnyTransition>(
   transitionOrMap: T,
@@ -296,7 +301,7 @@ export function createTransitionComponent<
   if (transitionOrMap instanceof Transition) {
     return defineComponent<
       TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
-    >(({ children, initialState, state, automaticDisappear }) => {
+    >(({ content: Content, initialState, state, automaticDisappear }) => {
       const transition = initialState
         ? transitionOrMap.withDefault(initialState)
         : transitionOrMap;
@@ -331,12 +336,16 @@ export function createTransitionComponent<
         });
       }
 
-      return <Capture el$={el$}>{children}</Capture>;
+      return (
+        <Capture el$={el$}>
+          <Content></Content>
+        </Capture>
+      );
     });
   }
   return defineComponent<
     TransitionMapComponentProps<Exclude<T, AnyTransition>>
-  >(({ children, states, initialStates, automaticDisappear }) => {
+  >(({ content: Content, states, initialStates, automaticDisappear }) => {
     const el$ = ref<HTMLElement>();
 
     const transitionsMap = (() => {
@@ -389,7 +398,11 @@ export function createTransitionComponent<
       });
     }
 
-    return <Capture el$={el$}>{children}</Capture>;
+    return (
+      <Capture el$={el$}>
+        <Content></Content>
+      </Capture>
+    );
   });
 }
 
