@@ -1,8 +1,7 @@
 import { defineComponent } from '@core/component';
-import { RenderFunction } from '@rexar/jsx';
 import { Source, ref } from '@rexar/reactivity';
 import { combineLatest, distinctUntilChanged, map } from 'rxjs';
-import { useDynamic } from '../dynamic';
+import { DynamicRenderFunc, useDynamic } from '../dynamic';
 
 type CheckFn<TValue> = (value: TValue) => boolean;
 
@@ -11,17 +10,17 @@ export function useSwitch<TValue>(value: Source<TValue>) {
     setup: (
       setCase: (
         check: TValue | CheckFn<TValue>,
-        content: () => JSX.Element,
+        content: DynamicRenderFunc,
       ) => void,
     ) => void;
-    default?: () => JSX.Element;
+    default?: DynamicRenderFunc;
   }>(({ setup, default: defaultContent }) => {
     const [Dynamic, setDynamic] = useDynamic();
 
     const valueRef = ref<TValue>().withSource(value);
 
-    const cases = ref<[CheckFn<TValue>, RenderFunction][]>([]);
-    const defaultCase = ref<RenderFunction | undefined>(defaultContent);
+    const cases = ref<[CheckFn<TValue>, DynamicRenderFunc][]>([]);
+    const defaultCase = ref<DynamicRenderFunc | undefined>(defaultContent);
 
     setup((check, content) => {
       const checkFn: CheckFn<TValue> =

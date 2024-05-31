@@ -1,45 +1,32 @@
-import { RenderFunction } from '@rexar/jsx';
-import {
-  ComponentRenderFunc,
-  RenderedController,
-  defineComponent,
-  render,
-} from '@core/component';
+import { BaseProps } from '@rexar/jsx';
+import { RenderedController, defineComponent, render } from '@core/component';
 import { ref } from '@rexar/reactivity';
 import { onBeforeDestroy, useContext } from '@core/scope';
-import { Subject, filter, of, switchMap, take } from 'rxjs';
+import { filter, of, switchMap } from 'rxjs';
 import { Comment } from '../comment';
-import { WaitContext, onWaiting, waitingProvider } from './waiting';
+import { Waiter } from './waiter';
 
-export function useDynamic(initial: RenderFunction | null = null) {
-  const componentRef = ref<ComponentRenderFunc | null>(null);
+export type DynamicRenderFunc = (
+  props: BaseProps & { waiter?: Waiter },
+) => JSX.Element;
 
-  const setComponent = (fn: RenderFunction | null) => {
+export function useDynamic(initial: DynamicRenderFunc | null = null) {
+  const componentRef = ref<DynamicRenderFunc | null>(null);
+
+  const setComponent = (fn: DynamicRenderFunc | null) => {
     componentRef.value = fn ? defineComponent(fn) : null;
   };
 
   setComponent(initial);
 
   const component = defineComponent(({ children }) => {
+    const waiter = new Waiter();
     // This needs for correct work of provide/inject mechanic in dynamic content
     const context = useContext();
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
-    const waitContext: WaitContext = {
-      done$: new Subject<void>(),
-      waitForMe$: ref(false),
-      imWaiting$: new Subject<void>(),
-    };
-    onWaiting((done) => {
-      if (waitContext.waitForMe$.value) {
-        waitContext.done$.pipe(take(1)).subscribe(done);
-        waitContext.imWaiting$.next();
-      } else {
-        done();
-      }
-    });
-    waitingProvider.provide(waitContext);
+
     const removeInProcess = ref(false);
     removeInProcess
       .pipe(
@@ -50,22 +37,16 @@ export function useDynamic(initial: RenderFunction | null = null) {
         if (previous) {
           removeInProcess.value = true;
           const prev = previous;
-          const finalize = () => {
+          waiter.waitEveryone().then(() => {
             prev.remove();
             previous = undefined;
             removeInProcess.value = false;
-          };
-          if (waitContext.waitForMe$.value) {
-            waitContext.done$.pipe(take(1)).subscribe(finalize);
-            waitContext.imWaiting$.next();
-          } else {
-            finalize();
-          }
+          });
           return;
         }
         if (DynamicBody) {
           previous = render(
-            () => <DynamicBody>{children}</DynamicBody>,
+            () => <DynamicBody waiter={waiter}>{children}</DynamicBody>,
             context,
           ).after(comment);
         }

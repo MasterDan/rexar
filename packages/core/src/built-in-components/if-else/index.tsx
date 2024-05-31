@@ -1,12 +1,12 @@
 import { Source, ref } from '@rexar/reactivity';
 import { defineComponent } from '@core/component';
 import { distinctUntilChanged, filter } from 'rxjs';
-import { useDynamic } from '../dynamic';
+import { DynamicRenderFunc, useDynamic } from '../dynamic';
 
 export const Show = defineComponent<{
   when: Source<boolean>;
-  content?: () => JSX.Element;
-  fallback?: () => JSX.Element;
+  content?: DynamicRenderFunc;
+  fallback?: DynamicRenderFunc;
 }>(({ when, content, fallback }) => {
   const valueRef = ref<boolean>().withSource(when);
 
