@@ -4,7 +4,7 @@ import { initCycleDependencies } from './anti-cycle';
 export type { MaybeRef } from './ref/tools';
 export type { MaybeObservable, AnyObservable } from './@types';
 export type { WritableRef } from './ref/tools';
-export type { ValueOrObservableOrGetter } from './ref/tools.to-observable';
+export type { Source } from './ref/tools.to-observable';
 export type { Hook } from './scope';
 // init
 initCycleDependencies();

@@ -1,28 +1,21 @@
 import { defineComponent } from '@core/component';
 import { onMounted } from '@core/scope';
 import { ComponentAttributes, type h } from '@rexar/jsx';
-import {
-  Ref,
-  ValueOrObservableOrGetter,
-  ref,
-  toObservable,
-} from '@rexar/reactivity';
+import { Ref, Source, ref } from '@rexar/reactivity';
 import { combineLatestWith, filter, switchMap } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 export type TagProps = {
-  name: ValueOrObservableOrGetter<string>;
-  attrs?: ValueOrObservableOrGetter<ComponentAttributes>;
+  name: Source<string>;
+  attrs?: Source<ComponentAttributes>;
   ref$?: Ref<Element | undefined>;
 };
 
 export const Tag = defineComponent<TagProps>(
   ({ name, attrs, children, ref$ }) => {
     const [Dynamic, setContent] = useDynamic();
-    const name$ = ref<string>().fromObservable(toObservable(name));
-    const attrs$ = ref<ComponentAttributes>().fromObservable(
-      toObservable(attrs),
-    );
+    const name$ = ref<string>().withSource(name);
+    const attrs$ = ref<ComponentAttributes>().withSource(attrs);
     const element$ = ref<Element>();
 
     if (ref$) {
