@@ -25,26 +25,24 @@ export const TransitionFadeExample = defineComponent(() => {
     <>
       <Row title="Simple Fade transition">
         <button onClick={toggle(visible$)}>Toggle visibility</button>
-        <TransitionFade
-          state={toStateKeys(visible$)}
-          content={() => <span>I will fade</span>}
-        />
+        <TransitionFade state={toStateKeys(visible$)}>
+          <span>I will fade</span>
+        </TransitionFade>
       </Row>
       <Row title="Same, but appearing on start">
         <button onClick={toggle(visibleSecond$)}>Toggle visibility</button>
-        <TransitionFade
-          initialState="void"
-          state={toStateKeys(visibleSecond$)}
-          content={() => <span>I will fade and appear first</span>}
-        />
+        <TransitionFade initialState="void" state={toStateKeys(visibleSecond$)}>
+          <span>I will fade and appear first</span>
+        </TransitionFade>
       </Row>
       <Row title="Or disappearing">
         <button onClick={toggle(visibleThird$)}>Toggle visibility</button>
         <TransitionFade
           initialState="default"
           state={toStateKeys(visibleThird$)}
-          content={() => <span>I will fade and disappear first</span>}
-        />
+        >
+          <span>I will fade and disappear first</span>
+        </TransitionFade>
       </Row>
     </>
   );
