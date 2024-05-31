@@ -1,8 +1,4 @@
-import {
-  ValueOrObservableOrGetter,
-  ref,
-  toObservable,
-} from '@rexar/reactivity';
+import { Source, ref, toObservable } from '@rexar/reactivity';
 import { defineComponent } from '@core/component';
 import { getPatch } from 'fast-array-diff';
 import { filter, switchMap, take } from 'rxjs';
@@ -17,10 +13,7 @@ export type ForEachState<T> = {
   each?: EachComponent<T>;
 };
 
-export function useFor<T>(
-  array: ValueOrObservableOrGetter<T[]>,
-  keyFactory: KeyFactory<T>,
-) {
+export function useFor<T>(array: Source<T[]>, keyFactory: KeyFactory<T>) {
   return defineComponent<{
     each: EachComponent<T>;
   }>(({ each }) => {

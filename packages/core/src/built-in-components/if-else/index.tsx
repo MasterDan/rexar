@@ -1,18 +1,14 @@
-import {
-  ValueOrObservableOrGetter,
-  ref,
-  toObservable,
-} from '@rexar/reactivity';
+import { Source, ref } from '@rexar/reactivity';
 import { defineComponent } from '@core/component';
 import { distinctUntilChanged, filter } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 export const Show = defineComponent<{
-  when: ValueOrObservableOrGetter<boolean>;
+  when: Source<boolean>;
   content?: () => JSX.Element;
   fallback?: () => JSX.Element;
 }>(({ when, content, fallback }) => {
-  const valueRef = ref<boolean>().fromObservable(toObservable(when));
+  const valueRef = ref<boolean>().withSource(when);
 
   const [Dynamic, update] = useDynamic();
 

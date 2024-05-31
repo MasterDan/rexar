@@ -1,16 +1,12 @@
 import { defineComponent } from '@core/component';
 import { RenderFunction } from '@rexar/jsx';
-import {
-  ValueOrObservableOrGetter,
-  ref,
-  toObservable,
-} from '@rexar/reactivity';
+import { Source, ref } from '@rexar/reactivity';
 import { combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { useDynamic } from '../dynamic';
 
 type CheckFn<TValue> = (value: TValue) => boolean;
 
-export function useSwitch<TValue>(value: ValueOrObservableOrGetter<TValue>) {
+export function useSwitch<TValue>(value: Source<TValue>) {
   return defineComponent<{
     setup: (
       setCase: (
@@ -22,7 +18,7 @@ export function useSwitch<TValue>(value: ValueOrObservableOrGetter<TValue>) {
   }>(({ setup, default: defaultContent }) => {
     const [Dynamic, setDynamic] = useDynamic();
 
-    const valueRef = ref<TValue>().fromObservable(toObservable(value));
+    const valueRef = ref<TValue>().withSource(value);
 
     const cases = ref<[CheckFn<TValue>, RenderFunction][]>([]);
     const defaultCase = ref<RenderFunction | undefined>(defaultContent);
