@@ -1,16 +1,13 @@
 import { defineComponent } from '@core/component';
-import { MaybeObservable } from '@rexar/reactivity';
-import { isObservable } from 'rxjs';
+import { Source, ref } from '@rexar/reactivity';
+import { skip } from 'rxjs';
 
-export const Comment = defineComponent<{ text: MaybeObservable<string> }>(
-  ({ text }) => {
-    const value = isObservable(text) ? '' : text;
-    const commentNode = document.createComment(value);
-    if (isObservable(text)) {
-      text.subscribe((t) => {
-        commentNode.textContent = t;
-      });
-    }
-    return commentNode as unknown as JSX.Element;
-  },
-);
+export const Comment = defineComponent<{ text: Source<string> }>(({ text }) => {
+  const text$ = ref('').withSource(text);
+  const commentNode = document.createComment(text$.value);
+  text$.pipe(skip(1)).subscribe((t) => {
+    commentNode.textContent = t;
+  });
+
+  return commentNode as unknown as JSX.Element;
+});

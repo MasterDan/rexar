@@ -1,31 +1,28 @@
 import { defineComponent } from '@core/component';
-import { RenderFunction } from '@rexar/jsx';
-import {
-  ValueOrObservableOrGetter,
-  ref,
-  toObservable,
-} from '@rexar/reactivity';
+import { Source, ref } from '@rexar/reactivity';
 import { combineLatest, distinctUntilChanged, map } from 'rxjs';
-import { useDynamic } from '../dynamic';
+import { DynamicRenderFunc, useDynamic } from '../dynamic';
+import { Waiter } from '../dynamic/waiter';
 
 type CheckFn<TValue> = (value: TValue) => boolean;
 
-export function useSwitch<TValue>(value: ValueOrObservableOrGetter<TValue>) {
+export function useSwitch<TValue>(value: Source<TValue>) {
   return defineComponent<{
     setup: (
       setCase: (
         check: TValue | CheckFn<TValue>,
-        content: () => JSX.Element,
+        content: DynamicRenderFunc,
       ) => void,
     ) => void;
-    default?: () => JSX.Element;
-  }>(({ setup, default: defaultContent }) => {
-    const [Dynamic, setDynamic] = useDynamic();
+    default?: DynamicRenderFunc;
+    waiter?: Waiter;
+  }>(({ setup, default: defaultContent, waiter }) => {
+    const [Dynamic, setDynamic] = useDynamic(null, waiter);
 
-    const valueRef = ref<TValue>().fromObservable(toObservable(value));
+    const valueRef = ref<TValue>().withSource(value);
 
-    const cases = ref<[CheckFn<TValue>, RenderFunction][]>([]);
-    const defaultCase = ref<RenderFunction | undefined>(defaultContent);
+    const cases = ref<[CheckFn<TValue>, DynamicRenderFunc][]>([]);
+    const defaultCase = ref<DynamicRenderFunc | undefined>(defaultContent);
 
     setup((check, content) => {
       const checkFn: CheckFn<TValue> =

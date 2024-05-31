@@ -1,8 +1,4 @@
-import {
-  ValueOrObservableOrGetter,
-  ref,
-  toObservable,
-} from '@rexar/reactivity';
+import { Source, ref, toObservable } from '@rexar/reactivity';
 
 import {
   combineLatestWith,
@@ -21,7 +17,7 @@ import {
 import { ComponentRenderFunc, defineComponent } from '@core/component';
 import { onMounted } from '@core/scope';
 import { Capture } from '../capture/Capture';
-import { onWaiting } from '../dynamic/waiting';
+import { Waiter } from '../dynamic/waiter';
 
 export type AnimationSatesDefault = 'default' | 'void';
 
@@ -121,7 +117,7 @@ export type TransitionRecordStates<T extends AnyTransitionRecord> = {
 export function attachTransitions<TTransitions extends AnyTransitionRecord>(
   transitions: TTransitions,
 ) {
-  const to = (el$: ValueOrObservableOrGetter<HTMLElement | undefined>) => {
+  const to = (el$: Source<HTMLElement | undefined>) => {
     const transitionNames = Object.keys(transitions);
     const element$ = toObservable(el$).pipe(
       filter((v): v is HTMLElement => v != null),
@@ -238,9 +234,7 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
       });
 
     const bindStates = (
-      stateToBind$: ValueOrObservableOrGetter<
-        TransitionRecordStates<TTransitions>
-      >,
+      stateToBind$: Source<TransitionRecordStates<TTransitions>>,
     ) => {
       toObservable(stateToBind$)
         .pipe(
@@ -265,19 +259,18 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
 }
 
 export type TransitionComponentBaseProps = {
-  automaticDisappear?: boolean;
-  content: () => JSX.Element;
+  waiter?: Waiter;
 };
 
 export type TransitionComponentProps<T extends AnyTransition> =
   TransitionComponentBaseProps & {
-    state?: ValueOrObservableOrGetter<AnimationKeysOf<T>>;
+    state?: Source<AnimationKeysOf<T>>;
     initialState?: AnimationKeysOf<T>;
   };
 
 export type TransitionMapComponentProps<T extends AnyTransitionRecord> =
   TransitionComponentBaseProps & {
-    states?: ValueOrObservableOrGetter<TransitionRecordStates<T>>;
+    states?: Source<TransitionRecordStates<T>>;
     initialStates?: Partial<TransitionRecordStates<T>>;
   };
 
@@ -301,7 +294,7 @@ export function createTransitionComponent<
   if (transitionOrMap instanceof Transition) {
     return defineComponent<
       TransitionComponentProps<Exclude<T, AnyTransitionRecord>>
-    >(({ content: Content, initialState, state, automaticDisappear }) => {
+    >(({ children, initialState, state, waiter }) => {
       const transition = initialState
         ? transitionOrMap.withDefault(initialState)
         : transitionOrMap;
@@ -317,14 +310,10 @@ export function createTransitionComponent<
       bindStates(state$.pipe(map((s) => ({ default: s }))));
 
       onMounted().subscribe(() => {
-        if (state) {
-          state$.fromObservable(toObservable(state));
-        } else {
-          state$.value = 'default';
-        }
+        state$.withSource(state ?? 'default');
       });
-      if (automaticDisappear ?? true) {
-        onWaiting((done) => {
+      if (waiter) {
+        waiter.waitForMe((done) => {
           state$.value = 'void';
           processing$
             .pipe(
@@ -336,16 +325,12 @@ export function createTransitionComponent<
         });
       }
 
-      return (
-        <Capture el$={el$}>
-          <Content></Content>
-        </Capture>
-      );
+      return <Capture el$={el$}>{children}</Capture>;
     });
   }
   return defineComponent<
     TransitionMapComponentProps<Exclude<T, AnyTransition>>
-  >(({ content: Content, states, initialStates, automaticDisappear }) => {
+  >(({ children, states, initialStates, waiter }) => {
     const el$ = ref<HTMLElement>();
 
     const transitionsMap = (() => {
@@ -371,18 +356,17 @@ export function createTransitionComponent<
     bindStates(states$);
 
     onMounted().subscribe(() => {
-      if (states) {
-        states$.fromObservable(toObservable(states));
-      } else {
+      const createDefaultVal = () => {
         const defaultState: Record<string, string> = {};
         Object.keys(transitionOrMap).forEach((key) => {
           defaultState[key] = 'default';
         });
-        states$.value = defaultState;
-      }
+        return defaultState;
+      };
+      states$.withSource(states ?? createDefaultVal());
     });
-    if (automaticDisappear ?? true) {
-      onWaiting((done) => {
+    if (waiter) {
+      waiter.waitForMe((done) => {
         const voidState: Record<string, string> = {};
         Object.keys(transitionOrMap).forEach((key) => {
           voidState[key] = 'void';
@@ -398,11 +382,7 @@ export function createTransitionComponent<
       });
     }
 
-    return (
-      <Capture el$={el$}>
-        <Content></Content>
-      </Capture>
-    );
+    return <Capture el$={el$}>{children}</Capture>;
   });
 }
 
