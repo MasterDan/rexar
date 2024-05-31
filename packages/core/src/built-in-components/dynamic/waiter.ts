@@ -17,17 +17,19 @@ export class Waiter {
 
   public async waitEveryone(): Promise<void> {
     const done$ = new Subject<void>();
+    const donePromise = lastValueFrom(done$);
     const done = () => {
       done$.next();
       done$.complete();
     };
+
     if (this.targets.size === 0) {
       done();
     } else {
       combineLatest(Array.from(this.targets)).subscribe(done);
       this.imWaiting$.next();
     }
-    return lastValueFrom(done$);
+    return donePromise;
   }
 }
 
