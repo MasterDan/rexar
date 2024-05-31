@@ -1,3 +1,4 @@
+import { onBeforeDestroy } from '@core/scope';
 import { Subject, combineLatest, lastValueFrom, take } from 'rxjs';
 
 export class Waiter {
@@ -8,6 +9,7 @@ export class Waiter {
   public waitForMe(handler: (done: () => void) => void) {
     const imDone$ = new Subject<void>();
     this.targets.add(imDone$);
+    onBeforeDestroy().subscribe(() => this.targets.delete(imDone$));
     this.imWaiting$.pipe(take(1)).subscribe(() =>
       handler(() => {
         imDone$.next();

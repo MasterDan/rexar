@@ -259,7 +259,7 @@ export function attachTransitions<TTransitions extends AnyTransitionRecord>(
 }
 
 export type TransitionComponentBaseProps = {
-  waiter: Waiter;
+  waiter?: Waiter;
 };
 
 export type TransitionComponentProps<T extends AnyTransition> =

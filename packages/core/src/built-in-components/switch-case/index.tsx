@@ -2,6 +2,7 @@ import { defineComponent } from '@core/component';
 import { Source, ref } from '@rexar/reactivity';
 import { combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { DynamicRenderFunc, useDynamic } from '../dynamic';
+import { Waiter } from '../dynamic/waiter';
 
 type CheckFn<TValue> = (value: TValue) => boolean;
 
@@ -14,8 +15,9 @@ export function useSwitch<TValue>(value: Source<TValue>) {
       ) => void,
     ) => void;
     default?: DynamicRenderFunc;
-  }>(({ setup, default: defaultContent }) => {
-    const [Dynamic, setDynamic] = useDynamic();
+    waiter?: Waiter;
+  }>(({ setup, default: defaultContent, waiter }) => {
+    const [Dynamic, setDynamic] = useDynamic(null, waiter);
 
     const valueRef = ref<TValue>().withSource(value);
 

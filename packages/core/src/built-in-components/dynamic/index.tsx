@@ -10,7 +10,10 @@ export type DynamicRenderFunc = (
   props: BaseProps & { waiter?: Waiter },
 ) => JSX.Element;
 
-export function useDynamic(initial: DynamicRenderFunc | null = null) {
+export function useDynamic(
+  initial: DynamicRenderFunc | null = null,
+  parentWaiter?: Waiter,
+) {
   const componentRef = ref<DynamicRenderFunc | null>(null);
 
   const setComponent = (fn: DynamicRenderFunc | null) => {
@@ -26,6 +29,12 @@ export function useDynamic(initial: DynamicRenderFunc | null = null) {
     const comment = <Comment text="dynamic-anchor"></Comment>;
     const result = <>{comment}</>;
     let previous: RenderedController | undefined;
+
+    if (parentWaiter) {
+      parentWaiter.waitForMe((done) => {
+        waiter.waitEveryone().then(done);
+      });
+    }
 
     const removeInProcess = ref(false);
     removeInProcess

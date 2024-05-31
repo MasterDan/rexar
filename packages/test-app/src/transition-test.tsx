@@ -85,21 +85,20 @@ export const TransitionTest = defineComponent(() => {
         </button>
       </div>
       <div class="flex gap-8 justify-between items-center">
-        <TransitionFade
-          state={fadeState$}
-          content={() => <div>I will fade</div>}
-        />
-        <TransitionRotate
-          state={rotateState$}
-          content={() => <div>I will rotate</div>}
-        />
+        <TransitionFade state={fadeState$}>
+          <div>I will fade</div>
+        </TransitionFade>
+        <TransitionRotate state={rotateState$}>
+          <div>I will rotate</div>
+        </TransitionRotate>
         <TransitionMixed
           states={() => ({
             fade: fadeState$.value,
             rotate: rotateState$.value,
           })}
-          content={() => <div>I will fade and rotate</div>}
-        />
+        >
+          <div>I will fade and rotate</div>
+        </TransitionMixed>
       </div>
       <div class="flex gap-8 items-center">
         <h2 class="text-lg">Transitions inside show component</h2>
@@ -116,14 +115,14 @@ export const TransitionTest = defineComponent(() => {
       <div>
         <Show
           when={flag$}
-          content={() => (
-            <TransitionFade
-              initialState="void"
-              content={() => <div> Flag is true </div>}
-            />
+          content={({ waiter }) => (
+            <TransitionFade waiter={waiter} initialState="void">
+              <div> Flag is true </div>
+            </TransitionFade>
           )}
-          fallback={() => (
+          fallback={({ waiter }) => (
             <TransitionMixed
+              waiter={waiter}
               states={{
                 fade: 'default',
                 rotate: 'rotated',
@@ -132,8 +131,9 @@ export const TransitionTest = defineComponent(() => {
                 fade: 'void',
                 rotate: 'void',
               }}
-              content={() => <div> Flag is false </div>}
-            />
+            >
+              <div> Flag is false </div>
+            </TransitionMixed>
           )}
         />
       </div>
@@ -161,30 +161,28 @@ export const TransitionTest = defineComponent(() => {
       <div>
         <Show
           when={nestedFlag1$}
-          content={() => (
-            <TransitionFade
-              initialState="void"
-              content={() => <div> Flag 1 is true </div>}
-            />
+          content={({ waiter }) => (
+            <TransitionFade waiter={waiter} initialState="void">
+              <div> Flag 1 is true </div>
+            </TransitionFade>
           )}
-          fallback={() => (
+          fallback={({ waiter: showWaiter }) => (
             <Show
               when={nestedFlag2$}
-              content={() => (
-                <TransitionFade
-                  initialState="void"
-                  content={() => <div> Flag 2 is true </div>}
-                />
+              waiter={showWaiter}
+              content={({ waiter }) => (
+                <TransitionFade waiter={waiter} initialState="void">
+                  <div> Flag 2 is true </div>
+                </TransitionFade>
               )}
-              fallback={() => (
-                <TransitionFade
-                  initialState="void"
-                  content={() => <div> Flag 2 is false </div>}
-                />
+              fallback={({ waiter }) => (
+                <TransitionFade waiter={waiter} initialState="void">
+                  <div> Flag 2 is false </div>
+                </TransitionFade>
               )}
             />
           )}
-        ></Show>
+        />
       </div>
       <div class="flex gap-8 items-center">
         <Input model={switcher$} label="Переключатель"></Input>
@@ -192,34 +190,30 @@ export const TransitionTest = defineComponent(() => {
       <div>
         <Switch
           setup={(setCase) => {
-            setCase(0, () => (
-              <TransitionFade
-                initialState="void"
-                content={() => <div> Switcher equals Zero </div>}
-              />
+            setCase(0, ({ waiter }) => (
+              <TransitionFade waiter={waiter} initialState="void">
+                <div> Switcher equals Zero </div>
+              </TransitionFade>
             ));
-            setCase(1, () => (
-              <TransitionFade
-                initialState="void"
-                content={() => <div> Switcher equals One </div>}
-              />
+            setCase(1, ({ waiter }) => (
+              <TransitionFade waiter={waiter} initialState="void">
+                <div> Switcher equals One </div>
+              </TransitionFade>
             ));
             setCase(
               (v) => v > 1,
-              () => (
-                <TransitionFade
-                  initialState="void"
-                  content={() => <div> Switcher is more than One </div>}
-                />
+              ({ waiter }) => (
+                <TransitionFade waiter={waiter} initialState="void">
+                  <div> Switcher is more than One </div>
+                </TransitionFade>
               ),
             );
             setCase(
               (v) => v < 0,
-              () => (
-                <TransitionFade
-                  initialState="void"
-                  content={() => <div> Switcher is less than Zero </div>}
-                />
+              ({ waiter }) => (
+                <TransitionFade waiter={waiter} initialState="void">
+                  <div> Switcher is less than Zero </div>
+                </TransitionFade>
               ),
             );
           }}
