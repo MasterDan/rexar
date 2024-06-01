@@ -9,7 +9,9 @@ import { TransitionFadeInShowNested } from '../../components/en/transitions/Tran
 
 </script>
 
-## Fade Transition Example
+## Creating Transition
+
+Let's create simple fade transition.
 
 This is how we creating transitions. First, you need to call `createTransition` function.  
 Then, using  methods `withState` and `withTransition` we are creating `states` and `transitions` between them.
@@ -53,7 +55,9 @@ Let's see the example.
 
 <Demo align-start :is="TransitionFadeExample" />
 
-## Transition Rotate example
+## Additional creation options
+
+This time let's create simple rotate transition.
 
 Pay attention, that in `rotate.transition.ts` we are using special `*` state and `reverse` flag to simplify creation of our transition.
 See the example.
