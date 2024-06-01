@@ -4,6 +4,7 @@
 import Demo from '../../components/tools/Demo.vue'
 import { TransitionFadeExample } from '../../components/en/transitions/TransitionFadeExample.tsx'
 import { TransitionRotateExample } from '../../components/en/transitions/TransitionRotateExample.tsx'
+import { TransitionMixedExample } from '../../components/en/transitions/TransitionMixedExample.tsx'
 import { TransitionFadeInShow } from '../../components/en/transitions/TransitionFadeInShow.tsx'
 import { TransitionFadeInShowNested } from '../../components/en/transitions/TransitionFadeInShowNested.tsx'
 
@@ -117,3 +118,19 @@ It is possible to pass many different transitions inside `content` (or `fallback
 :::
 
 <Demo align-start :is="TransitionFadeInShowNested" />
+
+## Mixed Transitions
+
+::: tabs
+== TransitionMixedExample.tsx
+
+<<< ../../components/en/transitions/TransitionMixedExample.tsx{tsx:line-numbers}
+
+== mixed.transition.ts
+<<< ../../components/en/transitions/mixed.transition.ts{ts:line-numbers}
+
+== transitions.module.css
+<<< ../../components/en/transitions/transitions.module.css{css:line-numbers}
+:::
+
+<Demo align-start :is="TransitionMixedExample" />
