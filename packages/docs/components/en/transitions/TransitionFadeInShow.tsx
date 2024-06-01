@@ -12,7 +12,9 @@ export const TransitionFadeInShow = defineComponent(() => {
       <button onClick={toggle}>Toggle flag</button>
       <Show
         when={flag$}
+        // taking waiter
         content={({ waiter }) => (
+          // and passing into our transition
           <TransitionFade waiter={waiter} initialState="void">
             <span>Flag is True</span>
           </TransitionFade>

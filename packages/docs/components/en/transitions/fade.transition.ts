@@ -5,6 +5,7 @@ import {
 } from '@rexar/core';
 import transitions from './fade.transition.module.css';
 
+// creating transition
 export const transitionFade = createTransition()
   .withState('default', transitions['opacity-one'])
   .withState('void', transitions['opacity-zero'])
@@ -17,6 +18,9 @@ export const transitionFade = createTransition()
     transitions['transition-opacity-out']
   );
 
+// Possible States of our transition.
+// For "transitionFade" it Will be 'default' | 'void'
 export type FadeKeys = AnimationKeysOf<typeof transitionFade>;
 
+// This component will attach our transition to html element
 export const TransitionFade = createTransitionComponent(transitionFade);
