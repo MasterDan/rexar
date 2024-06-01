@@ -12,7 +12,7 @@
 }
 
 .rotated {
-  transform: rotate(45deg);
+  transform: rotate(-20deg);
 }
 
 .transition-rotate {
