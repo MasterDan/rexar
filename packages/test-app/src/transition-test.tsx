@@ -7,6 +7,7 @@ import {
   ref,
   createTransitionComponent,
   useSwitch,
+  useFor,
 } from '@rexar/core';
 import transitions from './assets/styles/transitions.module.css';
 import { Input } from './input';
@@ -37,6 +38,61 @@ const TransitionRotate = createTransitionComponent(transitionRotate);
 const TransitionMixed = createTransitionComponent({
   fade: transitionFade,
   rotate: transitionRotate,
+});
+
+const collapseTransition = createTransition()
+  .withState('void', transitions['list-item-void'])
+  .withTransition(
+    { from: 'void', to: '*', reverse: true },
+    transitions['list-item-transition'],
+  );
+
+const CollapseTransition = createTransitionComponent(collapseTransition);
+
+const TransitionList = defineComponent(() => {
+  const array$ = ref([1, 2, 3]);
+  const Numbers = useFor(array$, (i) => i);
+  return (
+    <>
+      <div class="flex justify-center gap-2 p-1 ">
+        <button
+          class="bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500 
+        text-white p-2 px-4 rounded-full transition-colors duration-200"
+          onClick={() => {
+            array$.value.push(array$.value.length + 1);
+          }}
+        >
+          Add new
+        </button>
+        <button
+          class="bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500 
+        text-white p-2 px-4 rounded-full transition-colors duration-200"
+          onClick={() => {
+            array$.value.reverse();
+          }}
+        >
+          Reverse
+        </button>
+      </div>
+      <div class="flex gap-2 items-center">
+        <Numbers
+          each={({ item, waiter }) => (
+            <CollapseTransition waiter={waiter} initialState="void">
+              <button
+                class="bg-indigo-400 hover:bg-indigo-600 active:bg-indigo-500 
+        text-white p-2 px-4 rounded-full transition-colors duration-200"
+                onClick={() => {
+                  array$.value = array$.value.filter((i) => i !== item.value);
+                }}
+              >
+                Remove {item}
+              </button>
+            </CollapseTransition>
+          )}
+        />
+      </div>
+    </>
+  );
 });
 
 export const TransitionTest = defineComponent(() => {
@@ -218,6 +274,9 @@ export const TransitionTest = defineComponent(() => {
             );
           }}
         ></Switch>
+      </div>
+      <div>
+        <TransitionList></TransitionList>
       </div>
     </div>
   );
