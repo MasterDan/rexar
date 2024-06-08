@@ -15,7 +15,7 @@ describe('custom tag', () => {
     const name$ = ref('div');
     const el$ = ref<Element>();
     render(() => (
-      <Tag name={name$} attrs={{ class: 'foo' }} ref$={el$}>
+      <Tag name={name$} attrs={{ class: 'foo' }} el$={el$}>
         <span>Content</span>
       </Tag>
     )).into(root);
