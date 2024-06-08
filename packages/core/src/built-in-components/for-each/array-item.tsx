@@ -16,12 +16,13 @@ export class ArrayItem<T> {
 
   private component?: ComponentRenderFunc;
 
+  private waiter = new Waiter();
+
   constructor(
     item: T,
     public key: Key,
     index: number,
     private context: RenderContext,
-    private waiter: Waiter,
   ) {
     this.itemRef = ref(item);
     this.indexRef = ref(index);
@@ -48,10 +49,10 @@ export class ArrayItem<T> {
         </>
       ));
       const { remove } = render(this.component, this.context).after(elem);
-      this.$remove = async () => {
-        await this.waiter.waitEveryone();
-        remove();
-      };
+      this.$remove = () =>
+        this.waiter.waitEveryone().then(() => {
+          remove();
+        });
       return this.endAnchor;
     };
     return { after };

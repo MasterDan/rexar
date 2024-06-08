@@ -1,0 +1,7 @@
+.rotated {
+  transform: rotate(-25deg);
+}
+
+.transition-rotate {
+  transition: transform 0.5s ease-in-out;
+}

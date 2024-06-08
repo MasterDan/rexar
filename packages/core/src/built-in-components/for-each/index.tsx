@@ -6,7 +6,6 @@ import { onBeforeDestroy, onRendered, useContext } from '@core/scope';
 import { Comment } from '../comment';
 import { ArrayItem } from './array-item';
 import { EachComponent, KeyFactory } from './@types';
-import { Waiter } from '../dynamic/waiter';
 
 export type ForEachState<T> = {
   array: ArrayItem<T>[];
@@ -22,13 +21,12 @@ export function useFor<T>(array: Source<T[]>, keyFactory: KeyFactory<T>) {
     let arrayItems: ArrayItem<T>[] = [];
     const isRendering$ = ref(false);
     const context = useContext();
-    const waiter = new Waiter();
 
     const setArray = (value: T[]) => {
       isRendering$.value = true;
       const newArray = value.map(
         (item, index) =>
-          new ArrayItem(item, keyFactory(item, index), index, context, waiter),
+          new ArrayItem(item, keyFactory(item, index), index, context),
       );
 
       if (arrayItems.length === 0) {

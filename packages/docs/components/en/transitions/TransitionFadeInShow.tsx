@@ -12,48 +12,19 @@ export const TransitionFadeInShow = defineComponent(() => {
       <button onClick={toggle}>Toggle flag</button>
       <Show
         when={flag$}
-        content={() => (
-          <TransitionFade
-            initialState="void"
-            content={() => <span>Flag is True</span>}
-          />
+        // taking waiter
+        content={({ waiter }) => (
+          // and passing into our transition
+          <TransitionFade waiter={waiter} initialState="void">
+            <span>Flag is True</span>
+          </TransitionFade>
         )}
-        fallback={() => (
-          <TransitionFade
-            initialState="void"
-            content={() => <span>Flag is False</span>}
-          />
+        fallback={({ waiter }) => (
+          <TransitionFade waiter={waiter} initialState="void">
+            <span>Flag is False</span>
+          </TransitionFade>
         )}
-      ></Show>
-      <h4>To prevent automatic disappearing use special prop</h4>
-      <Show
-        when={flag$}
-        content={() => {
-          const visible$ = ref(true);
-          return (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <button
-                onClick={() => {
-                  visible$.value = !visible$.value;
-                }}
-              >
-                Toggle visibility
-              </button>
-              <TransitionFade
-                state={() => (visible$.value ? 'default' : 'void')}
-                automaticDisappear={false}
-                content={() => <span>Flag is True</span>}
-              />
-            </div>
-          );
-        }}
-        fallback={() => (
-          <TransitionFade
-            automaticDisappear={false}
-            content={() => <span>Flag is False</span>}
-          />
-        )}
-      ></Show>
+      />
     </>
   );
 });
