@@ -1,6 +1,5 @@
 import { Ref, Show, computed, defineComponent, ref } from '@rexar/core';
-import { RotateKeys, TransitionMixed } from './mixed.transition';
-import { FadeKeys } from './fade.transition.js';
+import { FadeKeys, RotateKeys, TransitionMixed } from './mixed.transition';
 
 export const TransitionMixedExample = defineComponent(() => {
   const visible$ = ref(true);

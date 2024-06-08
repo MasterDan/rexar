@@ -28,10 +28,6 @@ export const transitionRotate = createTransition()
 
 export type RotateKeys = AnimationKeysOf<typeof transitionRotate>;
 
-export const TransitionRotate = createTransitionComponent(transitionRotate);
-
-export const TransitionFade = createTransitionComponent(transitionFade);
-
 export const TransitionMixed = createTransitionComponent({
   fade: transitionFade,
   rotate: transitionRotate,
