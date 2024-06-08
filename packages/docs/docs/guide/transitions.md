@@ -6,6 +6,7 @@ import { TransitionFadeExample } from '../../components/en/transitions/Transitio
 import { TransitionRotateExample } from '../../components/en/transitions/TransitionRotateExample.tsx'
 import { TransitionMixedExample } from '../../components/en/transitions/TransitionMixedExample.tsx'
 import { TransitionFadeInShow } from '../../components/en/transitions/TransitionFadeInShow.tsx'
+import { TransitionFadeInSwitch } from '../../components/en/transitions/TransitionFadeInSwitch.tsx'
 import { TransitionFadeInShowNested } from '../../components/en/transitions/TransitionFadeInShowNested.tsx'
 
 </script>
@@ -119,15 +120,38 @@ It is possible to pass many different transitions inside `content` (or `fallback
 
 <Demo align-start :is="TransitionFadeInShowNested" />
 
+## Transitions inside Switch Component
+
+`Switch` component also provides `waiter` in it's `setCase`  
+
+::: tabs
+== TransitionFadeInShow.tsx
+<<< ../../components/en/transitions/TransitionFadeInSwitch.tsx{tsx:line-numbers}
+
+== fade.transition.ts
+<<< ../../components/en/transitions/fade.transition.ts{ts:line-numbers}
+
+== fade.transition.module.css
+<<< ../../components/en/transitions/fade.transition.module.css{css:line-numbers}
+:::
+
+<Demo align-start :is="TransitionFadeInSwitch" />
+
 ## Mixed Transitions
+
+Function `createTransitionComponent` is able to take not only single transition but also object with multiple transitions.  
+Result component will have `states` and `initialStates` properties instead of `state` and `initialState` in previous examples.
+These props will also expect object as value. Observables and arrow functions also supported. 
+
+See the example.
 
 ::: tabs
 == TransitionMixedExample.tsx
 
-<<< ../../components/en/transitions/TransitionMixedExample.tsx{tsx:line-numbers}
+<<< ../../components/en/transitions/TransitionMixedExample.tsx{34-35,43-44 tsx:line-numbers}
 
 == mixed.transition.ts
-<<< ../../components/en/transitions/mixed.transition.ts{ts:line-numbers}
+<<< ../../components/en/transitions/mixed.transition.ts{31-34 ts:line-numbers}
 
 == transitions.module.css
 <<< ../../components/en/transitions/transitions.module.css{css:line-numbers}
