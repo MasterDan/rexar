@@ -72,6 +72,14 @@ export default defineConfig({
                   text: 'Lifecycle Hooks',
                   link: '/guide/lifecycle',
                 },
+                {
+                  text: 'Getting Elements',
+                  link: '/guide/elements',
+                },
+                {
+                  text: 'Animations and transitions',
+                  link: '/guide/transitions',
+                },
               ],
             },
             {

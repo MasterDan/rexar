@@ -1,0 +1,37 @@
+.opacity-one {
+  opacity: 1;
+}
+.opacity-zero {
+  opacity: 0;
+}
+.transition-opacity-in {
+  transition: opacity 0.4s ease-in-out;
+}
+.transition-opacity-out {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.rotated {
+  transform: rotate(45deg);
+}
+
+.transition-rotate {
+  transition: transform 0.5s ease-in-out;
+}
+
+.transition-opacity-in.transition-rotate {
+  transition: transform 0.5s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.transition-opacity-out.transition-rotate {
+  transition: transform 0.5s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.list-item-void {
+  transform: scale(0);
+}
+
+.list-item-transition {
+  transition: 0.3s ease-in-out;
+}
+

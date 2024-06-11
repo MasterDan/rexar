@@ -1,5 +1,5 @@
 import { AnyRecord } from '@rexar/tools';
-import { Providable, toObservable } from '@rexar/reactivity';
+import { Source, toObservable } from '@rexar/reactivity';
 import { Observable, Subject, combineLatest, map, switchMap } from 'rxjs';
 
 export type NullableKeys<T> = {
@@ -31,14 +31,14 @@ export function useDefaultValues<
   return propsWithDefaults as T & TDefaults;
 }
 
-export type ClassName = Providable<string>;
+export type ClassName = Source<string>;
 
 export type ClassesValue =
   | ClassName
   | ClassName[]
-  | Record<string, Providable<boolean>>;
+  | Record<string, Source<boolean>>;
 
-export function useClasses<T extends ClassesValue>(arg: Providable<T>) {
+export function useClasses<T extends ClassesValue>(arg: Source<T>) {
   return toObservable(arg).pipe(
     switchMap((value) => {
       if (Array.isArray(value)) {
@@ -47,7 +47,7 @@ export function useClasses<T extends ClassesValue>(arg: Providable<T>) {
         );
       }
       if (typeof value === 'object') {
-        const valueRecord = value as Record<string, Providable<boolean>>;
+        const valueRecord = value as Record<string, Source<boolean>>;
         return combineLatest(
           Object.keys(valueRecord).map((key) =>
             toObservable(valueRecord[key as keyof typeof valueRecord]).pipe(
