@@ -31,6 +31,14 @@ See the example.
 
 ## Custom Tags
 
+You can create custom tags, using `Tag` components. This is useful when you need to create tag with dynamic name.
+This component has props
+    * `name` - Name of your tag. Could be `string | Observable<string> | () => string` 
+    * `attrs` - Attributes of your tag. Could also be `object | Observable<object> | () => object`.
+    * el$ - `Ref<Element | undefined>` - here you will receive Element as soon as it's being created.
+
+See the example.
+
 <<< ../../components/en/elements/CustomTags.tsx{tsx:line-numbers}
 <Demo align-start :is="CustomTags" />
 
