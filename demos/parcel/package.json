@@ -23,8 +23,7 @@
     "typescript": "^5.4.3"
   },
   "dependencies": {
-    "@rexar/core": "^1.2.1",
+    "@rexar/core": "^1.6.1",
     "rxjs": "^7.8.1"
   }
 }
-
