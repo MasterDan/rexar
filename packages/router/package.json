@@ -1,0 +1,38 @@
+{
+  "name": "@rexar/router",
+  "version": "1.6.1",
+  "author": "MasterDan <MihaylovDS@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MasterDan/rexar.git"
+  },
+  "license": "MIT",
+  "packageManager": "yarn@4.0.2",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/main.umd.cjs",
+  "module": "./dist/main.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/main.js",
+      "require": "./dist/main.umd.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "npx vitest"
+  },
+  "devDependencies": {
+    "vite": "^5.0.4",
+    "vite-plugin-dts": "^3.6.4",
+    "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "@rexar/core": "workspace:^",
+    "rxjs": "^7.8.1"
+  }
+}
