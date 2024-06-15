@@ -1,1 +1,1 @@
-
+export { onLocationChange } from './location';

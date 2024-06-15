@@ -1,11 +1,16 @@
 import './assets/styles/style.css';
 import { defineComponent, render } from '@rexar/core';
+import { onLocationChange } from '@rexar/router';
 import typescriptLogo from './assets/icons/typescript.svg';
 import viteLogo from './assets/icons/vite.svg';
 import rexarLogo from './assets/icons/rexar-light.png';
 import tailwindLogo from './assets/icons/tailwind-css-logo.webp';
 import { Counter } from './counter';
 import { TransitionTest } from './transition-test';
+
+onLocationChange().subscribe((loc) => {
+  console.log('location changed', loc);
+});
 
 const App = defineComponent(() => (
   <div class="flex flex-col h-full items-center pt-8 gap-8">

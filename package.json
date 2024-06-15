@@ -31,6 +31,7 @@
     "@rexar/core": "link:./packages/core",
     "@rexar/jsx": "link:./packages/jsx",
     "@rexar/reactivity": "link:./packages/reactivity",
+    "@rexar/router": "link:./packages/router",
     "@rexar/tools": "link:./packages/tools"
   },
   "devDependencies": {
