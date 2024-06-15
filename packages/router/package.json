@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@rexar/core": "workspace:^",
+    "@rexar/tools": "workspace:^",
     "rxjs": "^7.8.1"
   }
 }

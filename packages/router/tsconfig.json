@@ -1,10 +1,15 @@
 {
+  "compilerOptions": {
+    "jsx": "preserve",
+  },
   "extends": "../../tsconfig.json",
   "include": [
     "./*.ts",
     "./src/**/*.ts",
+    "./src/**/*.tsx",
     "./src/**/*.html",
     "./tests/**/*.ts",
+    "./tests/**/*.tsx",
     "./tests/**/*.html",
   ]
 }

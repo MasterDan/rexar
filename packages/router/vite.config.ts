@@ -4,6 +4,11 @@ import path from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig(() => ({
+  esbuild: {
+    jsxInject: 'import { h , Fragment } from "@rexar/jsx"',
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment',
+  },
   resolve: {
     alias: {
       '@router': path.resolve(__dirname, './src'),
