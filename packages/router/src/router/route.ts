@@ -15,3 +15,9 @@ export type RouteLocation = {
   query?: Record<string, unknown>;
 };
 
+export type RouteView = {
+  render: () => JSX.Element;
+  params: Record<string, unknown>;
+  query: Record<string, unknown>;
+};
+
