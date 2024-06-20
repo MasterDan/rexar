@@ -43,7 +43,7 @@ export class RouteLocation {
       return this.name === route.name;
     }
     if (this.path != null) {
-      return route.path.equals(this.path);
+      return route.path.includes(this.path);
     }
     throw new Error(
       'RouteLocation must have either a "path" or "name" property',

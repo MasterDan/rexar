@@ -25,7 +25,7 @@ export class Router {
         this.routes.some(
           (r) =>
             (route.name != null && r.name === route.name) ||
-            route.path.equals(r.path),
+            r.path.includes(route.path),
         )
       ) {
         throw new Error(

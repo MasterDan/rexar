@@ -1,5 +1,5 @@
 import { AnyRecord, stringTools } from '@rexar/tools';
-import { queryParamsFromString } from './query-params';
+import { queryParamsFromString, queryParamsToString } from './query-params';
 
 export class Path {
   queryParams?: AnyRecord<string>;
@@ -30,7 +30,9 @@ export class Path {
     if (stringTools.isNullOrWhitespace(str)) {
       return new Path([]);
     }
-    return new Path(str.split('/'));
+    return new Path(
+      str.split('/').filter((i) => !stringTools.isNullOrWhitespace(i)),
+    );
   }
 
   combineWith(other: Path) {
@@ -41,14 +43,16 @@ export class Path {
     if (this.nodes.length === 0) {
       return '/';
     }
-    return `/${this.nodes.join('/')}`;
+    return `/${this.nodes.join('/')}${queryParamsToString(
+      this.queryParams ?? {},
+    )}`;
   }
 
   get size() {
     return this.nodes.length;
   }
 
-  equals(other: Path) {
+  includes(other: Path) {
     let equals = true;
     if (this.size < other.size) {
       return false;
@@ -74,7 +78,7 @@ export class Path {
 
   matches(str: string) {
     const path = Path.fromString(str);
-    return this.equals(path);
+    return this.includes(path);
   }
 
   get params() {
