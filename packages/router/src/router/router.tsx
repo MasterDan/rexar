@@ -1,10 +1,11 @@
 import { defineComponent, useDynamic } from '@rexar/core';
 import { BehaviorSubject, filter } from 'rxjs';
-import { Route, RouteLocation, RouteView } from './route';
+import { Route, RouteArg, RouteView } from './route/route';
+import { RouteLocation } from './route/route-location';
 
 export type RouterArgs = {
   baseurl?: string;
-  routes: Route[];
+  routes: RouteArg[];
   useHash: boolean;
 };
 
@@ -17,22 +18,19 @@ export class Router {
 
   constructor(args: RouterArgs) {
     this.baseurl = args.baseurl;
-    args.routes.forEach((route) => {
-      if (route.redirect == null && route.render == null) {
-        throw new Error(
-          `Route with path="${route.path}" must have either render or redirect option`,
-        );
-      }
+    args.routes.forEach((routeArg) => {
+      const route = new Route(routeArg);
+
       if (
         this.routes.some(
           (r) =>
             (route.name != null && r.name === route.name) ||
-            route.path === r.path,
+            route.path.equals(r.path),
         )
       ) {
         throw new Error(
-          `Path "${route.path}"${
-            route.name == null ? '' : ` or name "${route}"`
+          `Path "${routeArg.path}"${
+            routeArg.name == null ? '' : ` or name "${routeArg}"`
           } already exists`,
         );
       }
@@ -52,15 +50,7 @@ export class Router {
         return r;
       };
 
-      if (loc.name != null) {
-        return checkRedirect(this.routes.find((r) => r.name === loc.name));
-      }
-      if (loc.path != null) {
-        return checkRedirect(this.routes.find((r) => r.path === loc.path));
-      }
-      throw new Error(
-        'Cannot set location: Either path or name must be specified',
-      );
+      return checkRedirect(this.routes.find((r) => loc.matchRoute(r)));
     };
     return find(location);
   }

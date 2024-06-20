@@ -19,18 +19,20 @@ export function queryParamsToString<TQuery extends AnyRecord<string>>(
   return `?${queryString}`;
 }
 
-export function queryParamsFromString(node: string) {
+export function queryParamsFromString(
+  node: string,
+): [string, AnyRecord<string>] {
   const query: AnyRecord<string> = {};
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const queryString = node.split('?', 2)[1];
+  const [nodeBody, queryString] = node.split('?', 2);
   if (queryString == null) {
-    return query;
+    return [nodeBody, query];
   }
   const pairs = queryString.split('&');
   pairs.forEach((pair) => {
     const [key, value] = pair.split('=');
     query[key] = decodeURIComponent(value);
   });
-  return query;
+  return [nodeBody, query];
 }
 
