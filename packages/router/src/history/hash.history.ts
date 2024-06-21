@@ -1,5 +1,5 @@
 import { Observable, distinctUntilChanged, map } from 'rxjs';
-import { RouteLocation } from '../router/route/route-location';
+import { RouteLocation } from '../route/route-location';
 import { HistoryBase } from './base.history';
 
 export class HistoryHash extends HistoryBase {

@@ -7,7 +7,7 @@ import {
   map,
   startWith,
 } from 'rxjs';
-import { RouteLocation } from '../router/route/route-location';
+import { RouteLocation } from '../route/route-location';
 
 export abstract class HistoryBase {
   private $path$ = new BehaviorSubject<string | undefined>(undefined);

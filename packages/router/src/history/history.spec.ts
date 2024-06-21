@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 
 import { History } from './history';
-import { RouteLocation } from '../router/route/route-location';
+import { RouteLocation } from '../route/route-location';
 
 /**
  * @vitest-environment jsdom

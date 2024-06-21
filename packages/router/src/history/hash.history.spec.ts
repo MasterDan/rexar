@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { RouteLocation } from '../router/route/route-location';
+import { RouteLocation } from '../route/route-location';
 import { HistoryHash } from './hash.history';
 
 /**
