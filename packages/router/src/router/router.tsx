@@ -49,7 +49,6 @@ export class Router {
         }
         return r;
       };
-
       return checkRedirect(this.routes.find((r) => loc.matchRoute(r)));
     };
     return find(location);

@@ -41,12 +41,12 @@ export class RouteLocation {
     }
   }
 
-  matchRoute(route: Route) {
+  matchRoute(route: Route, { deep }: { deep: boolean } = { deep: false }) {
     if (this.name != null) {
       return this.name === route.name;
     }
     if (this.path != null) {
-      return route.path.includes(this.path);
+      return route.includes(this.path, { deep });
     }
     throw new Error(
       'RouteLocation must have either a "path" or "name" property',
