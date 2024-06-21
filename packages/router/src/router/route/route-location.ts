@@ -32,8 +32,11 @@ export class RouteLocation {
       if (this.params) {
         this.path = this.path.withParams(this.params);
       }
-      if (this.query && this.path.queryParams) {
-        this.query = { ...this.path.queryParams, ...this.query };
+      if (this.query) {
+        if (this.path.queryParams) {
+          this.query = { ...this.path.queryParams, ...this.query };
+        }
+        this.path.queryParams = this.query;
       }
     }
   }

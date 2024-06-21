@@ -21,14 +21,14 @@ export class Route {
 
   children: Route[] | undefined;
 
-  constructor(args: RouteArg) {
+  constructor(args: RouteArg, public parent?: Route) {
     this.path = Path.fromString(args.path);
     this.name = args.name;
     this.render = args.render;
     this.redirect = args.redirect
       ? new RouteLocation(args.redirect)
       : undefined;
-    this.children = args.children?.map((child) => new Route(child));
+    this.children = args.children?.map((child) => new Route(child, this));
   }
 }
 
