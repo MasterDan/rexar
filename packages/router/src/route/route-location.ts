@@ -1,5 +1,5 @@
 import { Path } from './path';
-import type { Route } from './route';
+import type { Route } from '.';
 
 export type RouteLocationArg = {
   path?: string | Path;

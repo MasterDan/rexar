@@ -1,6 +1,6 @@
 import { createProvider, defineComponent, useDynamic } from '@rexar/core';
 import { BehaviorSubject, filter, map } from 'rxjs';
-import { Route, RouteArg } from '../route/route';
+import { Route, RouteArg } from '../route';
 import { RouteLocation } from '../route/route-location';
 
 export type RouterArgs = {
