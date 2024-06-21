@@ -1,11 +1,19 @@
 import { createProvider, defineComponent, useDynamic } from '@rexar/core';
 import { BehaviorSubject, filter, map } from 'rxjs';
-import { Route, RouteArg, RouteView } from './route/route';
+import { Route, RouteArg } from './route/route';
+import { RouteLocation } from './route/route-location';
 
 export type RouterArgs = {
   baseurl?: string;
   routes: RouteArg[];
   useHash: boolean;
+};
+
+export type RouteView = {
+  routeIndex: number;
+  render: () => JSX.Element;
+  params: Record<string, unknown>;
+  query: Record<string, unknown>;
 };
 
 export class Router {
@@ -35,6 +43,17 @@ export class Router {
       }
       this.routes.push(route);
     });
+  }
+
+  findRoute(loc: RouteLocation): Route | undefined {
+    if (loc.name != null) {
+      return Route.findByName(this.routes, loc.name);
+    }
+    if (loc.path != null) {
+      const len = this.currentRoutes$.value.length;
+      return Route.findByPath(this.routes, loc.path, len > 0 ? len : undefined);
+    }
+    return undefined;
   }
 
   createComponents() {
