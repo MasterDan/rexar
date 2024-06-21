@@ -1,7 +1,6 @@
-import { defineComponent, useDynamic } from '@rexar/core';
-import { BehaviorSubject, filter } from 'rxjs';
+import { createProvider, defineComponent, useDynamic } from '@rexar/core';
+import { BehaviorSubject, filter, map } from 'rxjs';
 import { Route, RouteArg, RouteView } from './route/route';
-import { RouteLocation } from './route/route-location';
 
 export type RouterArgs = {
   baseurl?: string;
@@ -14,7 +13,7 @@ export class Router {
 
   routes: Route[] = [];
 
-  currentRoute$ = new BehaviorSubject<RouteView | null>(null);
+  currentRoutes$ = new BehaviorSubject<RouteView[]>([]);
 
   constructor(args: RouterArgs) {
     this.baseurl = args.baseurl;
@@ -38,41 +37,18 @@ export class Router {
     });
   }
 
-  findRouteByLocation(location: RouteLocation): Route | undefined {
-    const find = (loc: RouteLocation): Route | undefined => {
-      const checkRedirect = (r?: Route) => {
-        if (r == null) {
-          return undefined;
-        }
-        if (r.redirect != null) {
-          return find(r.redirect);
-        }
-        return r;
-      };
-      return checkRedirect(this.routes.find((r) => loc.matchRoute(r)));
-    };
-    return find(location);
-  }
-
-  setLocation(location: RouteLocation) {
-    const route = this.findRouteByLocation(location);
-    if (route == null) {
-      throw new Error(`Route with path="${location.path}" not found`);
-    }
-    if (route.render) {
-      this.currentRoute$.next({
-        render: route.render,
-        params: location.params ?? {},
-        query: location.query ?? {},
-      });
-    }
-  }
-
   createComponents() {
+    const depthProvider = createProvider<number>(0);
+
     const RouterView = defineComponent(() => {
       const [View, setView] = useDynamic();
-      this.currentRoute$
-        .pipe(filter((r): r is RouteView => r != null))
+      const depth = depthProvider.inject();
+      depthProvider.provide(depth + 1);
+      this.currentRoutes$
+        .pipe(
+          map((r) => r[depth]),
+          filter((r): r is RouteView => r != null),
+        )
         .subscribe((route) => {
           setView(route.render);
         });
