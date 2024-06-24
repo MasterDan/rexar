@@ -95,6 +95,19 @@ export class Router {
     return undefined;
   }
 
+  setLocation(loc: RouteLocation) {
+    const route = this.findRoute(loc);
+    if (route == null) return;
+    let path = route.deepPath;
+    if (loc.params) {
+      path = path.withParams(loc.params);
+    }
+    if (loc.query) {
+      path.queryParams = loc.query;
+    }
+    this.history.next(path.value);
+  }
+
   createComponents() {
     const depthProvider = createProvider<number>(0);
 
