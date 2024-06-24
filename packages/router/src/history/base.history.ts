@@ -8,16 +8,30 @@ import {
   startWith,
 } from 'rxjs';
 import { RouteLocation } from '../route/route-location';
+import { Path } from '../route/path';
 
 export abstract class HistoryBase {
-  private $path$ = new BehaviorSubject<string | undefined>(undefined);
+  private path$;
+
+  protected basePath?: Path;
+
+  constructor(baseUrl?: string) {
+    if (baseUrl) {
+      this.basePath = Path.fromString(baseUrl);
+    }
+    this.path$ = new BehaviorSubject<string | undefined>(baseUrl);
+    this.path$
+      .pipe(
+        filter((p): p is string => p != null),
+        distinctUntilChanged(),
+      )
+      .subscribe((path) => {
+        window.history.pushState({}, '', path);
+        dispatchEvent(new PopStateEvent('popstate'));
+      });
+  }
 
   abstract routeLocation$: Observable<RouteLocation>;
-
-  protected path$ = this.$path$.pipe(
-    filter((p): p is string => p != null),
-    distinctUntilChanged(),
-  );
 
   location$ = fromEvent(window, 'popstate').pipe(
     map(() => document.location),
@@ -25,7 +39,14 @@ export abstract class HistoryBase {
   );
 
   next(path: string) {
-    this.$path$.next(path);
+    if (this.basePath == null) {
+      this.path$.next(path);
+    } else {
+      const combinedPath = this.basePath.combineWith(
+        Path.fromString(path),
+      ).value;
+      this.path$.next(combinedPath);
+    }
   }
 }
 

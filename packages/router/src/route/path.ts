@@ -128,5 +128,9 @@ export class Path {
       .filter((node): node is string => node != null);
     return new Path(nodes);
   }
+
+  filter(other: Path) {
+    return new Path(this.nodes.filter((n, i) => other.nodes[i] !== n));
+  }
 }
 

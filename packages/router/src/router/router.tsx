@@ -2,11 +2,13 @@ import { createProvider, defineComponent, useDynamic } from '@rexar/core';
 import { BehaviorSubject, filter, map } from 'rxjs';
 import { Route, RouteArg } from '../route';
 import { RouteLocation } from '../route/route-location';
+import { HistoryMode } from '../history';
+import { HistoryBase } from '../history/base.history';
 
 export type RouterArgs = {
   baseurl?: string;
   routes: RouteArg[];
-  useHash: boolean;
+  history: HistoryMode;
 };
 
 export type RouteView = {
@@ -23,7 +25,10 @@ export class Router {
 
   currentRoutes$ = new BehaviorSubject<RouteView[]>([]);
 
+  history: HistoryBase;
+
   constructor(args: RouterArgs) {
+    this.history = args.history(args.baseurl);
     this.baseurl = args.baseurl;
     args.routes.forEach((routeArg) => {
       const route = new Route(routeArg);

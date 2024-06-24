@@ -1,14 +1,16 @@
 import { Observable, distinctUntilChanged, map } from 'rxjs';
 import { RouteLocation } from '../route/route-location';
 import { HistoryBase } from './base.history';
+import { Path } from '../route/path';
 
 export class HistoryHash extends HistoryBase {
-  constructor() {
-    super();
-    this.path$.subscribe((path) => {
-      window.history.pushState({}, '', `#${path}`);
-      dispatchEvent(new PopStateEvent('popstate'));
-    });
+  constructor(baseUrl?: string) {
+    const hashPath = Path.fromString('#');
+    super(
+      baseUrl
+        ? Path.fromString(baseUrl).combineWith(hashPath).value
+        : hashPath.value,
+    );
   }
 
   routeLocation$: Observable<RouteLocation> = this.location$.pipe(
