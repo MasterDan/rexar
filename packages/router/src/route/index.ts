@@ -28,6 +28,13 @@ export class Route {
     return this.parent.deepPath.combineWith(this.path);
   }
 
+  get withParents(): Route[] {
+    if (this.parent == null) {
+      return [this];
+    }
+    return [...this.parent.withParents, this];
+  }
+
   get depth(): number {
     if (this.parent == null) return 0;
     return this.parent.depth + 1;

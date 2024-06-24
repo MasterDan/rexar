@@ -60,5 +60,12 @@ describe('Path', () => {
     expect(path.includes(pathWithFilledParams)).toBe(true);
     expect(pathWithFilledParams.includes(pathWithParams)).toBe(false);
   });
+  test('path slice', () => {
+    const path = Path.fromString('base/foo/bar/baz');
+    expect(path.slice(0, 2).value).toBe('/base/foo');
+    expect(path.slice(1, 3).value).toBe('/foo/bar/baz');
+    expect(path.slice(2, 2).value).toBe('/bar/baz');
+    expect(path.slice(3, 1).value).toBe('/baz');
+  });
 });
 

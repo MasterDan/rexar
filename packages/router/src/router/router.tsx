@@ -1,5 +1,6 @@
 import { createProvider, defineComponent, useDynamic } from '@rexar/core';
 import { BehaviorSubject, filter, map } from 'rxjs';
+import { AnyRecord } from '@rexar/tools';
 import { Route, RouteArg } from '../route';
 import { RouteLocation } from '../route/route-location';
 import { HistoryMode } from '../history';
@@ -12,10 +13,9 @@ export type RouterArgs = {
 };
 
 export type RouteView = {
-  routeIndex: number;
   render: () => JSX.Element;
-  params: Record<string, unknown>;
-  query: Record<string, unknown>;
+  params: AnyRecord<string>;
+  query: AnyRecord<string>;
 };
 
 export class Router {
@@ -48,15 +48,49 @@ export class Router {
       }
       this.routes.push(route);
     });
+    this.history.routeLocation$.subscribe((routeLocation) => {
+      const { path } = routeLocation;
+      if (path == null) {
+        throw new Error('Path is not defined');
+      }
+      const route = this.findRoute(routeLocation);
+      if (route == null) return;
+      const routes = route.withParents;
+      let skip = 0;
+      const views = routes.map((r) => {
+        const { render } = r;
+        if (render == null) {
+          throw new Error(`Cannot render route "${r.path.value}"`);
+        }
+        const subPath = path.slice(skip, r.path.size);
+        skip += subPath.size;
+        const params = r.path.pickParamsFrom(subPath);
+        const view: RouteView = {
+          params,
+          query: subPath.queryParams ?? {},
+          render,
+        };
+        return view;
+      });
+      this.currentRoutes$.next(views);
+    });
   }
 
   findRoute(loc: RouteLocation): Route | undefined {
+    const checkRedirect = (route?: Route) => {
+      if (route == null) return route;
+      if (route.render) return route;
+      if (route.redirect) return this.findRoute(route.redirect);
+      return undefined;
+    };
     if (loc.name != null) {
-      return Route.findByName(this.routes, loc.name);
+      return checkRedirect(Route.findByName(this.routes, loc.name));
     }
     if (loc.path != null) {
       const len = this.currentRoutes$.value.length;
-      return Route.findByPath(this.routes, loc.path, len > 0 ? len : undefined);
+      return checkRedirect(
+        Route.findByPath(this.routes, loc.path, len > 0 ? len : undefined),
+      );
     }
     return undefined;
   }

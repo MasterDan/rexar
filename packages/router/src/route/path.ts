@@ -132,5 +132,34 @@ export class Path {
   filter(other: Path) {
     return new Path(this.nodes.filter((n, i) => other.nodes[i] !== n));
   }
+
+  slice(skip: number, take: number) {
+    return new Path(this.nodes.slice(skip, skip + take));
+  }
+
+  pickParamsFrom(other: Path) {
+    const params: Record<string, string | undefined> = {};
+    this.nodes.forEach((node, index) => {
+      const otherNode = other.nodes[index];
+      if (otherNode == null) {
+        throw new Error(
+          `Paths "${this.value}" and "${other.value}" are not matching each other`,
+        );
+      }
+
+      if (node.startsWith(':')) {
+        if (otherNode.startsWith(':')) {
+          throw new Error(`Param "${node}" is not defined`);
+        }
+        params[node.slice(1)] = otherNode;
+      }
+      if (node.startsWith('?')) {
+        params[node.slice(1)] = otherNode.startsWith('?')
+          ? undefined
+          : otherNode;
+      }
+    });
+    return params;
+  }
 }
 
