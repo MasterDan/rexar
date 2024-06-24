@@ -61,7 +61,7 @@ describe('hash_history', () => {
     expect(subscription).toBeCalledTimes(3);
     expect(routeLocation?.path?.value).toBe('/foo/bar');
   });
-  test('check_hash_route_location_with base_url', () => {
+  test('check_hash_route_location_with_base_url', () => {
     const history = new HistoryHash('base');
     let routeLocation: RouteLocation | undefined;
     const subscription = vi.fn((rl: RouteLocation) => {
