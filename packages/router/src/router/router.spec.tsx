@@ -79,7 +79,7 @@ describe('router', () => {
     // back to base
     router.setLocation(
       new RouteLocation({
-        path: '/',
+        path: '',
       }),
     );
     await wait(100);

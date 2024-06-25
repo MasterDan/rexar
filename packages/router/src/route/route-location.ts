@@ -26,7 +26,7 @@ export class RouteLocation {
     this.name = args.name;
     this.params = args.params;
     this.query = args.query;
-    if (args.path) {
+    if (args.path != null) {
       this.path =
         args.path instanceof Path ? args.path : Path.fromString(args.path);
       if (this.params) {
