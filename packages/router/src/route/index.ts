@@ -1,13 +1,13 @@
 import type {} from '@rexar/core';
 import { Path } from './path';
-import { RouteLocation, RouteLocationArg } from './route-location';
+import { RouteLocation, RouteLocationSeed } from './route-location';
 
-export type RouteArg = {
+export type RouteSeed = {
   path: string;
   name?: string;
   render?: () => JSX.Element;
-  redirect?: RouteLocationArg;
-  children?: RouteArg[];
+  redirect?: RouteLocationSeed;
+  children?: RouteSeed[];
 };
 
 export class Route {
@@ -40,7 +40,7 @@ export class Route {
     return this.parent.depth + 1;
   }
 
-  constructor(args: RouteArg, public parent?: Route) {
+  constructor(args: RouteSeed, public parent?: Route) {
     this.path = Path.fromString(args.path);
     this.name = args.name;
     this.render = args.render;

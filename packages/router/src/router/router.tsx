@@ -1,14 +1,14 @@
 import { createProvider, defineComponent, useDynamic } from '@rexar/core';
 import { BehaviorSubject, filter, map } from 'rxjs';
 import { AnyRecord } from '@rexar/tools';
-import { Route, RouteArg } from '../route';
+import { Route, RouteSeed } from '../route';
 import { RouteLocation } from '../route/route-location';
 import { HistoryMode } from '../history';
 import { HistoryBase } from '../history/base.history';
 
-export type RouterArgs = {
+export type RouterSeed = {
   baseurl?: string;
-  routes: RouteArg[];
+  routes: RouteSeed[];
   history: HistoryMode;
 };
 
@@ -27,7 +27,7 @@ export class Router {
 
   history: HistoryBase;
 
-  constructor(args: RouterArgs) {
+  constructor(args: RouterSeed) {
     this.history = args.history(args.baseurl);
     this.baseurl = args.baseurl;
     args.routes.forEach((routeArg) => {
@@ -97,6 +97,7 @@ export class Router {
 
   setLocation(loc: RouteLocation) {
     const route = this.findRoute(loc);
+
     if (route == null) return;
     let path = route.deepPath;
     if (loc.params) {
@@ -105,6 +106,7 @@ export class Router {
     if (loc.query) {
       path.queryParams = loc.query;
     }
+
     this.history.next(path.value);
   }
 

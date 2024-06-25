@@ -1,6 +1,6 @@
-import { RouterArgs, Router } from './router';
+import { RouterSeed, Router } from './router';
 
-export function createRouter(args: RouterArgs): Router {
+export function createRouter(args: RouterSeed): Router {
   return new Router(args);
 }
 

@@ -1,7 +1,7 @@
 import { Path } from './path';
 import type { Route } from '.';
 
-export type RouteLocationArg = {
+export type RouteLocationSeed = {
   path?: string | Path;
   name?: string;
   params?: Record<string, unknown>;
@@ -17,7 +17,7 @@ export class RouteLocation {
 
   query?: Record<string, unknown>;
 
-  constructor(args: RouteLocationArg) {
+  constructor(args: RouteLocationSeed) {
     if (args.path == null && args.name == null) {
       throw new Error(
         'RouteLocation must have either a "path" or "name" property',
