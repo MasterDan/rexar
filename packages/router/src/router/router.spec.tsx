@@ -61,6 +61,21 @@ describe('router', () => {
         </div>
       ).outerHTML,
     );
+    // redirect to base
+    router.setLocation(
+      new RouteLocation({
+        path: '/base',
+      }),
+    );
+    await wait(100);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor"></Comment>
+          <div>Base</div>
+        </div>
+      ).outerHTML,
+    );
     // to path 'bar'
     router.setLocation(
       new RouteLocation({
