@@ -54,10 +54,12 @@ export class Router {
       if (path == null) {
         throw new Error('Path is not defined');
       }
+
       const route = this.findRoute(routeLocation);
       if (route == null) return;
       const routes = route.withParents;
       let skip = 0;
+
       const views = routes.map((r) => {
         const { render } = r;
         if (render == null) {
@@ -101,11 +103,19 @@ export class Router {
 
     if (route == null) return;
     let path = route.deepPath;
+    if (loc.path) {
+      path = path.withParams(path.pickParamsFrom(loc.path));
+    }
     if (loc.params) {
       path = path.withParams(loc.params);
     }
     if (loc.query) {
       path.queryParams = loc.query;
+    }
+
+    const { required } = path.params;
+    if (required.length > 0) {
+      throw new Error(`Missing required params: ${required.join(', ')}`);
     }
 
     this.history.next(path.value);

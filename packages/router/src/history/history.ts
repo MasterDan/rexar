@@ -9,6 +9,7 @@ export class History extends HistoryBase {
       const path = this.basePath
         ? Path.fromString(loc.pathname).filter(this.basePath)
         : Path.fromString(loc.pathname);
+
       return new RouteLocation({
         path: path.value,
       });
