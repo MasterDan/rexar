@@ -44,7 +44,7 @@
     ],
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.patterns": {
-      "*.ts": "${capture}.js, ${capture}.spec.ts",
+      "*.ts": "${capture}.js, ${capture}.spec.ts, , ${capture}.spec.tsx",
       "*.component.ts": "${capture}.component.html",
       "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
       "*.jsx": "${capture}.js",

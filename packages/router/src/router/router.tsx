@@ -5,6 +5,7 @@ import { Route, RouteSeed } from '../route';
 import { RouteLocation } from '../route/route-location';
 import { HistoryMode } from '../history';
 import { HistoryBase } from '../history/base.history';
+import { routeProvider } from './route-info';
 
 export type RouterSeed = {
   baseurl?: string;
@@ -116,6 +117,13 @@ export class Router {
     const RouterView = defineComponent(() => {
       const [View, setView] = useDynamic();
       const depth = depthProvider.inject();
+      routeProvider.provide(
+        this.currentRoutes$.pipe(
+          map((r) => r[depth]),
+          filter((r): r is RouteView => r != null),
+          map(({ params, query }) => ({ params, query })),
+        ),
+      );
       depthProvider.provide(depth + 1);
       this.currentRoutes$
         .pipe(
