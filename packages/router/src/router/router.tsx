@@ -96,10 +96,10 @@ export class Router {
     return undefined;
   }
 
-  setLocation(locSeed: RouteLocationSeed) {
+  matchLocation(locSeed: RouteLocationSeed) {
     const loc = new RouteLocation(locSeed);
     const route = this.findRoute(loc);
-    if (route == null) return;
+    if (route == null) return undefined;
     let path = route.deepPath;
     if (loc.path) {
       path = path.withParams(path.pickParamsFrom(loc.path));
@@ -115,6 +115,12 @@ export class Router {
     if (required.length > 0) {
       throw new Error(`Missing required params: ${required.join(', ')}`);
     }
+    return path;
+  }
+
+  setLocation(locSeed: RouteLocationSeed) {
+    const path = this.matchLocation(locSeed);
+    if (path == null) return;
     this.history.next(path.value);
   }
 }
