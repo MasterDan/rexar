@@ -188,7 +188,7 @@ describe('router', () => {
     // mix explicit and implicit params
     router.setLocation(
       new RouteLocation({
-        path: '/bar/1',
+        path: '/bar/1/:name',
         params: { name: 'danny' },
       }),
     );
@@ -198,6 +198,21 @@ describe('router', () => {
         <div>
           <Comment text="dynamic-anchor"></Comment>
           <div>Bar: 1 | danny</div>
+        </div>
+      ).outerHTML,
+    );
+    router.setLocation(
+      new RouteLocation({
+        name: 'bar',
+        params: { name: 'john', id: '2' },
+      }),
+    );
+    await wait(100);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor"></Comment>
+          <div>Bar: 2 | john</div>
         </div>
       ).outerHTML,
     );
