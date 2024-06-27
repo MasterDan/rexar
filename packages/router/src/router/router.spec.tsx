@@ -128,8 +128,9 @@ describe('router', () => {
           path: '/bar/:id/:name',
           name: 'bar',
           render: () => {
-            const id = useRoute().useParam('id', 'id not found');
-            const name = useRoute().useParam('name', 'name not found');
+            const { useParam } = useRoute();
+            const id = useParam('id', 'id not found');
+            const name = useParam('name', 'name not found');
             return (
               <div>
                 Bar: {id} | {name}
