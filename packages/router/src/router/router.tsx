@@ -1,11 +1,9 @@
-import { createProvider, defineComponent, useDynamic } from '@rexar/core';
-import { BehaviorSubject, filter, map } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { AnyRecord } from '@rexar/tools';
 import { Route, RouteSeed } from '../route';
-import { RouteLocation } from '../route/route-location';
+import { RouteLocation, RouteLocationSeed } from '../route/route-location';
 import { HistoryMode } from '../history';
 import { HistoryBase } from '../history/base.history';
-import { routeProvider } from './use-route';
 
 export type RouterSeed = {
   baseurl?: string;
@@ -98,9 +96,9 @@ export class Router {
     return undefined;
   }
 
-  setLocation(loc: RouteLocation) {
+  setLocation(locSeed: RouteLocationSeed) {
+    const loc = new RouteLocation(locSeed);
     const route = this.findRoute(loc);
-
     if (route == null) return;
     let path = route.deepPath;
     if (loc.path) {
@@ -117,36 +115,7 @@ export class Router {
     if (required.length > 0) {
       throw new Error(`Missing required params: ${required.join(', ')}`);
     }
-
     this.history.next(path.value);
-  }
-
-  createComponents() {
-    const depthProvider = createProvider<number>(0);
-
-    const RouterView = defineComponent(() => {
-      const [View, setView] = useDynamic();
-      const depth = depthProvider.inject();
-      routeProvider.provide(
-        this.currentRoutes$.pipe(
-          map((r) => r[depth]),
-          filter((r): r is RouteView => r != null),
-          map(({ params, query }) => ({ params, query })),
-        ),
-      );
-      depthProvider.provide(depth + 1);
-      this.currentRoutes$
-        .pipe(
-          map((r) => r[depth]),
-          filter((r): r is RouteView => r != null),
-        )
-        .subscribe((route) => {
-          setView(route.render);
-        });
-      return <View />;
-    });
-
-    return [RouterView];
   }
 }
 

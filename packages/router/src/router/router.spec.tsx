@@ -1,20 +1,22 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Comment, render } from '@rexar/core';
 import { wait } from '@rexar/tools';
-import { Router } from './router';
 import { history } from '../history';
 import { RouteLocation } from '../route/route-location';
 import { useRoute } from './use-route';
+import { createRouter, router$ } from '.';
+import { RouterView } from '../components/RouterView';
 
 /**
  * @vitest-environment jsdom
  */
 describe('router', () => {
   beforeEach(() => {
+    router$.next(undefined);
     window.history.pushState({}, '', '/');
   });
   test('simple_routes', async () => {
-    const router = new Router({
+    const router = createRouter({
       history,
       routes: [
         {
@@ -37,7 +39,6 @@ describe('router', () => {
         },
       ],
     });
-    const [RouterView] = router.createComponents();
     const root = <div></div>;
     document.body.appendChild(root);
     render(RouterView).into(root);
@@ -112,7 +113,7 @@ describe('router', () => {
     );
   });
   test('routes_with_params', async () => {
-    const router = new Router({
+    const router = createRouter({
       history,
       routes: [
         {
@@ -143,7 +144,6 @@ describe('router', () => {
         },
       ],
     });
-    const [RouterView] = router.createComponents();
     const root = <div></div>;
     document.body.appendChild(root);
     render(RouterView).into(root);
