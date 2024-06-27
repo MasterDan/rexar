@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import { Comment, render } from '@rexar/core';
 import { wait } from '@rexar/tools';
 import { history } from '../history';
-import { RouteLocation } from '../route/route-location';
 import { useRoute } from './use-route';
 import { createRouter, router$ } from '.';
 import { RouterView } from '../components/RouterView';
@@ -52,11 +51,9 @@ describe('router', () => {
       ).outerHTML,
     );
     // to name 'foo'
-    router.setLocation(
-      new RouteLocation({
-        name: 'foo',
-      }),
-    );
+    router.setLocation({
+      name: 'foo',
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
@@ -67,11 +64,9 @@ describe('router', () => {
       ).outerHTML,
     );
     // redirect to base
-    router.setLocation(
-      new RouteLocation({
-        path: '/base',
-      }),
-    );
+    router.setLocation({
+      path: '/base',
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
@@ -82,11 +77,9 @@ describe('router', () => {
       ).outerHTML,
     );
     // to path 'bar'
-    router.setLocation(
-      new RouteLocation({
-        path: 'bar',
-      }),
-    );
+    router.setLocation({
+      path: 'bar',
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
@@ -97,11 +90,9 @@ describe('router', () => {
       ).outerHTML,
     );
     // back to base
-    router.setLocation(
-      new RouteLocation({
-        path: '',
-      }),
-    );
+    router.setLocation({
+      path: '',
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
@@ -157,14 +148,12 @@ describe('router', () => {
       ).outerHTML,
     );
     // explicit id
-    router.setLocation(
-      new RouteLocation({
-        name: 'foo',
-        params: {
-          id: '123',
-        },
-      }),
-    );
+    router.setLocation({
+      name: 'foo',
+      params: {
+        id: '123',
+      },
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
@@ -175,11 +164,9 @@ describe('router', () => {
       ).outerHTML,
     );
     // implicit id
-    router.setLocation(
-      new RouteLocation({
-        path: 'foo/234',
-      }),
-    );
+    router.setLocation({
+      path: 'foo/234',
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
@@ -190,12 +177,10 @@ describe('router', () => {
       ).outerHTML,
     );
     // mix explicit and implicit params
-    router.setLocation(
-      new RouteLocation({
-        path: '/bar/1/:name',
-        params: { name: 'danny' },
-      }),
-    );
+    router.setLocation({
+      path: '/bar/1/:name',
+      params: { name: 'danny' },
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
@@ -205,12 +190,10 @@ describe('router', () => {
         </div>
       ).outerHTML,
     );
-    router.setLocation(
-      new RouteLocation({
-        name: 'bar',
-        params: { name: 'john', id: '2' },
-      }),
-    );
+    router.setLocation({
+      name: 'bar',
+      params: { name: 'john', id: '2' },
+    });
     await wait(100);
     expect(root.outerHTML).toBe(
       (
