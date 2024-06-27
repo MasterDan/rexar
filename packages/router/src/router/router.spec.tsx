@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { Comment, render } from '@rexar/core';
 import { wait } from '@rexar/tools';
 import { Router } from './router';
@@ -10,6 +10,9 @@ import { useRoute } from './use-route';
  * @vitest-environment jsdom
  */
 describe('router', () => {
+  beforeEach(() => {
+    window.history.pushState({}, '', '/');
+  });
   test('simple_routes', async () => {
     const router = new Router({
       history,
