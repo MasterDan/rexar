@@ -124,6 +124,19 @@ describe('router', () => {
             return <div>Foo: {id}</div>;
           },
         },
+        {
+          path: '/bar/:id/:name',
+          name: 'bar',
+          render: () => {
+            const id = useRoute().useParam('id', 'id not found');
+            const name = useRoute().useParam('name', 'name not found');
+            return (
+              <div>
+                Bar: {id} | {name}
+              </div>
+            );
+          },
+        },
       ],
     });
     const [RouterView] = router.createComponents();
@@ -169,6 +182,22 @@ describe('router', () => {
         <div>
           <Comment text="dynamic-anchor"></Comment>
           <div>Foo: 234</div>
+        </div>
+      ).outerHTML,
+    );
+    // mix explicit and implicit params
+    router.setLocation(
+      new RouteLocation({
+        path: '/bar/1',
+        params: { name: 'danny' },
+      }),
+    );
+    await wait(100);
+    expect(root.outerHTML).toBe(
+      (
+        <div>
+          <Comment text="dynamic-anchor"></Comment>
+          <div>Bar: 1 | danny</div>
         </div>
       ).outerHTML,
     );
