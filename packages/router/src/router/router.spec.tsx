@@ -4,7 +4,7 @@ import { wait } from '@rexar/tools';
 import { Router } from './router';
 import { history } from '../history';
 import { RouteLocation } from '../route/route-location';
-import { useRoute } from './route-info';
+import { useRoute } from './use-route';
 
 /**
  * @vitest-environment jsdom

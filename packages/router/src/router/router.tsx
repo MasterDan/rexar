@@ -5,7 +5,7 @@ import { Route, RouteSeed } from '../route';
 import { RouteLocation } from '../route/route-location';
 import { HistoryMode } from '../history';
 import { HistoryBase } from '../history/base.history';
-import { routeProvider } from './route-info';
+import { routeProvider } from './use-route';
 
 export type RouterSeed = {
   baseurl?: string;
