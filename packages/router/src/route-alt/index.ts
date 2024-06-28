@@ -9,7 +9,7 @@ export enum ParamKind {
 export class Param {
   constructor(
     public name: string,
-    kind: ParamKind,
+    public kind: ParamKind,
     public validator?: (arg: string) => boolean,
   ) {}
 
@@ -44,7 +44,59 @@ export class Param {
 export type RouteNode = string | Param;
 
 export class Route {
-  constructor(public path: RouteNode[]) {}
+  constructor(public path: RouteNode[]) {
+    if (path.length === 0) {
+      return;
+    }
+    const lastItemIndex = path.length - 1;
+    path.forEach((v, i) => {
+      if (
+        v instanceof Param &&
+        v.kind === ParamKind.Asterisk &&
+        i !== lastItemIndex
+      ) {
+        throw new Error(`Asterisk param must be the last node in the path.`);
+      }
+    });
+    const last = path[lastItemIndex];
+    if (last instanceof Param && last.kind === ParamKind.Asterisk) {
+      const optionalParams = path.filter(
+        (v) => v instanceof Param && v.kind === ParamKind.Optional,
+      );
+      if (optionalParams.length > 0) {
+        throw new Error(
+          `Asterisk param cannot be followed by optional params.`,
+        );
+      }
+    }
+    if (path.length < 2) {
+      return;
+    }
+    for (let i = path.length - 2; i >= 0; i -= 1) {
+      const node = path[i];
+      const nextNode = path[i + 1];
+      if (node instanceof Param && !(nextNode instanceof Param)) {
+        throw new Error(
+          `Cannot create route "${this.path.join(
+            '/',
+          )}". Params must be at the end of the path.`,
+        );
+      }
+      if (node instanceof Param) {
+        if (
+          node.kind === ParamKind.Optional &&
+          (typeof nextNode === 'string' ||
+            (nextNode instanceof Param && nextNode.kind === ParamKind.Required))
+        ) {
+          throw new Error(
+            `Cannot create route "${this.path.join(
+              '/',
+            )}". Optional params must be at the end of the path.`,
+          );
+        }
+      }
+    }
+  }
 
   static fromString(
     str: string,
