@@ -6,27 +6,43 @@ export enum ParamKind {
   Asterisk,
 }
 
-export class Param {
+export class ParamNext {
   constructor(
     public name: string,
     public kind: ParamKind,
     public validator?: (arg: string) => boolean,
   ) {}
 
-  static tryParse(str: string): RouteNode {
+  static tryParse(str: string): RouteNodeNext {
     if (str.startsWith(':')) {
-      return new Param(str.slice(1).trimEnd(), ParamKind.Required);
+      return new ParamNext(str.slice(1).trimEnd(), ParamKind.Required);
     }
     if (str.startsWith('?')) {
-      return new Param(str.slice(1).trimEnd(), ParamKind.Optional);
+      return new ParamNext(str.slice(1).trimEnd(), ParamKind.Optional);
     }
     if (str.startsWith('*')) {
-      return new Param(str.slice(1).trimEnd(), ParamKind.Asterisk);
+      return new ParamNext(str.slice(1).trimEnd(), ParamKind.Asterisk);
     }
     return str;
   }
 
   private val?: string;
+
+  get placeholder() {
+    const prefix = (() => {
+      switch (this.kind) {
+        case ParamKind.Optional:
+          return '?';
+        case ParamKind.Asterisk:
+          return '*';
+        case ParamKind.Required:
+          return ':';
+        default:
+          throw new Error(`Unknown param kind: ${this.kind}`);
+      }
+    })();
+    return `${prefix}${this.name}`;
+  }
 
   get value() {
     return this.val;
@@ -41,17 +57,18 @@ export class Param {
   }
 }
 
-export type RouteNode = string | Param;
+export type RouteNodeNext = string | ParamNext;
 
-export class Route {
-  constructor(public path: RouteNode[]) {
+export class RouteNext {
+  constructor(public path: RouteNodeNext[]) {
     if (path.length === 0) {
       return;
     }
+    // #region validation
     const lastItemIndex = path.length - 1;
     path.forEach((v, i) => {
       if (
-        v instanceof Param &&
+        v instanceof ParamNext &&
         v.kind === ParamKind.Asterisk &&
         i !== lastItemIndex
       ) {
@@ -59,9 +76,9 @@ export class Route {
       }
     });
     const last = path[lastItemIndex];
-    if (last instanceof Param && last.kind === ParamKind.Asterisk) {
+    if (last instanceof ParamNext && last.kind === ParamKind.Asterisk) {
       const optionalParams = path.filter(
-        (v) => v instanceof Param && v.kind === ParamKind.Optional,
+        (v) => v instanceof ParamNext && v.kind === ParamKind.Optional,
       );
       if (optionalParams.length > 0) {
         throw new Error(
@@ -75,18 +92,19 @@ export class Route {
     for (let i = path.length - 2; i >= 0; i -= 1) {
       const node = path[i];
       const nextNode = path[i + 1];
-      if (node instanceof Param && !(nextNode instanceof Param)) {
+      if (node instanceof ParamNext && !(nextNode instanceof ParamNext)) {
         throw new Error(
           `Cannot create route "${this.path.join(
             '/',
           )}". Params must be at the end of the path.`,
         );
       }
-      if (node instanceof Param) {
+      if (node instanceof ParamNext) {
         if (
           node.kind === ParamKind.Optional &&
           (typeof nextNode === 'string' ||
-            (nextNode instanceof Param && nextNode.kind === ParamKind.Required))
+            (nextNode instanceof ParamNext &&
+              nextNode.kind === ParamKind.Required))
         ) {
           throw new Error(
             `Cannot create route "${this.path.join(
@@ -96,6 +114,7 @@ export class Route {
         }
       }
     }
+    // #endregion
   }
 
   static fromString(
@@ -103,14 +122,14 @@ export class Route {
     validators: Record<string, (arg: string) => boolean> = {},
   ) {
     const nodes = str.split('/').map((s) => {
-      const param = Param.tryParse(s);
-      if (param instanceof Param) {
+      const param = ParamNext.tryParse(s);
+      if (param instanceof ParamNext) {
         param.validator = validators[param.name];
         return param;
       }
       return s;
     });
-    return new Route(nodes);
+    return new RouteNext(nodes);
   }
 }
 
