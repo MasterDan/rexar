@@ -55,6 +55,12 @@ export class ParamNext {
     }
     this.val = value;
   }
+
+  clone() {
+    const param = new ParamNext(this.name, this.kind, this.validator);
+    param.value = this.value;
+    return param;
+  }
 }
 
 export type RouteNodeNext = string | ParamNext;
@@ -130,6 +136,54 @@ export class RouteNext {
       return s;
     });
     return new RouteNext(nodes);
+  }
+
+  get params(): ParamNext[] {
+    return this.path.filter((v): v is ParamNext => v instanceof ParamNext);
+  }
+
+  get paramsUnused(): ParamNext[] {
+    return this.params.filter((v) => v.name.length > 0 && v.value == null);
+  }
+
+  setParam(predicate: (param: ParamNext) => boolean, value: string) {
+    const param = this.params.find(predicate);
+    if (param == null) {
+      throw new Error(`Param not found: ${predicate.toString()}`);
+    }
+    param.value = value;
+  }
+
+  get value() {
+    return this.path
+      .map((v) => {
+        if (v instanceof ParamNext) {
+          if (v.value == null) {
+            throw new Error(`Param "${v.name}" is not set`);
+          }
+          return v.value;
+        }
+        return v;
+      })
+      .filter((v): v is string => v != null)
+      .join('/');
+  }
+
+  get pattern() {
+    return this.path
+      .map((v) => {
+        if (v instanceof ParamNext) {
+          return v.placeholder;
+        }
+        return v;
+      })
+      .join('/');
+  }
+
+  clone() {
+    return new RouteNext(
+      this.path.map((v) => (v instanceof ParamNext ? v.clone() : v)),
+    );
   }
 }
 
