@@ -1,8 +1,5 @@
 import { AnyRecord, stringTools } from '@rexar/tools';
-import {
-  queryParamsFromString,
-  queryParamsToString,
-} from '../tools/query-params';
+import { QueryParams } from '../tools/query-params';
 
 export class Path {
   queryParams?: AnyRecord<string>;
@@ -21,7 +18,7 @@ export class Path {
     }
     if (nodes.length > 0) {
       const lastNode = nodes[nodes.length - 1];
-      const [node, params] = queryParamsFromString(lastNode);
+      const [node, params] = QueryParams.parse(lastNode);
       nodes[nodes.length - 1] = node;
       if (Object.keys(params).length > 0) {
         this.queryParams = params;
@@ -46,7 +43,7 @@ export class Path {
     if (this.nodes.length === 0) {
       return '/';
     }
-    return `/${this.nodes.join('/')}${queryParamsToString(
+    return `/${this.nodes.join('/')}${QueryParams.stringify(
       this.queryParams ?? {},
     )}`;
   }

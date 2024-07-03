@@ -1,5 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
+import { QueryParams, QueryParamsRecord } from '../tools/query-params';
+
 export enum ParamKind {
   Optional,
   Required,
@@ -66,6 +68,8 @@ export class ParamNext {
 export type RouteNodeNext = string | ParamNext;
 
 export class RouteNext {
+  queryParams: QueryParamsRecord | undefined;
+
   constructor(public path: RouteNodeNext[]) {
     if (path.length === 0) {
       return;
@@ -118,6 +122,19 @@ export class RouteNext {
             )}". Optional params must be at the end of the path.`,
           );
         }
+      }
+    }
+    // #endregion
+    // #region query params parsing
+    if (this.path.length > 0) {
+      const lastNode = this.path[this.path.length - 1];
+      const lastNodeValue =
+        lastNode instanceof ParamNext ? lastNode.value : lastNode;
+      if (lastNodeValue == null) return;
+      const [node, params] = QueryParams.parse(lastNodeValue);
+      this.path[this.path.length - 1] = node;
+      if (Object.keys(params).length > 0) {
+        this.queryParams = params;
       }
     }
     // #endregion
@@ -195,9 +212,11 @@ export class RouteNext {
   }
 
   clone() {
-    return new RouteNext(
+    const cloned = new RouteNext(
       this.path.map((v) => (v instanceof ParamNext ? v.clone() : v)),
     );
+    cloned.queryParams = this.queryParams;
+    return cloned;
   }
 }
 
