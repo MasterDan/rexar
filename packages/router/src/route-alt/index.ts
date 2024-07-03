@@ -146,7 +146,21 @@ export class RouteNext {
     return this.params.filter((v) => v.name.length > 0 && v.value == null);
   }
 
-  setParam(predicate: (param: ParamNext) => boolean, value: string) {
+  get filled() {
+    return (
+      this.paramsUnused.filter((p) => p.kind !== ParamKind.Optional).length ===
+      0
+    );
+  }
+
+  setParam(
+    predicateOrName: string | ((param: ParamNext) => boolean),
+    value: string,
+  ) {
+    const predicate =
+      typeof predicateOrName === 'string'
+        ? (p: ParamNext) => p.name === predicateOrName
+        : predicateOrName;
     const param = this.params.find(predicate);
     if (param == null) {
       throw new Error(`Param not found: ${predicate.toString()}`);

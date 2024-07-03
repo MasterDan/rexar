@@ -1,5 +1,8 @@
 import { AnyRecord, stringTools } from '@rexar/tools';
-import { queryParamsFromString, queryParamsToString } from './query-params';
+import {
+  queryParamsFromString,
+  queryParamsToString,
+} from '../tools/query-params';
 
 export class Path {
   queryParams?: AnyRecord<string>;
