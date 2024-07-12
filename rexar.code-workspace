@@ -10,6 +10,9 @@
       "path": "packages/jsx",
     },
     {
+      "path": "packages/jsx-next",
+    },
+    {
       "path": "packages/core",
     },
     {
