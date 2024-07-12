@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "@jsx"
+    "jsxImportSource": "@jsx-next"
   },
   "include": [
     "./*.ts",
