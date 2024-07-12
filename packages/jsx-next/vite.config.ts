@@ -6,7 +6,7 @@ import dts from 'vite-plugin-dts';
 export default defineConfig(() => ({
   resolve: {
     alias: {
-      '@jsx': path.resolve(__dirname, './src'),
+      '@jsx-next': path.resolve(__dirname, './src'),
     },
   },
   build: {

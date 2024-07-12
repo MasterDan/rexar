@@ -31,6 +31,9 @@
             "@jsx/*": [
                 "packages/jsx/src/*"
             ],
+            "@jsx-next/*": [
+                "packages/jsx-next/src/*"
+            ],
             "@core/*": [
                 "packages/core/src/*"
             ],

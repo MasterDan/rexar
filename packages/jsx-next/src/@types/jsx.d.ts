@@ -1,4 +1,6 @@
+import { Lazy } from '@jsx-next/lazy';
 import * as csstype from 'csstype';
+import type { Component } from './component';
 
 /**
  * Based on types from solid-js
@@ -24,6 +26,8 @@ export namespace JSX {
     | Node
     | ArrayElement
     | OrString
+    | Lazy<Element>
+    | Component
     | number
     | boolean
     | null

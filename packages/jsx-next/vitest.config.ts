@@ -5,7 +5,7 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@jsx': path.resolve(__dirname, './src'),
+      '@jsx-next': path.resolve(__dirname, './src'),
     },
   },
 });
