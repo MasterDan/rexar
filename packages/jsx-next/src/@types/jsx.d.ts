@@ -1,31 +1,45 @@
 import * as csstype from 'csstype';
 
 /**
- * Based on JSX types for Surplus and Inferno and adapted for `dom-expressions`.
+ * Based on types from solid-js
+ * https://github.com/solidjs/solid
+ * which is
+ *   Based on JSX types for Surplus and Inferno and adapted for `dom-expressions`.
+ *   https://github.com/adamhaile/surplus/blob/master/index.d.ts
+ *   https://github.com/infernojs/inferno/blob/master/packages/inferno/src/core/types.ts
  *
- * https://github.com/adamhaile/surplus/blob/master/index.d.ts
- * https://github.com/infernojs/inferno/blob/master/packages/inferno/src/core/types.ts
  */
 type DOMElement = Element;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Whatever = any;
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type OrString = string & {};
+
+export type Dictionary = Record<string, Whatever>;
 
 export namespace JSX {
   type Element =
     | Node
     | ArrayElement
-    | (string & {})
+    | OrString
     | number
     | boolean
     | null
     | undefined;
   interface ArrayElement extends Array<Element> {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ElementClass {
     // empty, libs can define requirements downstream
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ElementAttributesProperty {
     // empty, libs can define requirements downstream
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ElementChildrenAttribute {
-    children: {};
+    children: Dictionary;
   }
   interface EventHandler<T, E extends Event> {
     (
@@ -37,13 +51,13 @@ export namespace JSX {
   }
   interface BoundEventHandler<T, E extends Event> {
     0: (
-      data: any,
+      data: AnyData,
       e: E & {
         currentTarget: T;
         target: DOMElement;
       },
     ) => void;
-    1: any;
+    1: Whatever;
   }
   type EventHandlerUnion<T, E extends Event> =
     | EventHandler<T, E>
@@ -64,7 +78,7 @@ export namespace JSX {
   }
   interface BoundInputEventHandler<T, E extends InputEvent> {
     0: (
-      data: any,
+      data: Whatever,
       e: E & {
         currentTarget: T;
         target: T extends
@@ -75,7 +89,7 @@ export namespace JSX {
           : DOMElement;
       },
     ) => void;
-    1: any;
+    1: Whatever;
   }
   type InputEventHandlerUnion<T, E extends InputEvent> =
     | InputEventHandler<T, E>
@@ -96,7 +110,7 @@ export namespace JSX {
   }
   interface BoundChangeEventHandler<T, E extends Event> {
     0: (
-      data: any,
+      data: Whatever,
       e: E & {
         currentTarget: T;
         target: T extends
@@ -107,7 +121,7 @@ export namespace JSX {
           : DOMElement;
       },
     ) => void;
-    1: any;
+    1: Whatever;
   }
   type ChangeEventHandlerUnion<T, E extends Event> =
     | ChangeEventHandler<T, E>
@@ -128,7 +142,7 @@ export namespace JSX {
   }
   interface BoundFocusEventHandler<T, E extends FocusEvent> {
     0: (
-      data: any,
+      data: Whatever,
       e: E & {
         currentTarget: T;
         target: T extends
@@ -139,7 +153,7 @@ export namespace JSX {
           : DOMElement;
       },
     ) => void;
-    1: any;
+    1: Whatever;
   }
   type FocusEventHandlerUnion<T, E extends FocusEvent> =
     | FocusEventHandler<T, E>
@@ -151,6 +165,7 @@ export namespace JSX {
     [SERIALIZABLE]: never;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface IntrinsicAttributes {
     ref?: unknown | ((e: unknown) => void);
   }
@@ -164,7 +179,7 @@ export namespace JSX {
   type Accessor<T> = () => T;
   interface Directives {}
   interface DirectiveFunctions {
-    [x: string]: (el: DOMElement, accessor: Accessor<any>) => void;
+    [x: string]: (el: DOMElement, accessor: Accessor<Whatever>) => void;
   }
   interface ExplicitProperties {}
   interface ExplicitAttributes {}
@@ -790,7 +805,7 @@ export namespace JSX {
     translate?: 'yes' | 'no';
     about?: string;
     datatype?: string;
-    inlist?: any;
+    inlist?: Whatever;
     popover?: boolean | 'manual' | 'auto';
     prefix?: string;
     property?: string;
@@ -837,7 +852,7 @@ export namespace JSX {
       | 'search';
   }
   interface AnchorHTMLAttributes<T> extends HTMLAttributes<T> {
-    download?: any;
+    download?: Whatever;
     href?: string;
     hreflang?: string;
     media?: string;
@@ -852,7 +867,7 @@ export namespace JSX {
   interface AreaHTMLAttributes<T> extends HTMLAttributes<T> {
     alt?: string;
     coords?: string;
-    download?: any;
+    download?: Whatever;
     href?: string;
     hreflang?: string;
     ping?: string;
@@ -2334,6 +2349,7 @@ export namespace JSX {
     use: UseSVGAttributes<SVGUseElement>;
     view: ViewSVGAttributes<SVGViewElement>;
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface IntrinsicElements
     extends HTMLElementTags,
       HTMLElementDeprecatedTags,
