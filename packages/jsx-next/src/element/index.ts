@@ -29,7 +29,6 @@ export function appendChildren(
   ...children: JSX.Element[]
 ): void {
   children.forEach((child) => {
-    console.log(child);
     if (child instanceof Lazy) {
       const val = child.value;
       appendChildren(el, val);
@@ -47,17 +46,25 @@ export function appendChildren(
   });
 }
 
+export function createElement<T extends keyof JSX.IntrinsicElements>(
+  elementOrComponent: T,
+  props?: PropsOf<T>,
+): Lazy<HTMLElement>;
+export function createElement<T extends AnyComponent>(
+  elementOrComponent: T,
+  props?: PropsOf<T>,
+): Lazy<ReturnType<T>>;
 export function createElement<T extends ElementOrComponent>(
   elementOrComponent: T,
-  props?: PropsOf<T> & { children?: JSX.Element[] },
-): JSX.Element {
+  props?: PropsOf<T>,
+): Lazy<JSX.Element> {
   const create = (() => {
     if (typeof elementOrComponent === 'string') {
       return () => {
         const el = document.createElement(elementOrComponent);
         if (props) {
           const { children, ...attrs } = props;
-          if (props) {
+          if (attrs) {
             attachAttributes(el, attrs);
           }
           if (children) {
