@@ -31,7 +31,8 @@ export function appendChildren(
   children.forEach((child) => {
     console.log(child);
     if (child instanceof Lazy) {
-      appendChildren(el, child.value);
+      const val = child.value;
+      appendChildren(el, val);
     } else if (typeof child === 'string') {
       el.appendChild(document.createTextNode(child));
     } else if (typeof child === 'number' || typeof child === 'boolean') {
@@ -48,17 +49,21 @@ export function appendChildren(
 
 export function createElement<T extends ElementOrComponent>(
   elementOrComponent: T,
-  props?: PropsOf<T>,
-  ...children: JSX.Element[]
+  props?: PropsOf<T> & { children?: JSX.Element[] },
 ): JSX.Element {
   const create = (() => {
     if (typeof elementOrComponent === 'string') {
       return () => {
         const el = document.createElement(elementOrComponent);
         if (props) {
-          attachAttributes(el, props);
+          const { children, ...attrs } = props;
+          if (props) {
+            attachAttributes(el, attrs);
+          }
+          if (children) {
+            appendChildren(el, children);
+          }
         }
-        appendChildren(el, ...children);
         return el;
       };
     }

@@ -44,7 +44,7 @@ export namespace JSX {
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ElementChildrenAttribute {
-    children: Dictionary;
+    children: JSX.Element[];
   }
   interface EventHandler<T, E extends Event> {
     (
