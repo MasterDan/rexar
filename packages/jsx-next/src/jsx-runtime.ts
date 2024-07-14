@@ -2,6 +2,10 @@ import { createElement } from './element';
 import { Fragment } from './fragment';
 
 export type * from './@types/jsx';
-export type * from './@types/component';
-export { createElement, createElement as h, Fragment };
+export {
+  createElement as jsx,
+  createElement as jsxs,
+  createElement as jsxDEV,
+  Fragment,
+};
 

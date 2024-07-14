@@ -13,7 +13,7 @@ export default defineConfig(() => ({
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: '@rexar/jsx',
+      name: '@rexar/jsx-next',
       fileName: 'main',
     },
     rollupOptions: {

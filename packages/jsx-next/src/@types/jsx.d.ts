@@ -21,6 +21,7 @@ export type OrString = string & {};
 
 export type Dictionary = Record<string, Whatever>;
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JSX {
   type Element =
     | Node
@@ -2354,7 +2355,7 @@ export namespace JSX {
     view: ViewSVGAttributes<SVGViewElement>;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface IntrinsicElements
+  export interface IntrinsicElements
     extends HTMLElementTags,
       HTMLElementDeprecatedTags,
       SVGElementTags {}
