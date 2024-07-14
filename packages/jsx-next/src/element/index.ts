@@ -1,6 +1,7 @@
 import { AnyComponent, Component } from '@jsx-next/@types/component';
 import { JSX } from '@jsx-next/@types/jsx';
 import { Lazy } from '@jsx-next/lazy';
+import { toObservable } from '@rexar/reactivity';
 
 export type ElementOrComponent = keyof JSX.IntrinsicElements | AnyComponent;
 
@@ -38,10 +39,16 @@ export function appendChildren(
       el.appendChild(document.createTextNode(String(child)));
     } else if (Array.isArray(child)) {
       appendChildren(el, ...child);
-    } else if (child instanceof Element) {
+    } else if (child instanceof Node) {
       el.appendChild(child);
     } else if (child != null) {
-      throw new Error('Invalid child type');
+      const node = document.createTextNode('');
+      toObservable<number | boolean | null | undefined>(child).subscribe(
+        (v) => {
+          node.textContent = v == null ? '' : String(v);
+        },
+      );
+      el.appendChild(node);
     }
   });
 }

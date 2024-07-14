@@ -1,5 +1,6 @@
 import { Lazy } from '@jsx-next/lazy';
 import * as csstype from 'csstype';
+import type { Source } from '@rexar/reactivity';
 
 /**
  * Based on types from solid-js
@@ -27,10 +28,10 @@ export namespace JSX {
     | ArrayElement
     | OrString
     | Lazy<Element>
-    | number
-    | boolean
-    | null
-    | undefined;
+    | Source<number>
+    | Source<boolean>
+    | Source<null>
+    | Source<undefined>;
   interface ArrayElement extends Array<Element> {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ElementClass {

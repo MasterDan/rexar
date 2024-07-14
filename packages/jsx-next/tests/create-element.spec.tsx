@@ -1,4 +1,5 @@
 import { render, unwrap } from '@jsx-next/render';
+import { ref } from '@rexar/reactivity';
 import { describe, expect, test } from 'vitest';
 
 /**
@@ -10,6 +11,16 @@ describe('create-element', () => {
     const App = () => <div>Hello World</div>;
     render(<App />).into(root);
     expect(root.innerHTML).toBe(unwrap(<div>Hello World</div>).outerHTML);
+  });
+  test('div-with-dynamic', () => {
+    const text$ = ref('Hello World');
+    const root = unwrap(<div></div>);
+    // @ts-expect-error later
+    const App = () => <div>{text$}</div>;
+    render(<App />).into(root);
+    expect(root.innerHTML).toBe(unwrap(<div>Hello World</div>).outerHTML);
+    text$.value = 'Hello Universe';
+    expect(root.innerHTML).toBe(unwrap(<div>Hello Universe</div>).outerHTML);
   });
   test('div-with-children', () => {
     const root = unwrap(<div></div>);
