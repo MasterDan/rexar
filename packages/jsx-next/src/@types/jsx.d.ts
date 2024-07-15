@@ -26,8 +26,8 @@ export namespace JSX {
   type Element =
     | Node
     | ArrayElement
-    | OrString
     | Lazy<Element>
+    | Source<OrString>
     | Source<number>
     | Source<boolean>
     | Source<null>
@@ -43,7 +43,8 @@ export namespace JSX {
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ElementChildrenAttribute {
-    children: JSX.Element[];
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    children: {};
   }
   interface EventHandler<T, E extends Event> {
     (

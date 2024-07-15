@@ -43,11 +43,9 @@ export function appendChildren(
       el.appendChild(child);
     } else if (child != null) {
       const node = document.createTextNode('');
-      toObservable<number | boolean | null | undefined>(child).subscribe(
-        (v) => {
-          node.textContent = v == null ? '' : String(v);
-        },
-      );
+      toObservable<unknown>(child).subscribe((v) => {
+        node.textContent = v == null ? '' : String(v);
+      });
       el.appendChild(node);
     }
   });
