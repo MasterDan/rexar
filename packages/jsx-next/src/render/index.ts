@@ -1,6 +1,6 @@
-import { JSX } from '@jsx-next/@types/jsx';
-import { appendChildren } from '@jsx-next/element';
-import { Lazy } from '@jsx-next/lazy';
+import { JSX } from '@jsx-next/jsx/@types';
+import { appendChildren } from '@jsx-next/jsx/element';
+import { Lazy } from '@jsx-next/jsx/lazy';
 
 export type Unwrapped<T extends JSX.Element> = T extends JSX.ArrayElement
   ? HTMLElement[]

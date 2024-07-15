@@ -1,4 +1,4 @@
-import { JSX } from './jsx';
+import { JSX } from '../jsx/@types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Props = Record<string, any>;

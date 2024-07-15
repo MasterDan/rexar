@@ -1,4 +1,4 @@
-import { Lazy } from '@jsx-next/lazy';
+import { Lazy } from '@jsx-next/jsx/lazy';
 import * as csstype from 'csstype';
 import type { Source } from '@rexar/reactivity';
 

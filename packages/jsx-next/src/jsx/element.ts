@@ -1,6 +1,6 @@
 import { AnyComponent, Component } from '@jsx-next/@types/component';
-import { JSX } from '@jsx-next/@types/jsx';
-import { Lazy } from '@jsx-next/lazy';
+import { JSX } from '@jsx-next/jsx/@types';
+import { Lazy } from '@jsx-next/jsx/lazy';
 import { toObservable } from '@rexar/reactivity';
 
 export type ElementOrComponent = keyof JSX.IntrinsicElements | AnyComponent;

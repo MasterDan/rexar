@@ -1,7 +1,7 @@
-import { createElement } from './element';
-import { Fragment } from './fragment';
+import { createElement } from './jsx/element';
+import { Fragment } from './jsx/fragment';
 
-export type * from './@types/jsx';
+export type * from './jsx/@types';
 export {
   createElement as jsx,
   createElement as jsxs,
