@@ -1,7 +1,7 @@
 import { AnyComponent, Component } from '@jsx-next/@types/component';
 import { JSX } from '@jsx-next/jsx/@types';
 import { Lazy } from '@jsx-next/jsx/lazy';
-import { toObservable } from '@rexar/reactivity';
+import { Source, toObservable } from '@rexar/reactivity';
 
 export type ElementOrComponent = keyof JSX.IntrinsicElements | AnyComponent;
 
@@ -11,7 +11,76 @@ export type PropsOf<T extends ElementOrComponent> = T extends Component<
   ? TProps
   : JSX.IntrinsicElements[Exclude<T, Component>];
 
-function attachAttributes<T extends keyof JSX.IntrinsicElements>(
+function setAttribute(el: HTMLElement, name: string, value?: string) {
+  if (value == null) el.removeAttribute(name);
+  else el.setAttribute(name, value);
+}
+
+function setStyle(
+  el: HTMLElement,
+  value?: string | Partial<Record<string, unknown>>,
+) {
+  if (value == null) {
+    setAttribute(el, 'style');
+    return;
+  }
+  const elStyle = el.style;
+  if (typeof value === 'string') {
+    elStyle.cssText = value;
+  }
+  if (typeof value === 'string') {
+    elStyle.cssText = value;
+  } else if (typeof value === 'object') {
+    Object.keys(value).forEach((key) => {
+      const v = value[key as keyof typeof value];
+      if (v == null) {
+        elStyle.removeProperty(key);
+      } else {
+        elStyle.setProperty(key, String(v));
+      }
+    });
+  }
+}
+
+function setClassList(
+  el: HTMLElement,
+  value: Partial<Record<string, Source<boolean>>> = {},
+) {
+  Object.keys(value).forEach((classes) => {
+    const val = value[classes as keyof typeof value];
+    const classNames = classes.trim().split(/\s+/);
+    if (val == null) {
+      classNames.forEach((className) => el.classList.remove(className));
+    } else {
+      toObservable(val).subscribe((v) => {
+        if (v) {
+          classNames.forEach((className) => el.classList.add(className));
+        } else {
+          classNames.forEach((className) => el.classList.remove(className));
+        }
+      });
+    }
+  });
+}
+
+function assignAttribute(el: HTMLElement, name: string, value?: unknown): void {
+  if (value == null) return;
+  if (name === 'style') {
+    setStyle(el, value);
+  } else if (name === 'classList') {
+    setClassList(el, value);
+  } else if (name === 'className') {
+    el.className = value as string;
+  } else if (name.startsWith('on')) {
+    const eventName = name.slice(2).toLowerCase();
+    const eventHandler = value as unknown as EventListener;
+    el.addEventListener(eventName, eventHandler);
+  } else {
+    setAttribute(el, name, value as string);
+  }
+}
+
+function setAttributes<T extends keyof JSX.IntrinsicElements>(
   el: HTMLElement,
   attrs: Partial<JSX.IntrinsicElements[T]>,
 ): void {
@@ -20,8 +89,7 @@ function attachAttributes<T extends keyof JSX.IntrinsicElements>(
   }
   Object.keys(attrs).forEach((key) => {
     const value = attrs[key as keyof typeof attrs];
-    if (value == null) return;
-    el.setAttribute(key, String(value));
+    assignAttribute(el, key, value);
   });
 }
 
@@ -70,7 +138,7 @@ export function createElement<T extends ElementOrComponent>(
         if (props) {
           const { children, ...attrs } = props;
           if (attrs) {
-            attachAttributes(el, attrs);
+            setAttributes(el, attrs);
           }
           if (children) {
             appendChildren(el, children);
