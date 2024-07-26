@@ -21,6 +21,14 @@ export type OrString = string & {};
 
 export type Dictionary = Record<string, Whatever>;
 
+export type AllowSources<T extends Dictionary> = {
+  [TKey in keyof T]: Source<T[TKey]>;
+};
+
+export type WithObservablesOrGetters<T extends Record<string, Dictionary>> = {
+  [TKey in keyof T]: AllowSources<T[TKey]>;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace JSX {
   type Element =
@@ -177,7 +185,7 @@ export namespace JSX {
   interface CustomAttributes<T> {
     ref?: T | ((el: T) => void);
     classList?: {
-      [k: string]: boolean | undefined;
+      [k: string]: Source<boolean | undefined>;
     };
     $ServerOnly?: boolean;
   }
@@ -795,6 +803,7 @@ export namespace JSX {
     // [key: ClassKeys]: boolean;
     accessKey?: string;
     class?: string | undefined;
+    className?: string | undefined;
     contenteditable?: boolean | 'plaintext-only' | 'inherit';
     contextmenu?: string;
     dir?: HTMLDir;
@@ -2354,10 +2363,13 @@ export namespace JSX {
     use: UseSVGAttributes<SVGUseElement>;
     view: ViewSVGAttributes<SVGViewElement>;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  export interface IntrinsicElements
+
+  interface IntrinsicElementsBase
     extends HTMLElementTags,
       HTMLElementDeprecatedTags,
       SVGElementTags {}
+
+  export interface IntrinsicElements
+    extends WithObservablesOrGetters<IntrinsicElementsBase> {}
 }
 

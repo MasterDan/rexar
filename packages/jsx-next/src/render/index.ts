@@ -22,18 +22,17 @@ export function render<TElem extends JSX.Element>(jsxEl: TElem) {
     appendChildren(el, jsxEl);
     return el;
   };
-
   return { into };
 }
 
-export function unwrap<T extends JSX.ArrayElement>(je: T): HTMLElement[];
-export function unwrap<T extends JSX.Element>(je: T): HTMLElement;
-export function unwrap<T extends JSX.Element>(je: T): Unwrapped<T> {
+export function raw<T extends JSX.ArrayElement>(je: T): HTMLElement[];
+export function raw<T extends JSX.Element>(je: T): HTMLElement;
+export function raw<T extends JSX.Element>(je: T): Unwrapped<T> {
   if (je instanceof Lazy) {
-    return unwrap(je.value) as Unwrapped<T>;
+    return raw(je.value) as Unwrapped<T>;
   }
   if (Array.isArray(je)) {
-    return je.map((i) => unwrap(i)) as Unwrapped<T>;
+    return je.map((i) => raw(i)) as Unwrapped<T>;
   }
   return je as unknown as Unwrapped<T>;
 }
